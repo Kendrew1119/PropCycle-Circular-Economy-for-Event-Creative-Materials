@@ -1,1023 +1,700 @@
-# 📋 UCCD3223 Mobile App Development — Master Project Plan
+# PropCycle Native Android Master Plan
 
-> **Course:** UCCD3223 Mobile Applications Development (June 2026 Trimester)  
-> **University:** Universiti Tunku Abdul Rahman (UTAR)  
-> **Theme:** Circular Economy & Sustainable Consumption (UN SDG 12)  
-> **Group Size:** 4 Members  
-> **Timeline:** 14 Weeks (June 2026 – September 2026)
+> **Planning baseline:** Group7-PropCycle proposal dated 15 July 2026<br>
+> **Re-planning date:** 5 August 2026<br>
+> **Course:** UCCD3223 Mobile Applications Development, June 2026 Trimester<br>
+> **Team:** Group 7, four members<br>
+> **Status:** Planning only - native implementation has not started<br>
+> **Target platform:** Android only<br>
+> **Primary implementation language:** Java
 
----
+This document is the single source of truth for the native Android implementation. The proposal's modules and designer mock-ups remain the product baseline. The technology changes from React Native with Expo to a native Android application; it does not remove any product module.
 
-## 📌 Key Deadlines
+## 1. Decision summary
 
-| Milestone | Due Date | Weight |
-|-----------|----------|--------|
-| Part 1 — Proposal | **Week 5 Wed (15 July 2026)** before 5:00 PM | 10% of final |
-| Part 2 — Working App + Report | **Week 12 Sat (5 Sept 2026)** before 5:00 PM | 20% of final |
-| Presentation & Q&A | **Week 13** (during Practical session) | Included in Part 2 |
+### Non-negotiable scope rules
 
----
+1. Retain every proposal module and supporting screen.
+2. Treat the proposal mock-ups as the screen and flow authority.
+3. Use native Android Views with XML layouts; do not use Jetpack Compose.
+4. Write team-owned Android application source in Java.
+5. Do not begin native implementation until the team approves this plan.
+6. Keep the obsolete Expo/React Native stack deleted as explicitly directed on 5 August 2026; do not restore it or create a side-by-side legacy tree.
+7. Do not embed unrestricted Gemini, Firebase Admin, or Google Maps credentials in the application.
 
-## 🏆 Marking Scheme Breakdown
+### Technology decision record
 
-### Part 1 — Proposal (100 marks → 10% of final)
+| Decision | Selected planning direction | Reason |
+|---|---|---|
+| Platform | Native Android | Matches the revised requirement and removes the React Native/Expo runtime |
+| UI | Android Views, XML, Material Components | Full Java interoperability and direct control over the designer's layouts |
+| App language | Java 17 | Java-first development with modern language support |
+| Kotlin policy | No team-authored Kotlin application source is planned | Keeps the codebase aligned with the team's Java preference |
+| Compose policy | Not permitted in this implementation | Compose is Kotlin-first and would create two UI systems |
+| Build scripts | Gradle with Groovy DSL | Avoids Kotlin build scripts and keeps configuration familiar |
+| Android baseline | `minSdk 24`, `compileSdk 36`, `targetSdk 36` | Android 7+ device reach and the 2026 target API requirement |
+| App architecture | Single Activity, Fragments, Navigation Component, MVVM-style state holders and repositories | Clear lifecycle handling, testability, and one navigation graph |
+| Local database | Room 2.8.x over SQLite, using Java `annotationProcessor` | Compile-time SQL checks while meeting the device-storage requirement; Room 3 is excluded because it requires Kotlin/KSP |
+| Cloud data | Firebase Authentication, Cloud Firestore, Cloud Storage | Preserves the proposal's Firebase backend; Firestore snapshot listeners provide real-time chat without cross-database rule gaps |
+| AI | Firebase AI Logic Android SDK for Java with App Check and Remote Config | Keeps the Gemini key off the client and supports model/prompt updates |
+| Camera/media | CameraX plus Android Photo Picker | Native capture and gallery selection with modern permission handling |
+| Maps/location | Maps SDK for Android, Places SDK for Android, Fused Location Provider | Native map, nearby recycling centre, listing, and lending flows |
+| Background work | WorkManager Java `Worker` | Reliable draft/upload retry and deferred sync |
+| Dependency injection | Hilt with Java annotation processing | Consistent construction, compile-time checks, and test replacement |
+| Distribution | Signed APK for course submission; AAB/store release after compatibility review | Separates the assessed deliverable from optional store publication |
 
-| Criteria | Weight | Multiplier | Strategy |
-|----------|--------|------------|----------|
-| Creativity / Novelty / Usefulness | 40% | ×4 | **Highest priority** — Event + Creative waste circular economy is a unique, untapped niche |
-| Completeness of Idea | 30% | ×3 | Cover all 3 pillars: Scan → Marketplace → Share |
-| Overall Design (UI) | 20% | ×2 | Glassmorphism wireframes, iOS-style mockups |
-| Neat Documentation | 10% | ×1 | Clean formatting, good structure |
+Version numbers other than the Android API baseline are resolved and locked at project bootstrap. Only stable releases compatible with JDK 17, Java source, and the chosen Android Gradle Plugin may be used.
 
-### Part 2 — Working App + Report (100 marks → 20% of final)
+## 2. Course constraints and delivery targets
 
-| Criteria | Weight | Multiplier | Notes |
-|----------|--------|------------|-------|
-| Program completeness & functionality | 30% | ×3 | All 3 core modules must work end-to-end |
-| Actual design & creativity | 10% | ×1 | Match or exceed proposal design |
-| Potential for civil/commercial use | 5% | ×0.5 | Real-world applicability — campus + commercial events |
-| Tidiness of source code | 5% | ×0.5 | Clean, commented, modular code |
-| Documentation (individual) | 20% | ×2 | Clear role labels, GitHub contributions |
-| Presentation (individual) | 15% | ×1.5 | 10-min demo |
-| Q&A (individual) | 15% | ×1.5 | Understand your own code deeply |
-| **Bonus**: Published on Play Store / AppGallery | Extra | — | Register Huawei dev account early |
+| Milestone | Date | Planning status |
+|---|---|---|
+| Part 1 proposal | 15 July 2026, before 5:00 PM | Past milestone; confirm the team's submission record; PDF is the scope baseline |
+| Native plan approval | Target: 6 August 2026 | Pending team approval |
+| Feature freeze | Target: 29 August 2026 | No new functionality after this point |
+| Release candidate | Target: 2 September 2026 | All release gates must pass |
+| Working app and final report | 5 September 2026, before 5:00 PM | Fixed deadline |
+| Presentation and Q&A | Week 13 practical session | Date to confirm |
 
----
+The assessed minimums remain covered:
 
-## 💡 The App Concept
+| Requirement | Native Android evidence |
+|---|---|
+| Custom launcher icon | Adaptive icon resources in `mipmap-*`, including foreground/background and monochrome where supported |
+| Store, update, and retrieve device data | Room tables for scan cache, scan history, drafts, and the sync outbox |
+| Connect to an external endpoint | Firebase services, Firebase AI Logic/Gemini, and Google Maps/Places |
+| Program completeness | Every retained module passes its end-to-end acceptance journey |
+| Source-code quality | Java package boundaries, ViewModels, repositories, validation, tests, lint, and attributed commits |
 
-### App Name: **PropCycle**
+## 3. Retained product scope
 
-> **Tagline:** *Scan. Recycle. Share. Repeat.*  
-> **Niche Focus:** Event & Creative Project Materials  
+No module is removed. The proposal defines three core modules; authentication, home, recycling, messaging, notifications, profile, settings, and local/offline behaviour support those modules rather than becoming extra product modules.
 
-PropCycle is a circular economy mobile app focused on **event materials** and **creative project supplies**. It targets two user groups:
+| Scope area | Retained capabilities | Release outcome |
+|---|---|---|
+| Supporting - Authentication | Welcome, registration, login, session restore, logout | A user can securely enter and leave the authenticated app |
+| Supporting - Home dashboard | Greeting, resource search, Smart Scan shortcut, recent activities, quick navigation, notification/profile access | The home screen routes to every primary journey |
+| **Core 1 - AI Smart Scanner** | Camera/gallery input, structured identification, editable result, recycling/upcycling advice, save/history | A scan produces a reviewed result and a valid next action |
+| Supporting - Recycling centre finder | Current/manual location, nearby centre map and list, centre details, external navigation | A user can find a practical drop-off option without requiring background location |
+| **Core 2 - Material Marketplace** | Browse, search, category filters, create/edit listing, sale/donation/exchange intent, pickup/meeting fulfilment, details, status, seller contact | A listing can move from draft to a completed community exchange |
+| **Core 3 - P2P Equipment Lending** | Map/list discovery, create/edit lendable item, availability, request dates, owner decision, pickup/return, rating/trust, direct chat | A borrow request can complete its full lifecycle |
+| Supporting - Messaging | Conversation list and real-time text conversation linked to a listing or lending item | Only participants can read or send messages |
+| Supporting - Notifications | In-app updates, unread state, deep links, preference control; push delivery only if a trusted sender is approved | Relevant events route the user to their context |
+| Supporting - Profile and settings | Personal information, avatar, eco badges, owned activity, scan history, preferences, account details, logout | A user can inspect and manage their account and activity |
+| Supporting - Offline/local storage | Account-scoped scan cache/history, drafts, retry queue, clear error states | Core saved data remains available without a connection and cannot cross accounts |
 
-| User Group | Examples | Pain Point |
-|-----------|---------|------------|
-| **Campus Users** | Student societies, club committees, uni event organizers | Clubs waste banners, decorations, props after every event; no easy way to pass them to the next organizer |
-| **Global Event Users** | Wedding planners, exhibition organizers, corporate event teams, cosplayers, DIY makers | Events generate massive one-time-use waste (lanyards, backdrops, foam boards); crafters need exactly those leftover materials |
+Candidate enhancements from the earlier prototype plan—text-only scanner lookup, home eco/impact summary, community statistics, a daily tip, and a marketplace map/list switch—remain documented options only. They are not proposal-parity requirements and require designer/team sign-off before scheduling.
 
-### Why This Niche Works
+### Explicit scope boundaries
 
-1. **No existing competitor** — Riiicycle, EcoScan, Recircle all focus on general household recycling. No app targets event/creative materials specifically.
-2. **Huge waste problem** — A single campus carnival generates 50+ kg of disposable banners, signage, and decorations. Corporate exhibitions are even worse.
-3. **Natural circular loop** — One event's trash is the next event's treasure. A banner from UTAR Open Day can become a cosplayer's backdrop or a student society's orientation material.
-4. **P2P lending is perfect** — Expensive equipment (PA systems, projectors, sewing machines, heat guns) is needed for days, not months.
-5. **AI scanner is highly relevant** — Scan a PVC banner → AI tells you it's recyclable and suggests who nearby can upcycle it.
+- The app does not process payments. A marketplace price or optional lending deposit is informational and arranged between users.
+- Chat is text-first. Images, voice, calls, and live location are not required for the assessed release.
+- The app does not guarantee that a recycling centre accepts an AI-identified material. The user must confirm with the centre.
+- Background location is not required.
+- iOS, web, React Native, Expo, and Jetpack Compose are not implementation targets.
+- AppGallery support on Huawei devices without Google Mobile Services is not assumed. This requires a separate HMS compatibility decision and is not allowed to destabilise the assessed APK.
 
----
+### Stable category taxonomy
 
-### Core Concept — 3 Pillars
+The same IDs are used by AI output, forms, filters, storage, and tests. Labels may be localised; IDs do not change after data creation.
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                     PropCycle App                                   │
-│          Event & Creative Materials Circular Economy              │
-│                                                                  │
-│   🔍 SCAN            ♻️ MARKETPLACE       🤝 SHARE              │
-│   AI Scanner         Material Exchange     Equipment Lending     │
-│                                                                  │
-│   • Photo scan       • Post leftover       • Lend equipment      │
-│   • AI identify        event materials     • Borrow tools        │
-│   • Material type    • Sell / Donate /     • Campus societies    │
-│   • Recycle tips       Request pickup      • Availability        │
-│   • Upcycle ideas    • Chat with buyer       calendar            │
-│   • Eco impact       • Map view            • Trust rating        │
-│   • Drop-off pts     • Category filter     • Return tracking     │
-└─────────────────────────────────────────────────────────────────┘
-```
+| Material ID | Label | Examples |
+|---|---|---|
+| `banner` | Banners and Signage | PVC banners, vinyl backdrops, foam boards, standees |
+| `decoration` | Decorations and Props | Stage props, paper flowers, booth frames, lights |
+| `fabric` | Fabric and Textile | Tablecloths, curtains, cosplay offcuts, tulle |
+| `stationery` | Stationery and Print | Lanyards, name tags, flyers, certificates |
+| `craft` | Craft Supplies | EVA foam, paint, glue, wire, clay |
+| `cosplay` | Cosplay and Costumes | Wigs, armour pieces, props, specialist fabric |
+| `toys` | Toys and Miniatures | Doll parts, dioramas, figures, miniature supplies |
+| `wood` | Wood and Structural | Plywood, frames, booth structures, pallets |
+| `electronic` | Event Electronics | LED strips, cables, batteries, speakers |
+| `packaging` | Packaging and Containers | Bubble wrap, boxes, containers, cardboard |
+| `other` | Other | Material that cannot be classified safely |
 
----
+| Equipment ID | Label | Examples |
+|---|---|---|
+| `av` | Audio/Visual | PA systems, speakers, microphones, projectors |
+| `tools` | Tools and Hardware | Drills, heat guns, rotary tools, soldering irons |
+| `sewing` | Sewing and Craft Tools | Sewing machines, cutting mats, rotary cutters |
+| `lighting` | Lighting and Decor | Stage lights, ring lights, spotlights, stands |
+| `furniture` | Event Furniture | Folding tables, chairs, tents, display stands |
+| `transport` | Transport and Logistics | Trolleys, hand trucks, straps, roof racks |
 
-### SDG 12 Alignment & Design Components
+## 4. Screen contract from the proposal
 
-| Assignment Requirement | How PropCycle Addresses It |
-|----------------------|------------------------|
-| **P2P Resource Optimisation** | ✅ Equipment lending — share PA systems, projectors, craft tools between campus clubs & creators |
-| **Behavioural Transformation** | ✅ AI scanner educates users on material recycling/upcycling; gamified eco-score nudges reuse habits |
-| **Closing the Loop** | ✅ Marketplace connects event waste producers with crafters/next event organizers who need those materials |
-| **Originality** | ✅ No existing app targets event + creative material waste — unique niche with 3-in-1 approach |
-| **Technological Integration** | ✅ Gemini AI (vision + text), Google Maps API, Firebase real-time |
-| **Feasibility** | ✅ Well-scoped; all APIs have free tiers; demo-able with real campus event materials |
+Each screen ID is stable for planning, testing, issue tracking, and report screenshots.
 
----
+The PDF contains twenty distinct drawn screens. The table also separates functional surfaces that the proposal promises but does not fully mock up, such as booking/return/rating and consolidated My Activity. These complete an existing module; they are not new top-level modules.
 
-## 📂 Category System
+| ID | Screen | Source | Required content and actions | Acceptance condition |
+|---|---|---|---|---|
+| AUTH-01 | Welcome | PDF mock-up | Brand artwork, short purpose statement, continue action | Continue reaches login; first launch and signed-out launch are deterministic |
+| AUTH-02 | Login | PDF mock-up + platform completion | Approved identifier/authentication method, validation, sign-in, register link, progress/error state; password-reset placement requires sign-off | Valid user reaches HOME-01; invalid or offline states are explained without losing input |
+| AUTH-03 | Register | PDF mock-up + platform completion | Full name plus fields required by the approved auth method, validation, sign-in link; confirmation/terms placement requires sign-off | Creates one Firebase user/profile and prevents duplicate submission |
+| HOME-01 | Home dashboard | PDF mock-up | Greeting, resource search, Smart Scan card, Recent Activities card, notification/profile icons, and designer radial quick menu; microphone only if voice search is approved | Every control has one destination, an accessible label, and a 48dp target; no decorative control appears tappable |
+| HOME-02 | Recent activities | PDF mock-up | Chronological scan, listed, recycled, sold/donated/exchanged, borrow/lend, and return events | Empty, loading, error, and populated states are implemented |
+| SCAN-01 | Smart scanner | PDF mock-up + permission fallback | Camera preview, permission rationale, capture, gallery picker, retry | A valid image reaches SCAN-02; denial offers the gallery fallback |
+| SCAN-02 | AI result and review | PDF mock-up | Item/material/category, uncalibrated model estimate, recycling guidance, upcycling ideas, impact estimate, edit/review, Save, Recycle, Marketplace, Lend | No AI output can be published before user review; every displayed next action works |
+| MAP-01 | Recycling centres | PDF mock-up | Map/list results, current/manual location, nearby search, name, distance, open status when available, rating/attribution, external directions | Works with precise, approximate, denied, and unavailable location states |
+| MARKET-01 | Marketplace browse | PDF mock-up | Search, material category chips, transaction/fulfilment labels, result cards, create action | Filters are deterministic and unavailable/reserved items are visibly distinct |
+| MARKET-02 | Marketplace detail | PDF mock-up | Images, title, transaction intent, price/terms, condition, material, description, seller, distance/location, status, direct chat action | Only valid actions appear for owner and non-owner contexts |
+| MARKET-03 | Create/edit listing | PDF mock-up + platform completion | Photo, title, category, material, condition, transaction intent, fulfilment method, price rules, description, location, preview, save draft, publish | AI prefill remains editable; invalid combinations cannot publish |
+| LEND-01 | Lending map search | PDF mock-up | Map, search, equipment markers/cards, distance/area, filters, route to results/detail | Map results follow the active search/filter and open the correct equipment context |
+| LEND-02 | Lending listings | PDF mock-up | Search/filter summary, equipment cards, availability summary, distance, create action | List state is deterministic; relationship to map results follows the approved navigation decision |
+| LEND-03 | Lending detail | PDF mock-up | Photos, description, impact text, owner/trust, availability, deposit/rental wording, pickup method, location, direct chat and separate borrow-request actions | Chat opens immediately; date request is blocked for unavailable or owner-owned items |
+| LEND-04 | Create/edit lending item | PDF mock-up + platform completion | Photo, title, category, description, availability, approved fee/deposit wording, pickup method, location, preview, draft/publish | Required availability and pickup data are validated |
+| LEND-05 | Borrow request, return, and rating | PDF prose-derived | Start/end dates, message, owner approve/decline, borrower cancel, active loan, returned confirmation, rating | Concurrent approvals through the app use deterministic booked-day records; adversarial owner-proof enforcement depends on OD-13 |
+| CHAT-01 | Messages | PDF mock-up | Conversation rows, related item, participant, last message/time, unread count | Opens the correct thread and handles no-conversation state |
+| CHAT-02 | Conversation | PDF mock-up | Header/context, chronological text messages, composer, send/retry state, duplicate-send protection | Real-time updates are participant-only and preserve unsent text on rotation |
+| USER-01 | Notifications | PDF mock-up | Activity/update cards, unread/read state, contextual deep link | Selecting a notification opens its valid destination and marks it read |
+| USER-02 | Profile | PDF mock-up + platform completion | Avatar, name, eco/badge evidence, rating/trust evidence, published listings summary, owner-only edit action | Shows only permitted public/private fields and opens owned content/profile editing |
+| USER-03 | Settings | PDF mock-up + platform completion | Theme, notifications, location preference, account details management, logout | Preferences persist and system permissions are never represented inaccurately |
+| USER-04 | My activity | Existing-function consolidation | My listings, my lent items, requests, scan history, achievements/badges | Each subsection shows current data and supports its owner actions without becoming a new top-level module |
 
-### Material Categories (for AI Scanner & Marketplace)
+### Navigation model
 
-These are the categories the AI will classify scanned items into, and that users will select when posting to the marketplace:
+- `LauncherActivity` is not required; `MainActivity` hosts one `NavHostFragment`.
+- An authentication graph contains AUTH-01 through AUTH-03.
+- An authenticated graph contains HOME-01 and every feature graph.
+- HOME-01 preserves the designer's radial quick menu. The PDF currently indicates Market, Share/Lend, and Map; final labelled destinations require designer sign-off. Smart Scan and Profile already have direct home controls and must not be duplicated without a reason.
+- The PDF draws a hamburger control but does not define its contents. A candidate accessible menu may duplicate Home, Messages, Notifications, Profile, Settings, and Logout; its inclusion, order, labels, and destinations require designer/team sign-off under OD-05.
+- Notifications and profile remain available from the home toolbar as drawn.
+- Back always returns to the previous context; top-level destinations do not create duplicate back stacks.
+- A deep link or notification validates authentication and object existence before opening a detail screen.
 
-| Category ID | Icon | Label | Example Items |
-|-------------|------|-------|---------------|
-| `banner` | 🏳️ | Banners & Signage | PVC banners, vinyl backdrops, foam boards, coroplast signs, roll-up standees |
-| `decoration` | 🎨 | Decorations & Props | Paper flowers, balloon arches, stage props, photo booth frames, fairy lights |
-| `fabric` | 🧵 | Fabric & Textile | Tablecloths, skirting, curtains, cosplay fabric offcuts, satin, tulle |
-| `stationery` | 📦 | Stationery & Print | Lanyards, name tags, pamphlets, leftover printed flyers, certificates |
-| `craft` | ✂️ | Craft Supplies | EVA foam, spray paint, hot glue sticks, acrylic paint, wire, clay |
-| `cosplay` | 🎭 | Cosplay & Costumes | Wigs, armor pieces, prop weapons, specialized fabrics, foam cutouts |
-| `toys` | 🧸 | Toys & Miniatures | Doll parts, miniature dioramas, action figures, gachapon items |
-| `wood` | 🪵 | Wood & Structural | Plywood offcuts, wooden frames, booth structures, pallets |
-| `electronic` | ⚡ | Event Electronics | LED strips, extension cables, used batteries, broken speakers |
-| `packaging` | 📦 | Packaging & Containers | Bubble wrap, styrofoam boxes, plastic containers, cardboard boxes |
-| `other` | 🔄 | Other | Anything that doesn't fit the above |
+```text
+Launch
+  -> signed out -> Welcome -> Login <-> Register -> Home
+  -> signed in -------------------------------> Home
 
-### Equipment Categories (for P2P Lending)
-
-| Category ID | Icon | Label | Example Items |
-|-------------|------|-------|---------------|
-| `av` | 🎤 | Audio / Visual | PA systems, speakers, microphones, projectors, screens |
-| `tools` | 🔧 | Tools & Hardware | Drill, heat gun, Dremel, jigsaw, soldering iron, staple gun |
-| `sewing` | 🪡 | Sewing & Craft Tools | Sewing machines, overlock machines, cutting mats, rotary cutters |
-| `lighting` | 💡 | Lighting & Decor | Stage lights, ring lights, fairy light sets, spotlight stands |
-| `furniture` | 🪑 | Event Furniture | Folding tables, chairs, canopy tents, exhibition stands |
-| `transport` | 🚐 | Transport & Logistics | Trolleys, hand trucks, cargo straps, roof racks |
-
----
-
-## 🧠 AI System Architecture & Flow
-
-### Complete AI Pipeline
-
-```
-┌──────────────────────────────────────────────────────────────────┐
-│                    AI PROCESSING PIPELINE                         │
-│                                                                   │
-│  ┌──────────────┐   ┌──────────────┐   ┌─────────────────────┐  │
-│  │   INPUT       │──▶│  PROCESSING  │──▶│   OUTPUT             │  │
-│  │              │   │              │   │                     │  │
-│  │ 📷 Camera    │   │ Gemini 2.5   │   │ • item_name         │  │
-│  │ 🖼 Gallery   │   │ Flash Vision │   │ • category (enum)   │  │
-│  │ 📝 Text     │   │ API          │   │ • material_type     │  │
-│  │              │   │              │   │ • recyclable (bool) │  │
-│  └──────────────┘   └──────────────┘   │ • recycle_steps[]   │  │
-│                                         │ • upcycle_ideas[]   │  │
-│                                         │ • eco_impact {}     │  │
-│                                         │ • confidence (0-1)  │  │
-│                                         └─────────────────────┘  │
-└──────────────────────────────────────────────────────────────────┘
-```
-
-### Scan Mode 1: Image Scan (Primary)
-
-```
-User opens camera / selects from gallery
-       │
-       ▼
-Image preprocessed (compress to 1024px, convert to base64)
-       │
-       ▼
-Send to Gemini 2.5 Flash Vision API
-┌──────────────────────────────────────────────────────────────┐
-│  System Prompt:                                               │
-│  "You are PropCycle AI, an expert in event materials, creative   │
-│   supplies, and circular economy. You specialise in           │
-│   identifying materials commonly used in events, exhibitions, │
-│   cosplay, and DIY projects. Provide practical recycling and  │
-│   upcycling advice specific to Malaysia. Always return valid  │
-│   JSON."                                                      │
-│                                                               │
-│  User Prompt:                                                 │
-│  "Identify this item. Return JSON:                            │
-│   {                                                           │
-│     item_name: string,                                        │
-│     category: enum(banner|decoration|fabric|stationery|       │
-│               craft|wood|electronic|packaging|other),          │
-│     material_type: string (e.g. 'PVC', 'EVA foam', 'Plywood')│
-│     recyclable: boolean,                                      │
-│     recycle_steps: string[] (step-by-step instructions),      │
-│     upcycle_ideas: string[] (3 creative reuse ideas for       │
-│                     events or crafts),                         │
-│     eco_impact: {                                             │
-│       co2_saved_kg: number,                                   │
-│       decomposition_time: string,                             │
-│       landfill_diversion: string                              │
-│     },                                                        │
-│     confidence: number (0.0 to 1.0)                           │
-│   }"                                                          │
-└──────────────────────────────────────────────────────────────┘
-       │
-       ▼
-Parse JSON response
-       │
-       ▼
-Display result card (glassmorphism UI)
-       │
-       ├──▶ [🗺 Drop-off]  → Google Maps: nearby recycling centres
-       ├──▶ [♻️ Sell]       → Pre-fill marketplace post with AI data
-       ├──▶ [🎁 Donate]    → Pre-fill marketplace post (price = 0)
-       ├──▶ [🤝 Lend]      → Pre-fill lending post with AI data
-       └──▶ [📋 Save]      → Save to local scan history (SQLite)
+Home
+  -> Smart Scan -> AI Result -> Save | Recycle Centres | Market Post | Lending Post
+  -> Search -> Market/Lending filtered results
+  -> Recent Activities -> related detail
+  -> Market -> Listing Detail -> Conversation
+  -> Lend -> Map Search | Listings -> Lending Detail -> Conversation
+                                                \-> Borrow Request -> Return/Rating
+  -> Notifications -> contextual detail
+  -> Profile -> My Activity | Settings
+  -> Messages -> Conversation
 ```
 
-### Scan Mode 2: Text/Keyword Search
+## 5. Native Android architecture
 
-```
-User types item name (e.g., "PVC banner" or "EVA foam sheet")
-       │
-       ▼
-Send to Gemini 2.5 Flash Text API (same system prompt + schema)
-       │
-       ▼
-Same result card UI as image scan
-```
+### Layer responsibilities
 
-### AI Response Caching (SQLite)
+| Layer | Java components | Rules |
+|---|---|---|
+| UI | `MainActivity`, Fragments, RecyclerView adapters, custom Views, XML, View Binding | Renders immutable UI state and forwards user events; no direct Firebase/Room calls |
+| Presentation | Screen ViewModels, `LiveData`, `SavedStateHandle`, UI-state and one-time-event wrappers | Owns screen state, invokes use cases/repositories, survives configuration changes |
+| Domain | Validators, state transition policies, score calculations, date conflict checks, selected use cases | Plain Java; added only for logic reused across screens or requiring isolated tests |
+| Data | Repositories and local/remote data sources | Each data type has one source-of-truth policy and one public repository boundary |
+| Platform/integration | Firebase, Room, CameraX, Maps/Places, Fused Location, WorkManager, Remote Config | Wrapped so screens do not depend on vendor APIs |
 
-```
-Scan result received from Gemini API
-       │
-       ▼
-Hash (item_name + category) → cache_key
-       │
-       ▼
-Store in local SQLite: scan_cache table
-       │
-       ▼
-On next scan of same/similar item:
-  → Check cache first (if < 7 days old) → skip API call
-  → Saves API quota (free tier: 15 RPM)
-```
+### State and concurrency policy
 
-### AI → Marketplace/Lending Flow (Auto-Fill)
+- UI state flows from repository/use case to ViewModel to Fragment.
+- User events flow from Fragment to ViewModel and then to the data/domain layer.
+- Firebase callbacks, Guava `ListenableFuture`, Room background executors, and WorkManager are adapted behind repositories.
+- No database, image processing, JSON parsing, or network work runs on the main thread.
+- Each asynchronous screen exposes loading, content, empty, permission-required, recoverable-error, and terminal-error states where applicable.
+- View Binding references are cleared in every Fragment's `onDestroyView()`.
+- `SavedStateHandle` preserves IDs, filters, form drafts, and unsent text needed after process or configuration recreation.
 
-```
-User scans an item (e.g., "Used PVC Banner")
-       │
-       ▼
-AI returns: { item_name, category: "banner", material_type: "PVC", ... }
-       │
-       ├── User taps [♻️ Sell] or [🎁 Donate]
-       │       │
-       │       ▼
-       │   Pre-fill marketplace post form:
-       │     title      = AI item_name ("PVC Banner 3x5ft")
-       │     category   = AI category ("banner")
-       │     condition   = user selects
-       │     image       = scanned photo auto-attached
-       │     description = AI upcycle_ideas as suggestion
-       │     → User adds price, location → Submit
-       │
-       └── User taps [🤝 Lend]
-               │
-               ▼
-           Pre-fill lending post form:
-             title    = AI item_name
-             category = mapped to equipment category if applicable
-             image    = scanned photo auto-attached
-             → User adds availability dates → Submit
-```
+### Planned project structure
 
----
+The native project is created only after approval. It starts as one Gradle `:app` module for delivery speed, with package-by-feature boundaries.
 
-## 🗺 Google Maps Integration
-
-### Map Usage Across the App
-
-| Screen | Map Feature | Data Source | API Used |
-|--------|------------|-------------|----------|
-| **Scan Result → Drop-off** | Show nearby recycling centres/kitar semula on map | Google Places (type: recycling) | Places API + Maps SDK |
-| **Marketplace → Map View** | Pins showing all marketplace listings near user | Firestore GeoPoint data | Maps SDK |
-| **Marketplace → Listing Detail** | Single pin for the listing; show distance from user | Firestore GeoPoint | Maps SDK + Geocoding |
-| **Lending → Map View** | Pins showing all lendable items near user | Firestore GeoPoint data | Maps SDK |
-| **Post Listing / Post Item** | User picks location on map or auto-detects GPS | expo-location | Maps SDK + Geocoding |
-| **Chat → Share Location** | Share meeting point for pickup/return | Manual pin drop | Maps SDK |
-
-### Map Data Flow
-
-```
-User opens Map View (Marketplace or Lending)
-       │
-       ▼
-expo-location: get user's current GPS coordinates
-       │
-       ▼
-Firestore query: get all listings/items within X km radius
-  (using GeoPoint field + Geohash for efficient geo-queries)
-       │
-       ▼
-Render markers on react-native-maps MapView
-  → Each marker = one listing/item
-  → Tap marker → show preview card (glass card overlay)
-  → Tap card → navigate to detail screen
+```text
+repository root/
+  settings.gradle
+  build.gradle
+  gradle.properties
+  app/
+    build.gradle
+    src/main/
+      AndroidManifest.xml
+      java/com/<approved-namespace>/propcycle/
+        PropCycleApplication.java
+        MainActivity.java
+        core/
+          common/          result, error, executor, constants
+          navigation/      destination and deep-link helpers
+          ui/              reusable Views, adapters, theme helpers
+          validation/      shared input validation
+        data/
+          local/           Room database, entities, DAOs, migrations
+          remote/          Firebase, AI, maps, storage data sources
+          repository/      repository implementations
+        domain/
+          model/           Java domain models and enums
+          usecase/         only shared or complex business operations
+        feature/
+          auth/
+          home/
+          scanner/
+          recycling/
+          marketplace/
+          lending/
+          chat/
+          notifications/
+          profile/
+          settings/
+        worker/            upload and sync workers
+        di/                Hilt modules
+      res/
+        layout/            screen, row, dialog, and reusable layouts
+        navigation/        auth and authenticated graphs
+        drawable/          shapes, gradients, selectors, vectors
+        mipmap-*/          adaptive launcher icon
+        values/            strings, colours, dimensions, styles, themes
+        values-night/      dark-theme overrides
+    src/test/              JVM tests
+    src/androidTest/       Room, navigation, Firebase-emulator, and Espresso tests
 ```
 
-### Drop-off Point Flow (from Scan Result)
+Package names are finalised before project generation. Do not create empty placeholder packages or one class per unnecessary abstraction.
 
-```
-User taps [🗺 Drop-off] on scan result
-       │
-       ▼
-Get user's current location (expo-location)
-       │
-       ▼
-Google Places API: nearbySearch
-  → type: "recycling_center" OR keyword: "kitar semula"
-  → radius: 10km from user
-       │
-       ▼
-Display results on map + as list below
-  → Each result shows: name, distance, open/closed, rating
-  → Tap → open Google Maps for navigation
-```
+## 6. Native technology mapping
 
----
+| Removed Expo/React Native concept | Native Android replacement |
+|---|---|
+| React Native / Expo SDK 57 | Android SDK, AndroidX, Material Components |
+| TypeScript / TSX | Java 17 and XML resources |
+| Expo Router | Navigation Component with `NavHostFragment`, feature graphs, and Java-generated Safe Args |
+| Zustand | ViewModel, LiveData, SavedStateHandle, repositories |
+| `expo-sqlite` | Room 2.8.x over SQLite |
+| `expo-camera` | CameraX Preview and ImageCapture |
+| `expo-image-picker` | Android Photo Picker with a compatible fallback |
+| `react-native-maps` | Maps SDK for Android |
+| `expo-location` | Fused Location Provider and runtime permission APIs |
+| Expo blur/gradient components | Material cards, XML drawables, elevation, and an API-aware blur/fallback policy |
+| Ionicons | Material Symbols or approved vector drawables |
+| Firebase JavaScript SDK | Firebase Android SDK managed through the Firebase BoM |
+| Direct Gemini REST key | Firebase AI Logic Java SDK, App Check, and Remote Config |
+| EAS Build | Gradle `assemble`/`bundle`, Android signing, and release variants |
+| Removed Expo `.env` configuration | Gradle/local properties and restricted console configuration recreated from the service consoles; no committed secrets |
 
-## 📱 App Feature Breakdown
+### Dependency rules
 
-### Module 1: 🔍 AI Smart Scanner
+- Use the Firebase Android BoM so Firebase libraries remain mutually compatible.
+- Use Room 2.8.x with Java annotation processing; do not upgrade to Room 3 in this Java-only plan.
+- Use Java variants of WorkManager and lifecycle libraries rather than `-ktx` artifacts unless a vendor requires a transitive Kotlin runtime.
+- Kotlin runtime dependencies pulled transitively by AndroidX/Firebase do not authorise Kotlin source files.
+- Add a third-party library only when the Android platform/Jetpack/Firebase SDK does not reasonably cover the need, and record its licence and maintenance status.
+- Do not add a chart library for simple impact numbers; use native Views unless a real chart is approved.
 
-| Feature | Description | API / Tech |
-|---------|-------------|------------|
-| **Camera Scan** | Capture photo of event material → AI identification | expo-camera → Gemini Vision |
-| **Gallery Upload** | Pick existing photo for scanning | expo-image-picker → Gemini Vision |
-| **Text Search** | Type material name for recycling/upcycle info | Gemini Text |
-| **Result Card** | Glassmorphism card: item name, category, material, recycle steps, upcycle ideas, eco impact | Custom UI |
-| **Action Buttons** | Drop-off / Sell / Donate / Lend / Save | Navigation actions |
-| **Auto-Fill Post** | AI data pre-fills marketplace or lending post form | Zustand state transfer |
-| **Scan History** | Past scans saved locally with timestamps | expo-sqlite |
+## 7. Data design and ownership
 
-### Module 2: ♻️ Material Marketplace
+### Source-of-truth matrix
 
-| Feature | Description | Tech |
-|---------|-------------|------|
-| **Post Listing** | Upload leftover event material with photo, description, category, condition, price | Firestore + Firebase Storage |
-| **Listing Types** | Sell (set price in RM) / Donate (free) / Request Pickup | Firestore field: `listingType` |
-| **Browse** | Scrollable list of cards with photo, title, price, distance | FlatList + Firestore |
-| **Search** | Keyword search across title and description | Firestore query |
-| **Category Filter** | Filter by material category (Banner, Decoration, Fabric, etc.) | Firestore `where` clause |
-| **Map View** | Toggle between list view and map view | react-native-maps |
-| **Listing Detail** | Full details, seller info, location on map | Detail screen |
-| **In-App Chat** | Real-time messaging between poster & buyer | Firebase Realtime DB |
-| **Request Pickup** | Buyer/recycler requests to pick up the material | Firestore status update |
-| **Listing Status** | Available → Reserved → Collected/Sold | Firestore update |
+| Data | Source of truth | Offline behaviour |
+|---|---|---|
+| Authentication session | Firebase Authentication | Firebase restores a valid cached session; protected writes require connectivity |
+| User/listing/lending/request metadata | Cloud Firestore with persistent disk cache disabled | Public data can use in-memory cache; account-private offline data is stored explicitly in UID-scoped Room tables |
+| Real-time messages | Cloud Firestore thread/message documents with snapshot listeners | Sending requires connectivity; unsent composer text stays in saved state and no cross-account SDK disk queue is used |
+| Images | Cloud Storage after publish intent; UID-scoped app-private draft copy or durable picker grant before upload | WorkManager retries only for the same authenticated UID; final metadata refers to storage paths |
+| Scan cache/history/drafts/outbox | Room, scoped by initiating account UID | Fully readable for that account; outbox retries only idempotent operations and never crosses accounts |
+| Theme and non-sensitive settings | Preferences DataStore through its RxJava Java API | Immediate local persistence behind a `SettingsDataSource` |
+| AI model/prompt/cache policy | Firebase Remote Config with a safe, exact stable model version and prompt version | Last activated configuration remains available; preview/moving model aliases are not release defaults |
+| Optional home enhancements | No source until OD-10 is approved | Daily tip/statistics/impact panels remain absent rather than displaying invented data |
+| Map/Places results | Google SDK responses plus short-lived memory cache | Saved item coordinates still render; live nearby search requires a connection |
 
-### Module 3: 🤝 Equipment Lending
+### Cloud Firestore collections
 
-| Feature | Description | Tech |
-|---------|-------------|------|
-| **Post Item to Lend** | List equipment (PA system, heat gun, sewing machine, etc.) | Firestore + Firebase Storage |
-| **Browse** | Scrollable list with category chips (AV, Tools, Sewing, etc.) | FlatList + Firestore |
-| **Search** | Keyword search across title and description | Firestore query |
-| **Category Filter** | Filter by equipment category (AV, Tools, Sewing, Lighting, etc.) | Firestore `where` clause |
-| **Map View** | See lendable items on map near you | react-native-maps |
-| **Borrow Request** | Send request to owner with needed dates + message | Firestore sub-document |
-| **Availability Calendar** | Visual date picker showing when item is free / booked | Date picker component |
-| **In-App Chat** | Coordinate pickup & return between lender & borrower | Firebase Realtime DB |
-| **Return Tracking** | Mark item as returned; rate the experience | Firestore update |
-| **Trust Score** | Reputation built from completed shares + ratings | Calculated field |
+| Path | Required fields and ownership |
+|---|---|
+| `users/{uid}` | `displayName`, `username` only if approved, avatar storage path, coarse public location label, badge evidence, timestamps; one general account acts contextually and the owner writes only profile-safe fields |
+| `marketplaceListings/{listingId}` | owner ID, title, description, image storage paths, category, material, transaction intent (`sale`, `donation`, `exchange`), fulfilment method (`pickup`, `meetup`, or approved equivalent), price/exchange terms when applicable, condition, coordinates/geohash, location label, status, AI-origin flag, timestamps |
+| `lendingItems/{itemId}` | owner ID, title, description, image storage paths, category, availability rules, approved fee/deposit wording, pickup method, coordinates/geohash, status, timestamps |
+| `borrowRequests/{requestId}` | Participant-only item, borrower, owner, Malaysia calendar start/end dates, opaque lock token after approval, message, status, decision/activation/return timestamps |
+| `ratings/{requestId}_{raterUid}` | completed request, rater, recipient, score, optional short review, timestamp; deterministic ID enforces one immutable rating per eligible participant/request |
+| `activities/{activityId}` | actor, type, related object, user-safe summary, timestamp; used by recent activity and eco evidence |
+| `notifications/{uid}/items/{notificationId}` | Non-chat domain event type, title/body, related object/destination, read flag, timestamp; written in the same Firestore batch/transaction as a rule-valid transition where feasible |
+| `scanHistory/{uid}/items/{scanId}` | Optional signed-in backup of reviewed scan summary/action; raw scan images may be transmitted for AI analysis but are not persisted here |
+| `lendingItems/{itemId}/bookedDays/{yyyy-MM-dd}` | Public privacy-minimal availability lock containing only `booked`, opaque random lock token, and update timestamp; borrower/request identity stays in participant-only request data |
 
-### Module 4: 🏠 Home Dashboard
+Firestore is not treated as a full-text search engine. The release search plan is normalised title-prefix search plus server-side category/status/geohash filters and local filtering of the loaded result window. A hosted search service is future scope only if the dataset outgrows this approach.
 
-| Feature | Description |
-|---------|-------------|
-| **Eco Score** | Personal sustainability score — +10 per item recycled/shared |
-| **Quick Scan Button** | Large CTA to open scanner instantly |
-| **Recent Activity** | Latest scans, marketplace posts, lending activity |
-| **Community Stats** | Total materials diverted, items shared, CO₂ saved |
-| **Daily Tip** | AI-generated sustainability tip for event organizers (Gemini) |
+### Cloud Firestore chat shape
 
-### Module 5: 👤 Profile & Settings
+| Path | Content |
+|---|---|
+| `chatThreads/{contextType}_{contextId}_{ownerUid}_{contactUid}` | Deterministic context-bound ID; immutable owner/contact participant UIDs, related listing/item ID/type, last-message preview/time, per-user unread/last-read metadata |
+| `chatThreads/{chatId}/messages/{messageId}` | Sender UID, text, client operation ID, server timestamp, delivery state; immutable after acknowledged send |
 
-| Feature | Description |
-|---------|-------------|
-| **User Profile** | Name, photo, location, eco-score badge, user type (organizer/crafter/both) |
-| **My Listings** | All my marketplace posts |
-| **My Lent Items** | All my equipment lending posts |
-| **My Scan History** | All past AI scans |
-| **Achievements** | Badges: First Scan, 10 Items Listed, 5 Items Shared, etc. |
-| **Settings** | Dark/light mode toggle, notification preferences, location |
+Firestore Rules allow access only when `auth.uid` is an immutable thread participant. On creation, rules validate the deterministic ID/fields against the related Firestore listing or lending item, require its real owner as `ownerUid`, require the authenticated user to be the owner or contact, and prevent participant/context changes. A user cannot forge another sender UID, mutate an acknowledged message, or join a thread by guessing an ID. Message unread state remains on the thread and is merged with non-chat domain notifications in USER-01, avoiding an unverifiable cross-database notification write. Online presence is excluded because it is not required by the proposal.
 
----
+### Cloud Storage paths
 
-## 🗂 Firebase Data Schema
+- `users/{uid}/avatar/...`
+- `marketplace/{uid}/{listingId}/{imageId}.jpg`
+- `lending/{uid}/{itemId}/{imageId}.jpg`
 
-```
-Firestore Collections:
-│
-├── users/
-│   └── {userId}
-│       ├── displayName: string
-│       ├── email: string
-│       ├── photoURL: string
-│       ├── userType: string (organizer|crafter|both)
-│       ├── location: GeoPoint
-│       ├── locationName: string
-│       ├── ecoScore: number
-│       ├── totalRecycled: number
-│       ├── totalShared: number
-│       ├── trustScore: number
-│       ├── totalRatings: number
-│       ├── achievements: string[]
-│       └── createdAt: Timestamp
-│
-├── marketplace_listings/
-│   └── {listingId}
-│       ├── userId: string (ref → users)
-│       ├── title: string
-│       ├── description: string
-│       ├── imageURLs: string[]
-│       ├── category: string (banner|decoration|fabric|stationery|craft|wood|electronic|packaging|other)
-│       ├── materialType: string (e.g. "PVC", "EVA foam")
-│       ├── listingType: string (sell|donate|pickup)
-│       ├── price: number (0 for donate)
-│       ├── condition: string (new|good|fair|poor)
-│       ├── location: GeoPoint
-│       ├── locationName: string
-│       ├── status: string (available|reserved|collected)
-│       ├── interestedUsers: string[]
-│       ├── aiGenerated: boolean (true if auto-filled from scan)
-│       └── createdAt: Timestamp
-│
-├── lending_items/
-│   └── {itemId}
-│       ├── ownerId: string (ref → users)
-│       ├── title: string
-│       ├── description: string
-│       ├── imageURLs: string[]
-│       ├── category: string (av|tools|sewing|lighting|furniture|transport)
-│       ├── available: boolean
-│       ├── borrowedBy: string | null
-│       ├── borrowedUntil: Timestamp | null
-│       ├── location: GeoPoint
-│       ├── locationName: string
-│       ├── totalShares: number
-│       ├── rating: number
-│       ├── totalRatings: number
-│       └── createdAt: Timestamp
-│
-├── borrow_requests/
-│   └── {requestId}
-│       ├── itemId: string (ref → lending_items)
-│       ├── borrowerId: string (ref → users)
-│       ├── ownerId: string (ref → users)
-│       ├── startDate: Timestamp
-│       ├── endDate: Timestamp
-│       ├── status: string (pending|approved|rejected|active|returned)
-│       ├── message: string
-│       └── createdAt: Timestamp
-│
-├── chats/
-│   └── {chatId}
-│       ├── participants: string[] (2 userIds)
-│       ├── relatedListingId: string | null
-│       ├── relatedItemId: string | null
-│       ├── lastMessage: string
-│       ├── lastMessageAt: Timestamp
-│       └── messages/ (sub-collection)
-│           └── {messageId}
-│               ├── senderId: string
-│               ├── text: string
-│               └── sentAt: Timestamp
-│
-└── scan_history/ (also stored in local SQLite for offline)
-    └── {scanId}
-        ├── userId: string
-        ├── imageURL: string
-        ├── itemName: string
-        ├── category: string
-        ├── materialType: string
-        ├── recyclable: boolean
-        ├── aiResponse: map (full parsed JSON)
-        ├── actionTaken: string (recycled|sold|donated|lent|saved|none)
-        └── scannedAt: Timestamp
+Local drafts keep images app-private; cloud image upload starts only after an explicit publish action. An owner-only Firestore `DRAFT` metadata document supports lifecycle/recovery, but does not authorise Cloud Storage because Storage Rules cannot read Firestore. Storage writes/deletes require `request.auth.uid` to match the `{uid}` path segment, valid MIME type/size, and agreeing owner metadata. List access is denied. Authenticated reads are allowed for marketplace/lending image paths because other users must view published content; authenticated avatar reads are allowed only for non-sensitive profile avatars, while avatar writes/deletes remain owner-only. The app reveals unguessable content-image paths only from a published Firestore document. This creates a short staging interval that is not strict atomic visibility—if strict owner-only staging followed by rule-verified publication is required, OD-13 must provide a trusted promotion/signed-access design. Firestore Rules separately validate document ownership and image-manifest length. Neither rule system is claimed to count sibling files. Automatic orphan cleanup is also not promised unless OD-13 selects a trusted backend.
+
+### Room 2.8.x tables
+
+| Table | Purpose and key fields |
+|---|---|
+| `scan_cache` | Owner UID/account scope, cache key, input type/hash, prompt version, model configuration, structured JSON, created/expiry timestamps |
+| `scan_history` | Owner UID, local ID/cloud ID, reviewed item/material/category, app-private image reference when retained, structured result, action, sync state, scan timestamp |
+| `draft_posts` | Owner UID, draft type, editable fields, app-private image references/durable grants, location, updated timestamp, publish state |
+| `sync_outbox` | Owner UID, unique operation ID, entity type/ID, operation, payload reference, attempt count, next retry, last error |
+
+Room migrations are mandatory from the first released schema. Configure `room.schemaLocation`, commit exported schema JSON, and test every migration path. Destructive fallback is prohibited for user-created history and drafts. On logout, cancel that UID's scheduled Workers and prevent its rows from rendering; every Worker verifies that its recorded owner UID matches the current Firebase user before reading files or performing a remote write.
+
+Firestore persistent disk caching is disabled to avoid account A data remaining available to account B. Repositories use in-memory snapshots for public lists and UID-scoped Room for intentional private offline data. Remote writes require connectivity and explicit completion; the app does not present an unacknowledged Firestore SDK write as saved. Logout blocks new actions, detaches all listeners, invalidates callbacks/session generation, cancels UID Workers, and waits for tracked writes to finish or fail before changing account. Immutable owner/sender fields plus Security Rules reject any late operation under a different UID. The account-switch test is: sign in as A, read/write private data, go offline, log out, sign in as B, and verify that A's profile, drafts, messages, notifications, files, and pending actions cannot render or sync.
+
+## 8. Core business flows and state machines
+
+### AI scan and handoff
+
+1. User captures an image or picks a photo. Text-only lookup is added only if OD-10 is approved.
+2. App normalises the input, rotates correctly, removes unnecessary EXIF location metadata, and compresses a working copy.
+3. Repository checks `scan_cache` using input hash plus prompt/model version.
+4. On a miss, the app discloses that the working image will be transmitted to Firebase AI Logic/Gemini for analysis, then requests a structured response after the user proceeds.
+5. The response is schema-validated. Unknown categories, missing fields, invalid numbers, or unsafe content produce a review/error state rather than a crash.
+6. SCAN-02 displays item name, category, material, recyclable status, local-context guidance, upcycling ideas, impact estimate, and an explicitly labelled uncalibrated model estimate rather than a guaranteed confidence score.
+7. User reviews and can edit publishable fields.
+8. Save writes local history. Recycle opens MAP-01. Marketplace opens MARKET-03. Lend opens LEND-04.
+9. Source image and AI fields transfer through a graph-scoped ViewModel or saved draft ID, not a global mutable singleton.
+
+Gallery/camera media that must survive beyond the current screen is copied into UID-scoped app-private draft storage before Room or WorkManager references it. A durable picker permission may be retained where the returned URI/provider supports it, but a short-lived Photo Picker URI is never assumed to survive process death or deferred work.
+
+The category enum includes every retained material category: banner, decoration, fabric, stationery, craft, cosplay, toys/miniatures, wood, electronics, packaging, and other.
+
+Default cache expiry is seven days, but Remote Config can change it. Prompt/model changes invalidate old cache entries. Release configuration uses an exact stable model version, not a preview or moving alias. AI access requires an authenticated user, project quotas, and budget alerts; App Check is enforced only when OD-14 prerequisites pass, and abuse-resistant per-user limits require OD-13 trusted logic. AI impact values are estimates and are labelled accordingly.
+
+### Marketplace listing lifecycle
+
+```text
+local draft -> available -> reserved -> completed
+                    |            |
+                    +-> withdrawn+-> available (reservation cancelled)
 ```
 
-### Local SQLite Schema (Offline-First)
+- Transaction intent is `sale`, `donation`, or `exchange`; fulfilment is a separate `pickup`, `meetup`, or other approved handover value. The designer must confirm how the mock-up's "pickup" label maps to these fields.
+- Donation requires price `0`; sale requires a non-negative RM price; exchange requires a short description of what the owner will consider. Fulfilment states who arranges collection and never implies in-app delivery or payment.
+- Only the owner can edit, withdraw, reserve, or complete a listing.
+- Non-owners can view and open a related chat/request action.
+- Completion records recent activity. Eco/impact credit from an owner-only completion is labelled self-reported; stronger badge/impact evidence requires counterparty confirmation or OD-13 trusted computation, so the baseline does not claim a tamper-proof eco score.
 
-```sql
--- Cached AI scan results (avoid repeat API calls)
-CREATE TABLE scan_cache (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    cache_key TEXT UNIQUE,
-    response_json TEXT,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    expires_at DATETIME
-);
+### Lending lifecycle
 
--- User's scan history (available offline)
-CREATE TABLE scan_history (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    image_uri TEXT,
-    item_name TEXT,
-    category TEXT,
-    material_type TEXT,
-    recyclable INTEGER,
-    ai_response TEXT,
-    action_taken TEXT,
-    synced INTEGER DEFAULT 0,
-    scanned_at DATETIME DEFAULT CURRENT_TIMESTAMP
-);
-
--- Offline drafts for marketplace/lending posts
-CREATE TABLE draft_posts (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    post_type TEXT,
-    title TEXT,
-    description TEXT,
-    image_uris TEXT,
-    category TEXT,
-    listing_type TEXT,
-    price REAL,
-    synced INTEGER DEFAULT 0,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-);
+```text
+pending -> approved -> active -> returned -> rated
+   |          |          |
+   +-> rejected          +-> return confirmation required
+   +-> cancelled
 ```
 
----
-
-## 🛠 Tech Stack
-
-| Layer | Technology | Reason |
-|-------|-----------|--------|
-| **Framework** | **React Native + Expo (SDK 53)** | Cross-platform, fast dev, Expo Go for instant preview |
-| **Language** | **TypeScript** | Type safety, cleaner code, marks for tidiness |
-| **Navigation** | **Expo Router (file-based)** | Modern routing, similar to Next.js |
-| **State Management** | **Zustand** | Lightweight, simple, no boilerplate |
-| **Local Storage** | **expo-sqlite** | Meets requirement: store/update/retrieve data locally |
-| **Backend** | **Firebase** | Firestore (database), Auth (login), Storage (images), Realtime DB (chat) |
-| **AI API** | **Google Gemini 2.5 Flash** | Free tier, vision + text, fast inference |
-| **Maps** | **Google Maps API** (`react-native-maps`) | Drop-off locations, marketplace/lending map views |
-| **Camera** | **expo-camera** + **expo-image-picker** | Photo capture + gallery selection |
-| **Location** | **expo-location** | GPS for user position, distance calculation |
-| **Blur/Glass** | **expo-blur** + **expo-linear-gradient** | Glassmorphism UI effects |
-| **Charts** | **react-native-chart-kit** | Eco-score dashboard, impact stats |
-| **Icons** | **@expo/vector-icons** (Ionicons) | iOS-like icon set |
-| **Fonts** | **Inter** (Google Fonts) | Clean, modern, readable |
-| **Version Control** | **GitHub** | Required for contribution tracking |
-| **Publishing** | **Huawei AppGallery** (free) | Register ASAP — approval takes days |
-
-### External APIs Summary
-
-| API | Purpose | Free Tier | Usage in App |
-|-----|---------|-----------|-------------|
-| **Gemini 2.5 Flash** | Image recognition, text generation, recycling/upcycling info | 15 RPM free | AI Scanner (image + text modes) |
-| **Google Maps Platform** | Map display, geocoding, places search, directions | $200/month credit | Drop-off locator, marketplace map, lending map |
-| **Firebase** | Auth, Firestore, Storage, Realtime DB | Spark plan (free) | All backend services |
-
----
-
-## 📁 File Structure & Routing
-
-```
-mobileapp/
-├── app/                              # Expo Router (file-based navigation)
-│   ├── _layout.tsx                   # Root layout: providers (Auth, Zustand, Theme)
-│   ├── index.tsx                     # Entry redirect: → auth or (tabs)
-│   │
-│   ├── auth/                         # Auth Stack
-│   │   ├── _layout.tsx               # Auth stack layout
-│   │   ├── login.tsx                 # Login screen
-│   │   └── register.tsx              # Register screen
-│   │
-│   ├── (tabs)/                       # Main Tab Navigator
-│   │   ├── _layout.tsx               # Tab bar config (5 tabs)
-│   │   ├── index.tsx                 # 🏠 Home Dashboard
-│   │   ├── market.tsx                # ♻️ Material Marketplace (list view)
-│   │   ├── scan.tsx                  # 📷 AI Scanner (camera + text input)
-│   │   ├── share.tsx                 # 🤝 Equipment Lending (list view)
-│   │   └── profile.tsx              # 👤 Profile & Settings
-│   │
-│   ├── scan-result.tsx              # AI scan result detail (push from scan)
-│   ├── market/
-│   │   ├── [id].tsx                  # Marketplace listing detail
-│   │   ├── post.tsx                  # Post new marketplace listing
-│   │   └── map.tsx                   # Marketplace map view
-│   ├── share/
-│   │   ├── [id].tsx                  # Lending item detail
-│   │   ├── post.tsx                  # Post new lending item
-│   │   └── map.tsx                   # Lending map view
-│   ├── chat/
-│   │   ├── index.tsx                 # Chat list (all conversations)
-│   │   └── [chatId].tsx             # Individual chat thread
-│   └── dropoff.tsx                  # Drop-off points map (from scan result)
-│
-├── components/
-│   ├── ui/                           # Glassmorphism design system
-│   │   ├── GlassCard.tsx             # Frosted glass card container
-│   │   ├── GlassButton.tsx           # Frosted glass button
-│   │   └── GlassInput.tsx            # Frosted glass text input
-│   ├── ScanResultCard.tsx            # AI result display card
-│   ├── ListingCard.tsx               # Marketplace listing card
-│   ├── LendingCard.tsx               # Lending item card
-│   ├── CategoryChips.tsx             # Horizontal scrolling category filter
-│   ├── MapMarker.tsx                 # Custom map marker component
-│   └── CameraView.tsx               # Camera capture component
-│
-├── services/
-│   ├── firebase.ts                   # Firebase init + config
-│   ├── gemini.ts                     # Gemini API wrapper (image scan + text scan)
-│   └── maps.ts                       # Google Maps helpers (nearby search, geocoding)
-│
-├── db/
-│   └── schema.sql                    # SQLite table definitions
-│
-├── hooks/
-│   ├── useSQLite.ts                  # SQLite CRUD hook (scan cache, history, drafts)
-│   └── useLocation.ts                # GPS location hook
-│
-├── store/
-│   └── useAppStore.ts                # Zustand global state (auth, theme, scan data)
-│
-├── types/
-│   └── index.ts                      # TypeScript types & interfaces
-│
-├── assets/                           # App icon, splash, images
-├── .env                              # API keys (gitignored)
-├── .gitignore
-├── README.md
-└── plan.md                           # This file
-```
-
-### Navigation Flow Diagram
-
-```
-App Launch
-    │
-    ├── Not authenticated → auth/login.tsx
-    │                           │
-    │                           ├── Login → (tabs)/index.tsx (Home)
-    │                           └── Register → auth/register.tsx → (tabs)/index.tsx
-    │
-    └── Authenticated → (tabs)/
-            │
-            ├── 🏠 Home (index.tsx)
-            │     ├── Tap "Scan" CTA → (tabs)/scan.tsx
-            │     └── Tap activity item → market/[id].tsx or share/[id].tsx
-            │
-            ├── ♻️ Market (market.tsx)
-            │     ├── Tap listing → market/[id].tsx
-            │     │                    └── Tap "Chat" → chat/[chatId].tsx
-            │     ├── Tap 🗺 icon → market/map.tsx
-            │     └── Tap ➕ FAB → market/post.tsx
-            │
-            ├── 📷 Scan (scan.tsx)
-            │     ├── Camera capture → scan-result.tsx
-            │     │                       ├── [♻️ Sell] → market/post.tsx (pre-filled)
-            │     │                       ├── [🎁 Donate] → market/post.tsx (price=0)
-            │     │                       ├── [🤝 Lend] → share/post.tsx (pre-filled)
-            │     │                       ├── [🗺 Drop-off] → dropoff.tsx
-            │     │                       └── [📋 Save] → SQLite scan_history
-            │     └── Text search → scan-result.tsx (same flow)
-            │
-            ├── 🤝 Share (share.tsx)
-            │     ├── Tap item → share/[id].tsx
-            │     │                  └── Tap "Chat" → chat/[chatId].tsx
-            │     ├── Tap 🗺 icon → share/map.tsx
-            │     └── Tap ➕ FAB → share/post.tsx
-            │
-            └── 👤 Profile (profile.tsx)
-                  ├── My Listings → market.tsx (filtered)
-                  ├── My Lent Items → share.tsx (filtered)
-                  ├── Scan History → list of past scans
-                  └── Settings → theme toggle, notifications
-```
-
----
-
-## 🎨 UI Design Direction
-
-### Design Philosophy: Glassmorphism + iOS Aesthetic
-
-| Principle | Implementation |
-|-----------|---------------|
-| **Glassmorphism** | Frosted glass cards with `blur(20px)`, semi-transparent backgrounds, subtle light borders |
-| **iOS-like** | Large titles, bottom tab bar, rounded corners (16-20px), system-native feel |
-| **Clean & Spacious** | Generous padding (24-32px), breathing room, max 2-3 elements per section |
-| **Icons > Words** | Ionicons for navigation and actions; minimal text labels |
-| **Themed Colors** | All colours derived from the green theme; consistent throughout |
-| **Micro-animations** | Smooth transitions (300ms), haptic feedback, parallax scroll |
-
-### Color Palette — PropCycle (Nature Green) 🟢
-
-| Token | Color | Usage |
-|-------|-------|-------|
-| Primary | `#2D6A4F` (Forest Green) | Headers, CTAs, active tab |
-| Secondary | `#95D5B2` (Mint) | Cards, highlights, success states |
-| Accent | `#D4A373` (Warm Gold) | Badges, achievements, notifications |
-| Danger | `#E63946` (Red) | Delete, warnings |
-| Background Light | `#F8F9FA` (Snow) | Light mode background |
-| Background Dark | `#0D1B14` (Deep Forest) | Dark mode background |
-| Glass Fill | `rgba(45, 106, 79, 0.08)` | Glassmorphism card fill |
-| Glass Border | `rgba(255, 255, 255, 0.18)` | Glassmorphism card border |
-| Text Primary | `#1A1A2E` / `#F8F9FA` | Light / Dark mode text |
-| Text Secondary | `#6B7280` / `#9CA3AF` | Subtitle, captions |
-
-### Screen Layout (Tab Structure)
-
-```
-Tab Bar (5 tabs):
-  🏠 Home       — Dashboard, eco-score, quick scan, activity
-  ♻️ Market     — Material marketplace (list + map toggle)
-  📷 Scan       — AI scanner (center tab, larger icon)
-  🤝 Share      — Equipment lending (list + map toggle)
-  👤 Profile    — User profile, listings, history, settings
-```
-
----
-
-## 👥 Team Role Distribution (4 Members)
-
-### Role Assignments
-
-| Role | Member | Primary Ownership | Secondary |
-|------|--------|-------------------|-----------|
-| **Team Lead / Full-Stack** | Member A | App architecture, navigation, auth, maps integration | Project management, Firebase setup |
-| **Frontend / UI Dev** | Member B | All UI screens, glassmorphism components, animations, launcher icon | Wireframes for proposal |
-| **AI / Core Logic Dev** | Member C | AI scanner (Gemini API), camera, scan result, auto-fill flow | Data models, search |
-| **Backend / Marketplace Dev** | Member D | Firebase CRUD, chat system, marketplace & lending backend, QA | Huawei AppGallery publishing |
-
-### Development Task Ownership
-
-| Screen / Feature | Developer | Depends On |
-|-----------------|-----------|------------|
-| **app/_layout.tsx** (Root providers) | Member A | — |
-| **auth/login.tsx, register.tsx** | Member A | Firebase Auth |
-| **(tabs)/_layout.tsx** (Tab bar) | Member A | Expo Router |
-| **(tabs)/index.tsx** (Home) | Member B | Zustand store |
-| **(tabs)/scan.tsx** (Camera + text input) | Member C | expo-camera |
-| **scan-result.tsx** (AI result card) | Member C + B | Gemini API |
-| **(tabs)/market.tsx** (Marketplace list) | Member D | Firestore |
-| **market/[id].tsx** (Detail) | Member D | Firestore |
-| **market/post.tsx** (Post listing) | Member D | Firebase Storage |
-| **market/map.tsx** (Map view) | Member A | react-native-maps |
-| **(tabs)/share.tsx** (Lending list) | Member D | Firestore |
-| **share/[id].tsx** (Detail) | Member D | Firestore |
-| **share/post.tsx** (Post item) | Member D | Firebase Storage |
-| **share/map.tsx** (Map view) | Member A | react-native-maps |
-| **chat/index.tsx, [chatId].tsx** | Member D | Firebase Realtime DB |
-| **dropoff.tsx** (Drop-off map) | Member A | Google Places API |
-| **(tabs)/profile.tsx** (Profile + settings) | Member A | Firestore user doc |
-| **components/ui/*** (Glass library) | Member B | expo-blur |
-| **components/CategoryChips.tsx** | Member B | — |
-| **components/ListingCard.tsx** | Member B | — |
-| **components/LendingCard.tsx** | Member B | — |
-| **services/gemini.ts** | Member C | API key |
-| **services/firebase.ts** | Member D | Firebase config |
-| **services/maps.ts** | Member A | Maps API key |
-| **db/schema.sql + hooks/useSQLite.ts** | Member C | expo-sqlite |
-| **hooks/useLocation.ts** | Member A | expo-location |
-| **store/useAppStore.ts** | Member A | Zustand |
-| **types/index.ts** | Member C | — |
-| **Custom Launcher Icon** | Member B | — |
-
-### Report Writing Distribution
-
-#### Part 1 — Proposal (4–10 pages, due Week 5)
-
-| Section | Writer | Est. Pages |
-|---------|--------|------------|
-| Cover Page + Table of Contents | Member D | 1 |
-| Introduction + Problem Statement + SDG 12 | Member A | 1.5 |
-| Proposed Solution + 3 Pillars + Feature List + Use Cases | Member C | 2.5 |
-| UI/UX Design — Wireframes + Mockups + User Flow | Member B | 3 |
-| Technical Architecture + Tech Stack + AI Flow + Conclusion | Member D | 2 |
-| **Review, proofread, format** | **All** | — |
-
-#### Part 2 — Final Report (≤10 pages + Appendix, due Week 12)
-
-| Section | Writer | Est. Pages |
-|---------|--------|------------|
-| Introduction + App Overview + System Architecture | Member A | 2 |
-| UI Screenshots + Design Rationale | Member B | 2 |
-| AI Scanner Deep-Dive + API Integration + Challenges | Member C | 2.5 |
-| Marketplace & Lending + Testing + Deployment + Contribution Log | Member D | 2.5 |
-| Unimplemented Features / Future Work | Member A | 1 |
-| Appendix: Key Source Code Excerpts | All (own code) | As needed |
-| **Review, proofread, format** | **All** | — |
-
-### Presentation Speaking Roles (Week 13, 10 min)
-
-| Speaker | Duration | Topic |
-|---------|----------|-------|
-| Member A | 2.5 min | Introduction, architecture overview, maps integration |
-| Member B | 2.5 min | UI/UX walkthrough, glassmorphism demo, live app tour |
-| Member C | 2.5 min | Live AI scanning demo (scan a banner, foam board, etc.) |
-| Member D | 2.5 min | Marketplace demo, chat, lending flow, publishing |
-
----
-
-## 📅 14-Week Schedule
-
-### Phase 1: Planning & Proposal (Weeks 1–5)
-
----
-
-#### Week 1 — Project Kickoff & Setup
-| Task | Owner | Deliverable |
-|------|-------|-------------|
-| Read & understand assignment requirements | All | Shared understanding |
-| Confirm app name (PropCycle) and niche (Event + Creative) | All | Decision locked |
-| Create GitHub repository + invite all members | Member A | Repo URL |
-| Register Huawei Developer account | Member D | Account created |
-| Set up Expo project with TypeScript boilerplate | Member A | `npx create-expo-app` done |
-| Get Google AI Studio API key (Gemini) | Member C | API key ready |
-| Set up Firebase project (Auth + Firestore) | Member D | Firebase console ready |
-
----
-
-#### Week 2 — Requirements & Design
-| Task | Owner | Deliverable |
-|------|-------|-------------|
-| Define all user stories per module | All | User story list |
-| Create low-fidelity wireframes (all screens) | Member B | Paper/Figma wireframes |
-| Design data schema (Firestore + SQLite) | Member D | Schema document |
-| Test Gemini Vision API with sample event material photos | Member C | Working API call proof |
-| Start glassmorphism design system (tokens, components) | Member B | Style guide draft |
-
----
-
-#### Week 3 — Proposal Writing Phase 1
-| Task | Owner | Deliverable |
-|------|-------|-------------|
-| Write Introduction + Problem Statement | Member A | Draft (1.5 pages) |
-| Write Proposed Solution + Features + Use Cases | Member C | Draft (2.5 pages) |
-| Create high-fidelity UI mockups in Figma | Member B | Polished mockups |
-| Write Technical Architecture + AI Flow | Member D | Draft (2 pages) |
-| Begin coding: Expo Router tab navigation | Member A | Working skeleton |
-
----
-
-#### Week 4 — Proposal Writing Phase 2
-| Task | Owner | Deliverable |
-|------|-------|-------------|
-| Compile all proposal sections into single document | Member A | Full draft |
-| Add UI mockups & screenshots to proposal | Member B | Embedded visuals |
-| Peer review all sections | All | Feedback notes |
-| Format document (cover page, headers, page numbers) | Member D | Polished layout |
-| Continue coding: Auth flow (login/register screens) | Member A | Auth UI ready |
-
----
-
-#### Week 5 — ⚠️ Proposal Due (Wed 15 July, 5 PM)
-| Task | Owner | Deliverable |
-|------|-------|-------------|
-| Final proofread and formatting check | All | Final document |
-| **Submit Part 1 proposal via Google Form** | **Member A** | **✅ SUBMITTED** |
-| Begin: Tab navigation + Home dashboard UI | Member B | Home screen started |
-| Begin: Camera capture integration | Member C | Camera working |
-| Begin: Firestore CRUD operations | Member D | Database connected |
-
----
-
-### Phase 2: Core Development (Weeks 6–9)
-
----
-
-#### Week 6 — Foundation Sprint
-| Task | Owner | Deliverable |
-|------|-------|-------------|
-| Complete Firebase Auth (login/register/logout) | Member A | Auth flow complete |
-| Build glassmorphism component library | Member B | GlassCard, GlassButton, GlassInput |
-| Implement camera capture + gallery picker | Member C | Image capture working |
-| Set up Firestore collections + CRUD helpers | Member D | Data layer ready |
-| Implement SQLite local storage (scan cache + history) | Member C | Local DB ready |
-| Build Home dashboard screen | Member B | Dashboard UI done |
-
----
-
-#### Week 7 — AI Scanner Sprint
-| Task | Owner | Deliverable |
-|------|-------|-------------|
-| Integrate Gemini Vision API — image scan | Member C | AI scanning working |
-| Integrate Gemini Text API — text search | Member C | Text search working |
-| Build scan result card UI (ScanResultCard.tsx) | Member B | Result screen polished |
-| Build scan history screen | Member C | History screen done |
-| Implement AI → auto-fill marketplace/lending post flow | Member C | Auto-fill working |
-| Integrate Google Maps — drop-off points | Member A | Drop-off map working |
-
----
-
-#### Week 8 — Marketplace Sprint
-| Task | Owner | Deliverable |
-|------|-------|-------------|
-| Build marketplace browse/search screen | Member D | Listings screen done |
-| Build marketplace post listing flow | Member D | Post flow working |
-| Build marketplace listing detail screen | Member D | Detail screen done |
-| Build CategoryChips component | Member B | Category filter working |
-| Implement in-app chat (Firebase Realtime DB) | Member D | Chat working |
-| Build marketplace map view | Member A | Map view done |
-
----
-
-#### Week 9 — Lending Sprint + Integration
-| Task | Owner | Deliverable |
-|------|-------|-------------|
-| Build lending browse/search screen | Member D | Lending screen done |
-| Build lending post item flow | Member D | Post flow working |
-| Build borrow request + approval flow | Member D | Request flow done |
-| Build profile screen + eco-score | Member A | Profile done |
-| Build settings screen (theme toggle) | Member A | Settings done |
-| Design & create custom launcher icon | Member B | App icon ready |
-| Polish all animations & transitions | Member B | Smooth UX |
-| **FEATURE FREEZE** — no new features after this | All | Scope locked |
-
----
-
-### Phase 3: Polish & Documentation (Weeks 10–12)
-
----
-
-#### Week 10 — Testing & Bug Fixing
-| Task | Owner | Deliverable |
-|------|-------|-------------|
-| End-to-end testing on physical Android devices | All | Bug list created |
-| Fix critical bugs in own modules | All (own areas) | Bugs resolved |
-| Performance optimisation (image compression, lazy loading) | Member A | Faster app |
-| UI consistency pass (spacing, fonts, colours, icon sizes) | Member B | Pixel-perfect |
-| Edge case testing (no network, empty states, errors) | Member D | Error states handled |
-| Test both scan modes (image, text) with event materials | Member C | All modes verified |
-
----
-
-#### Week 11 — Report Writing + Build
-| Task | Owner | Deliverable |
-|------|-------|-------------|
-| Write Part 2: Introduction + Architecture | Member A | Draft sections |
-| Screenshot all screens + annotate for report | Member B | Screenshot set |
-| Write Part 2: AI Scanner deep-dive | Member C | Draft sections |
-| Write Part 2: Marketplace + Lending + Testing | Member D | Draft sections |
-| **Build APK via EAS Build** | Member A | Installable APK file |
-| Submit APK to Huawei AppGallery | Member D | Submission started |
-
----
-
-#### Week 12 — ⚠️ Final Submission (Sat 5 Sept, 5 PM)
-| Task | Owner | Deliverable |
-|------|-------|-------------|
-| Compile & format complete final report | Member A | Full report document |
-| Peer review all report sections | All | Final corrections done |
-| Ensure all GitHub commits properly attributed | All | Clean git log |
-| **Submit Part 2 via Google Form** | **Member A** | **✅ SUBMITTED** |
-| Check Huawei AppGallery review status | Member D | Follow up if needed |
-
----
-
-### Phase 4: Presentation (Weeks 13–14)
-
----
-
-#### Week 13 — ⚠️ Presentation (During Practical Session)
-| Task | Owner | Deliverable |
-|------|-------|-------------|
-| Prepare slide deck (10 min presentation) | All | Slides ready |
-| Rehearse demo flow on real device | All | Smooth demo rehearsed |
-| Bring sample event materials for live scanning demo | Member C | Demo items ready |
-| Prepare Q&A — each member studies their own code | All | Q&A ready |
-| **Present & demonstrate the app** | **All** | **✅ PRESENTED** |
-
----
-
-#### Week 14 — Wrap-Up
-| Task | Owner | Deliverable |
-|------|-------|-------------|
-| Reflect on presentation feedback | All | Lessons learned |
-| Final code cleanup + README on GitHub | All | Clean repo |
-| Archive all project files | Member A | Backed up |
-
----
-
-## ✅ Minimum Requirements Checklist
-
-| Requirement | How We Meet It | Status |
-|-------------|---------------|--------|
-| Custom launcher icon | Designed by Member B, green looping arrow with leaf motif | ⬜ |
-| Store, update & retrieve data from device storage | expo-sqlite: scan_cache, scan_history, draft_posts tables | ⬜ |
-| Connect to external endpoint (REST API / SDK) | Firebase (Firestore, Auth, Storage, Realtime DB) + Gemini API + Google Maps | ⬜ |
-
----
-
-## 🔧 Development Environment Setup
-
-```
-Required Tools:
-├── Node.js (v20 LTS)
-├── npm or yarn
-├── Expo CLI (npx expo)
-├── VS Code + Extensions:
-│   ├── ESLint
-│   ├── Prettier
-│   ├── React Native Tools
-│   └── TypeScript
-├── Git + GitHub account
-├── Android Studio (emulator) OR Expo Go on physical phone
-├── Firebase Console account (Google account)
-├── Google AI Studio account (Gemini API key)
-├── Google Cloud Console (Maps API key)
-└── Huawei Developer account (register Week 1!)
-```
-
----
-
-## ⚠️ Risk Management
-
-| Risk | Likelihood | Impact | Mitigation |
-|------|-----------|--------|------------|
-| Gemini API rate limit (15 RPM free) | Medium | High | Cache results in SQLite (7-day TTL); debounce scans |
-| Google Maps API cost | Low | Medium | $200/month free credit; limit map loads |
-| Team member unavailability | Medium | High | Clear ownership; no single points of failure; weekly sync |
-| Feature creep beyond Week 9 | High | Medium | Strict feature freeze; polish only after Week 9 |
-| Huawei AppGallery approval delay | Medium | Low | Register Week 1; submit Week 11 for buffer |
-| Chat system complexity | Medium | Medium | Keep it simple: text only, no images/voice in chat |
-| Performance on low-end Android | Low | Medium | Compress images before upload; lazy load lists |
+- Bookings use `Asia/Kuala_Lumpur` calendar dates; start and end are inclusive, start may equal end, neither may be in the past, and the assessed release caps a request at 31 days.
+- The owner cannot borrow their own item.
+- Approval uses a bounded transaction over exact document references: the request, lending item, and one deterministic `bookedDays/{yyyy-MM-dd}` document for each inclusive requested day. The transaction fails if any day already exists, then atomically approves the request and creates privacy-minimal locks sharing a random token also stored in the participant-only request. Cancellation/release reads the bounded day set and removes only locks whose token matches that request.
+- Security Rules restrict request/lock transitions to the item owner, validate immutable participants/field shapes/date bounds, and prevent a non-owner from changing availability. Rules cannot prove that every date in an arbitrary client-supplied range was written, so the baseline guarantee is collision-safe concurrent approvals through the reviewed app. Adversarial owner-proof booking enforcement requires trusted OD-13 logic and must not be claimed otherwise.
+- Deposit is an informational RM amount; no payment is collected in the app.
+- A rating uses deterministic ID `{requestId}_{raterUid}`. Rules require a returned request, an eligible participant/rater-recipient pairing, score range, and immutable content after creation. Trust is calculated for display from those documents; users cannot write a personal aggregate trust value. A stored trusted aggregate is excluded unless OD-13 adds a backend.
+- Return and rating actions remain linked to the original request for auditability.
+
+### Location and map flow
+
+- Request foreground location only when the user opens a location-dependent action.
+- Accept approximate location and provide manual place/address selection when permission is denied.
+- Store item coordinates and a geohash; query geohash ranges, then calculate and filter exact distance client-side.
+- Recycling search uses Places Nearby/Text Search with Malaysia-oriented terms such as `recycling centre` and `kitar semula`; results show required Google attribution.
+- Request only the place fields needed for the screen to control latency and billing.
+- External directions open an installed map application through an intent; PropCycle does not implement turn-by-turn navigation.
+
+### Notifications
+
+- USER-01 merges unread Firestore chat-thread state with non-chat notification documents for marketplace status, borrow requests/decisions, return events, and ratings. Chat does not create a second cross-product notification record. Non-chat writes must be included with and rule-validated against the related Firestore transition where feasible.
+- Device-local WorkManager reminders may cover due/return dates for the signed-in device. Cross-device scheduled notifications and automated FCM push are enabled only if OD-13 selects a trusted event sender; the Android client never holds service-account credentials.
+- Android 13+ notification permission is requested in context after explaining its value.
+- Denying push does not disable the in-app notification page.
+
+### Trusted automation boundary
+
+The assessed baseline does not assume a custom trusted backend. Consequently, automated FCM sending, cross-device schedules, global community statistics, stored eco/trust aggregates, and automatic orphan cleanup are not release guarantees. If the team requires them, OD-13 must select a Java-capable trusted service, name an owner, add emulator/integration and abuse tests, define deployment/secrets/billing controls, and place that work on the schedule before implementation. Client code and Security Rules alone must not be described as trusted server computation.
+
+## 9. UI and design-system plan
+
+### Designer fidelity rules
+
+- Preserve the proposal's content hierarchy, cards, arrows/flows, screen purpose, and home radial quick menu.
+- Convert the monochrome wireframes into Android XML without inventing a new information architecture.
+- Use Android-native back behaviour, permissions, text scaling, insets, keyboard handling, and feedback.
+- Resolve a designer sign-off screenshot for each screen ID before marking UI complete.
+- Do not copy iPhone notches, home indicators, or unsafe fixed pixel measurements into the Android app.
+
+### Provisional visual tokens
+
+The proposal is monochrome, so colour and typography remain subject to designer sign-off. The following palette is provisional planning data only; no reusable Expo design asset or token file remains in the repository.
+
+| Token | Working value | Use |
+|---|---|---|
+| Primary | `#2D6A4F` | Main actions, active state, headers |
+| Secondary | `#95D5B2` | Highlights and supporting surfaces |
+| Accent | `#D4A373` | Eco badges and attention accents |
+| Error | `#E63946` | Destructive/error states only |
+| Light background | `#F8F9FA` | Default light surface |
+| Dark background | `#0D1B14` | Default dark surface |
+| Text light theme | `#1A1A2E` | Primary text |
+| Text dark theme | `#F8F9FA` | Primary text on dark surfaces |
+
+- Use resource tokens, not hard-coded colours/dimensions in Java or individual layouts.
+- Use an 8dp spacing grid with documented 4dp exceptions, scalable `sp` text, and reusable shape styles.
+- Glass-like cards use translucent surfaces, borders, elevation, and gradients. Blur is an enhancement only; a high-contrast fallback is mandatory on unsupported/slow devices.
+- Animations must not block navigation, and reduced-motion behaviour must remain understandable.
+- Target API 36 screens are edge-to-edge and apply status bar, navigation bar, display-cutout, and IME insets correctly.
+- Navigation uses the current predictive-back APIs and Navigation Component integration rather than legacy custom back interception.
+
+### Accessibility and adaptive checks
+
+- Minimum 48dp touch target for every interactive element, including the radial menu.
+- Meaningful `contentDescription` for non-text controls; decorative images are excluded from accessibility focus.
+- Logical TalkBack focus order, headings, state announcements, and labelled form errors.
+- Text remains usable at 200% font scale without clipping critical actions.
+- Colour is never the only status signal; contrast is verified in light and dark themes.
+- Phone layouts are portrait-first. API 36 testing also covers at least one `sw600dp` tablet/foldable in portrait, landscape, freely resized, and split-screen modes because large-screen orientation/resizability restrictions cannot be relied on.
+- The radial menu has equivalent labelled actions in the navigation menu for switch-access and TalkBack users.
+
+## 10. Security, privacy, and validation
+
+### Security controls
+
+- Preferred release protection is Firebase App Check with Play Integrity. It requires a Google Play Console app entry, linking the same Cloud/Firebase project, direct project Owner permission, and registration of the release SHA-256. For the sideloaded course APK, configure outside-Google-Play settings: `PLAY_RECOGNIZED` not required, `LICENSED` not required, and device integrity required. Test the exact signed APK, monitor metrics, and enforce only after legitimate requests are verified.
+- If the team cannot satisfy those Play Console/Owner prerequisites by the foundation gate, do not ship a release build with the debug provider and do not enable enforcement that blocks the demo. Record the lower-assurance fallback: Authentication plus tested Security Rules, restricted keys, App Check metrics where available, strict AI/project quotas and budget alerts; OD-13 is required for a custom attestation/proxy alternative.
+- Firebase Authentication is required for all user data, listings, lending, chat, ratings, and uploads.
+- Deploy and test Firestore and Storage Rules before connecting the release build.
+- Validate ownership and state transitions in both client code and Security Rules. Use trusted backend logic only for the capabilities explicitly approved in OD-13.
+- Restrict Maps/Places keys to the Android application ID and signing certificate; restrict enabled APIs.
+- Firebase AI Logic keeps the Gemini provider key behind its proxy. Exact stable model version, prompt version, safety settings, and cache policy come from Remote Config with safe defaults; preview/moving aliases are not release defaults.
+- Never log passwords, tokens, message bodies, exact private locations, raw AI images, or full user documents.
+- Release builds disable debug logging, shrink/obfuscate where compatible, and use a team-controlled signing key backup.
+- Use Network Security Configuration to disallow cleartext traffic and to document any exceptional trust configuration.
+- Define backup/data-extraction rules so credentials, tokens, private caches, and sensitive local files are not included in device backup.
+- Mark Android components non-exported unless a documented external entry point requires exposure.
+
+### Privacy and permission policy
+
+| Capability | Permission/data policy |
+|---|---|
+| Camera | Ask only from SCAN-01; explain why; gallery remains available after denial |
+| Gallery | Use the system Photo Picker to avoid broad media access on supported versions |
+| Location | Foreground only, approximate accepted, manual fallback, no background tracking |
+| Notifications | Ask in context; in-app notifications remain available after denial |
+| Scan images | Explain that analysis transmits the working image to Firebase AI Logic/Gemini for transient processing; keep local working files app-private and persist to Cloud Storage only for an explicit publish/backup action |
+| Listing location | Show a useful area/meeting point rather than exposing a user's private home by default |
+| Account data | Passwords remain solely with Firebase Auth; settings store no credentials |
+
+### Validation baseline
+
+- Trim and length-limit every text input.
+- Validate dates, price/deposit, category enums, image count/type/size, coordinates, and object ownership.
+- Sanitize UI display but do not rely on client sanitisation for access control.
+- Use idempotency/operation IDs for publish, send-message, approve, return, and rating actions to prevent duplicate taps.
+- All errors are mapped to user-readable, recoverable messages without exposing backend internals.
+
+## 11. Offline, reliability, and performance
+
+### Offline expectations
+
+- Saved scan history, valid cached scan results, and drafts are readable offline.
+- Marketplace/lending shows cached Firestore data with a visible stale/offline state.
+- Creating or editing a draft is always local first.
+- Publishing, messaging, map/Places search, authentication changes, and a fresh AI request require connectivity unless the SDK safely queues the exact operation.
+- The sync outbox retries idempotent work with network constraints and exponential backoff only when its owner UID still matches the active Firebase user; logout cancels account Workers. Permanent validation/auth/account-mismatch errors stop automatic retries and require user action.
+- Conflict rule: server state wins for remote ownership/status; the user is prompted before a local edit overwrites a newer remote edit.
+
+### Performance budgets
+
+- No StrictMode disk/network violations in the debug critical journeys.
+- Paginate marketplace, lending, messages, activity, and notifications; do not attach unbounded root listeners.
+- Load thumbnail-sized images in lists and full images only on details.
+- Compress uploads while preserving enough detail for AI/material recognition.
+- Remove listeners in the matching lifecycle callback and cancel obsolete AI/search requests.
+- Test startup, scrolling, camera, map, and upload on at least one lower-memory physical Android device.
+
+## 12. Test and release strategy
+
+### Test layers
+
+| Layer | Required coverage |
+|---|---|
+| Plain JVM tests | Validators, category mapping, cache keys, AI schema parser, eco/trust calculations, search normalisation, state machines, date overlap, error mapping |
+| Repository tests | Success/error/offline mapping with fake local and remote data sources |
+| Room instrumentation | DAO CRUD, owner-scope isolation, query results, committed/exported schema JSON, migration preservation, outbox retry selection and logout cancellation |
+| Firebase Emulator Suite | Auth-dependent Firestore/Storage rule allow/deny cases, deterministic chat/rating identities, lending-lock transitions, and representative data flows |
+| Fragment/navigation tests | Destination arguments, authentication guards, back stack, process/state restoration |
+| Espresso journeys | Register/login, scan-to-save, scan-to-listing, marketplace-to-chat, lending request-to-return/rating, settings/logout |
+| Manual device matrix | API 24, API 33, API 36; camera/no camera, approximate/denied location, notification denial, slow/offline network, dark mode, large text, rotation/process recreation; API 36 `sw600dp` portrait/landscape/resizing/split-screen |
+
+### Definition of done for every screen/module
+
+1. Matches the approved designer comparison for its screen ID.
+2. Loading, empty, error, offline, permission-denied, and success states are handled where relevant.
+3. ViewModel/repository boundaries are respected; no vendor calls in a Fragment.
+4. Input validation and role/ownership rules pass.
+5. Accessibility checks pass with TalkBack and large text.
+6. Unit/instrumentation tests appropriate to the logic pass.
+7. No new Android Lint error or warning is accepted without a documented reason.
+8. Another member reviews the pull request and runs the critical path.
+9. Report-ready screenshot and short contribution note are captured.
+
+### Release gates
+
+- Clean Gradle build from a fresh clone using the wrapper and JDK 17.
+- Unit tests, Android tests, Lint, and Firebase rules tests pass.
+- All screen IDs and retained modules have a completed acceptance check.
+- No secrets in Git history or built artefacts; release Maps key restrictions verified.
+- App Check either accepts the exact sideloaded signed course APK under the reviewed outside-Play policy before enforcement, or OD-14 records the non-enforced lower-assurance fallback and its restrictions.
+- Signed APK installs and launches on two physical Android devices.
+- Fresh install, upgrade install, logout/login, offline restart, and denied-permission smoke tests pass.
+- Crash-free 10-minute presentation rehearsal with a prepared fallback dataset and cached scan.
+- APK hash, signing key custody, final report, screenshots, and contribution log are archived.
+
+## 13. Team ownership and integration
+
+Member labels remain placeholders until the team records names beside them. Ownership means primary implementation and explanation; it does not remove peer review.
+
+| Owner | Primary native responsibility | Secondary/review responsibility |
+|---|---|---|
+| Member A - Lead/Core | Project bootstrap, Gradle, navigation, authentication, permissions/location, Maps/Places, release/signing | Firebase setup, integration management, final architecture/report |
+| Member B - UI/UX | XML design system, reusable Views, home, all screen styling, radial menu, launcher icon, accessibility | Designer comparison set, screenshots, UI review across modules |
+| Member C - AI/Local | CameraX, Photo Picker, Firebase AI Logic, schema parser, scan result/history, Room/outbox | Data models, cache/performance tests, scanner report/demo |
+| Member D - Cloud/Exchange | Firestore/Storage repositories and rules, marketplace, lending booked-day locks, Firestore chat, in-app notifications, ratings | Emulator tests, edge cases, optional backend only after OD-13, store/release support |
+
+### Integration rules
+
+- Agree model interfaces, enums, collection names, navigation arguments, and design tokens before parallel feature work.
+- Each feature branch delivers a vertical slice: XML + Fragment + ViewModel + repository contract + states + tests.
+- Avoid long-lived shared-file edits. Core graph/theme/schema changes require advance notice in the team channel.
+- Pull requests must identify screen IDs, acceptance cases, screenshots, test evidence, and schema/rule changes.
+- Integrate at least once daily during the remaining delivery window; do not wait until feature freeze.
+- Every member must be able to explain their Java, XML, data flow, tests, and security decisions for Q&A.
+
+## 14. Remaining delivery schedule
+
+This schedule assumes plan approval by 6 August 2026 and four parallel contributors. If approval slips, the lead must re-baseline dates rather than silently deleting modules or testing.
+
+| Dates | Gate and outcome | Member A | Member B | Member C | Member D |
+|---|---|---|---|---|---|
+| 5-6 Aug | Plan and contract freeze | Confirm namespace, API baseline, Git strategy | Screen inventory/design tokens | AI schema/cache contract | Firebase schema/rules contract |
+| 7-9 Aug | Native foundation | Create approved project, CI, auth/navigation shell | XML component library, welcome/login/register/home shells | Room 2.8 database and scanner spike | Firebase emulator/config, repository interfaces/rule skeleton |
+| 10-14 Aug | Scanner vertical slice | Location permission and recycling map shell | Scanner/result/recycling UI states | Camera/gallery -> AI -> review/save flow | User/activity/notification data foundations |
+| 15-19 Aug | Marketplace vertical slice | Marketplace distance/geohash integration | Browse/detail/post/chat layouts | Draft/image handoff and local retry support | Listings, Storage, search/filter, chat data/rules |
+| 20-24 Aug | Lending vertical slice | Lending map and date/navigation integration | Lending screens/calendar/request states | Shared image/local helpers and performance | Lending, deterministic booked-day transaction, return, eligible ratings |
+| 25-27 Aug | Supporting modules | Auth guards, deep links, settings permissions | Home/recent/profile/messages/notifications visual completion | Scan history, offline and failure states | Notifications, my activity, status/ownership edge cases |
+| 28-29 Aug | End-to-end integration and feature freeze | Full navigation/release build | Designer/accessibility pass | AI/offline/performance pass | Rules/emulator/data integrity pass |
+| 30 Aug-1 Sep | Hardening | Device matrix, signing rehearsal | Screenshot/report assets | JVM/Room/camera tests | Firebase/rules/journey tests |
+| 2 Sep | Release candidate | Produce signed RC and issue list | Final UI sign-off | Demo cache/fallback data | Firebase production rules/config sign-off |
+| 3-4 Sep | Submission buffer | Fix release blockers only, assemble archive | Final screenshots/presentation | AI demo rehearsal/Q&A | Exchange demo/release verification |
+| 5 Sep | Submission | Submit verified deliverables | Support verification | Support verification | Support verification |
+
+No new feature begins after 29 August. Only release-blocking correctness, security, accessibility, and crash fixes are accepted after the release candidate.
+
+## 15. Native bootstrap procedure - not authorised yet
+
+Repository cleanup is complete: on 5 August 2026, the user explicitly authorised direct deletion of the obsolete Expo/React Native source, Node/Expo configuration and dependencies, generated output, placeholder services/database files, default Expo assets/licence boilerplate, and old `.env`. No Java/XML application project was created.
+
+The following implementation sequence begins only when the user/team explicitly authorises coding:
+
+1. Review and approve this plan, open decisions, namespace, design assets/tokens, and ownership.
+2. Retrieve/recreate Firebase, Maps, and AI configuration from the owning consoles; do not treat the deleted `.env` or Git history as a secret store.
+3. Create the native Gradle project at the repository root with one `:app` module.
+4. Configure Java 17, Groovy Gradle scripts, API 36 compile/target, API 24 minimum, Views/XML, View Binding, Navigation, Hilt, Room schema export, and test runners.
+5. Connect a separate development Firebase project/emulators and deploy deny-by-default rule skeletons before real data.
+6. Validate Play Console/project-Owner access and the signed-APK App Check plan (or formally accept OD-14 fallback), restricted Maps key, AI quota/budget controls, and UID-scoped media/outbox design.
+7. Implement the scheduled vertical slices without restoring or converting TypeScript/Expo source.
+8. Run parity review against all twenty PDF mock-ups and the two explicitly derived completion surfaces.
+9. Pass security, adaptive-layout, offline/account-switch, test, and release gates before submission.
+
+Brownfield React Native embedding and automated TSX-to-Java conversion are out of scope because the selected target is one clean native architecture.
+
+## 16. Risk register
+
+| Risk | Likelihood / impact | Mitigation and trigger |
+|---|---|---|
+| Native rewrite close to 5 September | High / Critical | Four vertical workstreams, daily integration, 29 Aug freeze; re-baseline immediately if approval slips |
+| Removed prototype contained an undocumented visual detail | Medium / Medium | Use the proposal PDF as authority, obtain designer sign-off per screen, and do not assume deleted untracked files are recoverable |
+| Java examples lag Kotlin-first documentation | Medium / Medium | Use APIs with official Java support; Room 2.8, Java Workers, Java ViewModels, Java Firebase AI Logic; spike dependencies at foundation gate |
+| AI response is invalid/inaccurate | High / High | Structured schema validation, uncalibrated-estimate labels, user review, cache versioning, prepared fallback demo |
+| AI/API abuse or leaked key | Medium / High | Firebase AI Logic proxy, authenticated access, App Check, project quotas/budget alerts, stable model pin, restricted configuration, no direct key; approve a backend before claiming per-user enforcement |
+| Team lacks Play Console/project-Owner access for Play Integrity | Medium / High | Verify access at foundation gate; never use debug provider in release; leave enforcement off with documented lower-assurance restrictions or approve an OD-13 alternative |
+| Firestore search or radius assumptions fail | Medium / High | Explicit prefix/filter strategy, geohash bounding queries, exact client distance filtering, tests at range edges |
+| Recycling centre data is incomplete | Medium / Medium | Nearby plus text search in English/Malay, manual search, attribution, user confirmation message |
+| Lending double booking/trust manipulation | Medium / High | Bounded transaction over deterministic booked-day documents, concurrency tests, immutable eligible rating links, client-calculated rating display unless trusted backend approved |
+| Chat listener cost/volume | Medium / Medium | Thread-scoped listeners, pagination, message limits, detach on lifecycle stop |
+| Maps/Places billing changes | Medium / Medium | Field masks, bounded requests, debounce, budget alerts, no stale hard-coded free-tier claim |
+| AppGallery device lacks Google services | High / High on affected devices | Course APK baseline uses GMS; decide separately between GMS-only disclosure and a later HMS provider abstraction |
+| Permission denial blocks a demo | Medium / High | Gallery and manual-location fallbacks plus preflight permission rehearsal |
+| Low-end device jank from maps/images/glass effects | Medium / Medium | Thumbnailing, pagination, API-aware visual fallback, physical low-memory test |
+| Phone-only UI fails on API 36 large screens | Medium / High | `sw600dp` portrait/landscape/resizing/split-screen test matrix and adaptive XML constraints before UI sign-off |
+| Plan implies server guarantees without a backend | Medium / High | Baseline excludes automated push/schedules/global aggregates/orphan cleanup; OD-13 must name a service, owner, tests, deployment, and schedule before those claims are enabled |
+| Team merge conflicts | Medium / High | Stable contracts, package ownership, small PRs, daily integration, shared-file coordination |
+| Report/presentation squeezed by rewrite | High / High | Capture screenshots/contribution notes per DoD and reserve 30 Aug onward for hardening/report |
+
+## 17. Open decisions requiring team confirmation
+
+These choices do not block documentation, but they must be closed before the related implementation begins.
+
+| ID | Decision | Recommended default |
+|---|---|---|
+| OD-01 | Android application ID/namespace | A university/team-owned reverse-domain ID that will not change after Firebase registration |
+| OD-02 | Authentication promise in the mock-up | Email/password for release; phone requires a separate SMS OTP flow, and username login needs a secure backend design rather than a misleading text field |
+| OD-03 | Firebase environments | Separate development/emulator data from the final production project |
+| OD-04 | Final colours, font, logo, and icon | Designer signs off the provisional green palette and supplied assets before UI freeze |
+| OD-05 | Exact radial and hamburger-menu destinations | Radial candidates are Market, Share/Lend, and Map as annotated; the hamburger's contents are undrawn. Designer/team must approve inclusion, labels, order, and unique destinations; Smart Scan/Profile already have direct controls |
+| OD-06 | Push-notification sender | In-app notifications are mandatory; use a trusted Java-capable backend/event sender before enabling automated FCM push |
+| OD-07 | Public item location precision | Default to area/meeting point rather than a private exact address |
+| OD-08 | Store publication | Signed course APK first; AppGallery/Play submission only after GMS/store-policy review |
+| OD-09 | Microphone icon in home search | Remove it unless voice search is a real accepted requirement; do not ship an inert control or request microphone permission unnecessarily |
+| OD-10 | Earlier-plan enhancements not required by the PDF | Keep text-only scanner lookup, home impact/statistics/tip panels, and marketplace map/list switch out of the baseline unless the designer/team explicitly schedules them |
+| OD-11 | Marketplace semantics | Use transaction intent (`sale`, `donation`, `exchange`) separately from fulfilment (`pickup`, `meetup`); designer confirms the mock-up labels and whether Market has any map entry |
+| OD-12 | Proposal wording "rent or borrow" | Default to borrowing with optional informational deposit/fee arranged in chat; no in-app payment. Team must decide whether any rental fee is permitted and update copy consistently |
+| OD-13 | Trusted automation backend | Baseline has no custom backend. If automated FCM, cross-device schedules, stored global/eco/trust aggregates, orphan cleanup, or abuse-resistant per-user AI limits are required, select a Java-capable trusted service, owner, tests, secrets/billing plan, and schedule first |
+| OD-14 | App Check release prerequisites | Confirm Play Console app entry, Firebase/Cloud project link, direct project Owner permission, and release SHA-256. If unavailable, accept non-enforcement plus restricted-key/rules/quota fallback; never use a debug token/provider in the release APK |
+
+Until OD-02 is closed, registration/login text must not claim unsupported phone/username-plus-password behaviour. Password-reset, confirmation, and terms UI also require designer placement sign-off. Until OD-06 and OD-13 are closed with an implemented sender, the notification screen remains functional in-app but automated operating-system push is not represented as complete.
+
+## 18. Official implementation references
+
+- [Android app architecture](https://developer.android.com/topic/architecture)
+- [XML layouts with Android Views](https://developer.android.com/develop/ui/views/layout/declaring-layout)
+- [View Binding](https://developer.android.com/topic/libraries/view-binding)
+- [Java versions in Android builds](https://developer.android.com/build/jdks)
+- [Google Play target API requirement](https://developer.android.com/google/play/requirements/target-sdk)
+- [Room](https://developer.android.com/training/data-storage/room/)
+- [Room 2.8 release notes and schema tooling](https://developer.android.com/jetpack/androidx/releases/room)
+- [CameraX image capture](https://developer.android.com/media/camera/camerax/take-photo)
+- [Android Photo Picker and durable media access](https://developer.android.com/training/data-storage/shared/photo-picker)
+- [WorkManager](https://developer.android.com/develop/background-work/background-tasks/persistent)
+- [Android 16 large-screen behaviour changes](https://developer.android.com/about/versions/16/behavior-changes-16)
+- [Maps SDK for Android](https://developers.google.com/maps/documentation/android-sdk/start)
+- [Places Nearby Search](https://developers.google.com/maps/documentation/places/android-sdk/nearby-search)
+- [Firebase AI Logic](https://firebase.google.com/docs/ai-logic)
+- [Firebase AI production checklist](https://firebase.google.com/docs/ai-logic/production-checklist)
+- [Cloud Firestore real-time listeners](https://firebase.google.com/docs/firestore/query-data/listen)
+- [Cloud Storage Security Rules conditions](https://firebase.google.com/docs/storage/security/rules-conditions)
+- [Cloud Firestore Android transactions](https://firebase.google.com/docs/reference/android/com/google/firebase/firestore/Transaction)
+- [Firebase App Check with Play Integrity outside Google Play](https://firebase.google.com/docs/app-check/android/play-integrity-provider)
+
+## 19. Plan approval checklist
+
+Implementation begins only after the team confirms all of the following:
+
+- [ ] Every proposal screen/module is represented correctly.
+- [ ] Java/XML/no-Compose policy is accepted.
+- [ ] API 24 minimum and API 36 target are accepted.
+- [ ] Screen IDs, navigation model, and designer radial menu are accepted.
+- [ ] Firebase/Room/AI/Maps data ownership is accepted.
+- [ ] Authentication, marketplace semantics, lending fee wording, optional enhancements, and radial-menu destinations are closed.
+- [ ] Push/trusted-backend scope has a named owner and deadline, or the excluded automation is explicitly accepted.
+- [ ] Play Console/project-Owner access and App Check enforcement/fallback decision are recorded.
+- [ ] The direct Expo/RN deletion and root-native bootstrap path are acknowledged; required service configuration will be recreated securely.
+- [ ] Team ownership and remaining schedule are realistic.
+- [ ] Security, testing, feature-freeze, and release gates are accepted.
+
+Once checked, record the approver names/date at the top of this document and authorise the native project bootstrap as a separate task.

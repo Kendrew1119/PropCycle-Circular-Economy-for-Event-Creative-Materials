@@ -1,0 +1,83 @@
+# PropCycle Proposal - Revised Implementation Planning Copy
+
+> **Revision note (5 August 2026):** The `Group7-PropCycle.pdf` proposal dated 15 July 2026 remains the authority for the product idea, modules, and designer mock-ups. This Markdown copy records the selected planning change from React Native/Expo to a Java-first native Android implementation. No proposal module is removed, the PDF itself is not altered, and implementation remains on hold pending plan approval.
+
+1.0 Introduction
+In the rapid urbanisation of increasing consumer demand, short product life cycles have been contributing to a significant rise in global waste generation. According to the United Nations Environment Programme (UNEP), municipal solid waste is projected to increase from approximately 2.1 billion tonnes in 2023 to 3.8 billion tonnes by 2050 if current consumption patterns continue, placing increasing pressure on natural resources, ecosystems, and waste management systems [1]. As a result, governments, industries, and communities are shifting away from the traditional "take–make–dispose" linear economy towards a Circular Economy, an economic model that aims to keep products and materials in use for as long as possible through reuse, repair, refurbishment, sharing, and recycling [2]. 
+The Circular Economy plays an important role in achieving the United Nations Sustainable Development Goal 12 (SDG 12) which is Responsible Consumption and Production, where promotes efficient resource utilisation, waste reduction, and sustainable production and consumption practices. Instead of treating products as disposable after a single use, SDG 12 encourages extending the life cycle of materials and reducing unnecessary waste through innovative and technology-driven solutions [3], [4].
+Regardless of growing awareness of sustainability, many reusable materials generated from campus events, exhibitions, creative projects, toy-making, and DIY activities continue to be discarded after a single use. Materials such as PVC banners, foam boards, fabric decorations, acrylic displays, miniature dioramas, packaging materials, and cosplay props often remain in good condition after an event or project but are disposed of because there is no dedicated platform that enables users to easily identify, exchange, or repurpose these materials. At the same time, student organisations, event organisers, cosplayers, and DIY creators frequently purchase new materials or equipment even though similar resources may already exist within their local community.
+
+
+
+
+2.0 Problem Statement
+Campus events, exhibitions, creative projects, and DIY activities generate a considerable number of temporary materials such as PVC banners, foam boards, decorations, cosplay fabric, doll and toy parts, and packaging. Although many of these materials remain in good condition after use, they are often discarded because there is no convenient platform that enables users to reuse, exchange, or repurpose them. We also noticed that organizers and hobbyists often buy expensive tools like PA systems, projectors, airbrushes, or even sewing machines just for one-off events or single craft projects. After that, they just sit in a storeroom gathering dust, which is definitely a huge waste of resources. This practice increases unnecessary waste and contributes to the inefficient use of resources, which is contrary to the principles of the Circular Economy and United Nations Sustainable Development Goal 12 (SDG 12): Responsible Consumption and Production [1], [3].
+2.1 Market Gap Analysis
+Existing platforms such as Carousell and Facebook Marketplace support the buying and selling of second-hand goods but are designed for general consumer products rather than event materials or creative project supplies. Similarly, recycling applications mainly focus on waste classification and recycling education without providing features for exchanging reusable materials or lending specialised equipment. Consequently, event organisers, student societies, cosplayers, and DIY creators still lack a dedicated platform that integrates material identification, resource sharing, and equipment lending within a single application.
+2.2 Motivation
+To address this gap, this project proposes PropCycle, a mobile application that combines AI-powered material identification, a community marketplace, and a peer-to-peer equipment lending platform. The application enables users to scan leftover materials for recycling or upcycling recommendations, sell and lend or borrow specialised equipment instead of purchasing new items. By extending the life cycle of materials and promoting collaborative resource sharing, PropCycle aims to reduce waste generation, minimise unnecessary consumption, and support the objectives of UN Sustainable Development Goal 12.
+ 
+3.0 Proposed Idea/ Solutions/ Contributions
+We want to solve this problem by creating a closed-loop system where one event's trash naturally becomes the next event's treasure. To make this actually work in real life, we combine three main features into one app: 
+•	AI Smart Scanner: The biggest issue right now is that organizers just don't know if a material like EVA foam or PVC signage can be recycled, or what else they can do with it. So, we are integrating the Google Gemini API into our app. Users can just take a photo of their leftover event materials. The AI will instantly act as a sustainability expert—it will tell them what material it is, if it can be recycled here in Malaysia, and generate creative upcycling ideas. For example, the AI might suggest turning an old banner into a waterproof bag. By giving them this instant info, we really want to encourage them to change their behaviour from just throwing things away to actively reuse them. 
+•	Material Marketplace (Closing the Loop): To close the loop and solve the huge waste problem, we are building a Material Marketplace. Event organizers can list their leftover stage decorations, paints, or fabric offcuts for sale, donation, or pickup. Creative makers, cosplayers, toy miniaturists, and art students can just browse this marketplace to find cheap or free raw materials for their specific niches. This feature completely solves the issue of having no dedicated platform for event and creative project waste. 
+•	Peer-to-Peer (P2P) Equipment Lending (Resource Optimisation): We also noticed that event organizers and DIY crafters often buy expensive tools like PA systems, spray, spotlights, or even heat guns just for one-off events. After that, these items just sit in a storeroom, which is definitely a huge waste of resources. To fix this, PropCycle has a P2P Lending module where users can just rent or borrow these tools from other people in the community instead of buying new ones. This module will have an interactive map powered by Maps API to find nearby equipment, an availability calendar to book dates, and in-app chat. We will definitely include a trust rating system, so people don't have to worry about their things getting stolen or broken.
+
+
+
+Our Contribution: 
+PropCycle introduces an original approach by moving beyond generic recycling applications that mainly focus on common waste such as plastic bottles, paper, and cans. Instead, it targets temporary-use materials from the event and creative sector, including exhibitions, student activities, cosplay, miniature crafting, DIY toy projects, and creative workshops, which are often overlooked.
+To the best of our knowledge, no existing application combines an AI-powered material scanner, a marketplace specifically for leftover creative materials, and a peer-to-peer equipment lending platform within one integrated system. By focusing on this niche area, PropCycle provides a unique solution for improving resource sharing, extending material lifecycles, and reducing temporary waste.
+
+
+
+
+4.0 Initial Design of Solution
+
+ 
+Figure 4.1 System Block Diagram Flow
+Mobile Application (Native Android Frontend): This will be the main interface. The planned implementation will use Java application code, Android Views with XML layouts, and AndroidX libraries. It will retain the AI Scanner, Material Marketplace, P2P Lending, authentication, dashboard, maps, communication, notifications, profile, and settings functions shown in the proposal.
+Cloud Service (Firebase): Firebase is planned as the cloud platform. Firebase Authentication will handle accounts, Cloud Firestore will store user, marketplace, lending, request, activity, notification, and participant-only real-time chat data, and Cloud Storage will store explicitly published images. Firebase Security Rules and App Check will protect these services.
+External AI Service (Gemini): The planned Android client will access Gemini through the Firebase AI Logic Java SDK. The proxy will keep the provider key off the installed application, while Remote Config will hold the selected stable model and prompt version. Users will review and may edit AI-generated details before saving or publishing them.
+Google Maps Platform: The native Maps SDK for Android, Places SDK for Android, and Fused Location Provider will display item/equipment locations and find nearby recycling drop-off points. The app will request foreground location only and provide a manual-location fallback.
+Local Storage: Room 2.8.x is planned as a compile-time checked layer over the phone's SQLite database for account-scoped scan cache/history, offline drafts, and the sync outbox. This will reduce repeated AI requests and keep saved scans/drafts available when the network is unavailable.
+
+4.1 Initial Mock-Up UI Design
+The mock-up user interface was created to show how users will interact with the proposed mobile application before the actual development stage. The design focuses on a clean and simple layout to make the application easy to use. Users can access features such as AI scanning, buying and selling, lending, messaging, and profile management through a clear navigation flow. The following figures present the main interfaces of the proposed application.
+
+ 
+Figure 4.1.1 Authentication Pages
+Figure 4.1.1 shows the authentication process of the application. Users first enter the welcome page before proceeding to the login page. New users can create an account by filling in their personal information, while existing users sign in using an implementation-supported account method. The mock-up's email/phone/username wording requires a final security and UI-copy decision before implementation. After a successful login, users will be directed to the Home Dashboard to access the application's features.
+ 
+Figure 4.1.2 Home Dashboard
+Figure 4.1.2 presents the Home Dashboard, which is the main page users see after logging in. From this page, users can search for resources, access the AI Smart Scanner, and navigate to different features of the application. The dashboard also provides quick access to the Recent Activities page, where users can review their latest actions, including items they have listed, recycled, sold, or borrowed.
+ 
+Figure 4.1.3 AI Smart Scanner
+Figure 4.1.3 illustrates how the AI Smart Scanner helps users identify reusable or recyclable items. Users can scan an item using the camera, and the application will generate an AI identification result with suggested actions. Based on the recommendation, users can choose to create a marketplace listing or publish the item for lending. The AI-generated information can also be reviewed and edited before the listing is submitted, making the process faster and more convenient. If users choose to recycle the scanned item, the app will navigate to a map that displays nearby recycling centres so the user can select a practical drop-off option.
+ 
+Figure 4.1.4 Marketplace Module
+Figure 4.1.4 shows the Marketplace module, where users can browse reusable items shared by the community. Users can search for available listings, view detailed information about an item, and contact the seller through the built-in chat feature. This module makes it easier for users to buy, sell, and exchange reusable resources while encouraging sustainable consumption.
+
+ 
+Figure 4.1.5 Lending Module
+Figure 4.1.5 shows the lending module, which allows users to borrow and lend reusable items within the community. Users can first search for nearby available resources through the map or browse the lending listings. After selecting an item, they can view the detailed information, including its description and estimated environmental impact. If interested, users can contact the owner directly through the built-in chat function to discuss borrowing arrangements.
+
+ Figure 4.1.6 Communication and User Management
+
+Figure 4.1.6 presents the supporting communication and user-management functions. The notification page keeps users informed about new activities and updates, while the messaging page displays all ongoing conversations. Users can also manage application preferences through the settings page and view their personal information, eco badges, and published listings from the profile page.
+
+4.2 Implementation Technology Revision (Planning Addendum)
+
+The implementation approach is revised as follows while preserving the original functional and UI scope:
+
+• Platform and language: Native Android, with Java 17 as the team-owned application language. Kotlin application source and Jetpack Compose are not planned.
+• User interface: Android Views, XML layouts, Material Components, View Binding, Fragments, and the Navigation Component. The designer's twenty drawn screens and radial home menu remain the visual baseline.
+• Architecture: A single Activity will host feature Fragments. Java ViewModels will expose screen state, while repositories will isolate Firebase, Room, AI, camera, map, and location services.
+• Device storage: Room over SQLite will store, update, and retrieve account-scoped scan cache/history, drafts, and pending sync operations.
+• Native integrations: CameraX and Android Photo Picker will handle images; Maps/Places and Fused Location will handle discovery; WorkManager will retry reliable account-scoped pending work.
+• Android baseline: The plan uses API 24 as the minimum and API 36 as the compile/target level, with JDK 17. Exact stable dependency patches will be locked only when the native project is approved and created.
+• Repository transition: At the user's explicit direction, the obsolete Expo/React Native source, configuration, dependencies, generated output, default assets, and old `.env` were removed on 5 August 2026. No native code has been generated. The future Java/XML Gradle project starts at the repository root only after `plan.md` is approved.
+
+The detailed screen contract, data model, security rules, testing strategy, team ownership, remaining schedule, risks, and approval gates are maintained in `plan.md`.
+
+Reference-list status: citations [1]-[4] are retained from the source proposal text, but their bibliography is not present in this Markdown working copy. The team must copy and verify its authoritative references before treating this file as submission-ready; no citation details have been invented here.
