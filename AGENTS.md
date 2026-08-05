@@ -1,16 +1,16 @@
 # PropCycle Native Android Direction
 
-## Current phase: planning hold
+## Current phase: environment bootstrap (no feature code)
 
-Do not create or modify application implementation files until the user/team explicitly approves the native plan in `plan.md` and authorises coding.
+The user has authorised creation of the native Android project environment, directory structure, manifest, Gradle configuration, and empty source/resource placeholders. Do not implement screens, business logic, integrations, or feature code until separately authorised.
 
-During the planning hold:
+During environment bootstrap:
 
-- Documentation-only changes are allowed.
 - The obsolete Expo/React Native source, configuration, generated output, dependencies, default assets, and `.env` were removed on 5 August 2026 at the user's explicit direction. Do not restore that stack.
 - Preserve the proposal/course documents and planning files that remain in the repository.
-- Do not generate an Android project, install dependencies, or add Java/XML application source during this hold.
-- Reserve the repository root for the future native Gradle project after approval; do not create an `android-native/` side project.
+- Create the native Gradle project at the repository root; do not create an `android-native/` side project.
+- Keep Java source and feature XML resources empty/placeholders only. A minimal manifest and Gradle configuration are permitted so the skeleton can be verified.
+- Do not add Firebase, Maps, AI, CameraX, Room, UI, navigation, or other feature dependencies during this bootstrap.
 - Treat the external `C:\Users\B2B\Downloads\Group7-PropCycle.pdf` as the UI/module source of truth and `plan.md` as the implementation-planning source of truth.
 
 ## Direction after explicit implementation approval

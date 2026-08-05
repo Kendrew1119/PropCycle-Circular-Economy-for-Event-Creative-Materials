@@ -4,7 +4,7 @@
 > **Re-planning date:** 5 August 2026<br>
 > **Course:** UCCD3223 Mobile Applications Development, June 2026 Trimester<br>
 > **Team:** Group 7, four members<br>
-> **Status:** Planning only - native implementation has not started<br>
+> **Status:** Environment bootstrap authorised; no feature implementation has started<br>
 > **Target platform:** Android only<br>
 > **Primary implementation language:** Java
 
@@ -18,7 +18,7 @@ This document is the single source of truth for the native Android implementatio
 2. Treat the proposal mock-ups as the screen and flow authority.
 3. Use native Android Views with XML layouts; do not use Jetpack Compose.
 4. Write team-owned Android application source in Java.
-5. Do not begin native implementation until the team approves this plan.
+5. Environment/bootstrap files may be created; do not begin native feature implementation until the team approves the remaining open decisions.
 6. Keep the obsolete Expo/React Native stack deleted as explicitly directed on 5 August 2026; do not restore it or create a side-by-side legacy tree.
 7. Do not embed unrestricted Gemini, Firebase Admin, or Google Maps credentials in the application.
 
@@ -595,16 +595,16 @@ This schedule assumes plan approval by 6 August 2026 and four parallel contribut
 
 No new feature begins after 29 August. Only release-blocking correctness, security, accessibility, and crash fixes are accepted after the release candidate.
 
-## 15. Native bootstrap procedure - not authorised yet
+## 15. Native bootstrap procedure - environment setup authorised
 
-Repository cleanup is complete: on 5 August 2026, the user explicitly authorised direct deletion of the obsolete Expo/React Native source, Node/Expo configuration and dependencies, generated output, placeholder services/database files, default Expo assets/licence boilerplate, and old `.env`. No Java/XML application project was created.
+Repository cleanup is complete: on 5 August 2026, the user explicitly authorised direct deletion of the obsolete Expo/React Native source, Node/Expo configuration and dependencies, generated output, placeholder services/database files, default Expo assets/licence boilerplate, and old `.env`. The user subsequently authorised an environment-only native Gradle skeleton at the repository root; it contains no feature code, activities, layouts, or service integrations.
 
-The following implementation sequence begins only when the user/team explicitly authorises coding:
+The environment portion of this sequence is authorised. Feature implementation begins only when the user/team explicitly authorises coding:
 
 1. Review and approve this plan, open decisions, namespace, design assets/tokens, and ownership.
 2. Retrieve/recreate Firebase, Maps, and AI configuration from the owning consoles; do not treat the deleted `.env` or Git history as a secret store.
-3. Create the native Gradle project at the repository root with one `:app` module.
-4. Configure Java 17, Groovy Gradle scripts, API 36 compile/target, API 24 minimum, Views/XML, View Binding, Navigation, Hilt, Room schema export, and test runners.
+3. Create the native Gradle project at the repository root with one `:app` module. **Completed as an environment-only skeleton:** Gradle wrapper, root/app Groovy build scripts, API 24/36 configuration, provisional application ID, minimal manifest, and empty non-code placeholders.
+4. Confirm namespace, then configure feature-level Views/XML, Navigation, Hilt, Room schema export, and test runners only when coding is authorised.
 5. Connect a separate development Firebase project/emulators and deploy deny-by-default rule skeletons before real data.
 6. Validate Play Console/project-Owner access and the signed-APK App Check plan (or formally accept OD-14 fallback), restricted Maps key, AI quota/budget controls, and UID-scoped media/outbox design.
 7. Implement the scheduled vertical slices without restoring or converting TypeScript/Expo source.
@@ -642,7 +642,7 @@ These choices do not block documentation, but they must be closed before the rel
 
 | ID | Decision | Recommended default |
 |---|---|---|
-| OD-01 | Android application ID/namespace | A university/team-owned reverse-domain ID that will not change after Firebase registration |
+| OD-01 | Android application ID/namespace | Provisional `com.propcycle.app` is used only for the environment skeleton; confirm a university/team-owned reverse-domain ID before Firebase registration or signing |
 | OD-02 | Authentication promise in the mock-up | Email/password for release; phone requires a separate SMS OTP flow, and username login needs a secure backend design rather than a misleading text field |
 | OD-03 | Firebase environments | Separate development/emulator data from the final production project |
 | OD-04 | Final colours, font, logo, and icon | Designer signs off the provisional green palette and supplied assets before UI freeze |

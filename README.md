@@ -4,7 +4,7 @@
 > **University:** Universiti Tunku Abdul Rahman (UTAR)<br>
 > **Theme:** UN SDG 12 - Responsible Consumption and Production<br>
 > **Team:** Group 7, four members<br>
-> **Current phase:** Native Android planning only
+> **Current phase:** Native Android environment bootstrap; no feature code
 
 PropCycle helps campus event organisers, creative makers, cosplayers, toy miniaturists, and DIY communities keep useful materials and equipment in circulation. A user can identify a material with Gemini-assisted scanning, sell/donate/exchange leftover materials, find a recycling centre, or lend and borrow equipment through one connected Android application.
 
@@ -56,7 +56,9 @@ The supplied proposal PDF is the authority for the twenty drawn screens and thei
 
 At the user's explicit direction, the obsolete Expo/React Native implementation was removed from the working tree on 5 August 2026. This includes the Node dependency tree, Expo/Node configuration, TS/TSX application source, generated output, placeholder database/service files, default Expo imagery/licence boilerplate, and the old `.env`.
 
-- There is no React Native/Expo application and no native Gradle project yet.
+- There is no React Native/Expo application. A native Android Gradle skeleton now exists at the repository root, with no feature code, activities, layouts, or service integrations.
+- The skeleton uses provisional namespace/application ID `com.propcycle.app`; confirm it before Firebase registration, signing, or release.
+- Android Studio and Android SDK Platform 36 are configured locally through ignored `local.properties`. The wrapper is pinned to Gradle 9.5 and the project uses Android Gradle Plugin 9.3.0 with Java 17 source compatibility.
 - The repository currently retains planning documents, course documents, project/agent guidance, and generic editor settings.
 - Native development will use the repository root after this plan is approved; no parallel `android-native/` tree is planned.
 - The deleted `.env` is not a credential source. Firebase, Maps, and AI configuration must be retrieved or recreated through the relevant consoles during the approved setup and must never be committed.
@@ -84,7 +86,7 @@ Native coding remains on hold until the team confirms:
 - team ownership, remaining dates, testing, and release gates;
 - exact authentication, marketplace, lending-fee, and optional-enhancement decisions.
 
-After approval, the team follows the native bootstrap sequence and vertical-slice schedule in `plan.md`. No automated source conversion is planned.
+The environment bootstrap is authorised, but feature work remains on hold. After the remaining product decisions are approved, the team follows the vertical-slice schedule in `plan.md`. No automated source conversion is planned.
 
 ## Team ownership
 
