@@ -1,0 +1,247 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function currentUid() {
+      return request.auth.uid;
+    }
+
+    function boundedString(value, minimum, maximum) {
+      return value is string
+          && value.size() >= minimum
+          && value.size() <= maximum;
+    }
+
+    function validProfile() {
+      return request.resource.data.keys().hasAll([
+            'displayName', 'createdAt', 'updatedAt'
+          ])
+          && request.resource.data.keys().hasOnly([
+            'displayName', 'createdAt', 'updatedAt'
+          ])
+          && boundedString(request.resource.data.displayName, 1, 80)
+          && request.resource.data.createdAt is timestamp
+          && request.resource.data.updatedAt is timestamp;
+    }
+
+    function validCategory(category) {
+      return category in [
+        'banner', 'decoration', 'fabric', 'stationery', 'craft', 'cosplay',
+        'toys', 'wood', 'electronic', 'packaging', 'other'
+      ];
+    }
+
+    function validCondition(condition) {
+      return condition in ['new', 'like_new', 'good', 'fair', 'poor'];
+    }
+
+    function validTransaction(data) {
+      return data.transactionIntent in ['sale', 'donation', 'exchange']
+          && data.priceMinor is int
+          && data.priceMinor >= 0
+          && data.priceMinor <= 100000000
+          && data.exchangeTerms is string
+          && data.exchangeTerms.size() <= 500
+          && (
+            (data.transactionIntent == 'sale'
+                && data.priceMinor > 0
+                && data.exchangeTerms == '')
+            || (data.transactionIntent == 'donation'
+                && data.priceMinor == 0
+                && data.exchangeTerms == '')
+            || (data.transactionIntent == 'exchange'
+                && data.priceMinor == 0
+                && data.exchangeTerms.size() > 0)
+          );
+    }
+
+    function validNullableImageUrl(imageUrl) {
+      return imageUrl == null
+          || (imageUrl is string && imageUrl.size() <= 2048);
+    }
+
+    function validListing() {
+      return request.resource.data.keys().hasAll([
+            'ownerId', 'title', 'titleNormalized', 'description', 'category',
+            'condition', 'transactionIntent', 'fulfilmentMethod', 'priceMinor',
+            'exchangeTerms', 'imageUrl', 'status', 'createdAt', 'updatedAt'
+          ])
+          && request.resource.data.keys().hasOnly([
+            'ownerId', 'title', 'titleNormalized', 'description', 'category',
+            'condition', 'transactionIntent', 'fulfilmentMethod', 'priceMinor',
+            'exchangeTerms', 'imageUrl', 'status', 'createdAt', 'updatedAt'
+          ])
+          && boundedString(request.resource.data.ownerId, 1, 128)
+          && boundedString(request.resource.data.title, 1, 120)
+          && boundedString(request.resource.data.titleNormalized, 1, 120)
+          && request.resource.data.description is string
+          && request.resource.data.description.size() <= 2000
+          && validCategory(request.resource.data.category)
+          && validCondition(request.resource.data.condition)
+          && validTransaction(request.resource.data)
+          && request.resource.data.fulfilmentMethod in ['pickup', 'meetup']
+          && validNullableImageUrl(request.resource.data.imageUrl)
+          && request.resource.data.status in ['available', 'withdrawn']
+          && request.resource.data.createdAt is timestamp
+          && request.resource.data.updatedAt is timestamp;
+    }
+
+    function listing(listingId) {
+      return get(/databases/$(database)/documents/marketplaceListings/$(listingId)).data;
+    }
+
+    function validNewThread(threadId) {
+      let data = request.resource.data;
+      let source = listing(data.contextId);
+      return data.keys().hasAll([
+            'contextType', 'contextId', 'contextTitle', 'ownerUid', 'contactUid',
+            'participantIds', 'lastMessageId', 'lastMessageText',
+            'lastMessageSenderId', 'lastMessageAt', 'createdAt', 'updatedAt'
+          ])
+          && data.keys().hasOnly([
+            'contextType', 'contextId', 'contextTitle', 'ownerUid', 'contactUid',
+            'participantIds', 'lastMessageId', 'lastMessageText',
+            'lastMessageSenderId', 'lastMessageAt', 'createdAt', 'updatedAt'
+          ])
+          && data.contextType == 'marketplace'
+          && boundedString(data.contextId, 1, 128)
+          && boundedString(data.contextTitle, 1, 120)
+          && boundedString(data.ownerUid, 1, 128)
+          && boundedString(data.contactUid, 1, 128)
+          && data.ownerUid != data.contactUid
+          && data.contactUid == currentUid()
+          && data.participantIds == [data.ownerUid, data.contactUid]
+          && threadId == 'marketplace_' + data.contextId + '_'
+              + data.ownerUid + '_' + data.contactUid
+          && source.ownerId == data.ownerUid
+          && source.title == data.contextTitle
+          && source.status == 'available'
+          && data.lastMessageId == ''
+          && data.lastMessageText == ''
+          && data.lastMessageSenderId == ''
+          && data.lastMessageAt == request.time
+          && data.createdAt == request.time
+          && data.updatedAt == request.time;
+    }
+
+    function isThreadParticipant(threadId) {
+      let thread = get(
+          /databases/$(database)/documents/chatThreads/$(threadId)).data;
+      return signedIn() && currentUid() in thread.participantIds;
+    }
+
+    function validThreadMessageUpdate(threadId) {
+      let data = request.resource.data;
+      let message = getAfter(
+          /databases/$(database)/documents/chatThreads/$(threadId)/messages/$(data.lastMessageId)).data;
+      return currentUid() in resource.data.participantIds
+          && data.diff(resource.data).affectedKeys().hasOnly([
+            'lastMessageId', 'lastMessageText', 'lastMessageSenderId',
+            'lastMessageAt', 'updatedAt'
+          ])
+          && boundedString(data.lastMessageId, 20, 80)
+          && boundedString(data.lastMessageText, 1, 2000)
+          && data.lastMessageSenderId == currentUid()
+          && data.lastMessageAt == request.time
+          && data.updatedAt == request.time
+          && message.clientOperationId == data.lastMessageId
+          && message.senderId == data.lastMessageSenderId
+          && message.text == data.lastMessageText
+          && message.sentAt == data.lastMessageAt;
+    }
+
+    function validNewMessage(threadId, messageId) {
+      let data = request.resource.data;
+      let threadAfter = getAfter(
+          /databases/$(database)/documents/chatThreads/$(threadId)).data;
+      return data.keys().hasAll([
+            'senderId', 'text', 'clientOperationId', 'sentAt'
+          ])
+          && data.keys().hasOnly([
+            'senderId', 'text', 'clientOperationId', 'sentAt'
+          ])
+          && data.senderId == currentUid()
+          && boundedString(data.text, 1, 2000)
+          && data.text.matches('.*\\S.*')
+          && boundedString(data.clientOperationId, 20, 80)
+          && data.clientOperationId == messageId
+          && data.sentAt == request.time
+          && threadAfter.lastMessageId == messageId
+          && threadAfter.lastMessageText == data.text
+          && threadAfter.lastMessageSenderId == data.senderId
+          && threadAfter.lastMessageAt == data.sentAt
+          && threadAfter.updatedAt == data.sentAt;
+    }
+
+    match /users/{uid} {
+      allow get: if signedIn();
+      allow list: if false;
+      allow create: if signedIn()
+          && currentUid() == uid
+          && validProfile()
+          && request.resource.data.createdAt == request.time
+          && request.resource.data.updatedAt == request.time;
+      allow update: if signedIn()
+          && currentUid() == uid
+          && validProfile()
+          && request.resource.data.createdAt == resource.data.createdAt
+          && request.resource.data.updatedAt == request.time
+          && request.resource.data.diff(resource.data).affectedKeys()
+              .hasOnly(['displayName', 'updatedAt']);
+      allow delete: if false;
+    }
+
+    match /marketplaceListings/{listingId} {
+      allow get: if signedIn()
+          && (resource.data.status == 'available'
+              || resource.data.ownerId == currentUid());
+      allow list: if signedIn()
+          && request.query.limit != null
+          && request.query.limit <= 50
+          && resource.data.status == 'available';
+      allow create: if signedIn()
+          && request.resource.data.ownerId == currentUid()
+          && exists(/databases/$(database)/documents/users/$(currentUid()))
+          && validListing()
+          && request.resource.data.status == 'available'
+          && request.resource.data.createdAt == request.time
+          && request.resource.data.updatedAt == request.time;
+      allow update: if signedIn()
+          && resource.data.ownerId == currentUid()
+          && request.resource.data.ownerId == resource.data.ownerId
+          && request.resource.data.createdAt == resource.data.createdAt
+          && request.resource.data.updatedAt == request.time
+          && validListing();
+      allow delete: if false;
+    }
+
+    match /chatThreads/{threadId} {
+      allow get: if signedIn() && currentUid() in resource.data.participantIds;
+      allow list: if signedIn()
+          && request.query.limit != null
+          && request.query.limit <= 50
+          && currentUid() in resource.data.participantIds;
+      allow create: if signedIn() && validNewThread(threadId);
+      allow update: if signedIn() && validThreadMessageUpdate(threadId);
+      allow delete: if false;
+
+      match /messages/{messageId} {
+        allow get: if isThreadParticipant(threadId);
+        allow list: if isThreadParticipant(threadId)
+            && request.query.limit != null
+            && request.query.limit <= 100;
+        allow create: if isThreadParticipant(threadId)
+            && validNewMessage(threadId, messageId);
+        allow update, delete: if false;
+      }
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

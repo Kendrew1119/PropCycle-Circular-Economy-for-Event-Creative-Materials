@@ -2,6 +2,18 @@ plugins {
     id 'com.android.application'
 }
 
+def hasFirebaseConfig = file('google-services.json').exists()
+def useFirebaseEmulators = (project.findProperty('useFirebaseEmulators') ?: 'false').toBoolean()
+
+if (hasFirebaseConfig) {
+    apply plugin: 'com.google.gms.google-services'
+} else {
+    logger.lifecycle(
+            'Firebase configuration not found: app/google-services.json. ' +
+            'The app will build with Firebase features disabled.'
+    )
+}
+
 android {
     namespace 'com.propcycle.app'
     compileSdk 36
@@ -12,9 +24,12 @@ android {
         targetSdk 36
         versionCode 1
         versionName '0.1.0'
+
+        buildConfigField 'boolean', 'USE_FIREBASE_EMULATORS', useFirebaseEmulators.toString()
     }
 
     buildFeatures {
+        buildConfig true
         viewBinding true
     }
 
@@ -22,4 +37,23 @@ android {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
+}
+
+dependencies {
+    implementation 'androidx.appcompat:appcompat:1.7.1'
+    implementation 'com.google.android.material:material:1.14.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.2.2'
+    implementation 'androidx.navigation:navigation-fragment:2.9.8'
+    implementation 'androidx.recyclerview:recyclerview:1.4.0'
+
+    def lifecycleVersion = '2.11.0'
+    implementation "androidx.lifecycle:lifecycle-viewmodel:${lifecycleVersion}"
+    implementation "androidx.lifecycle:lifecycle-livedata:${lifecycleVersion}"
+    implementation "androidx.lifecycle:lifecycle-common-java8:${lifecycleVersion}"
+
+    implementation platform('com.google.firebase:firebase-bom:34.17.0')
+    implementation 'com.google.firebase:firebase-auth'
+    implementation 'com.google.firebase:firebase-firestore'
+
+    testImplementation 'junit:junit:4.13.2'
 }

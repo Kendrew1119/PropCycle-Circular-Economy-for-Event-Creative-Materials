@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/pc_background"
+    android:clipToPadding="false"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingStart="@dimen/screen_horizontal"
+        android:paddingTop="@dimen/space_md"
+        android:paddingEnd="@dimen/screen_horizontal"
+        android:paddingBottom="@dimen/space_xl">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/menu_button"
+                style="@style/Widget.PropCycle.IconButton"
+                android:contentDescription="@string/menu"
+                android:src="@drawable/ic_menu" />
+
+            <TextView
+                style="@style/TextAppearance.PropCycle.Heading"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_weight="1"
+                android:text="Lend Out" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="54dp"
+            android:layout_marginTop="@dimen/space_md"
+            android:background="@drawable/bg_field"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="18dp"
+            android:paddingEnd="18dp">
+
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:contentDescription="Search"
+                android:src="@drawable/ic_search"
+                app:tint="@color/pc_ink" />
+
+            <TextView
+                style="@style/TextAppearance.PropCycle.Body"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_weight="1"
+                android:text="Search..."
+                android:textColor="@color/pc_text_secondary" />
+        </LinearLayout>
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_md"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="64dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/bg_pill_dark"
+                    android:gravity="center"
+                    android:text="All"
+                    android:textColor="@color/pc_white"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="94dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="@dimen/space_sm"
+                    android:background="@drawable/bg_pill"
+                    android:gravity="center"
+                    android:text="Equipment"
+                    android:textColor="@color/pc_ink" />
+
+                <TextView
+                    android:layout_width="90dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="@dimen/space_sm"
+                    android:background="@drawable/bg_pill"
+                    android:gravity="center"
+                    android:text="Materials"
+                    android:textColor="@color/pc_ink" />
+
+                <TextView
+                    android:layout_width="82dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="@dimen/space_sm"
+                    android:background="@drawable/bg_pill"
+                    android:gravity="center"
+                    android:text="Nearby"
+                    android:textColor="@color/pc_ink" />
+            </LinearLayout>
+        </HorizontalScrollView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_md"
+            android:baselineAligned="false"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/space_sm"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/item_card"
+                    android:layout_width="match_parent"
+                    android:layout_height="230dp"
+                    android:background="@drawable/bg_card_gray"
+                    android:clickable="true"
+                    android:contentDescription="View display stand listing"
+                    android:focusable="true"
+                    android:gravity="bottom"
+                    android:orientation="vertical"
+                    android:padding="14dp">
+
+                    <TextView
+                        style="@style/TextAppearance.PropCycle.Body"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Display Stand"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        style="@style/TextAppearance.PropCycle.Caption"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="2 days  •  Nearby" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="180dp"
+                    android:layout_marginTop="@dimen/space_md"
+                    android:background="@drawable/bg_card_light"
+                    android:gravity="bottom"
+                    android:orientation="vertical"
+                    android:padding="14dp">
+
+                    <TextView
+                        style="@style/TextAppearance.PropCycle.Body"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Wooden Crates"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        style="@style/TextAppearance.PropCycle.Caption"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="1 week  •  Pick-up" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="210dp"
+                    android:layout_marginTop="@dimen/space_md"
+                    android:background="@drawable/bg_card_gray"
+                    android:gravity="bottom"
+                    android:orientation="vertical"
+                    android:padding="14dp">
+
+                    <TextView
+                        style="@style/TextAppearance.PropCycle.Body"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Fabric Panels"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/space_sm"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/item_card_secondary"
+                    android:layout_width="match_parent"
+                    android:layout_height="180dp"
+                    android:background="@drawable/bg_card_light"
+                    android:clickable="true"
+                    android:contentDescription="View photo backdrop listing"
+                    android:focusable="true"
+                    android:gravity="bottom"
+                    android:orientation="vertical"
+                    android:padding="14dp">
+
+                    <TextView
+                        style="@style/TextAppearance.PropCycle.Body"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Photo Backdrop"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        style="@style/TextAppearance.PropCycle.Caption"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="3 days  •  Available" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="245dp"
+                    android:layout_marginTop="@dimen/space_md"
+                    android:background="@drawable/bg_card_gray"
+                    android:gravity="bottom"
+                    android:orientation="vertical"
+                    android:padding="14dp">
+
+                    <TextView
+                        style="@style/TextAppearance.PropCycle.Body"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="LED Light Set"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        style="@style/TextAppearance.PropCycle.Caption"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Weekend  •  Nearby" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="175dp"
+                    android:layout_marginTop="@dimen/space_md"
+                    android:background="@drawable/bg_card_light"
+                    android:gravity="bottom"
+                    android:orientation="vertical"
+                    android:padding="14dp">
+
+                    <TextView
+                        style="@style/TextAppearance.PropCycle.Body"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Signage Frames"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

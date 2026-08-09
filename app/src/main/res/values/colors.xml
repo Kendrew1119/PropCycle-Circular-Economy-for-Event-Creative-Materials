@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Core light eco palette. -->
+    <color name="pc_primary">#1F5C42</color>
+    <color name="pc_on_primary">#FFFFFF</color>
+    <color name="pc_primary_container">#C3DDCB</color>
+    <color name="pc_on_primary_container">#173F30</color>
+
+    <color name="pc_accent">#D28A36</color>
+    <color name="pc_on_accent">#2B1B08</color>
+    <color name="pc_accent_container">#F8E3C8</color>
+    <color name="pc_on_accent_container">#4B2C08</color>
+
+    <color name="pc_background">#F7F8F3</color>
+    <color name="pc_surface">#FFFFFF</color>
+    <color name="pc_surface_container">#E2F0E6</color>
+    <color name="pc_surface_container_high">#C3DDCB</color>
+    <color name="pc_text_primary">#18231E</color>
+    <color name="pc_text_secondary">#526159</color>
+    <color name="pc_text_muted">#56675E</color>
+    <color name="pc_outline">#5F7066</color>
+    <color name="pc_icon">#1F5C42</color>
+    <color name="pc_error">#B3261E</color>
+    <color name="pc_on_error">#FFFFFF</color>
+    <color name="pc_scrim">#660D2419</color>
+    <color name="pc_transparent">#00000000</color>
+
+    <!-- Compatibility names retained for proposal layouts while they migrate. -->
+    <color name="pc_surface_mid">@color/pc_surface_container</color>
+    <color name="pc_surface_dark">@color/pc_text_muted</color>
+    <color name="pc_ink">@color/pc_text_primary</color>
+    <color name="pc_border">@color/pc_outline</color>
+    <color name="pc_white">@color/pc_on_primary</color>
+</resources>

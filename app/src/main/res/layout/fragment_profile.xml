@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/pc_background"
+    android:clipToPadding="false"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingStart="@dimen/screen_horizontal"
+        android:paddingTop="@dimen/space_md"
+        android:paddingEnd="@dimen/screen_horizontal"
+        android:paddingBottom="@dimen/space_xl">
+
+        <ImageButton
+            android:id="@+id/menu_button"
+            style="@style/Widget.PropCycle.IconButton"
+            android:contentDescription="@string/menu"
+            android:src="@drawable/ic_menu" />
+
+        <TextView
+            android:id="@+id/profile_avatar_initial"
+            android:layout_width="104dp"
+            android:layout_height="104dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/space_sm"
+            android:background="@drawable/bg_circle_gray"
+            android:contentDescription="User profile picture"
+            android:gravity="center"
+            android:text="U"
+            android:textColor="@color/pc_ink"
+            android:textSize="36sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/profile_name"
+            style="@style/TextAppearance.PropCycle.Title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:gravity="center"
+            android:text="User Name" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="112dp"
+            android:layout_marginTop="@dimen/space_lg"
+            android:background="@drawable/bg_card_gray"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            android:paddingStart="@dimen/space_lg"
+            android:paddingEnd="@dimen/space_lg">
+
+            <TextView
+                style="@style/TextAppearance.PropCycle.Body"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="12 items given a second life"
+                android:textStyle="bold" />
+
+            <TextView
+                style="@style/TextAppearance.PropCycle.Caption"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_sm"
+                android:text="Member since 2026  •  Community contributor" />
+        </LinearLayout>
+
+        <TextView
+            style="@style/TextAppearance.PropCycle.Title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_lg"
+            android:text="Eco Badges" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="92dp"
+                android:layout_marginEnd="@dimen/space_sm"
+                android:layout_weight="1"
+                android:background="@drawable/bg_card_dark"
+                android:contentDescription="Eco badge: First Scan"
+                android:gravity="center"
+                android:text="01\nSCAN"
+                android:textAlignment="center"
+                android:textColor="@color/pc_white"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="92dp"
+                android:layout_marginStart="@dimen/space_xs"
+                android:layout_marginEnd="@dimen/space_xs"
+                android:layout_weight="1"
+                android:background="@drawable/bg_card_gray"
+                android:contentDescription="Eco badge: Sharer"
+                android:gravity="center"
+                android:text="02\nSHARE"
+                android:textAlignment="center"
+                android:textColor="@color/pc_ink"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="92dp"
+                android:layout_marginStart="@dimen/space_sm"
+                android:layout_weight="1"
+                android:background="@drawable/bg_card_light"
+                android:contentDescription="Eco badge: Recycler"
+                android:gravity="center"
+                android:text="03\nRECYCLE"
+                android:textAlignment="center"
+                android:textColor="@color/pc_ink"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <TextView
+            style="@style/TextAppearance.PropCycle.Title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_lg"
+            android:text="My Listings" />
+
+        <LinearLayout
+            android:id="@+id/item_card"
+            android:layout_width="match_parent"
+            android:layout_height="118dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_card_gray"
+            android:clickable="true"
+            android:contentDescription="Open my active marketplace listing"
+            android:focusable="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="@dimen/space_md">
+
+            <TextView
+                android:layout_width="82dp"
+                android:layout_height="82dp"
+                android:background="@drawable/bg_card_light"
+                android:gravity="center"
+                android:text="ITEM"
+                android:textColor="@color/pc_text_secondary"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/space_md"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/TextAppearance.PropCycle.Body"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Reusable Event Backdrop"
+                    android:textStyle="bold" />
+
+                <TextView
+                    style="@style/TextAppearance.PropCycle.Caption"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_sm"
+                    android:text="Active listing  •  4 views" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="@dimen/touch_target"
+                android:layout_height="@dimen/touch_target"
+                android:gravity="center"
+                android:text="›"
+                android:textColor="@color/pc_ink"
+                android:textSize="28sp" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

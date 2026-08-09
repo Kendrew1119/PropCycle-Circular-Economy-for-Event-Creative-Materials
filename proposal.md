@@ -1,6 +1,6 @@
 # PropCycle Proposal - Revised Implementation Planning Copy
 
-> **Revision note (5 August 2026):** The `Group7-PropCycle.pdf` proposal dated 15 July 2026 remains the authority for the product idea, modules, and designer mock-ups. This Markdown copy records the selected planning change from React Native/Expo to a Java-first native Android implementation. No proposal module is removed, the PDF itself is not altered, and implementation remains on hold pending plan approval.
+> **Revision note (updated 9 August 2026):** The `Group7-PropCycle.pdf` proposal dated 15 July 2026 remains the authority for the product idea, modules, and designer mock-ups. This Markdown copy records the selected change from React Native/Expo to a Java-first native Android implementation. No proposal module is removed and the PDF itself is not altered. The proposal-parity UI milestone is complete. Phase 2A now authorises Firebase email/password accounts, marketplace listings, and participant-only real-time text chat; AI, maps/location, camera/media upload, lending transactions, push, and other integrations remain deferred.
 
 1.0 Introduction
 In the rapid urbanisation of increasing consumer demand, short product life cycles have been contributing to a significant rise in global waste generation. According to the United Nations Environment Programme (UNEP), municipal solid waste is projected to increase from approximately 2.1 billion tonnes in 2023 to 3.8 billion tonnes by 2050 if current consumption patterns continue, placing increasing pressure on natural resources, ecosystems, and waste management systems [1]. As a result, governments, industries, and communities are shifting away from the traditional "take–make–dispose" linear economy towards a Circular Economy, an economic model that aims to keep products and materials in use for as long as possible through reuse, repair, refurbishment, sharing, and recycling [2]. 
@@ -47,7 +47,7 @@ The mock-up user interface was created to show how users will interact with the 
 
  
 Figure 4.1.1 Authentication Pages
-Figure 4.1.1 shows the authentication process of the application. Users first enter the welcome page before proceeding to the login page. New users can create an account by filling in their personal information, while existing users sign in using an implementation-supported account method. The mock-up's email/phone/username wording requires a final security and UI-copy decision before implementation. After a successful login, users will be directed to the Home Dashboard to access the application's features.
+Figure 4.1.1 shows the authentication process of the application. Users first enter the welcome page before proceeding to the login page. Phase 2A implements email-and-password registration and sign-in through Firebase Authentication; phone, username, and social sign-in methods remain deferred and are not promised by the current UI. After a successful login, users will be directed to the Home Dashboard to access the application's features.
  
 Figure 4.1.2 Home Dashboard
 Figure 4.1.2 presents the Home Dashboard, which is the main page users see after logging in. From this page, users can search for resources, access the AI Smart Scanner, and navigate to different features of the application. The dashboard also provides quick access to the Recent Activities page, where users can review their latest actions, including items they have listed, recycled, sold, or borrowed.
@@ -71,12 +71,12 @@ Figure 4.1.6 presents the supporting communication and user-management functions
 The implementation approach is revised as follows while preserving the original functional and UI scope:
 
 • Platform and language: Native Android, with Java 17 as the team-owned application language. Kotlin application source and Jetpack Compose are not planned.
-• User interface: Android Views, XML layouts, Material Components, View Binding, Fragments, and the Navigation Component. The designer's twenty drawn screens and radial home menu remain the visual baseline.
+• User interface: Android Views, XML layouts, Material Components, View Binding, Fragments, and the Navigation Component. The designer's twenty drawn screens and Home fan remain the visual baseline. The current UI pass adds a soft light eco-colour theme without changing that structure; Phase 2A replaces mock behavior only on account, marketplace, and text-chat screens.
 • Architecture: A single Activity will host feature Fragments. Java ViewModels will expose screen state, while repositories will isolate Firebase, Room, AI, camera, map, and location services.
 • Device storage: Room over SQLite will store, update, and retrieve account-scoped scan cache/history, drafts, and pending sync operations.
 • Native integrations: CameraX and Android Photo Picker will handle images; Maps/Places and Fused Location will handle discovery; WorkManager will retry reliable account-scoped pending work.
-• Android baseline: The plan uses API 24 as the minimum and API 36 as the compile/target level, with JDK 17. Exact stable dependency patches will be locked only when the native project is approved and created.
-• Repository transition: At the user's explicit direction, the obsolete Expo/React Native source, configuration, dependencies, generated output, default assets, and old `.env` were removed on 5 August 2026. No native code has been generated. The future Java/XML Gradle project starts at the repository root only after `plan.md` is approved.
+• Android baseline: The project uses API 24 as the minimum and API 36 as the compile/target level, with Java 17 source compatibility. Stable AndroidX/UI dependencies and the current Firebase Android BoM are locked after checking their official release channels.
+• Repository transition: At the user's explicit direction, the obsolete Expo/React Native source, configuration, dependencies, generated output, default assets, and old `.env` were removed on 5 August 2026. The native Java/XML Gradle project now lives at the repository root. On 9 August 2026, the user authorised the twenty-screen UI pass and then Phase 2A Firebase Authentication/Firestore functionality. Environment-specific Firebase configuration stays ignored; every other service integration remains deferred.
 
 The detailed screen contract, data model, security rules, testing strategy, team ownership, remaining schedule, risks, and approval gates are maintained in `plan.md`.
 

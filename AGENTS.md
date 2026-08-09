@@ -1,19 +1,26 @@
 # PropCycle Native Android Direction
 
-## Current phase: environment bootstrap (no feature code)
+## Current phase: Phase 2A Firebase essentials
 
-The user has authorised creation of the native Android project environment, directory structure, manifest, Gradle configuration, and empty source/resource placeholders. Do not implement screens, business logic, integrations, or feature code until separately authorised.
+On 9 August 2026, the user explicitly authorised the first functional backend slice after approving the twenty-screen proposal UI. Implement only the Firebase-backed essentials needed for email/password accounts, marketplace listings, conversation discovery, and participant-only real-time text chat. Keep every proposal module and screen, but leave unrelated screens as the existing static UI until their own phase is authorised.
 
-During environment bootstrap:
+During Phase 2A:
 
 - The obsolete Expo/React Native source, configuration, generated output, dependencies, default assets, and `.env` were removed on 5 August 2026 at the user's explicit direction. Do not restore that stack.
 - Preserve the proposal/course documents and planning files that remain in the repository.
 - Create the native Gradle project at the repository root; do not create an `android-native/` side project.
-- Keep Java source and feature XML resources empty/placeholders only. A minimal manifest and Gradle configuration are permitted so the skeleton can be verified.
-- Do not add Firebase, Maps, AI, CameraX, Room, UI, navigation, or other feature dependencies during this bootstrap.
+- Use the proposal's monochrome wireframes as the visual source of truth. Preserve their hierarchy, proportions, card shapes, labels, and navigation relationships while applying Android insets and accessibility requirements.
+- Preserve the proposal-faithful Java/XML UI shell. Functional loading, empty, validation, authentication-required, offline/cache, and error states may be added to the affected screens without redesigning the mock-up.
+- Firebase Authentication email/password and Cloud Firestore are authorised. Use the current Firebase Android BoM and the Google services Gradle plugin verified from official documentation.
+- Implement user profile creation, marketplace listing create/read/detail, conversation create/list, and participant-only real-time text messages. Use Security Rules, indexes, server timestamps, bounded input validation, and lifecycle-aware listener cleanup.
+- Keep `google-services.json` ignored and require each developer to obtain it from the correct Firebase project. The app must still compile and present a setup message when the file is absent; it must never fake a successful backend operation.
+- Add Firebase Emulator Suite configuration and a human-readable setup guide. Production deployment remains a deliberate manual step.
+- Do not add Cloud Storage or image uploads in this slice; listing images remain placeholders and `imageUrl` stays nullable. Do not add FCM, automated notifications, presence, or a trusted backend.
+- Do not add Maps/Places/location, Firebase AI Logic/Gemini, CameraX/Photo Picker, recycling-centre APIs, Room, Hilt, WorkManager, lending booking/rating logic, or any other API/integration yet. Their existing proposal screens remain static and visibly deferred.
+- Keep all twenty drawn screens reachable for review. Do not add the undrawn booking, return, rating, scan-history, or account-detail surfaces until their layouts are planned and separately scheduled.
 - Treat the external `C:\Users\B2B\Downloads\Group7-PropCycle.pdf` as the UI/module source of truth and `plan.md` as the implementation-planning source of truth.
 
-## Direction after explicit implementation approval
+## Direction for later functional implementation
 
 - Build a clean native Android application; do not use React Native or Expo in the target app.
 - Use Java 17 for team-authored application and test source.

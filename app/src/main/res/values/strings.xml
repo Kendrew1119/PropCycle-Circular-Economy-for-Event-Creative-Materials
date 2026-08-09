@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">PropCycle</string>
+    <string name="lending_chat_deferred">Lending chat will be connected with the lending backend in a later phase.</string>
+    <string name="menu">Open navigation menu</string>
+    <string name="back">Go back</string>
+    <string name="close">Close</string>
+    <string name="notifications">Notifications</string>
+    <string name="profile">Profile</string>
+    <string name="camera">Capture item</string>
+    <string name="gallery">Choose from gallery</string>
+    <string name="send">Send message</string>
+    <string name="home_greeting">Hey %1$s,</string>
+</resources>

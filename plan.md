@@ -4,7 +4,7 @@
 > **Re-planning date:** 5 August 2026<br>
 > **Course:** UCCD3223 Mobile Applications Development, June 2026 Trimester<br>
 > **Team:** Group 7, four members<br>
-> **Status:** Environment bootstrap authorised; no feature implementation has started<br>
+> **Status:** Proposal-parity UI complete; Phase 2A Firebase essentials authorised on 9 August 2026<br>
 > **Target platform:** Android only<br>
 > **Primary implementation language:** Java
 
@@ -18,7 +18,7 @@ This document is the single source of truth for the native Android implementatio
 2. Treat the proposal mock-ups as the screen and flow authority.
 3. Use native Android Views with XML layouts; do not use Jetpack Compose.
 4. Write team-owned Android application source in Java.
-5. Environment/bootstrap files may be created; do not begin native feature implementation until the team approves the remaining open decisions.
+5. Keep the twenty drawn proposal screens. Phase 2A may replace mock data only for email/password authentication, user-profile creation, marketplace listings, conversation discovery, and participant-only real-time text chat.
 6. Keep the obsolete Expo/React Native stack deleted as explicitly directed on 5 August 2026; do not restore it or create a side-by-side legacy tree.
 7. Do not embed unrestricted Gemini, Firebase Admin, or Google Maps credentials in the application.
 
@@ -45,12 +45,67 @@ This document is the single source of truth for the native Android implementatio
 
 Version numbers other than the Android API baseline are resolved and locked at project bootstrap. Only stable releases compatible with JDK 17, Java source, and the chosen Android Gradle Plugin may be used.
 
+### Authorised UI-first milestone - 9 August 2026
+
+The user has approved implementation of all twenty distinct screens drawn in the proposal. This is a reviewable, offline UI prototype rather than a claim that production features are complete.
+
+| Included now | Deferred until a later milestone |
+|---|---|
+| Java Activity/Fragment shell, XML layouts, shared styles/drawables, AndroidX Navigation, local click paths, and deterministic mock content | Firebase Auth/Firestore/Storage/FCM, Firebase AI Logic/Gemini, Google Maps/Places/location, CameraX/Photo Picker, Room, Hilt, WorkManager, networking, credentials, uploads, persistence, and trusted automation |
+| Welcome, Login, Register, Home, Recent Activities | Real authentication, validation against a service, session state, and persisted activity history |
+| Scanner, AI Result, Create Listing, Recycling Centre, Lend Resource | Camera/gallery input, AI inference, real maps/centres, publishing, and data validation |
+| Marketplace Browse/Detail, Conversation, Lending Map/List/Detail | Search, real inventory, real-time chat, availability, booking, return, rating, and payments |
+| Notifications, Messages, Settings, Profile | Push delivery, real conversations, persisted/system-backed settings, accounts, badges, trust, and aggregate statistics |
+
+UI fidelity rules for this milestone:
+
+- Keep the PDF's hierarchy, handwritten/cursive-style headings where shown, rounded cards, dashed/outlined containers, large image/map placeholders, and annotated three-action Home fan. Apply the approved soft, light eco-colour theme without changing that structure.
+- Keep all twenty drawn screens reachable through local navigation. On Home, the existing hamburger toggles the bottom-right Market/Share/Map fan. Any undrawn menu used elsewhere remains a review aid and must not replace visible wireframe content.
+- Use static sample labels and values where the mock-up uses `Text` or `XXXX`; this makes hierarchy legible without inventing backend behaviour.
+- The repeated lending and marketplace chat mock-up maps to one reusable Conversation UI.
+- Undrawn completion surfaces such as booking dates, returns, ratings, scan history, and account details remain in the product plan but are not part of this exact-wireframe UI pass.
+- UI controls may navigate locally or change visual state, but must not suggest that a network/API/device operation succeeded.
+
+### UI milestone implementation status - 9 August 2026
+
+| Deliverable | Status | Evidence |
+|---|---|---|
+| Planning/guardrail update | Complete | `plan.md`, `README.md`, `proposal.md`, and `AGENTS.md` distinguish the authorised UI milestone from deferred functional work |
+| Native UI shell | Complete | Java Activity/Fragment host, AndroidX Navigation graph, Android insets, shared accessible light-theme resources, Home navigation fan, review menu, and provisional launcher icon |
+| Twenty drawn proposal screens | Complete | Five auth/home, five scan/handoff, six marketplace/lending/communication, and four user/support layouts |
+| Local prototype navigation | Complete | Welcome → Login → Home → Scanner → AI Result is emulator-verified; every destination is also reachable through its planned controls or the review menu |
+| Backend/device integrations at UI-milestone close | Deferred at that checkpoint | Phase 2A subsequently authorises only Firebase Auth/Firestore for accounts, marketplace, and text chat; all other integrations remain deferred |
+| Verification | Complete for this UI milestone | Debug APK build, Android lint, resource/navigation audit, 20-screen emulator capture review, and no AndroidRuntime crash during launch |
+| Phase 2A Firebase app slice | Connected locally to the development project; console enablement/deployment pending confirmation | Java/Auth/Firestore implementation, default-deny rules, composite indexes, emulator configuration, and developer guide are present. The ignored `google-services.json` now matches `propcycle-e5f14` and `com.propcycle.app`; Email/Password must be enabled and the reviewed rules/indexes deployed |
+| Phase 2A verification | Android and Security Rules checks pass; lint dependency refresh is network-blocked | Debug assembly, 23 JVM validator tests, missing-config emulator smoke launch, 63-file XML/navigation/resource audit, and 9 Firestore Emulator rules suites pass. The Phase 2A lint rerun cannot fetch one Google Maven artifact while this PC's default DNS cannot resolve `dl.google.com`; no lint finding was emitted |
+
+### Authorised Phase 2A Firebase essentials - 9 August 2026
+
+The user has now authorised a deliberately narrow backend vertical slice. It makes the account, marketplace, and text-chat journeys real while avoiding credentials or services needed by later modules.
+
+| Implement in Phase 2A | Explicitly defer |
+|---|---|
+| Firebase email/password register, login, cached-session restore, logout, and an owner-only Firestore user-profile document | Phone/username/social authentication, account editing/deletion, avatars, badges, and aggregate statistics |
+| Firestore marketplace listing create, authenticated real-time browse/search, and listing detail; text-only fields with a nullable image URL | Cloud Storage, image capture/picking/upload, listing edit/status workflow, payment, pickup fulfilment, and trusted automation |
+| Deterministic listing-linked conversation creation, participant conversation list, and participant-only real-time text messages | Presence/online status, typing/read receipts, attachments, moderation backend, FCM push, and automated notifications |
+| Security Rules, required composite indexes, Firebase Emulator Suite configuration, client input validation, loading/empty/error/offline states, and setup documentation | Firebase AI Logic/Gemini, Maps/Places/location, recycling APIs, CameraX, Room, Hilt, WorkManager, lending booking/return/rating, and all other APIs |
+
+Phase 2A implementation rules:
+
+- Use only Java source, Android Views/XML, the Firebase Android BoM, `firebase-auth`, and `firebase-firestore`; do not add KTX artifacts.
+- Keep `google-services.json` outside Git. A missing file must not break compilation: affected screens show a Firebase setup message and never report a false success.
+- Use Firebase server timestamps and Firestore snapshot listeners. Remove listeners with the owning ViewModel/Fragment lifecycle.
+- Require authentication for all Phase 2A Firestore reads and writes. A user may update only their own profile; authenticated users may directly read a display-name profile for seller/chat identity, but profile collection enumeration is denied. Marketplace records carry an immutable owner UID, and only conversation participants may list/read/write chat data.
+- Listing media remains the proposal placeholder. `imageUrl` is nullable and no upload path is opened in this phase.
+- The existing scanner, AI result, recycle, map, lending, notifications, settings, recent-activity, and profile-support surfaces remain reviewable static UI unless a small account/session label is needed.
+- Development project `propcycle-e5f14`, Android registration, matching `app/google-services.json`, and Singapore Firestore are now present. The remaining manual steps are enabling Email/Password and deploying the reviewed rules/indexes before the two-account live test.
+
 ## 2. Course constraints and delivery targets
 
 | Milestone | Date | Planning status |
 |---|---|---|
 | Part 1 proposal | 15 July 2026, before 5:00 PM | Past milestone; confirm the team's submission record; PDF is the scope baseline |
-| Native plan approval | Target: 6 August 2026 | Pending team approval |
+| Native plan approval | 9 August 2026 | UI milestone complete and Phase 2A Firebase essentials approved; later integration decisions remain open |
 | Feature freeze | Target: 29 August 2026 | No new functionality after this point |
 | Release candidate | Target: 2 September 2026 | All release gates must pass |
 | Working app and final report | 5 September 2026, before 5:00 PM | Fixed deadline |
@@ -132,7 +187,7 @@ The PDF contains twenty distinct drawn screens. The table also separates functio
 | AUTH-01 | Welcome | PDF mock-up | Brand artwork, short purpose statement, continue action | Continue reaches login; first launch and signed-out launch are deterministic |
 | AUTH-02 | Login | PDF mock-up + platform completion | Approved identifier/authentication method, validation, sign-in, register link, progress/error state; password-reset placement requires sign-off | Valid user reaches HOME-01; invalid or offline states are explained without losing input |
 | AUTH-03 | Register | PDF mock-up + platform completion | Full name plus fields required by the approved auth method, validation, sign-in link; confirmation/terms placement requires sign-off | Creates one Firebase user/profile and prevents duplicate submission |
-| HOME-01 | Home dashboard | PDF mock-up | Greeting, resource search, Smart Scan card, Recent Activities card, notification/profile icons, and designer radial quick menu; microphone only if voice search is approved | Every control has one destination, an accessible label, and a 48dp target; no decorative control appears tappable |
+| HOME-01 | Home dashboard | PDF mock-up | Greeting, resource search, Smart Scan card, Recent Activities card, notification/profile icons, and designer Home fan; microphone only if voice search is approved | Every control has one destination, an accessible label, and a 48dp target; no decorative control appears tappable |
 | HOME-02 | Recent activities | PDF mock-up | Chronological scan, listed, recycled, sold/donated/exchanged, borrow/lend, and return events | Empty, loading, error, and populated states are implemented |
 | SCAN-01 | Smart scanner | PDF mock-up + permission fallback | Camera preview, permission rationale, capture, gallery picker, retry | A valid image reaches SCAN-02; denial offers the gallery fallback |
 | SCAN-02 | AI result and review | PDF mock-up | Item/material/category, uncalibrated model estimate, recycling guidance, upcycling ideas, impact estimate, edit/review, Save, Recycle, Marketplace, Lend | No AI output can be published before user review; every displayed next action works |
@@ -157,8 +212,8 @@ The PDF contains twenty distinct drawn screens. The table also separates functio
 - `LauncherActivity` is not required; `MainActivity` hosts one `NavHostFragment`.
 - An authentication graph contains AUTH-01 through AUTH-03.
 - An authenticated graph contains HOME-01 and every feature graph.
-- HOME-01 preserves the designer's radial quick menu. The PDF currently indicates Market, Share/Lend, and Map; final labelled destinations require designer sign-off. Smart Scan and Profile already have direct home controls and must not be duplicated without a reason.
-- The PDF draws a hamburger control but does not define its contents. A candidate accessible menu may duplicate Home, Messages, Notifications, Profile, Settings, and Logout; its inclusion, order, labels, and destinations require designer/team sign-off under OD-05.
+- HOME-01 preserves the designer's bottom-right fan. The existing top-left hamburger is the single collapsed control; tapping it reveals labelled Market, Share, and Map actions plus a close control. Market opens marketplace browse, Share opens Lend Resource, and Map opens the static Lending Map while its real API remains deferred.
+- The PDF does not define a separate full drawer. The popup available from hamburger controls on other review screens remains a prototype review aid, not an approved production information architecture.
 - Notifications and profile remain available from the home toolbar as drawn.
 - Back always returns to the previous context; top-level destinations do not create duplicate back stacks.
 - A deep link or notification validates authentication and object existence before opening a detail screen.
@@ -303,6 +358,21 @@ Package names are finalised before project generation. Do not create empty place
 
 ### Cloud Firestore collections
 
+Phase 2A intentionally implements a strict subset of the release schema. Its deployed
+contract is exactly:
+
+| Phase 2A path | Implemented fields |
+|---|---|
+| `users/{uid}` | `displayName`, `createdAt`, `updatedAt`; email remains in Firebase Authentication; authenticated direct document reads are allowed for seller identity, collection enumeration is denied, and only the owner writes |
+| `marketplaceListings/{listingId}` | immutable `ownerId`; `title`, `titleNormalized`, `description`, stable category, condition, `transactionIntent`, separate `fulfilmentMethod`, integer `priceMinor`, `exchangeTerms`, nullable `imageUrl`, `status`, `createdAt`, `updatedAt` |
+| `chatThreads/{threadId}` | marketplace context ID/title, immutable owner/contact UIDs and ordered participant list, last-message ID/text/sender/time, created/updated server timestamps |
+| `chatThreads/{threadId}/messages/{messageId}` | immutable sender UID, text, matching client operation/message ID, server timestamp |
+
+The Android Firestore SDK uses memory-only cache in this slice because its persistent
+cache is process-wide rather than partitioned by Firebase user. This prevents one
+account's private thread documents persisting on disk after logout. Durable offline
+drafts/outbox remain a later Room/WorkManager slice.
+
 | Path | Required fields and ownership |
 |---|---|
 | `users/{uid}` | `displayName`, `username` only if approved, avatar storage path, coarse public location label, badge evidence, timestamps; one general account acts contextually and the owner writes only profile-safe fields |
@@ -321,10 +391,10 @@ Firestore is not treated as a full-text search engine. The release search plan i
 
 | Path | Content |
 |---|---|
-| `chatThreads/{contextType}_{contextId}_{ownerUid}_{contactUid}` | Deterministic context-bound ID; immutable owner/contact participant UIDs, related listing/item ID/type, last-message preview/time, per-user unread/last-read metadata |
-| `chatThreads/{chatId}/messages/{messageId}` | Sender UID, text, client operation ID, server timestamp, delivery state; immutable after acknowledged send |
+| `chatThreads/{contextType}_{contextId}_{ownerUid}_{contactUid}` | Phase 2A uses a deterministic marketplace-context ID, immutable owner/contact participant UIDs, listing ID/title, and last-message preview/time; unread/last-read metadata is deferred |
+| `chatThreads/{chatId}/messages/{messageId}` | Phase 2A stores sender UID, text, client operation ID, and server timestamp; each message is immutable after creation |
 
-Firestore Rules allow access only when `auth.uid` is an immutable thread participant. On creation, rules validate the deterministic ID/fields against the related Firestore listing or lending item, require its real owner as `ownerUid`, require the authenticated user to be the owner or contact, and prevent participant/context changes. A user cannot forge another sender UID, mutate an acknowledged message, or join a thread by guessing an ID. Message unread state remains on the thread and is merged with non-chat domain notifications in USER-01, avoiding an unverifiable cross-database notification write. Online presence is excluded because it is not required by the proposal.
+Phase 2A Firestore Rules allow access only when `auth.uid` is an immutable thread participant. On marketplace-thread creation, rules validate the deterministic ID and exact fields against the related available listing, require its real owner as `ownerUid`, and require the authenticated non-owner contact to create the thread. Either participant may then send a message through an atomic message-plus-thread-preview batch. A user cannot forge another sender UID, mutate an acknowledged message, or join a thread by guessing an ID. Lending-linked threads, unread/last-read metadata, notification merging, and online presence remain later scope.
 
 ### Cloud Storage paths
 
@@ -345,7 +415,7 @@ Local drafts keep images app-private; cloud image upload starts only after an ex
 
 Room migrations are mandatory from the first released schema. Configure `room.schemaLocation`, commit exported schema JSON, and test every migration path. Destructive fallback is prohibited for user-created history and drafts. On logout, cancel that UID's scheduled Workers and prevent its rows from rendering; every Worker verifies that its recorded owner UID matches the current Firebase user before reading files or performing a remote write.
 
-Firestore persistent disk caching is disabled to avoid account A data remaining available to account B. Repositories use in-memory snapshots for public lists and UID-scoped Room for intentional private offline data. Remote writes require connectivity and explicit completion; the app does not present an unacknowledged Firestore SDK write as saved. Logout blocks new actions, detaches all listeners, invalidates callbacks/session generation, cancels UID Workers, and waits for tracked writes to finish or fail before changing account. Immutable owner/sender fields plus Security Rules reject any late operation under a different UID. The account-switch test is: sign in as A, read/write private data, go offline, log out, sign in as B, and verify that A's profile, drafts, messages, notifications, files, and pending actions cannot render or sync.
+Firestore persistent disk caching is disabled to avoid account A data surviving an app restart for account B. Phase 2A repositories use in-memory snapshots. Chat listeners stop with the owning screen; marketplace and detail listeners close when their owning ViewModels are cleared. Logout clears the protected navigation stack so those ViewModels can be released and new protected actions require authentication. Remote writes require explicit task completion, chat marks local pending messages as sending, and immutable owner/sender fields plus Security Rules reject a late operation authenticated as a different UID. Phase 2A does not yet claim a central pending-write drain/session-generation manager or UID Workers; those are required when Room/WorkManager arrives. A two-account profile/listing/thread/message switch is a required manual Firebase-project check until an automated account-switch journey is added. The later full-release test additionally covers drafts, notifications, files, Workers, and pending outbox actions.
 
 ## 8. Core business flows and state machines
 
@@ -422,26 +492,27 @@ The assessed baseline does not assume a custom trusted backend. Consequently, au
 
 ### Designer fidelity rules
 
-- Preserve the proposal's content hierarchy, cards, arrows/flows, screen purpose, and home radial quick menu.
+- Preserve the proposal's content hierarchy, cards, arrows/flows, screen purpose, and Home navigation fan.
 - Convert the monochrome wireframes into Android XML without inventing a new information architecture.
 - Use Android-native back behaviour, permissions, text scaling, insets, keyboard handling, and feedback.
 - Resolve a designer sign-off screenshot for each screen ID before marking UI complete.
 - Do not copy iPhone notches, home indicators, or unsafe fixed pixel measurements into the Android app.
 
-### Provisional visual tokens
+### Current light-theme visual tokens
 
-The proposal is monochrome, so colour and typography remain subject to designer sign-off. The following palette is provisional planning data only; no reusable Expo design asset or token file remains in the repository.
+The proposal is monochrome, and the user has now approved a soft light eco-colour pass. The palette changes colour only: the submitted hierarchy, proportions, labels, cards, and Home fan remain intact. Supplied production fonts, logo artwork, and final launcher artwork still require team assets and sign-off.
 
 | Token | Working value | Use |
 |---|---|---|
-| Primary | `#2D6A4F` | Main actions, active state, headers |
-| Secondary | `#95D5B2` | Highlights and supporting surfaces |
-| Accent | `#D4A373` | Eco badges and attention accents |
-| Error | `#E63946` | Destructive/error states only |
-| Light background | `#F8F9FA` | Default light surface |
-| Dark background | `#0D1B14` | Default dark surface |
-| Text light theme | `#1A1A2E` | Primary text |
-| Text dark theme | `#F8F9FA` | Primary text on dark surfaces |
+| Primary | `#1F5C42` | Main actions, active state, icons, and high-emphasis cards |
+| Primary container | `#C3DDCB` | Tonal buttons and selected supporting surfaces |
+| Surface container | `#E2F0E6` | Cards, chips, and diagram markers |
+| Accent | `#D28A36` | Reserved warm highlight |
+| Error | `#B3261E` | Destructive/error states only |
+| Light background | `#F7F8F3` | Default app background |
+| Surface | `#FFFFFF` | Fields, cards, and foreground panels |
+| Text | `#18231E` | Primary text in the light theme |
+| Outline | `#5F7066` | Borders and lower-emphasis marks |
 
 - Use resource tokens, not hard-coded colours/dimensions in Java or individual layouts.
 - Use an 8dp spacing grid with documented 4dp exceptions, scalable `sp` text, and reusable shape styles.
@@ -452,13 +523,13 @@ The proposal is monochrome, so colour and typography remain subject to designer 
 
 ### Accessibility and adaptive checks
 
-- Minimum 48dp touch target for every interactive element, including the radial menu.
+- Minimum 48dp touch target for every interactive element, including the Home fan.
 - Meaningful `contentDescription` for non-text controls; decorative images are excluded from accessibility focus.
 - Logical TalkBack focus order, headings, state announcements, and labelled form errors.
 - Text remains usable at 200% font scale without clipping critical actions.
-- Colour is never the only status signal; contrast is verified in light and dark themes.
+- Colour is never the only status signal; contrast is verified for every enabled theme. This pass enables the light theme only.
 - Phone layouts are portrait-first. API 36 testing also covers at least one `sw600dp` tablet/foldable in portrait, landscape, freely resized, and split-screen modes because large-screen orientation/resizability restrictions cannot be relied on.
-- The radial menu has equivalent labelled actions in the navigation menu for switch-access and TalkBack users.
+- The Home fan exposes visible text labels, accessibility descriptions, and 60dp-or-larger focus targets for switch access and TalkBack.
 
 ## 10. Security, privacy, and validation
 
@@ -474,7 +545,7 @@ The proposal is monochrome, so colour and typography remain subject to designer 
 - Never log passwords, tokens, message bodies, exact private locations, raw AI images, or full user documents.
 - Release builds disable debug logging, shrink/obfuscate where compatible, and use a team-controlled signing key backup.
 - Use Network Security Configuration to disallow cleartext traffic and to document any exceptional trust configuration.
-- Define backup/data-extraction rules so credentials, tokens, private caches, and sensitive local files are not included in device backup.
+- Phase 2A disables Android application backup with `android:allowBackup="false"`. If backup is enabled later, add and test legacy backup plus API 31+ data-extraction rules that exclude credentials, tokens, private caches, and sensitive local files.
 - Mark Android components non-exported unless a documented external entry point requires exposure.
 
 ### Privacy and permission policy
@@ -562,7 +633,7 @@ Member labels remain placeholders until the team records names beside them. Owne
 | Owner | Primary native responsibility | Secondary/review responsibility |
 |---|---|---|
 | Member A - Lead/Core | Project bootstrap, Gradle, navigation, authentication, permissions/location, Maps/Places, release/signing | Firebase setup, integration management, final architecture/report |
-| Member B - UI/UX | XML design system, reusable Views, home, all screen styling, radial menu, launcher icon, accessibility | Designer comparison set, screenshots, UI review across modules |
+| Member B - UI/UX | XML design system, reusable Views, home, all screen styling, Home fan, launcher icon, accessibility | Designer comparison set, screenshots, UI review across modules |
 | Member C - AI/Local | CameraX, Photo Picker, Firebase AI Logic, schema parser, scan result/history, Room/outbox | Data models, cache/performance tests, scanner report/demo |
 | Member D - Cloud/Exchange | Firestore/Storage repositories and rules, marketplace, lending booked-day locks, Firestore chat, in-app notifications, ratings | Emulator tests, edge cases, optional backend only after OD-13, store/release support |
 
@@ -595,19 +666,19 @@ This schedule assumes plan approval by 6 August 2026 and four parallel contribut
 
 No new feature begins after 29 August. Only release-blocking correctness, security, accessibility, and crash fixes are accepted after the release candidate.
 
-## 15. Native bootstrap procedure - environment setup authorised
+## 15. Native implementation sequence
 
-Repository cleanup is complete: on 5 August 2026, the user explicitly authorised direct deletion of the obsolete Expo/React Native source, Node/Expo configuration and dependencies, generated output, placeholder services/database files, default Expo assets/licence boilerplate, and old `.env`. The user subsequently authorised an environment-only native Gradle skeleton at the repository root; it contains no feature code, activities, layouts, or service integrations.
+Repository cleanup is complete: on 5 August 2026, the user explicitly authorised direct deletion of the obsolete Expo/React Native source, Node/Expo configuration and dependencies, generated output, placeholder services/database files, default Expo assets/licence boilerplate, and old `.env`. The user subsequently authorised the native Gradle skeleton and, on 9 August 2026, the proposal-parity UI milestone.
 
-The environment portion of this sequence is authorised. Feature implementation begins only when the user/team explicitly authorises coding:
+The environment, proposal-parity UI, and narrow Phase 2A Firebase portions of this sequence are authorised. Later integrations still require their relevant decision gates:
 
 1. Review and approve this plan, open decisions, namespace, design assets/tokens, and ownership.
 2. Retrieve/recreate Firebase, Maps, and AI configuration from the owning consoles; do not treat the deleted `.env` or Git history as a secret store.
 3. Create the native Gradle project at the repository root with one `:app` module. **Completed as an environment-only skeleton:** Gradle wrapper, root/app Groovy build scripts, API 24/36 configuration, provisional application ID, minimal manifest, and empty non-code placeholders.
-4. Confirm namespace, then configure feature-level Views/XML, Navigation, Hilt, Room schema export, and test runners only when coding is authorised.
-5. Connect a separate development Firebase project/emulators and deploy deny-by-default rule skeletons before real data.
+4. **Completed:** configure feature-level Views/XML and Navigation, then implement and verify the twenty PDF screens using local mock content.
+5. **Phase 2A app-side implementation and local Firebase connection completed:** add only Firebase Authentication and Cloud Firestore for email/password accounts, text-only marketplace listings, and participant-only listing chat; include deny-by-default rules, indexes, emulator tests, and the developer setup guide. Project `propcycle-e5f14` and its matching ignored JSON are connected. Email/Password enablement and rules/index deployment still follow `docs/FIREBASE_SETUP.md` before live testing.
 6. Validate Play Console/project-Owner access and the signed-APK App Check plan (or formally accept OD-14 fallback), restricted Maps key, AI quota/budget controls, and UID-scoped media/outbox design.
-7. Implement the scheduled vertical slices without restoring or converting TypeScript/Expo source.
+7. After separate approval for each remaining service, implement the later scheduled vertical slices without restoring or converting TypeScript/Expo source.
 8. Run parity review against all twenty PDF mock-ups and the two explicitly derived completion surfaces.
 9. Pass security, adaptive-layout, offline/account-switch, test, and release gates before submission.
 
@@ -626,7 +697,7 @@ Brownfield React Native embedding and automated TSX-to-Java conversion are out o
 | Firestore search or radius assumptions fail | Medium / High | Explicit prefix/filter strategy, geohash bounding queries, exact client distance filtering, tests at range edges |
 | Recycling centre data is incomplete | Medium / Medium | Nearby plus text search in English/Malay, manual search, attribution, user confirmation message |
 | Lending double booking/trust manipulation | Medium / High | Bounded transaction over deterministic booked-day documents, concurrency tests, immutable eligible rating links, client-calculated rating display unless trusted backend approved |
-| Chat listener cost/volume | Medium / Medium | Thread-scoped listeners, pagination, message limits, detach on lifecycle stop |
+| Chat listener cost/volume | Medium / Medium | Thread-scoped listeners, pagination, message limits, and cleanup from the owning screen/ViewModel lifecycle |
 | Maps/Places billing changes | Medium / Medium | Field masks, bounded requests, debounce, budget alerts, no stale hard-coded free-tier claim |
 | AppGallery device lacks Google services | High / High on affected devices | Course APK baseline uses GMS; decide separately between GMS-only disclosure and a later HMS provider abstraction |
 | Permission denial blocks a demo | Medium / High | Gallery and manual-location fallbacks plus preflight permission rehearsal |
@@ -638,15 +709,15 @@ Brownfield React Native embedding and automated TSX-to-Java conversion are out o
 
 ## 17. Open decisions requiring team confirmation
 
-These choices do not block documentation, but they must be closed before the related implementation begins.
+These choices do not block documentation, but they must be closed before the related implementation begins. OD-02 is resolved for Phase 2A; its deferred alternatives still require a new decision.
 
 | ID | Decision | Recommended default |
 |---|---|---|
 | OD-01 | Android application ID/namespace | Provisional `com.propcycle.app` is used only for the environment skeleton; confirm a university/team-owned reverse-domain ID before Firebase registration or signing |
-| OD-02 | Authentication promise in the mock-up | Email/password for release; phone requires a separate SMS OTP flow, and username login needs a secure backend design rather than a misleading text field |
+| OD-02 | Authentication promise in the mock-up | **Resolved for Phase 2A:** email/password is implemented. Phone, username, and social authentication are deferred and must not be implied by current UI copy |
 | OD-03 | Firebase environments | Separate development/emulator data from the final production project |
-| OD-04 | Final colours, font, logo, and icon | Designer signs off the provisional green palette and supplied assets before UI freeze |
-| OD-05 | Exact radial and hamburger-menu destinations | Radial candidates are Market, Share/Lend, and Map as annotated; the hamburger's contents are undrawn. Designer/team must approve inclusion, labels, order, and unique destinations; Smart Scan/Profile already have direct controls |
+| OD-04 | Final colours, font, logo, and icon | **Resolved for the current UI pass:** use a soft light eco-colour theme while preserving the proposal structure; supplied brand fonts, logo, and final launcher artwork remain deferred until the team provides them |
+| OD-05 | Exact radial and hamburger-menu destinations | **Resolved for Home:** the existing hamburger toggles a labelled Market/Share/Map fan; Market opens marketplace browse, Share opens Lend Resource, and Map opens Lending Map. No separate production drawer has been approved |
 | OD-06 | Push-notification sender | In-app notifications are mandatory; use a trusted Java-capable backend/event sender before enabling automated FCM push |
 | OD-07 | Public item location precision | Default to area/meeting point rather than a private exact address |
 | OD-08 | Store publication | Signed course APK first; AppGallery/Play submission only after GMS/store-policy review |
@@ -657,7 +728,7 @@ These choices do not block documentation, but they must be closed before the rel
 | OD-13 | Trusted automation backend | Baseline has no custom backend. If automated FCM, cross-device schedules, stored global/eco/trust aggregates, orphan cleanup, or abuse-resistant per-user AI limits are required, select a Java-capable trusted service, owner, tests, secrets/billing plan, and schedule first |
 | OD-14 | App Check release prerequisites | Confirm Play Console app entry, Firebase/Cloud project link, direct project Owner permission, and release SHA-256. If unavailable, accept non-enforcement plus restricted-key/rules/quota fallback; never use a debug token/provider in the release APK |
 
-Until OD-02 is closed, registration/login text must not claim unsupported phone/username-plus-password behaviour. Password-reset, confirmation, and terms UI also require designer placement sign-off. Until OD-06 and OD-13 are closed with an implemented sender, the notification screen remains functional in-app but automated operating-system push is not represented as complete.
+Current registration/login text must claim only the implemented email/password behaviour. Phone/username/social methods remain deferred; password-reset, confirmation, and terms UI also require designer placement sign-off. Until OD-06 and OD-13 are closed with an implemented sender, the notification screen remains functional in-app but automated operating-system push is not represented as complete.
 
 ## 18. Official implementation references
 
@@ -683,18 +754,18 @@ Until OD-02 is closed, registration/login text must not claim unsupported phone/
 
 ## 19. Plan approval checklist
 
-Implementation begins only after the team confirms all of the following:
+The UI milestone and Phase 2A Firebase essentials are authorised. Later production functionality begins only after the team confirms the relevant items below:
 
 - [ ] Every proposal screen/module is represented correctly.
 - [ ] Java/XML/no-Compose policy is accepted.
 - [ ] API 24 minimum and API 36 target are accepted.
-- [ ] Screen IDs, navigation model, and designer radial menu are accepted.
+- [x] Screen IDs, navigation model, and designer Home fan are accepted for the current UI pass.
 - [ ] Firebase/Room/AI/Maps data ownership is accepted.
-- [ ] Authentication, marketplace semantics, lending fee wording, optional enhancements, and radial-menu destinations are closed.
+- [ ] Authentication alternatives, marketplace semantics, lending fee wording, and optional enhancements are closed.
 - [ ] Push/trusted-backend scope has a named owner and deadline, or the excluded automation is explicitly accepted.
 - [ ] Play Console/project-Owner access and App Check enforcement/fallback decision are recorded.
 - [ ] The direct Expo/RN deletion and root-native bootstrap path are acknowledged; required service configuration will be recreated securely.
 - [ ] Team ownership and remaining schedule are realistic.
 - [ ] Security, testing, feature-freeze, and release gates are accepted.
 
-Once checked, record the approver names/date at the top of this document and authorise the native project bootstrap as a separate task.
+Once checked, record the approver names/date at the top of this document and authorise the related functional milestone as a separate task.

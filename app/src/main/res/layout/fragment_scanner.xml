@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/pc_background"
+    android:paddingStart="@dimen/screen_horizontal"
+    android:paddingTop="@dimen/screen_vertical"
+    android:paddingEnd="@dimen/screen_horizontal"
+    android:paddingBottom="@dimen/screen_vertical">
+
+    <ImageButton
+        android:id="@+id/back_button"
+        style="@style/Widget.PropCycle.IconButton"
+        android:background="@color/pc_transparent"
+        android:contentDescription="Go back"
+        android:src="@drawable/ic_back"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/scanner_title"
+        style="@style/TextAppearance.PropCycle.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="46dp"
+        android:text="AI Smart Scanner"
+        android:textSize="19sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        style="@style/TextAppearance.PropCycle.Caption"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:text="Point camera at an item or waste"
+        android:textColor="@color/pc_ink"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/scanner_title" />
+
+    <ImageView
+        android:id="@+id/scan_target"
+        android:layout_width="270dp"
+        android:layout_height="270dp"
+        android:contentDescription="Camera scanning area"
+        android:src="@drawable/scan_frame"
+        app:layout_constraintBottom_toTopOf="@id/primary_action"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/scanner_title"
+        app:layout_constraintVertical_bias="0.47" />
+
+    <ImageButton
+        android:id="@+id/primary_action"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_marginBottom="30dp"
+        android:background="@drawable/bg_circle_dark"
+        android:contentDescription="Capture item"
+        android:padding="17dp"
+        android:src="@drawable/ic_camera"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.44"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageButton
+        android:id="@+id/secondary_action"
+        android:layout_width="@dimen/touch_target"
+        android:layout_height="@dimen/touch_target"
+        android:layout_marginStart="24dp"
+        android:background="@drawable/bg_circle_gray"
+        android:contentDescription="Choose an image from gallery"
+        android:padding="12dp"
+        android:src="@drawable/ic_gallery"
+        app:layout_constraintBottom_toBottomOf="@id/primary_action"
+        app:layout_constraintStart_toEndOf="@id/primary_action"
+        app:layout_constraintTop_toTopOf="@id/primary_action" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

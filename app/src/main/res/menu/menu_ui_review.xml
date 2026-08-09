@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/menu_home" android:title="Home" />
+    <item android:id="@+id/menu_marketplace" android:title="Marketplace" />
+    <item android:id="@+id/menu_create_listing" android:title="Create listing" />
+    <item android:id="@+id/menu_lending" android:title="Lend Out" />
+    <item android:id="@+id/menu_lending_map" android:title="Lending Map" />
+    <item android:id="@+id/menu_recycle" android:title="Recycle Center" />
+    <item android:id="@+id/menu_messages" android:title="Messages" />
+    <item android:id="@+id/menu_notifications" android:title="Notifications" />
+    <item android:id="@+id/menu_profile" android:title="Profile" />
+    <item android:id="@+id/menu_settings" android:title="Settings" />
+    <item android:id="@+id/menu_logout" android:title="Log out" />
+</menu>

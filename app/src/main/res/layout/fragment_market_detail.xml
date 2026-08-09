@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/pc_background"
+    android:clipToPadding="false"
+    android:fillViewport="true"
+    android:paddingBottom="@dimen/screen_vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <ImageButton
+            android:id="@+id/back_button"
+            style="@style/Widget.PropCycle.IconButton"
+            android:layout_marginStart="@dimen/screen_horizontal"
+            android:layout_marginTop="@dimen/screen_vertical"
+            android:background="@color/pc_transparent"
+            android:contentDescription="Go back"
+            android:src="@drawable/ic_back" />
+
+        <ProgressBar
+            android:id="@+id/market_detail_progress"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="96dp"
+            android:indeterminate="true" />
+
+        <TextView
+            android:id="@+id/market_detail_status"
+            style="@style/TextAppearance.PropCycle.Body"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="@dimen/screen_horizontal"
+            android:textColor="@color/pc_text_secondary"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/market_detail_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/listing_image_placeholder"
+                android:layout_width="match_parent"
+                android:layout_height="292dp"
+                android:layout_marginTop="6dp"
+                android:contentDescription="Marketplace item image placeholder"
+                android:gravity="center"
+                android:text="ITEM IMAGE\nCOMING LATER"
+                android:textAlignment="center"
+                android:textColor="@color/pc_ink"
+                android:textSize="14sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_card_gray"
+                android:minHeight="172dp"
+                android:orientation="vertical"
+                android:paddingStart="@dimen/screen_horizontal"
+                android:paddingTop="18dp"
+                android:paddingEnd="@dimen/screen_horizontal"
+                android:paddingBottom="18dp">
+
+                <TextView
+                    android:id="@+id/listing_category"
+                    style="@style/TextAppearance.PropCycle.Caption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/bg_pill"
+                    android:gravity="center"
+                    android:minWidth="70dp"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:textColor="@color/pc_ink" />
+
+                <TextView
+                    android:id="@+id/listing_title"
+                    style="@style/TextAppearance.PropCycle.Title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/listing_description"
+                    style="@style/TextAppearance.PropCycle.Body"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="7dp"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/listing_condition"
+                    style="@style/TextAppearance.PropCycle.Caption"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp" />
+
+                <TextView
+                    android:id="@+id/listing_transaction_terms"
+                    style="@style/TextAppearance.PropCycle.Caption"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:textColor="@color/pc_ink" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="82dp"
+                android:layout_marginStart="@dimen/screen_horizontal"
+                android:layout_marginTop="18dp"
+                android:layout_marginEnd="@dimen/screen_horizontal"
+                android:background="@drawable/bg_card_gray"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp">
+
+                <TextView
+                    android:id="@+id/seller_avatar"
+                    android:layout_width="54dp"
+                    android:layout_height="54dp"
+                    android:background="@drawable/bg_circle_gray"
+                    android:contentDescription="Seller avatar placeholder"
+                    android:gravity="center"
+                    android:text="P"
+                    android:textColor="@color/pc_ink"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="14dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/seller_name"
+                        style="@style/TextAppearance.PropCycle.Body"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Community member"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/seller_summary"
+                        style="@style/TextAppearance.PropCycle.Caption"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Marketplace seller" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/market_detail_cache_status"
+                style="@style/TextAppearance.PropCycle.Caption"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:gravity="center"
+                android:text="Offline cache - details may be outdated."
+                android:textColor="@color/pc_text_secondary"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/chat_action"
+                style="@style/TextAppearance.PropCycle.Body"
+                android:layout_width="260dp"
+                android:layout_height="54dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/bg_pill"
+                android:clickable="true"
+                android:contentDescription="Start a marketplace chat"
+                android:focusable="true"
+                android:gravity="center"
+                android:text="Chat with seller"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/market_detail_action_status"
+                style="@style/TextAppearance.PropCycle.Caption"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/screen_horizontal"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="@dimen/screen_horizontal"
+                android:gravity="center"
+                android:textColor="@color/pc_text_secondary"
+                android:visibility="gone" />
+
+            <Space
+                android:layout_width="1dp"
+                android:layout_height="30dp" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

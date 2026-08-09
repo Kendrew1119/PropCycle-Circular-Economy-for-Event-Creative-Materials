@@ -4,7 +4,7 @@
 > **University:** Universiti Tunku Abdul Rahman (UTAR)<br>
 > **Theme:** UN SDG 12 - Responsible Consumption and Production<br>
 > **Team:** Group 7, four members<br>
-> **Current phase:** Native Android environment bootstrap; no feature code
+> **Current phase:** Phase 2A Firebase authentication, marketplace, and real-time text chat
 
 PropCycle helps campus event organisers, creative makers, cosplayers, toy miniaturists, and DIY communities keep useful materials and equipment in circulation. A user can identify a material with Gemini-assisted scanning, sell/donate/exchange leftover materials, find a recycling centre, or lend and borrow equipment through one connected Android application.
 
@@ -20,7 +20,7 @@ The implementation target has changed from React Native with Expo to a clean nat
 | Navigation | One Activity, Fragments, and AndroidX Navigation |
 | State/architecture | ViewModel, LiveData, SavedStateHandle, repositories, optional use cases |
 | Local data | Room 2.8.x over SQLite; Preferences DataStore for non-sensitive settings |
-| Cloud | Firebase Auth, Firestore (including real-time chat), Storage, App Check, Remote Config; FCM only with an approved trusted sender |
+| Cloud | Phase 2A: Firebase Auth and Firestore; later: Storage, App Check, Remote Config, and FCM only with an approved trusted sender |
 | AI | Firebase AI Logic Android SDK for Java with a remotely configured Gemini model |
 | Camera/media | CameraX and Android Photo Picker |
 | Maps/location | Maps SDK for Android, Places SDK for Android, Fused Location Provider |
@@ -56,44 +56,82 @@ The supplied proposal PDF is the authority for the twenty drawn screens and thei
 
 At the user's explicit direction, the obsolete Expo/React Native implementation was removed from the working tree on 5 August 2026. This includes the Node dependency tree, Expo/Node configuration, TS/TSX application source, generated output, placeholder database/service files, default Expo imagery/licence boilerplate, and the old `.env`.
 
-- There is no React Native/Expo application. A native Android Gradle skeleton now exists at the repository root, with no feature code, activities, layouts, or service integrations.
-- The skeleton uses provisional namespace/application ID `com.propcycle.app`; confirm it before Firebase registration, signing, or release.
-- Android Studio and Android SDK Platform 36 are configured locally through ignored `local.properties`. The wrapper is pinned to Gradle 9.5 and the project uses Android Gradle Plugin 9.3.0 with Java 17 source compatibility.
-- The repository currently retains planning documents, course documents, project/agent guidance, and generic editor settings.
-- Native development will use the repository root after this plan is approved; no parallel `android-native/` tree is planned.
-- The deleted `.env` is not a credential source. Firebase, Maps, and AI configuration must be retrieved or recreated through the relevant consoles during the approved setup and must never be committed.
-- The deletions are currently unstaged and uncommitted, so tracked legacy files still exist in `main`/`origin` until the team commits the cleanup. Untracked files that were directly deleted have no repository recovery guarantee.
+- There is no React Native/Expo application. A native Android Gradle project exists at the repository root. The twenty proposal screens are implemented with Java/XML; Phase 2A replaces mock behavior only for accounts, marketplace listings, and text chat.
+- The native project currently uses namespace/application ID `com.propcycle.app`. Confirm this is the final team-owned ID before registering the long-lived production Firebase app or signing a release.
+- Android Studio and Android SDK Platform 36 are configured locally through ignored `local.properties`. The wrapper is pinned to Gradle 9.5.1 and the project uses Android Gradle Plugin 9.3.0 with Java 17 source compatibility.
+- The repository retains planning documents, course documents, project/agent guidance, and generic editor settings alongside the native app.
+- Native development uses the repository root; no parallel `android-native/` tree is planned.
+- The deleted `.env` is not a credential source. The shared development Firebase project is `propcycle-e5f14`, registered for `com.propcycle.app`; `app/google-services.json` remains ignored, is not stored in the repository, and must be downloaded separately by every authorised developer. Maps and AI configuration remain deferred, and credentials must never be committed.
+- The obsolete stack cleanup and native environment bootstrap were committed before this UI milestone.
 
 ## Planning documents
 
 - External design source: `C:\Users\B2B\Downloads\Group7-PropCycle.pdf` (inspected but not copied or edited).
 - [Master native Android plan](plan.md) - complete scope, screen contract, architecture, data models, security, testing, ownership, migration, and schedule.
 - [Proposal planning copy and technology addendum](proposal.md) - the product idea with the revised implementation direction noted separately.
-- [Agent/development guardrails](AGENTS.md) - planning hold and rules for the later native implementation.
+- [Agent/development guardrails](AGENTS.md) - current Phase 2A boundary and rules for later functional implementation.
+- [Teammate setup and run guide](docs/TEAM_SETUP_GUIDE.md) - private-repository access, Android/Firebase setup, build and test commands, device setup, verification, and troubleshooting.
 
-## Implementation approval gate
+## Completed UI milestone
 
-Native coding remains on hold until the team confirms:
+The user approved proposal-parity UI implementation on 9 August 2026. This milestone covers the twenty distinct screens drawn in the proposal:
+
+1. Welcome, Login, Register, Home, and Recent Activities.
+2. AI Smart Scanner, AI Result, Create Marketplace Listing, Recycling Centre, and Lend Resource.
+3. Marketplace Browse, Marketplace Item Detail, Conversation, Lending Map Search, Lending List, and Lending Resource Detail.
+4. Notifications, Messages, Settings, and User Profile.
+
+The original screen pass used deterministic mock content and local navigation so the full flow could be reviewed before integrations. Phase 2A now connects Firebase email/password accounts, Firestore marketplace listings, listing-linked conversation discovery, and participant-only real-time text chat. Gemini/Firebase AI Logic, Google Maps/Places, CameraX/media upload, Room, lending transactions, presence, and notification delivery remain deferred.
+
+## Phase 2A Firebase scope
+
+- Register, sign in, cached-session restore, and logout use Firebase Authentication.
+- Registration creates a minimal Firestore public profile containing a display name and server timestamps; email remains in Firebase Authentication.
+- Marketplace create, browse/search, and detail use `marketplaceListings` snapshot data. Listing photos remain placeholders and Cloud Storage is not enabled.
+- Starting a seller chat creates one deterministic listing-linked `chatThreads` document. Messages are immutable, participant-only Firestore documents and the thread preview is updated in the same atomic batch.
+- Default-deny Firestore rules, composite indexes, emulator configuration, validation tests, and setup instructions are included.
+- Without `app/google-services.json`, the project still builds and Firebase screens show setup-required state instead of fake success.
+
+The UI shell currently locks stable AppCompat 1.7.1, Material Components 1.14.0, ConstraintLayout 2.2.2, and AndroidX Navigation 2.9.8. The newly approved visual direction uses the light-colour interface theme, and the Home hamburger controls the three-destination fan for Market, Share, and Map. Final export-quality brand assets can replace the current launcher asset when supplied.
+
+## Build and run
+
+For a new computer or clone, follow the [teammate setup and run guide](docs/TEAM_SETUP_GUIDE.md) first. Open the repository root (the folder containing `settings.gradle` and `gradlew.bat`) in Android Studio, never the `app` subfolder. Run the `app` configuration on an Android device or emulator using Android Studio's bundled JBR and Android SDK Platform 36.
+
+From PowerShell, the verified debug build command is:
+
+```powershell
+$env:JAVA_HOME='C:\Program Files\Android\Android Studio\jbr'
+.\gradlew.bat :app:assembleDebug
+```
+
+The generated APK is `app\build\outputs\apk\debug\app-debug.apk`. The normal launch begins at Welcome. All drawn screens remain reachable; on Home, the hamburger control opens the approved fan destinations Market, Share, and Map.
+
+No service file is needed to compile or review deferred static screens. Real account, marketplace, and chat testing requires each authorised teammate's ignored `app/google-services.json`; the full process is in the [teammate guide](docs/TEAM_SETUP_GUIDE.md), with a shorter project-owner checklist in [Firebase setup](docs/FIREBASE_SETUP.md).
+
+## Later implementation gate
+
+Before the remaining production behaviour is added, the team still confirms:
 
 - all proposal modules and screens are represented correctly;
 - Java/XML/no-Compose direction;
 - API 24 minimum and API 36 target;
 - final Android namespace/application ID;
-- authentication methods and copy;
-- radial-menu destinations and designer tokens/assets;
+- final copy and recovery/account-management additions around the implemented email/password flow;
+- remaining designer tokens and export-quality brand assets;
 - Firebase development/production setup and push-notification sender;
 - Play Console/project-Owner access for App Check, or explicit acceptance of the documented non-enforcement fallback;
 - team ownership, remaining dates, testing, and release gates;
-- exact authentication, marketplace, lending-fee, and optional-enhancement decisions.
+- remaining marketplace, lending-fee, and optional-enhancement decisions.
 
-The environment bootstrap is authorised, but feature work remains on hold. After the remaining product decisions are approved, the team follows the vertical-slice schedule in `plan.md`. No automated source conversion is planned.
+Phase 2A Firebase essentials are authorised. AI, map/location, camera/media, Cloud Storage, local persistence, lending workflows, push notifications, trusted automation, and other integrations remain on hold until their relevant decisions are approved. No automated source conversion is planned.
 
 ## Team ownership
 
 | Workstream | Primary responsibility |
 |---|---|
 | Member A - Lead/Core | Native project, navigation, auth, permissions, maps/location, integration, signing/release |
-| Member B - UI/UX | XML design system, screen styling, reusable Views, radial menu, accessibility, icon/screenshots |
+| Member B - UI/UX | XML design system, screen styling, reusable Views, Home fan navigation, accessibility, icon/screenshots |
 | Member C - AI/Local | CameraX, Photo Picker, Firebase AI Logic, scan workflow, Room/cache/outbox |
 | Member D - Cloud/Exchange | Firebase data/rules, marketplace, lending, chat, notifications, ratings, emulator tests |
 

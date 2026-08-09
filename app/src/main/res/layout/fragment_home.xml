@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/pc_background">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="@dimen/screen_horizontal"
+            android:paddingTop="@dimen/screen_vertical"
+            android:paddingEnd="@dimen/screen_horizontal"
+            android:paddingBottom="250dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/touch_target"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/menu_button"
+                    style="@style/Widget.PropCycle.IconButton"
+                    android:contentDescription="Open app pages"
+                    android:src="@drawable/ic_menu" />
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1" />
+
+                <ImageButton
+                    android:id="@+id/notification_button"
+                    style="@style/Widget.PropCycle.IconButton"
+                    android:contentDescription="Open notifications"
+                    android:src="@drawable/ic_notifications" />
+
+                <ImageButton
+                    android:id="@+id/profile_button"
+                    style="@style/Widget.PropCycle.IconButton"
+                    android:layout_marginStart="@dimen/space_sm"
+                    android:background="@drawable/bg_circle_gray"
+                    android:contentDescription="Open profile"
+                    android:src="@drawable/ic_person" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/home_greeting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_lg"
+                android:text="Hey HuiMin,"
+                android:textAppearance="@style/TextAppearance.PropCycle.Display" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="58dp"
+                android:layout_marginTop="@dimen/space_lg"
+                android:background="@drawable/bg_field"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="18dp"
+                android:paddingEnd="6dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:contentDescription="Search"
+                    android:src="@drawable/ic_search" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="12dp"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:text="Search for..."
+                    android:textAppearance="@style/TextAppearance.PropCycle.Body"
+                    android:textColor="@color/pc_text_secondary" />
+
+                <ImageButton
+                    style="@style/Widget.PropCycle.IconButton"
+                    android:background="@color/pc_transparent"
+                    android:contentDescription="Search by voice"
+                    android:src="@drawable/ic_mic" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="226dp"
+                android:layout_marginTop="@dimen/space_lg"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="@dimen/space_sm"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_card_gray"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="@dimen/space_md">
+
+                    <TextView
+                        android:layout_width="88dp"
+                        android:layout_height="88dp"
+                        android:background="@drawable/bg_circle_white"
+                        android:gravity="center"
+                        android:text="♻"
+                        android:textColor="@color/pc_ink"
+                        android:textSize="42sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/space_md"
+                        android:text="Text"
+                        android:textAppearance="@style/TextAppearance.PropCycle.Title" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/scanner_card"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="@dimen/space_sm"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_card_light"
+                    android:clickable="true"
+                    android:contentDescription="Open AI Smart Scanner"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="@dimen/space_md">
+
+                    <ImageView
+                        android:layout_width="118dp"
+                        android:layout_height="118dp"
+                        android:contentDescription="Scanner frame"
+                        android:src="@drawable/scan_frame" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/space_sm"
+                        android:gravity="center"
+                        android:text="AI Smart\nScanner"
+                        android:textAppearance="@style/TextAppearance.PropCycle.Title"
+                        android:textSize="18sp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/recent_action"
+                style="@style/Widget.PropCycle.Button.Light"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="@dimen/space_lg"
+                android:text="View Recent Activities" />
+        </LinearLayout>
+    </ScrollView>
+
+    <FrameLayout
+        android:id="@+id/home_menu_fan_container"
+        android:layout_width="252dp"
+        android:layout_height="252dp"
+        android:layout_gravity="bottom|end"
+        android:importantForAccessibility="no"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/home_menu_fan_background"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@null"
+            android:importantForAccessibility="no"
+            android:scaleType="fitXY"
+            android:src="@drawable/home_menu_fan" />
+
+        <TextView
+            android:id="@+id/market_action"
+            android:layout_width="82dp"
+            android:layout_height="82dp"
+            android:layout_gravity="top|end"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:background="@drawable/home_menu_bubble"
+            android:clickable="true"
+            android:contentDescription="Open marketplace"
+            android:elevation="4dp"
+            android:focusable="true"
+            android:gravity="center"
+            android:text="Market"
+            android:textColor="@color/pc_ink"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/lend_action"
+            android:layout_width="82dp"
+            android:layout_height="82dp"
+            android:layout_gravity="center"
+            android:background="@drawable/home_menu_bubble"
+            android:clickable="true"
+            android:contentDescription="Open resource sharing"
+            android:elevation="4dp"
+            android:focusable="true"
+            android:gravity="center"
+            android:text="Share"
+            android:textColor="@color/pc_ink"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/map_action"
+            android:layout_width="82dp"
+            android:layout_height="82dp"
+            android:layout_gravity="bottom|start"
+            android:layout_marginStart="10dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/home_menu_bubble"
+            android:clickable="true"
+            android:contentDescription="Open lending map"
+            android:elevation="4dp"
+            android:focusable="true"
+            android:gravity="center"
+            android:text="Map"
+            android:textColor="@color/pc_ink"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+        <ImageButton
+            android:id="@+id/home_menu_close"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="bottom|end"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/home_menu_close_button"
+            android:contentDescription="Close quick navigation"
+            android:elevation="8dp"
+            android:padding="17dp"
+            android:src="@drawable/ic_close"
+            app:tint="@color/pc_white" />
+    </FrameLayout>
+
+</FrameLayout>

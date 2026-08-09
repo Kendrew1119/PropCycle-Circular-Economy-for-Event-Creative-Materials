@@ -13,11 +13,20 @@ keystore.properties
 build/
 **/build/
 captures/
+tmp/
 .externalNativeBuild/
 .cxx/
 
+# Isolated Firebase Security Rules test tooling (not application dependencies)
+firebase-tests/node_modules/
+firebase-tests/*-debug.log
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+
 # Firebase/Google service files are added only through the approved setup flow
 google-services.json
+.firebaserc
 
 # Operating-system files
 .DS_Store
