@@ -1,7 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
     <application
-        android:name=".DebugPropCycleApplication"
-        android:networkSecurityConfig="@xml/debug_network_security_config"
+        android:name=".ReleasePropCycleApplication"
         tools:replace="android:name" />
 </manifest>

@@ -2,7 +2,8 @@
 
 This guide explains how a teammate can clone the private repository, open the
 correct Android project, connect to the shared development Firebase project,
-build the app, run it, and verify the Phase 2A features.
+build the app, run it, verify the Phase 2A features, and set up the narrow Phase
+2B AI Smart Scanner.
 
 The instructions use Windows PowerShell because the current team machines use
 Windows. Run commands from the repository root unless a step says otherwise.
@@ -20,6 +21,9 @@ The project currently contains:
 - Cloud Firestore user profiles and marketplace listings;
 - listing-linked conversation discovery and participant-only real-time text
   chat;
+- CameraX preview/capture and one-image Android Photo Picker input;
+- authenticated Firebase AI Logic/Gemini structured analysis with build-specific
+  App Check;
 - Firestore Security Rules, composite indexes, and emulator tests; and
 - the full twenty-screen proposal UI, with unrelated modules still using static
   content.
@@ -28,9 +32,15 @@ The currently approved visual direction uses the light-colour interface theme.
 On Home, the hamburger control opens the three-destination fan for **Market**,
 **Share**, and **Map**.
 
-The following integrations are deliberately not part of Phase 2A: AI/Gemini,
-Maps/Places/location, camera or gallery input, Cloud Storage/image upload, push
-notifications, Room, lending transactions, ratings, and presence.
+Phase 2A app-side code and local verification are complete. Production
+Firestore Rules/index deployment and the two-account live cloud smoke test
+remain deliberate owner checks.
+
+Phase 2B adds only the existing Scanner and AI Result journey. The following
+integrations remain deliberately excluded: Maps/Places/location,
+recycling-centre APIs, Cloud Storage/image upload, permanent scan history,
+Room, Remote Config, WorkManager, push notifications, lending transactions,
+ratings, and presence.
 
 ## Read this safety box before setup
 
@@ -42,7 +52,8 @@ Never commit or send any of these files through Git:
 - `.env` or any `.env.*` file
 - a service-account JSON file
 - a signing keystore or its passwords
-- unrestricted API keys, access tokens, or personal passwords
+- unrestricted API keys, App Check debug tokens, access tokens, or personal
+  passwords
 
 Do not create a service-account key for normal Android or Firebase CLI work.
 Use your own Google account to sign in to Firebase CLI.
@@ -56,8 +67,9 @@ approved Firebase project and must not force-add it to Git.
 | Person | Required work |
 |---|---|
 | Every teammate | Obtain GitHub access, clone, install Android tools, open the repository root, obtain `google-services.json`, build, run, and test their own changes. |
-| Firebase project owner | Add approved teammates to Firebase/Google Cloud and enable the required shared services. |
+| Firebase project owner | Add approved teammates, enable only the approved Firebase services, complete Firebase AI Logic guided setup, and control App Check enforcement/production release setup. |
 | Assigned Firebase maintainer | Run the Rules test suite and deliberately deploy reviewed Firestore Rules and indexes. |
+| Every scanner developer | Register their own App Check debug token. Never share or commit it. |
 | Nobody | Commit credentials, share a service account, restore Expo/React Native, or enable deferred services without approval. |
 
 The Firebase console and Firestore database are shared. Do not deploy Rules,
@@ -78,8 +90,9 @@ Firebase. Do not send a GitHub token, Google password, or Firebase service
 account.
 
 If you only need to review the static UI, GitHub access is enough. Real login,
-marketplace, and chat testing also needs the local Firebase configuration from
-the approved project.
+marketplace, chat, and AI scanner testing also needs the local Firebase
+configuration from the approved project. A live scanner request additionally
+needs AI Logic enabled and that developer's App Check debug token registered.
 
 ## 2. Install the required desktop tools
 
@@ -361,6 +374,39 @@ chatThreads/{threadId}
 chatThreads/{threadId}/messages/{messageId}
 ```
 
+### Required Phase 2B Firebase AI Logic and App Check setting
+
+Firebase AI Logic is a shared live service. It has no Local Emulator Suite
+emulator.
+
+The Firebase owner must:
+
+1. open project `propcycle-e5f14`;
+2. open **AI Services > AI Logic > Get started**;
+3. choose the **Gemini Developer API**;
+4. complete the guided setup;
+5. open **AI Services > AI Logic > Settings**;
+6. under **Authenticated-users mode**, choose **Enforce authenticated-users
+   mode**, then press **Confirm**;
+7. open **Security > App Check** and verify the Firebase AI Logic API row; and
+8. review quota and budget alerts.
+
+The AI Logic guided setup automatically enables App Check enforcement for AI
+Logic. A developer's first debug request can be rejected until that developer
+registers their debug token.
+
+Every developer then runs the debug app, finds their own token in Logcat by
+filtering `DebugAppCheckProvider`, and registers it under **Security > App
+Check > Apps > com.propcycle.app > Manage debug tokens**.
+
+Do not create a raw Gemini API key. Do not commit or share an App Check debug
+token. Debug builds use the debug provider; release builds use Play Integrity
+and still need the owner's release SHA-256/provider/signed-APK checks.
+
+Follow [AI_SCANNER_SETUP.md](AI_SCANNER_SETUP.md) for the complete simple
+step-by-step procedure, camera/emulator setup, manual tests, quota/privacy
+checks, release gate, and exact troubleshooting.
+
 ## 9. Install the repository-local Firebase tools
 
 From the repository root:
@@ -588,7 +634,7 @@ $env:JAVA_HOME='C:\Program Files\Android\Android Studio\jbr'
 ```
 
 This includes pure validation tests for authentication, marketplace listings,
-and chat.
+chat, the scanner structured-result parser, and scanner image-size bounds.
 
 ### Run Firestore Rules tests
 
@@ -621,6 +667,11 @@ Use `clean` only when troubleshooting clearly stale generated output:
 ```
 
 ## 18. Verify Phase 2A with two accounts
+
+The app-side code and local test suites are complete. This section remains an
+owner-controlled live smoke test after the reviewed production Rules/indexes
+are deployed. Do not mark these owner checks complete from local emulator
+evidence alone.
 
 Use development-only email addresses and unique test passwords of at least six
 characters. Do not reuse a personal, university, GitHub, or Google password.
@@ -696,6 +747,28 @@ Expected behavior:
 An optional third account should be unable to read the A/B thread. Do not edit
 documents in the console to make this test pass; access is controlled by the
 deployed Rules.
+
+## 18A. Verify the Phase 2B AI scanner
+
+Finish the complete [AI Smart Scanner setup guide](AI_SCANNER_SETUP.md) before
+this test. The minimum live path is:
+
+1. confirm AI Logic uses the Gemini Developer API and authenticated-users mode
+   is enforced in AI Logic **Settings**;
+2. register this device's own `DebugAppCheckProvider` token;
+3. sign in to PropCycle;
+4. capture one image or choose one through Android Photo Picker;
+5. read the transmission disclosure, tick the consent box, and start one
+   analysis;
+6. confirm a validated result appears with **uncalibrated model estimate**
+   wording; and
+7. repeat the permission-denied, gallery fallback, offline, retry, rotation, and
+   one-request-at-a-time cases in the scanner guide.
+
+Firebase AI Logic is not emulated. The parser and image-bound calculations use
+local unit tests. Check service failure paths manually and make only a small
+number of deliberate live requests. The scanner must not create Cloud Storage
+objects or permanent scan-history records.
 
 ## 19. Daily Git safety check
 
@@ -871,6 +944,37 @@ Unlock it, enable USB debugging, accept the phone's authorisation prompt, try a
 data-capable cable and another USB port, and install the manufacturer's Windows
 driver if required.
 
+### The AI scanner says setup or authentication is required
+
+Confirm `app\google-services.json` matches `propcycle-e5f14` and
+`com.propcycle.app`, then sign in with a development account. AI analysis is
+intentionally unavailable to signed-out users and never returns a fake result.
+
+A build installed with `-PuseFirebaseEmulators=true` deliberately blocks live
+AI analysis so a local Firebase test cannot accidentally consume Gemini quota.
+Install a normal debug build before the deliberate live scanner test.
+
+### The AI request is rejected by App Check
+
+Run the debug app, filter Logcat for `DebugAppCheckProvider`, and register that
+device's current token under **Security > App Check > Apps >
+com.propcycle.app > Manage debug tokens**. Clearing app data or using another
+emulator can produce a new token. Never hard-code or commit it.
+
+### The camera preview is black
+
+Confirm the normal Android Camera app works. On an emulator, set the back camera
+to VirtualScene or a working webcam and cold boot it. Gallery selection remains
+the supported fallback and needs no broad storage permission.
+
+### Firestore Emulator works but Gemini does not
+
+Firebase AI Logic has no Local Emulator Suite emulator, and an emulator-mode
+build deliberately blocks live AI. Install a normal debug build for the live
+test. It then needs internet, the configured Firebase project, a signed-in cloud
+user, AI Logic enabled, and valid App Check. Use
+[AI_SCANNER_SETUP.md](AI_SCANNER_SETUP.md) for the full diagnosis steps.
+
 ## 21. Safe troubleshooting order
 
 When setup fails, use this order so that one problem does not create several
@@ -885,7 +989,10 @@ new ones:
 7. Confirm Email/Password and deployed Firestore configuration.
 8. Run Java unit tests and local Rules tests.
 9. Run the app on one known-good emulator.
-10. Only then investigate a feature-specific failure.
+10. For scanner failures, confirm AI Logic, authenticated-users mode, and that
+    device's registered App Check debug token.
+11. Separate camera input from AI by testing the gallery fallback.
+12. Only then investigate a feature-specific failure.
 
 Do not solve an environment error by changing application architecture,
 downgrading random versions, enabling deferred Firebase products, or weakening
@@ -903,7 +1010,12 @@ Security Rules.
 - [Firestore Security Rules](https://firebase.google.com/docs/firestore/security/get-started)
 - [Firestore indexes](https://firebase.google.com/docs/firestore/query-data/indexing)
 - [Firebase Local Emulator Suite](https://firebase.google.com/docs/emulator-suite)
+- [Firebase AI Logic Android setup](https://firebase.google.com/docs/ai-logic/get-started?platform=android)
+- [Firebase App Check debug provider](https://firebase.google.com/docs/app-check/android/debug-provider)
+- [CameraX image capture](https://developer.android.com/media/camera/camerax/take-photo)
+- [Android Photo Picker](https://developer.android.com/training/data-storage/shared/photo-picker)
 
 For the shorter one-PC Firebase owner checklist, see
 [FIREBASE_SETUP.md](FIREBASE_SETUP.md). This teammate guide is the primary
-starting point for a new clone.
+starting point for a new clone. For the scanner service and device setup, use
+[AI_SCANNER_SETUP.md](AI_SCANNER_SETUP.md).

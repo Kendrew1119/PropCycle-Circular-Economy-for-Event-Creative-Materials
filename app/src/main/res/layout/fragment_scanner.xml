@@ -1,83 +1,220 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/pc_background"
-    android:paddingStart="@dimen/screen_horizontal"
-    android:paddingTop="@dimen/screen_vertical"
-    android:paddingEnd="@dimen/screen_horizontal"
-    android:paddingBottom="@dimen/screen_vertical">
+    android:clipToPadding="false"
+    android:fillViewport="true"
+    android:overScrollMode="ifContentScrolls">
 
-    <ImageButton
-        android:id="@+id/back_button"
-        style="@style/Widget.PropCycle.IconButton"
-        android:background="@color/pc_transparent"
-        android:contentDescription="Go back"
-        android:src="@drawable/ic_back"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/scanner_title"
-        style="@style/TextAppearance.PropCycle.Title"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="46dp"
-        android:text="AI Smart Scanner"
-        android:textSize="19sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingStart="@dimen/screen_horizontal"
+        android:paddingTop="@dimen/screen_vertical"
+        android:paddingEnd="@dimen/screen_horizontal"
+        android:paddingBottom="32dp">
 
-    <TextView
-        style="@style/TextAppearance.PropCycle.Caption"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
-        android:text="Point camera at an item or waste"
-        android:textColor="@color/pc_ink"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/scanner_title" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/touch_target">
 
-    <ImageView
-        android:id="@+id/scan_target"
-        android:layout_width="270dp"
-        android:layout_height="270dp"
-        android:contentDescription="Camera scanning area"
-        android:src="@drawable/scan_frame"
-        app:layout_constraintBottom_toTopOf="@id/primary_action"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/scanner_title"
-        app:layout_constraintVertical_bias="0.47" />
+            <ImageButton
+                android:id="@+id/back_button"
+                style="@style/Widget.PropCycle.IconButton"
+                android:background="@color/pc_transparent"
+                android:contentDescription="@string/back"
+                android:src="@drawable/ic_back"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageButton
-        android:id="@+id/primary_action"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:layout_marginBottom="30dp"
-        android:background="@drawable/bg_circle_dark"
-        android:contentDescription="Capture item"
-        android:padding="17dp"
-        android:src="@drawable/ic_camera"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.44"
-        app:layout_constraintStart_toStartOf="parent" />
+            <TextView
+                android:id="@+id/scanner_title"
+                style="@style/TextAppearance.PropCycle.Title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:text="@string/scanner_title"
+                android:textSize="19sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/scanner_header_end_spacer"
+                app:layout_constraintStart_toEndOf="@id/back_button"
+                app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageButton
-        android:id="@+id/secondary_action"
-        android:layout_width="@dimen/touch_target"
-        android:layout_height="@dimen/touch_target"
-        android:layout_marginStart="24dp"
-        android:background="@drawable/bg_circle_gray"
-        android:contentDescription="Choose an image from gallery"
-        android:padding="12dp"
-        android:src="@drawable/ic_gallery"
-        app:layout_constraintBottom_toBottomOf="@id/primary_action"
-        app:layout_constraintStart_toEndOf="@id/primary_action"
-        app:layout_constraintTop_toTopOf="@id/primary_action" />
+            <Space
+                android:id="@+id/scanner_header_end_spacer"
+                android:layout_width="@dimen/touch_target"
+                android:layout_height="@dimen/touch_target"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <TextView
+            android:id="@+id/scanner_subtitle"
+            style="@style/TextAppearance.PropCycle.Caption"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:gravity="center"
+            android:text="@string/scanner_subtitle"
+            android:textColor="@color/pc_ink" />
+
+        <FrameLayout
+            android:id="@+id/scanner_preview_container"
+            android:layout_width="264dp"
+            android:layout_height="264dp"
+            android:layout_marginTop="18dp"
+            android:background="@drawable/bg_scanner_viewport"
+            android:contentDescription="@string/scanner_preview_description"
+            android:outlineProvider="background">
+
+            <ImageView
+                android:id="@+id/selected_image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/scanner_preview_description"
+                android:importantForAccessibility="no"
+                android:scaleType="centerCrop"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/scanner_preview_placeholder"
+                style="@style/TextAppearance.PropCycle.Body"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:importantForAccessibility="no"
+                android:padding="48dp"
+                android:text="@string/scanner_preview_placeholder"
+                android:textAlignment="center"
+                android:textColor="@color/pc_on_primary"
+                android:textSize="14sp" />
+
+            <ImageView
+                android:id="@+id/scan_frame_overlay"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:contentDescription="@string/scanner_frame_description"
+                android:importantForAccessibility="no"
+                android:padding="8dp"
+                android:src="@drawable/scan_frame_scanner" />
+
+            <ProgressBar
+                android:id="@+id/scanner_progress"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="center"
+                android:contentDescription="@string/scanner_progress_description"
+                android:indeterminateTint="@color/pc_on_primary"
+                android:visibility="gone" />
+
+        </FrameLayout>
+
+        <LinearLayout
+            android:id="@+id/scanner_state_card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_card_light"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:paddingStart="16dp"
+            android:paddingTop="11dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="11dp">
+
+            <TextView
+                android:id="@+id/scanner_status"
+                style="@style/TextAppearance.PropCycle.Caption"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:accessibilityLiveRegion="polite"
+                android:text="@string/scanner_initial_status"
+                android:textAlignment="center"
+                android:textColor="@color/pc_ink" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/retry_action"
+                style="@style/Widget.PropCycle.Button.Light"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/touch_target"
+                android:layout_marginTop="8dp"
+                android:minWidth="128dp"
+                android:text="@string/scanner_retry"
+                android:visibility="gone" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/scanner_disclosure"
+            style="@style/TextAppearance.PropCycle.Caption"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_scanner_disclosure"
+            android:lineSpacingExtra="2dp"
+            android:padding="13dp"
+            android:text="@string/scanner_disclosure"
+            android:textColor="@color/pc_text_primary" />
+
+        <CheckBox
+            android:id="@+id/scanner_disclosure_checkbox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/touch_target"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:text="@string/scanner_disclosure_consent"
+            android:textColor="@color/pc_text_primary"
+            android:textSize="13sp"
+            android:visibility="gone" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/analyze_action"
+            style="@style/Widget.PropCycle.Button.Dark"
+            android:layout_width="240dp"
+            android:layout_height="52dp"
+            android:layout_marginTop="12dp"
+            android:enabled="false"
+            android:text="@string/scanner_analyse" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/primary_action"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:background="@drawable/bg_circle_dark"
+                android:contentDescription="@string/camera"
+                android:padding="17dp"
+                android:src="@drawable/ic_camera" />
+
+            <ImageButton
+                android:id="@+id/secondary_action"
+                android:layout_width="@dimen/touch_target"
+                android:layout_height="@dimen/touch_target"
+                android:layout_marginStart="24dp"
+                android:background="@drawable/bg_circle_gray"
+                android:contentDescription="@string/gallery"
+                android:padding="12dp"
+                android:src="@drawable/ic_gallery" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>

@@ -4,7 +4,7 @@
 > **Re-planning date:** 5 August 2026<br>
 > **Course:** UCCD3223 Mobile Applications Development, June 2026 Trimester<br>
 > **Team:** Group 7, four members<br>
-> **Status:** Proposal-parity UI complete; Phase 2A Firebase essentials authorised on 9 August 2026<br>
+> **Status:** Proposal-parity UI and Phase 2A app/local verification complete; Phase 2B AI Smart Scanner authorised on 12 August 2026<br>
 > **Target platform:** Android only<br>
 > **Primary implementation language:** Java
 
@@ -18,7 +18,7 @@ This document is the single source of truth for the native Android implementatio
 2. Treat the proposal mock-ups as the screen and flow authority.
 3. Use native Android Views with XML layouts; do not use Jetpack Compose.
 4. Write team-owned Android application source in Java.
-5. Keep the twenty drawn proposal screens. Phase 2A may replace mock data only for email/password authentication, user-profile creation, marketplace listings, conversation discovery, and participant-only real-time text chat.
+5. Keep the twenty drawn proposal screens. Phase 2A replaces mock data only for email/password authentication, user-profile creation, marketplace listings, conversation discovery, and participant-only real-time text chat. Phase 2B additionally makes only the existing Scanner and AI Result screens functional.
 6. Keep the obsolete Expo/React Native stack deleted as explicitly directed on 5 August 2026; do not restore it or create a side-by-side legacy tree.
 7. Do not embed unrestricted Gemini, Firebase Admin, or Google Maps credentials in the application.
 
@@ -34,10 +34,10 @@ This document is the single source of truth for the native Android implementatio
 | Build scripts | Gradle with Groovy DSL | Avoids Kotlin build scripts and keeps configuration familiar |
 | Android baseline | `minSdk 24`, `compileSdk 36`, `targetSdk 36` | Android 7+ device reach and the 2026 target API requirement |
 | App architecture | Single Activity, Fragments, Navigation Component, MVVM-style state holders and repositories | Clear lifecycle handling, testability, and one navigation graph |
-| Local database | Room 2.8.x over SQLite, using Java `annotationProcessor` | Compile-time SQL checks while meeting the device-storage requirement; Room 3 is excluded because it requires Kotlin/KSP |
-| Cloud data | Firebase Authentication, Cloud Firestore, Cloud Storage | Preserves the proposal's Firebase backend; Firestore snapshot listeners provide real-time chat without cross-database rule gaps |
-| AI | Firebase AI Logic Android SDK for Java with App Check and Remote Config | Keeps the Gemini key off the client and supports model/prompt updates |
-| Camera/media | CameraX plus Android Photo Picker | Native capture and gallery selection with modern permission handling |
+| Local database | Room 2.8.x over SQLite, using Java `annotationProcessor`, in a later authorised slice | Compile-time SQL checks while meeting the future device-storage requirement; Room 3 is excluded because it requires Kotlin/KSP |
+| Cloud data | Firebase Authentication and Cloud Firestore now; Cloud Storage later | Firestore snapshot listeners provide real-time chat without cross-database rule gaps; Phase 2B scanner images are not stored in the cloud |
+| AI | Phase 2B: Firebase AI Logic Android SDK for Java, exact source-pinned Gemini model, and App Check; Remote Config later | Keeps a raw Gemini key out of the client and protects the currently authorised scanner without opening another integration |
+| Camera/media | Phase 2B: CameraX plus Android Photo Picker | Native capture and gallery selection with only camera permission; temporary scanner images remain app-private |
 | Maps/location | Maps SDK for Android, Places SDK for Android, Fused Location Provider | Native map, nearby recycling centre, listing, and lending flows |
 | Background work | WorkManager Java `Worker` | Reliable draft/upload retry and deferred sync |
 | Dependency injection | Hilt with Java annotation processing | Consistent construction, compile-time checks, and test replacement |
@@ -76,8 +76,10 @@ UI fidelity rules for this milestone:
 | Local prototype navigation | Complete | Welcome → Login → Home → Scanner → AI Result is emulator-verified; every destination is also reachable through its planned controls or the review menu |
 | Backend/device integrations at UI-milestone close | Deferred at that checkpoint | Phase 2A subsequently authorises only Firebase Auth/Firestore for accounts, marketplace, and text chat; all other integrations remain deferred |
 | Verification | Complete for this UI milestone | Debug APK build, Android lint, resource/navigation audit, 20-screen emulator capture review, and no AndroidRuntime crash during launch |
-| Phase 2A Firebase app slice | Connected locally to the development project; console enablement/deployment pending confirmation | Java/Auth/Firestore implementation, default-deny rules, composite indexes, emulator configuration, and developer guide are present. The ignored `google-services.json` now matches `propcycle-e5f14` and `com.propcycle.app`; Email/Password must be enabled and the reviewed rules/indexes deployed |
-| Phase 2A verification | Android and Security Rules checks pass; lint dependency refresh is network-blocked | Debug assembly, 23 JVM validator tests, missing-config emulator smoke launch, 63-file XML/navigation/resource audit, and 9 Firestore Emulator rules suites pass. The Phase 2A lint rerun cannot fetch one Google Maven artifact while this PC's default DNS cannot resolve `dl.google.com`; no lint finding was emitted |
+| Phase 2A Firebase app slice | App-side implementation and local verification complete | Java/Auth/Firestore implementation, default-deny rules, composite indexes, emulator configuration, and developer guide are present. Both configured and missing-config builds, unit tests, lint, Rules tests, and twenty-screen emulator review pass |
+| Phase 2A owner checks | Deliberately pending | The Firebase owner still deploys the reviewed production Rules/indexes and completes the documented two-account live smoke test; local success is not reported as production deployment evidence |
+| Phase 2B scanner app slice | App-side implementation and local verification complete | Configured debug/release builds and the missing-config debug build pass; all 47 JVM tests pass; lint has 0 fatal issues and 0 errors (327 warnings remain across the full project); emulator checks pass for preview, capture, private processing, Photo Picker, camera denial fallback, consent, signed-out blocking, and invalid-result handling |
+| Phase 2B owner/live checks | Deliberately pending | The owner still enables Firebase AI Logic, enforces authenticated-users mode, registers a private debug App Check token, reviews quota/budget settings, and completes one deliberate live Gemini request using `docs/AI_SCANNER_SETUP.md` |
 
 ### Authorised Phase 2A Firebase essentials - 9 August 2026
 
@@ -98,14 +100,68 @@ Phase 2A implementation rules:
 - Require authentication for all Phase 2A Firestore reads and writes. A user may update only their own profile; authenticated users may directly read a display-name profile for seller/chat identity, but profile collection enumeration is denied. Marketplace records carry an immutable owner UID, and only conversation participants may list/read/write chat data.
 - Listing media remains the proposal placeholder. `imageUrl` is nullable and no upload path is opened in this phase.
 - The existing scanner, AI result, recycle, map, lending, notifications, settings, recent-activity, and profile-support surfaces remain reviewable static UI unless a small account/session label is needed.
-- Development project `propcycle-e5f14`, Android registration, matching `app/google-services.json`, and Singapore Firestore are now present. The remaining manual steps are enabling Email/Password and deploying the reviewed rules/indexes before the two-account live test.
+- Development project `propcycle-e5f14`, Android registration, matching `app/google-services.json`, and Singapore Firestore are present. Email/Password remains a required console setting. The recorded pending Phase 2A owner checks are production Rules/index deployment and the two-account live smoke test.
+
+Phase 2A app-side implementation and local verification are complete. Production
+Rules/index deployment and the two-account cloud smoke test remain deliberate
+owner checks in `docs/FIREBASE_SETUP.md`; this plan does not infer that a local
+test changed the production project.
+
+### Authorised Phase 2B AI Smart Scanner - 12 August 2026
+
+The user has authorised only the existing `SCAN-01` to `SCAN-02` journey. This
+slice adds device image input and one authenticated Gemini analysis without
+starting another proposal module.
+
+| Implement in Phase 2B | Explicitly defer |
+|---|---|
+| Stable CameraX preview and one-photo capture; Android Photo Picker for one gallery image; camera permission only | Microphone, video, continuous image analysis, broad storage/media permission, background capture, and multi-image scanning |
+| Bounded decode, EXIF-correct orientation, metadata-stripped temporary JPEG, app-private cache, and cleanup after use | Cloud Storage, permanent scan image, Room, scan history, offline result cache, draft/outbox, and WorkManager |
+| Firebase AI Logic Android SDK through the Gemini Developer API, exact source-pinned `gemini-3.6-flash` model, structured JSON response, and strict local validation | Raw Gemini/AI Studio key, direct REST integration, Vertex AI switch, Remote Config, custom backend, and abuse-resistant per-user quotas |
+| Signed-in-user gate, transmission disclosure, one request at a time, loading/setup/auth/offline/error/retry states, and result review | Automatic publish, AI image upload, Marketplace prefill, recycling-centre API, maps/location, and lending backend behaviour |
+| Debug App Check provider only in debug builds and Play Integrity provider only in release builds | Committed debug token, debug provider in release, or a claim that adding the SDK completes Play Console/SHA-256/release attestation setup |
+
+Phase 2B implementation rules:
+
+- Preserve the Scanner and AI Result wireframe hierarchy, proportions, labels,
+  and existing Recycle/Marketplace/Lend relationships while adding only the
+  states needed for a real scan.
+- Camera hardware is optional. Request `CAMERA` only when capture is selected;
+  gallery selection remains available after denial or when no camera exists.
+  Android Photo Picker does not require broad storage permission.
+- Copy one selected input into app-private cache, decode it off the main thread,
+  validate type/dimensions, rotate from EXIF, bound dimensions and bytes,
+  recompress it as a metadata-stripped JPEG, and remove temporary scanner files
+  after completion, cancellation, or failure.
+- Require a configured Firebase app and a current Firebase Authentication user.
+  Show the disclosure before transmission. Never fake a successful AI result.
+- Use the Firebase AI Logic SDK rather than a raw provider key. Build one
+  structured multimodal request, validate every response field and enum, reject
+  malformed or overlong output safely, and label confidence as an uncalibrated
+  model estimate.
+- Allow only one live request at a time and cancel or ignore obsolete work with
+  the owning lifecycle. Do not log images, tokens, raw responses, or private
+  account data.
+- Firebase AI Logic is not emulated. Use parser and image-bound unit tests for
+  repeatable local checks, test service failure paths manually, and reserve a
+  real shared-project request for the manual test in
+  `docs/AI_SCANNER_SETUP.md`.
+- When `useFirebaseEmulators` is enabled for local Auth/Firestore testing, block
+  live AI analysis. A deliberate live scanner test uses a normal configured
+  debug build, a cloud-authenticated test user, and valid App Check.
+- Each developer registers their own private App Check debug token. The release
+  Play Integrity provider, release SHA-256, Play/Firebase project link, exact
+  signed-APK test, quotas, and budget alerts remain deliberate owner checks.
+- Maps/Places/location, recycling APIs, Cloud Storage, Room/history, Remote
+  Config, Hilt, WorkManager, FCM/notifications, lending workflows, and every
+  other API/module stay unchanged and deferred.
 
 ## 2. Course constraints and delivery targets
 
 | Milestone | Date | Planning status |
 |---|---|---|
 | Part 1 proposal | 15 July 2026, before 5:00 PM | Past milestone; confirm the team's submission record; PDF is the scope baseline |
-| Native plan approval | 9 August 2026 | UI milestone complete and Phase 2A Firebase essentials approved; later integration decisions remain open |
+| Native plan approval | 12 August 2026 | UI milestone and Phase 2A app/local work complete; narrow Phase 2B AI scanner approved; other integrations remain open |
 | Feature freeze | Target: 29 August 2026 | No new functionality after this point |
 | Release candidate | Target: 2 September 2026 | All release gates must pass |
 | Working app and final report | 5 September 2026, before 5:00 PM | Fixed deadline |
@@ -245,7 +301,7 @@ Home
 | Presentation | Screen ViewModels, `LiveData`, `SavedStateHandle`, UI-state and one-time-event wrappers | Owns screen state, invokes use cases/repositories, survives configuration changes |
 | Domain | Validators, state transition policies, score calculations, date conflict checks, selected use cases | Plain Java; added only for logic reused across screens or requiring isolated tests |
 | Data | Repositories and local/remote data sources | Each data type has one source-of-truth policy and one public repository boundary |
-| Platform/integration | Firebase, Room, CameraX, Maps/Places, Fused Location, WorkManager, Remote Config | Wrapped so screens do not depend on vendor APIs |
+| Platform/integration | Currently authorised Firebase/Auth/Firestore, CameraX, Photo Picker, Firebase AI Logic, and App Check adapters; later integrations remain planned | Wrapped so screens do not depend directly on vendor APIs; adding one integration does not authorise the rest |
 
 ### State and concurrency policy
 
@@ -259,7 +315,7 @@ Home
 
 ### Planned project structure
 
-The native project is created only after approval. It starts as one Gradle `:app` module for delivery speed, with package-by-feature boundaries.
+The native project exists at the repository root as one Gradle `:app` module for delivery speed, with package-by-feature boundaries.
 
 ```text
 repository root/
@@ -327,7 +383,7 @@ Package names are finalised before project generation. Do not create empty place
 | Expo blur/gradient components | Material cards, XML drawables, elevation, and an API-aware blur/fallback policy |
 | Ionicons | Material Symbols or approved vector drawables |
 | Firebase JavaScript SDK | Firebase Android SDK managed through the Firebase BoM |
-| Direct Gemini REST key | Firebase AI Logic Java SDK, App Check, and Remote Config |
+| Direct Gemini REST key | Phase 2B Firebase AI Logic Java SDK plus build-specific App Check; no raw key; Remote Config remains later scope |
 | EAS Build | Gradle `assemble`/`bundle`, Android signing, and release variants |
 | Removed Expo `.env` configuration | Gradle/local properties and restricted console configuration recreated from the service consoles; no committed secrets |
 
@@ -349,10 +405,11 @@ Package names are finalised before project generation. Do not create empty place
 | Authentication session | Firebase Authentication | Firebase restores a valid cached session; protected writes require connectivity |
 | User/listing/lending/request metadata | Cloud Firestore with persistent disk cache disabled | Public data can use in-memory cache; account-private offline data is stored explicitly in UID-scoped Room tables |
 | Real-time messages | Cloud Firestore thread/message documents with snapshot listeners | Sending requires connectivity; unsent composer text stays in saved state and no cross-account SDK disk queue is used |
-| Images | Cloud Storage after publish intent; UID-scoped app-private draft copy or durable picker grant before upload | WorkManager retries only for the same authenticated UID; final metadata refers to storage paths |
-| Scan cache/history/drafts/outbox | Room, scoped by initiating account UID | Fully readable for that account; outbox retries only idempotent operations and never crosses accounts |
+| Phase 2B scanner working image | One orientation-corrected, bounded, metadata-stripped JPEG in app-private temporary cache | No permanent offline copy; delete after result, cancellation, or failure; no Cloud Storage upload |
+| Later published images | Cloud Storage after a separately authorised publish intent; UID-scoped app-private draft copy or durable picker grant before upload | Deferred with Storage/Room/WorkManager; Phase 2B opens no upload path |
+| Later scan history/drafts/outbox | Room, scoped by initiating account UID | Deferred; Phase 2B does not claim saved scans, drafts, or retry queues |
 | Theme and non-sensitive settings | Preferences DataStore through its RxJava Java API | Immediate local persistence behind a `SettingsDataSource` |
-| AI model/prompt/cache policy | Firebase Remote Config with a safe, exact stable model version and prompt version | Last activated configuration remains available; preview/moving model aliases are not release defaults |
+| Phase 2B AI model/prompt policy | Exact `gemini-3.6-flash` model and bounded structured prompt pinned in reviewed Java source | A fresh scan requires connectivity; Remote Config and persistent result caching remain deferred |
 | Optional home enhancements | No source until OD-10 is approved | Daily tip/statistics/impact panels remain absent rather than displaying invented data |
 | Map/Places results | Google SDK responses plus short-lived memory cache | Saved item coordinates still render; live nearby search requires a connection |
 
@@ -421,21 +478,43 @@ Firestore persistent disk caching is disabled to avoid account A data surviving 
 
 ### AI scan and handoff
 
-1. User captures an image or picks a photo. Text-only lookup is added only if OD-10 is approved.
-2. App normalises the input, rotates correctly, removes unnecessary EXIF location metadata, and compresses a working copy.
-3. Repository checks `scan_cache` using input hash plus prompt/model version.
-4. On a miss, the app discloses that the working image will be transmitted to Firebase AI Logic/Gemini for analysis, then requests a structured response after the user proceeds.
-5. The response is schema-validated. Unknown categories, missing fields, invalid numbers, or unsafe content produce a review/error state rather than a crash.
-6. SCAN-02 displays item name, category, material, recyclable status, local-context guidance, upcycling ideas, impact estimate, and an explicitly labelled uncalibrated model estimate rather than a guaranteed confidence score.
-7. User reviews and can edit publishable fields.
-8. Save writes local history. Recycle opens MAP-01. Marketplace opens MARKET-03. Lend opens LEND-04.
-9. Source image and AI fields transfer through a graph-scoped ViewModel or saved draft ID, not a global mutable singleton.
+Current Phase 2B flow:
 
-Gallery/camera media that must survive beyond the current screen is copied into UID-scoped app-private draft storage before Room or WorkManager references it. A durable picker permission may be retained where the returned URI/provider supports it, but a short-lived Photo Picker URI is never assumed to survive process death or deferred work.
+1. A signed-in user captures one image or picks one image. Text-only lookup is
+   added only if OD-10 is separately approved.
+2. The app copies the selected input into app-private temporary cache, validates
+   it, decodes it off the main thread, rotates it correctly, bounds dimensions
+   and bytes, removes EXIF metadata, and writes a working JPEG.
+3. The app shows a disclosure that the working image will be transmitted to
+   Firebase AI Logic/Gemini. No request starts until the user proceeds.
+4. The repository allows one request at a time and sends the image plus a
+   bounded prompt through Firebase AI Logic using the Gemini Developer API.
+5. The structured response is schema-validated. Unknown categories, missing or
+   overlong fields, invalid numbers, malformed JSON, or unsafe/unusable output
+   produce a recoverable error/retry state rather than a crash or fake result.
+6. SCAN-02 displays item name, category, material, recyclable status,
+   Malaysian-context guidance, upcycling ideas, impact text, and an explicitly
+   labelled uncalibrated model estimate rather than guaranteed confidence.
+7. The user reviews the result before using Recycle, Marketplace, or Lend. These
+   destinations retain their existing behaviour; Phase 2B does not auto-publish
+   or write AI fields into another backend module.
+8. Temporary scanner image files are removed after the result, cancellation, or
+   failure. No permanent scan history or Cloud Storage copy is created.
+
+When Room/history and editable draft handoff are separately authorised later,
+media that must survive beyond the scanner will move into UID-scoped app-private
+draft storage before Room or WorkManager references it. A short-lived Photo
+Picker URI will never be assumed to survive process death or deferred work.
 
 The category enum includes every retained material category: banner, decoration, fabric, stationery, craft, cosplay, toys/miniatures, wood, electronics, packaging, and other.
 
-Default cache expiry is seven days, but Remote Config can change it. Prompt/model changes invalidate old cache entries. Release configuration uses an exact stable model version, not a preview or moving alias. AI access requires an authenticated user, project quotas, and budget alerts; App Check is enforced only when OD-14 prerequisites pass, and abuse-resistant per-user limits require OD-13 trusted logic. AI impact values are estimates and are labelled accordingly.
+Phase 2B has no persistent AI cache and no Remote Config. Its exact model and
+schema/prompt are source-pinned for a reviewable build. AI access requires an
+authenticated user, project quotas, budget alerts, and App Check. Debug builds
+use only each developer's registered debug token; release builds use only Play
+Integrity and still require the owner steps in OD-14. Abuse-resistant per-user
+limits require OD-13 trusted logic. AI confidence, impact, and recycling advice
+remain estimates and are labelled/reviewed accordingly.
 
 ### Marketplace listing lifecycle
 
@@ -535,13 +614,14 @@ The proposal is monochrome, and the user has now approved a soft light eco-colou
 
 ### Security controls
 
-- Preferred release protection is Firebase App Check with Play Integrity. It requires a Google Play Console app entry, linking the same Cloud/Firebase project, direct project Owner permission, and registration of the release SHA-256. For the sideloaded course APK, configure outside-Google-Play settings: `PLAY_RECOGNIZED` not required, `LICENSED` not required, and device integrity required. Test the exact signed APK, monitor metrics, and enforce only after legitimate requests are verified.
-- If the team cannot satisfy those Play Console/Owner prerequisites by the foundation gate, do not ship a release build with the debug provider and do not enable enforcement that blocks the demo. Record the lower-assurance fallback: Authentication plus tested Security Rules, restricted keys, App Check metrics where available, strict AI/project quotas and budget alerts; OD-13 is required for a custom attestation/proxy alternative.
-- Firebase Authentication is required for all user data, listings, lending, chat, ratings, and uploads.
+- Phase 2B debug builds initialise only the Firebase App Check debug provider. Every developer registers their own token in the Firebase Console; tokens are private, never shared, and never committed.
+- Phase 2B release builds initialise only the Play Integrity provider. Release use still requires a protected signing key, release SHA-256 registration, correct Play/Firebase/Cloud project links and permissions, review of outside-Google-Play policy for the course APK, exact signed-APK testing, request-metric review, and enforcement only after legitimate requests are verified.
+- If those release prerequisites are unavailable, never ship the debug provider or token in the release APK and never report the protected AI scanner as release-ready. Record the limitation and either keep the scanner out of that release or approve a reviewed lower-assurance/non-enforced policy; OD-13 is required for a custom attestation/proxy alternative.
+- Firebase Authentication is required for all user data, listings, lending, chat, ratings, uploads, and every Phase 2B AI request.
 - Deploy and test Firestore and Storage Rules before connecting the release build.
 - Validate ownership and state transitions in both client code and Security Rules. Use trusted backend logic only for the capabilities explicitly approved in OD-13.
 - Restrict Maps/Places keys to the Android application ID and signing certificate; restrict enabled APIs.
-- Firebase AI Logic keeps the Gemini provider key behind its proxy. Exact stable model version, prompt version, safety settings, and cache policy come from Remote Config with safe defaults; preview/moving aliases are not release defaults.
+- Firebase AI Logic keeps the Gemini provider key behind its proxy. Phase 2B source-pins the exact model, bounded prompt/schema, and safety configuration; Remote Config and persistent cache policy remain deferred.
 - Never log passwords, tokens, message bodies, exact private locations, raw AI images, or full user documents.
 - Release builds disable debug logging, shrink/obfuscate where compatible, and use a team-controlled signing key backup.
 - Use Network Security Configuration to disallow cleartext traffic and to document any exceptional trust configuration.
@@ -556,7 +636,7 @@ The proposal is monochrome, and the user has now approved a soft light eco-colou
 | Gallery | Use the system Photo Picker to avoid broad media access on supported versions |
 | Location | Foreground only, approximate accepted, manual fallback, no background tracking |
 | Notifications | Ask in context; in-app notifications remain available after denial |
-| Scan images | Explain that analysis transmits the working image to Firebase AI Logic/Gemini for transient processing; keep local working files app-private and persist to Cloud Storage only for an explicit publish/backup action |
+| Scan images | Explain before analysis that a bounded working image is transmitted to Firebase AI Logic/Gemini for transient processing; keep it app-private and delete it after use. Phase 2B never persists it to Cloud Storage or scan history |
 | Listing location | Show a useful area/meeting point rather than exposing a user's private home by default |
 | Account data | Passwords remain solely with Firebase Auth; settings store no credentials |
 
@@ -572,7 +652,8 @@ The proposal is monochrome, and the user has now approved a soft light eco-colou
 
 ### Offline expectations
 
-- Saved scan history, valid cached scan results, and drafts are readable offline.
+- Phase 2B has no saved scan history or persistent AI-result cache. A new analysis requires connectivity and shows an offline/retry state without inventing a result.
+- Saved scan history, cached results, and drafts become readable offline only after the later Room/history slice is authorised and implemented.
 - Marketplace/lending shows cached Firestore data with a visible stale/offline state.
 - Creating or editing a draft is always local first.
 - Publishing, messaging, map/Places search, authentication changes, and a fresh AI request require connectivity unless the SDK safely queues the exact operation.
@@ -594,13 +675,13 @@ The proposal is monochrome, and the user has now approved a soft light eco-colou
 
 | Layer | Required coverage |
 |---|---|
-| Plain JVM tests | Validators, category mapping, cache keys, AI schema parser, eco/trust calculations, search normalisation, state machines, date overlap, error mapping |
-| Repository tests | Success/error/offline mapping with fake local and remote data sources |
+| Plain JVM tests | Validators, category mapping, Phase 2B structured AI schema/parser and bounds, later cache keys, eco/trust calculations, search normalisation, state machines, date overlap, error mapping |
+| Repository tests | Success/error/offline/malformed/one-request mapping with local fakes; Firebase AI Logic has no emulator and live AI calls are not unit tests |
 | Room instrumentation | DAO CRUD, owner-scope isolation, query results, committed/exported schema JSON, migration preservation, outbox retry selection and logout cancellation |
 | Firebase Emulator Suite | Auth-dependent Firestore/Storage rule allow/deny cases, deterministic chat/rating identities, lending-lock transitions, and representative data flows |
 | Fragment/navigation tests | Destination arguments, authentication guards, back stack, process/state restoration |
 | Espresso journeys | Register/login, scan-to-save, scan-to-listing, marketplace-to-chat, lending request-to-return/rating, settings/logout |
-| Manual device matrix | API 24, API 33, API 36; camera/no camera, approximate/denied location, notification denial, slow/offline network, dark mode, large text, rotation/process recreation; API 36 `sw600dp` portrait/landscape/resizing/split-screen |
+| Manual device matrix | API 24, API 33, API 36; scanner camera/gallery/denial/no-camera/rotation/offline/App Check/live request, approximate/denied location later, notification denial later, dark mode, large text, rotation/process recreation; API 36 `sw600dp` portrait/landscape/resizing/split-screen |
 
 ### Definition of done for every screen/module
 
@@ -620,7 +701,7 @@ The proposal is monochrome, and the user has now approved a soft light eco-colou
 - Unit tests, Android tests, Lint, and Firebase rules tests pass.
 - All screen IDs and retained modules have a completed acceptance check.
 - No secrets in Git history or built artefacts; release Maps key restrictions verified.
-- App Check either accepts the exact sideloaded signed course APK under the reviewed outside-Play policy before enforcement, or OD-14 records the non-enforced lower-assurance fallback and its restrictions.
+- The release variant contains only the Play Integrity App Check provider. Before the AI scanner is called release-ready, the exact signed course APK must produce valid App Check requests under the reviewed outside-Play policy; OD-14 records any non-enforced limitation, and the debug provider/token is never a release fallback.
 - Signed APK installs and launches on two physical Android devices.
 - Fresh install, upgrade install, logout/login, offline restart, and denied-permission smoke tests pass.
 - Crash-free 10-minute presentation rehearsal with a prepared fallback dataset and cached scan.
@@ -654,7 +735,7 @@ This schedule assumes plan approval by 6 August 2026 and four parallel contribut
 |---|---|---|---|---|---|
 | 5-6 Aug | Plan and contract freeze | Confirm namespace, API baseline, Git strategy | Screen inventory/design tokens | AI schema/cache contract | Firebase schema/rules contract |
 | 7-9 Aug | Native foundation | Create approved project, CI, auth/navigation shell | XML component library, welcome/login/register/home shells | Room 2.8 database and scanner spike | Firebase emulator/config, repository interfaces/rule skeleton |
-| 10-14 Aug | Scanner vertical slice | Location permission and recycling map shell | Scanner/result/recycling UI states | Camera/gallery -> AI -> review/save flow | User/activity/notification data foundations |
+| 10-14 Aug | Narrow Phase 2B scanner vertical slice | Authentication/App Check integration review; no map work in this slice | Preserve Scanner/AI Result wireframes and all scanner states | Camera/gallery -> bounded temporary image -> AI -> review flow; no save/history | Peer-review only; no new user/activity/notification backend |
 | 15-19 Aug | Marketplace vertical slice | Marketplace distance/geohash integration | Browse/detail/post/chat layouts | Draft/image handoff and local retry support | Listings, Storage, search/filter, chat data/rules |
 | 20-24 Aug | Lending vertical slice | Lending map and date/navigation integration | Lending screens/calendar/request states | Shared image/local helpers and performance | Lending, deterministic booked-day transaction, return, eligible ratings |
 | 25-27 Aug | Supporting modules | Auth guards, deep links, settings permissions | Home/recent/profile/messages/notifications visual completion | Scan history, offline and failure states | Notifications, my activity, status/ownership edge cases |
@@ -670,17 +751,18 @@ No new feature begins after 29 August. Only release-blocking correctness, securi
 
 Repository cleanup is complete: on 5 August 2026, the user explicitly authorised direct deletion of the obsolete Expo/React Native source, Node/Expo configuration and dependencies, generated output, placeholder services/database files, default Expo assets/licence boilerplate, and old `.env`. The user subsequently authorised the native Gradle skeleton and, on 9 August 2026, the proposal-parity UI milestone.
 
-The environment, proposal-parity UI, and narrow Phase 2A Firebase portions of this sequence are authorised. Later integrations still require their relevant decision gates:
+The environment, proposal-parity UI, Phase 2A Firebase essentials, and narrow Phase 2B AI scanner portions of this sequence are authorised. Later integrations still require their relevant decision gates:
 
 1. Review and approve this plan, open decisions, namespace, design assets/tokens, and ownership.
 2. Retrieve/recreate Firebase, Maps, and AI configuration from the owning consoles; do not treat the deleted `.env` or Git history as a secret store.
 3. Create the native Gradle project at the repository root with one `:app` module. **Completed as an environment-only skeleton:** Gradle wrapper, root/app Groovy build scripts, API 24/36 configuration, provisional application ID, minimal manifest, and empty non-code placeholders.
 4. **Completed:** configure feature-level Views/XML and Navigation, then implement and verify the twenty PDF screens using local mock content.
-5. **Phase 2A app-side implementation and local Firebase connection completed:** add only Firebase Authentication and Cloud Firestore for email/password accounts, text-only marketplace listings, and participant-only listing chat; include deny-by-default rules, indexes, emulator tests, and the developer setup guide. Project `propcycle-e5f14` and its matching ignored JSON are connected. Email/Password enablement and rules/index deployment still follow `docs/FIREBASE_SETUP.md` before live testing.
-6. Validate Play Console/project-Owner access and the signed-APK App Check plan (or formally accept OD-14 fallback), restricted Maps key, AI quota/budget controls, and UID-scoped media/outbox design.
-7. After separate approval for each remaining service, implement the later scheduled vertical slices without restoring or converting TypeScript/Expo source.
-8. Run parity review against all twenty PDF mock-ups and the two explicitly derived completion surfaces.
-9. Pass security, adaptive-layout, offline/account-switch, test, and release gates before submission.
+5. **Phase 2A app-side implementation and local verification completed:** add only Firebase Authentication and Cloud Firestore for email/password accounts, text-only marketplace listings, and participant-only listing chat; include deny-by-default rules, indexes, emulator tests, and the developer setup guide. Production Rules/index deployment and the two-account live smoke test still follow `docs/FIREBASE_SETUP.md` as owner checks.
+6. **Phase 2B authorised:** implement only CameraX capture, Android Photo Picker, bounded temporary image handling, authenticated Firebase AI Logic/Gemini structured analysis, build-specific App Check, result review states, local parser/image-bound tests, and `docs/AI_SCANNER_SETUP.md`.
+7. The project owner enables AI Logic with the Gemini Developer API, enforces authenticated-users mode in AI Logic Settings, registers each developer's debug token, verifies AI Logic enforcement and one live request, reviews quotas/budget alerts, and later completes release Play Integrity/SHA-256 setup.
+8. After separate approval for each remaining service, implement later scheduled vertical slices without restoring or converting TypeScript/Expo source.
+9. Run parity review against all twenty PDF mock-ups and the two explicitly derived completion surfaces.
+10. Pass security, adaptive-layout, offline/account-switch, test, and release gates before submission.
 
 Brownfield React Native embedding and automated TSX-to-Java conversion are out of scope because the selected target is one clean native architecture.
 
@@ -709,11 +791,11 @@ Brownfield React Native embedding and automated TSX-to-Java conversion are out o
 
 ## 17. Open decisions requiring team confirmation
 
-These choices do not block documentation, but they must be closed before the related implementation begins. OD-02 is resolved for Phase 2A; its deferred alternatives still require a new decision.
+These choices do not block documentation, but they must be closed before the related implementation or release gate. OD-02 is resolved for Phase 2A. Phase 2B also fixes the debug-versus-release App Check provider policy, while OD-14's owner console/certificate/live-release checks remain open.
 
 | ID | Decision | Recommended default |
 |---|---|---|
-| OD-01 | Android application ID/namespace | Provisional `com.propcycle.app` is used only for the environment skeleton; confirm a university/team-owned reverse-domain ID before Firebase registration or signing |
+| OD-01 | Android application ID/namespace | `com.propcycle.app` is already registered in the shared development Firebase project; confirm it before release signing because changing it requires a new Android/Firebase app registration |
 | OD-02 | Authentication promise in the mock-up | **Resolved for Phase 2A:** email/password is implemented. Phone, username, and social authentication are deferred and must not be implied by current UI copy |
 | OD-03 | Firebase environments | Separate development/emulator data from the final production project |
 | OD-04 | Final colours, font, logo, and icon | **Resolved for the current UI pass:** use a soft light eco-colour theme while preserving the proposal structure; supplied brand fonts, logo, and final launcher artwork remain deferred until the team provides them |
@@ -726,7 +808,7 @@ These choices do not block documentation, but they must be closed before the rel
 | OD-11 | Marketplace semantics | Use transaction intent (`sale`, `donation`, `exchange`) separately from fulfilment (`pickup`, `meetup`); designer confirms the mock-up labels and whether Market has any map entry |
 | OD-12 | Proposal wording "rent or borrow" | Default to borrowing with optional informational deposit/fee arranged in chat; no in-app payment. Team must decide whether any rental fee is permitted and update copy consistently |
 | OD-13 | Trusted automation backend | Baseline has no custom backend. If automated FCM, cross-device schedules, stored global/eco/trust aggregates, orphan cleanup, or abuse-resistant per-user AI limits are required, select a Java-capable trusted service, owner, tests, secrets/billing plan, and schedule first |
-| OD-14 | App Check release prerequisites | Confirm Play Console app entry, Firebase/Cloud project link, direct project Owner permission, and release SHA-256. If unavailable, accept non-enforcement plus restricted-key/rules/quota fallback; never use a debug token/provider in the release APK |
+| OD-14 | App Check release prerequisites | **Provider policy resolved for Phase 2B:** debug provider only in debug builds and Play Integrity only in release builds. The owner still confirms the Play entry/project links/permissions/release SHA-256, tests the exact signed APK, and records any non-enforced restriction; never use a debug token/provider in release |
 
 Current registration/login text must claim only the implemented email/password behaviour. Phone/username/social methods remain deferred; password-reset, confirmation, and terms UI also require designer placement sign-off. Until OD-06 and OD-13 are closed with an implemented sender, the notification screen remains functional in-app but automated operating-system push is not represented as complete.
 
@@ -746,7 +828,11 @@ Current registration/login text must claim only the implemented email/password b
 - [Maps SDK for Android](https://developers.google.com/maps/documentation/android-sdk/start)
 - [Places Nearby Search](https://developers.google.com/maps/documentation/places/android-sdk/nearby-search)
 - [Firebase AI Logic](https://firebase.google.com/docs/ai-logic)
+- [Firebase AI Logic Android setup](https://firebase.google.com/docs/ai-logic/get-started?platform=android)
+- [Firebase AI Logic multimodal generation](https://firebase.google.com/docs/ai-logic/generate-text?platform=android)
+- [Firebase AI Logic structured output](https://firebase.google.com/docs/ai-logic/generate-structured-output?platform=android)
 - [Firebase AI production checklist](https://firebase.google.com/docs/ai-logic/production-checklist)
+- [Firebase App Check debug provider](https://firebase.google.com/docs/app-check/android/debug-provider)
 - [Cloud Firestore real-time listeners](https://firebase.google.com/docs/firestore/query-data/listen)
 - [Cloud Storage Security Rules conditions](https://firebase.google.com/docs/storage/security/rules-conditions)
 - [Cloud Firestore Android transactions](https://firebase.google.com/docs/reference/android/com/google/firebase/firestore/Transaction)
@@ -754,13 +840,14 @@ Current registration/login text must claim only the implemented email/password b
 
 ## 19. Plan approval checklist
 
-The UI milestone and Phase 2A Firebase essentials are authorised. Later production functionality begins only after the team confirms the relevant items below:
+The UI milestone, Phase 2A Firebase essentials, and narrow Phase 2B AI scanner are authorised. Later production functionality begins only after the team confirms the relevant items below:
 
 - [ ] Every proposal screen/module is represented correctly.
 - [ ] Java/XML/no-Compose policy is accepted.
 - [ ] API 24 minimum and API 36 target are accepted.
 - [x] Screen IDs, navigation model, and designer Home fan are accepted for the current UI pass.
-- [ ] Firebase/Room/AI/Maps data ownership is accepted.
+- [x] Phase 2B scanner uses temporary app-private files and Firebase AI Logic only; no raw key, Cloud Storage, Room/history, map, or automatic publish is opened.
+- [ ] Later Firebase/Room/Maps data ownership is accepted.
 - [ ] Authentication alternatives, marketplace semantics, lending fee wording, and optional enhancements are closed.
 - [ ] Push/trusted-backend scope has a named owner and deadline, or the excluded automation is explicitly accepted.
 - [ ] Play Console/project-Owner access and App Check enforcement/fallback decision are recorded.

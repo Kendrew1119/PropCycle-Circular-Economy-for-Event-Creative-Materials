@@ -17,14 +17,22 @@ The following items are already correct on this PC:
 - The Firebase Android BoM is version `34.17.0`.
 - The app includes Firebase Authentication and Cloud Firestore.
 - Firestore rules and indexes are ready in this repository.
+- Phase 2A app-side code and local checks are complete.
+- Phase 2B scanner dependencies include Firebase AI Logic, CameraX, Android
+  Photo Picker, and build-specific App Check providers.
 
 Do not add `firebase-analytics`. Firebase shows Analytics as an example, but
-PropCycle does not use Analytics in Phase 2A.
+PropCycle does not use Analytics in Phase 2A or Phase 2B.
 
 ## What you need to do next
 
-Complete Steps 1 and 2 below. After that, the app can use the real Firebase
-project.
+Complete Steps 1 and 2 below for the Phase 2A cloud owner checks. The app-side
+code and local tests passing does not prove that production Rules/indexes were
+deployed or that the two-account live smoke test passed.
+
+For the Phase 2B scanner, also complete the AI Logic and App Check owner steps
+in [AI_SCANNER_SETUP.md](AI_SCANNER_SETUP.md). Do not create or paste a raw
+Gemini API key.
 
 ## Step 1 - Enable email and password login
 
@@ -125,6 +133,40 @@ The two required indexes are:
 
 Do not manually create Firestore collections. The app creates them when you
 register, publish a listing, and start a chat.
+
+## Phase 2B owner step - enable AI Logic and App Check
+
+This is a different shared-service setup from Firestore deployment.
+
+1. Open Firebase project `propcycle-e5f14`.
+2. Open **AI Services > AI Logic > Get started**.
+3. Choose the **Gemini Developer API**.
+4. Complete the guided setup.
+5. Open **AI Services > AI Logic > Settings**.
+6. Under **Authenticated-users mode**, choose **Enforce authenticated-users
+   mode**, then press **Confirm**.
+7. Run a debug app and find the device token in Logcat by filtering
+   `DebugAppCheckProvider`.
+8. In Firebase Console, open **Security > App Check > Apps >
+   com.propcycle.app > Manage debug tokens**.
+9. Add that developer's token with a clear device name.
+10. Open the App Check APIs/Products view and verify the Firebase AI Logic row.
+11. Test one live scanner request, check valid request metrics, and review
+     current quota/budget alerts.
+
+The AI Logic guided setup automatically enables App Check enforcement for AI
+Logic. A developer's first debug request can be rejected until that developer
+registers their debug token.
+
+Each developer registers their own token. No token is committed or shared.
+Firebase AI Logic is not emulated, so a real AI request is a deliberate manual
+test. Debug builds use the debug provider only. Release builds use Play
+Integrity only and still require release SHA-256/provider/signed-APK owner
+setup later.
+
+The complete click-by-click steps, camera/emulator setup, privacy notes, manual
+test checklist, release gate, and troubleshooting are in
+[AI_SCANNER_SETUP.md](AI_SCANNER_SETUP.md).
 
 ## Step 3 - Build the connected app
 
@@ -259,11 +301,15 @@ These services are not needed now and should remain disabled:
 
 - Firebase Analytics
 - Cloud Storage and image upload
-- AI scanner and Gemini
 - Google Maps, Places, and location
-- Camera and gallery integration
+- recycling-centre APIs
+- permanent scan history, Room, and WorkManager
+- Firebase Remote Config
 - Push notifications
 - Lending booking, return, and rating logic
+
+The narrow CameraX/Photo Picker/Firebase AI Logic scanner is now Phase 2B. It
+does not authorise any item above.
 
 Official Firebase references:
 
@@ -271,3 +317,5 @@ Official Firebase references:
 - [Email/password Authentication](https://firebase.google.com/docs/auth/android/password-auth)
 - [Deploy Firestore Security Rules](https://firebase.google.com/docs/firestore/security/get-started)
 - [Firebase CLI](https://firebase.google.com/docs/cli)
+- [Firebase AI Logic Android setup](https://firebase.google.com/docs/ai-logic/get-started?platform=android)
+- [Firebase App Check debug provider](https://firebase.google.com/docs/app-check/android/debug-provider)

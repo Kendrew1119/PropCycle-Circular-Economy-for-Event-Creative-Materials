@@ -16,11 +16,9 @@
     <fragment android:id="@+id/recentActivitiesFragment" android:name="com.propcycle.app.ui.WireframeFragment" android:label="Recent Activities" tools:layout="@layout/fragment_recent_activities">
         <argument android:name="layoutResId" android:defaultValue="@layout/fragment_recent_activities" app:argType="reference" />
     </fragment>
-    <fragment android:id="@+id/scannerFragment" android:name="com.propcycle.app.ui.WireframeFragment" android:label="AI Smart Scanner" tools:layout="@layout/fragment_scanner">
-        <argument android:name="layoutResId" android:defaultValue="@layout/fragment_scanner" app:argType="reference" />
-    </fragment>
-    <fragment android:id="@+id/aiResultFragment" android:name="com.propcycle.app.ui.WireframeFragment" android:label="AI Result" tools:layout="@layout/fragment_ai_result">
-        <argument android:name="layoutResId" android:defaultValue="@layout/fragment_ai_result" app:argType="reference" />
+    <fragment android:id="@+id/scannerFragment" android:name="com.propcycle.app.ui.scanner.ScannerFragment" android:label="AI Smart Scanner" tools:layout="@layout/fragment_scanner" />
+    <fragment android:id="@+id/aiResultFragment" android:name="com.propcycle.app.ui.scanner.AiResultFragment" android:label="AI Result" tools:layout="@layout/fragment_ai_result">
+        <argument android:name="analysisJson" android:defaultValue="" app:argType="string" />
     </fragment>
     <fragment android:id="@+id/createListingFragment" android:name="com.propcycle.app.ui.marketplace.CreateListingFragment" android:label="Create Listing" tools:layout="@layout/fragment_create_listing" />
     <fragment android:id="@+id/recycleCenterFragment" android:name="com.propcycle.app.ui.WireframeFragment" android:label="Recycle Center" tools:layout="@layout/fragment_recycle_center">

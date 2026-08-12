@@ -24,6 +24,7 @@
     <color name="pc_on_error">#FFFFFF</color>
     <color name="pc_scrim">#660D2419</color>
     <color name="pc_transparent">#00000000</color>
+    <color name="pc_camera_surface">#183328</color>
 
     <!-- Compatibility names retained for proposal layouts while they migrate. -->
     <color name="pc_surface_mid">@color/pc_surface_container</color>

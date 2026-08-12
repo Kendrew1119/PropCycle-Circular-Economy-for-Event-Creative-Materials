@@ -23,8 +23,8 @@ import com.propcycle.app.core.firebase.FirebaseEnvironment;
 import com.propcycle.app.ui.common.ScreenNavigation;
 
 /**
- * Reusable host for proposal screens that remain static in Phase 2A. Firebase-backed
- * account, marketplace, and chat destinations use dedicated feature Fragments.
+ * Reusable host for proposal screens that remain static. Firebase-backed account,
+ * marketplace, chat, and the Phase 2B scanner use dedicated feature Fragments.
  */
 public final class WireframeFragment extends Fragment {
 
@@ -66,15 +66,6 @@ public final class WireframeFragment extends Fragment {
                     clicked -> ScreenNavigation.navigateAuthenticated(
                             this, R.id.profileFragment, null));
             bindHomeQuickMenu(view, controller);
-        } else if (destinationId == R.id.scannerFragment) {
-            bindNavigation(view, R.id.primary_action, controller, R.id.aiResultFragment);
-            bindNavigation(view, R.id.secondary_action, controller, R.id.aiResultFragment);
-        } else if (destinationId == R.id.aiResultFragment) {
-            bindNavigation(view, R.id.recycle_action, controller, R.id.recycleCenterFragment);
-            bind(view, R.id.sell_action,
-                    clicked -> ScreenNavigation.navigateAuthenticated(
-                            this, R.id.createListingFragment, null));
-            bindNavigation(view, R.id.lend_action, controller, R.id.lendResourceFragment);
         } else if (destinationId == R.id.lendResourceFragment) {
             bindNavigation(view, R.id.primary_action, controller, R.id.lendingListFragment);
         } else if (destinationId == R.id.lendingMapFragment) {

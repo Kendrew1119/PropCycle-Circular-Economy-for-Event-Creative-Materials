@@ -11,4 +11,54 @@
     <string name="gallery">Choose from gallery</string>
     <string name="send">Send message</string>
     <string name="home_greeting">Hey %1$s,</string>
+
+    <!-- Phase 2B AI scanner. -->
+    <string name="scanner_title">AI Smart Scanner</string>
+    <string name="scanner_subtitle">Point the camera at one clear item, or choose a photo.</string>
+    <string name="scanner_preview_description">Camera preview or selected item photo</string>
+    <string name="scanner_preview_placeholder">Your item will appear here</string>
+    <string name="scanner_frame_description">Scanner guide frame</string>
+    <string name="scanner_initial_status">Take a photo or choose one from your device.</string>
+    <string name="scanner_disclosure">Before you continue: a temporary copy of the selected image will be sent to Firebase AI Logic for Gemini analysis. It is not saved to PropCycle scan history or Cloud Storage. Check the result because AI can be wrong.</string>
+    <string name="scanner_disclosure_consent">I understand and want to send this image for AI analysis.</string>
+    <string name="scanner_analyse">Analyse item</string>
+    <string name="scanner_retry">Try again</string>
+    <string name="scanner_sign_in">Sign in</string>
+    <string name="scanner_setup_help">Setup help</string>
+    <string name="scanner_progress_description">Analysing item</string>
+    <string name="scanner_camera_unavailable">Camera is unavailable. You can still choose a photo.</string>
+
+    <!-- Phase 2B AI result. -->
+    <string name="ai_result_hello">Hello!</string>
+    <string name="ai_result_heading">AI Identification</string>
+    <string name="ai_result_waiting_item">No result yet</string>
+    <string name="ai_result_material_format">Material: %1$s</string>
+    <string name="ai_result_category_format">Category: %1$s</string>
+    <string name="ai_result_route_format">Suggested route: %1$s</string>
+    <string name="ai_result_confidence_format">Model estimate: %1$d%%</string>
+    <string name="ai_result_material_placeholder">Material: Not available</string>
+    <string name="ai_result_category_placeholder">Category: Not available</string>
+    <string name="ai_result_route_placeholder">Suggested route: Not available</string>
+    <string name="ai_result_confidence_placeholder">Model estimate: Not available</string>
+    <string name="ai_result_view_details">View details</string>
+    <string name="ai_result_initial_status">Scan an item to see an AI result.</string>
+    <string name="ai_result_disclaimer">This percentage is an uncalibrated model estimate, not a guarantee. Review the item, material and local recycling rules before acting.</string>
+    <string name="ai_result_guidance_heading">What to do next</string>
+    <string name="ai_result_waiting_guidance">A recycling suggestion will appear here after analysis.</string>
+    <string name="ai_result_next_step">Please select the next step!</string>
+    <string name="ai_result_scan_again">Scan again</string>
+    <string name="ai_result_mascot_description">PropCycle cat mascot</string>
+    <string name="ai_result_mascot">( = ^ . ^ = )</string>
+    <string name="ai_result_recycle_description">Recycle this item now</string>
+    <string name="ai_result_sell_description">Create a marketplace listing</string>
+    <string name="ai_result_lend_description">List this item for lending</string>
+    <string name="ai_result_invalid_status">No valid scan result is available. Scan an item to continue.</string>
+    <string name="ai_result_invalid_guidance">The app will never show a made-up success result when AI setup or analysis fails.</string>
+    <string name="ai_result_review_status">Review this AI result before choosing what to do next.</string>
+    <string name="ai_result_hazardous_next_step">Do not sell, lend, reuse, or place this item in normal recycling. Follow the safety note and verify a specialist disposal route.</string>
+    <string name="ai_result_ewaste_next_step">Use an approved e-waste route after checking the item and local acceptance. Selling and lending are disabled for this scan.</string>
+    <string name="ai_result_review_only_next_step">Review the guidance and safety note, then verify a suitable local option. Actions that may not be safe for this result are disabled.</string>
+    <string name="ai_result_recycle">Recycle Now</string>
+    <string name="ai_result_sell">Sell Item</string>
+    <string name="ai_result_lend">Lend Out</string>
 </resources>
