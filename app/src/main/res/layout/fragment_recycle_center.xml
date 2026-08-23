@@ -1,272 +1,255 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/pc_background"
     android:clipToPadding="false"
-    android:fillViewport="true"
-    android:paddingStart="@dimen/screen_horizontal"
-    android:paddingTop="@dimen/screen_vertical"
-    android:paddingEnd="@dimen/screen_horizontal"
-    android:paddingBottom="@dimen/screen_vertical">
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingStart="@dimen/screen_horizontal"
+        android:paddingTop="@dimen/screen_vertical"
+        android:paddingEnd="@dimen/screen_horizontal"
+        android:paddingBottom="@dimen/space_xl">
 
         <ImageButton
             android:id="@+id/menu_button"
             style="@style/Widget.PropCycle.IconButton"
             android:background="@color/pc_transparent"
-            android:contentDescription="Open navigation menu"
+            android:contentDescription="@string/menu"
             android:src="@drawable/ic_menu" />
 
         <TextView
             style="@style/TextAppearance.PropCycle.Heading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:text="Recycle Center" />
+            android:layout_marginTop="@dimen/space_xs"
+            android:text="@string/recycle_center_title" />
 
         <TextView
             style="@style/TextAppearance.PropCycle.Caption"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:text="Find a nearby organization or community."
+            android:layout_marginTop="@dimen/space_xs"
+            android:text="@string/recycle_center_subtitle"
             android:textColor="@color/pc_ink" />
 
-        <FrameLayout
-            android:layout_width="290dp"
-            android:layout_height="290dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="26dp"
-            android:background="@drawable/bg_circle_gray"
-            android:contentDescription="Mock map showing nearby recycle centers">
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/area_input_layout"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_lg"
+            android:hint="@string/recycle_area_hint"
+            app:boxBackgroundColor="@color/pc_surface"
+            app:boxCornerRadiusBottomEnd="18dp"
+            app:boxCornerRadiusBottomStart="18dp"
+            app:boxCornerRadiusTopEnd="18dp"
+            app:boxCornerRadiusTopStart="18dp"
+            app:startIconDrawable="@drawable/ic_search">
 
-            <TextView
-                android:layout_width="112dp"
-                android:layout_height="38dp"
-                android:layout_gravity="top|start"
-                android:layout_marginStart="26dp"
-                android:layout_marginTop="55dp"
-                android:background="@drawable/bg_pill"
-                android:gravity="center"
-                android:text="▣  Eco Point"
-                android:textColor="@color/pc_ink"
-                android:textSize="11sp" />
-
-            <TextView
-                android:layout_width="24dp"
-                android:layout_height="32dp"
-                android:layout_gravity="top|start"
-                android:layout_marginStart="34dp"
-                android:layout_marginTop="84dp"
-                android:gravity="center"
-                android:text="●"
-                android:textColor="@color/pc_ink"
-                android:textSize="18sp" />
-
-            <TextView
-                android:layout_width="126dp"
-                android:layout_height="38dp"
-                android:layout_gravity="top|end"
-                android:layout_marginTop="110dp"
-                android:layout_marginEnd="15dp"
-                android:background="@drawable/bg_pill"
-                android:gravity="center"
-                android:text="▣  Community Hub"
-                android:textColor="@color/pc_ink"
-                android:textSize="12sp" />
-
-            <TextView
-                android:layout_width="24dp"
-                android:layout_height="32dp"
-                android:layout_gravity="top|end"
-                android:layout_marginTop="137dp"
-                android:layout_marginEnd="32dp"
-                android:gravity="center"
-                android:text="●"
-                android:textColor="@color/pc_ink"
-                android:textSize="18sp" />
-
-            <TextView
-                android:layout_width="126dp"
-                android:layout_height="38dp"
-                android:layout_gravity="bottom|start"
-                android:layout_marginStart="44dp"
-                android:layout_marginBottom="52dp"
-                android:background="@drawable/bg_pill"
-                android:gravity="center"
-                android:text="▣  Green Center"
-                android:textColor="@color/pc_ink"
-                android:textSize="12sp" />
-
-            <TextView
-                android:layout_width="24dp"
-                android:layout_height="32dp"
-                android:layout_gravity="bottom|start"
-                android:layout_marginStart="52dp"
-                android:layout_marginBottom="27dp"
-                android:gravity="center"
-                android:text="●"
-                android:textColor="@color/pc_ink"
-                android:textSize="18sp" />
-        </FrameLayout>
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/area_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionSearch"
+                android:inputType="textCapWords"
+                android:maxLength="80"
+                android:maxLines="1" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="22dp"
-            android:background="@drawable/bg_dashed"
-            android:orientation="vertical"
-            android:padding="18dp">
+            android:layout_marginTop="@dimen/space_sm"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-            <TextView
-                style="@style/TextAppearance.PropCycle.Title"
-                android:layout_width="wrap_content"
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/search_area_action"
+                style="@style/Widget.PropCycle.Button.Dark"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:text="Nearby Recycle Points"
-                android:textSize="17sp" />
+                android:layout_weight="1"
+                android:text="@string/recycle_search_area" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="58dp"
-                android:layout_marginTop="12dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="30dp"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:text="●"
-                    android:textColor="@color/pc_ink"
-                    android:textSize="18sp" />
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        style="@style/TextAppearance.PropCycle.Body"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="PJ Eco Recycling Society"
-                        android:textSize="13sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        style="@style/TextAppearance.PropCycle.Caption"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="1.2 km away" />
-                </LinearLayout>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:contentDescription="Five star rating"
-                    android:text="★★★★★"
-                    android:textColor="@color/pc_ink"
-                    android:textSize="12sp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="58dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="30dp"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:text="●"
-                    android:textColor="@color/pc_text_secondary"
-                    android:textSize="18sp" />
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        style="@style/TextAppearance.PropCycle.Body"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Community Recycle Space"
-                        android:textSize="13sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        style="@style/TextAppearance.PropCycle.Caption"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="2.4 km away" />
-                </LinearLayout>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:contentDescription="Four star rating"
-                    android:text="★★★★☆"
-                    android:textColor="@color/pc_ink"
-                    android:textSize="12sp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="58dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="30dp"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:text="●"
-                    android:textColor="@color/pc_surface_dark"
-                    android:textSize="18sp" />
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        style="@style/TextAppearance.PropCycle.Body"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Creative Reuse Center"
-                        android:textSize="13sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        style="@style/TextAppearance.PropCycle.Caption"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="3.1 km away" />
-                </LinearLayout>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:contentDescription="Three star rating"
-                    android:text="★★★☆☆"
-                    android:textColor="@color/pc_ink"
-                    android:textSize="12sp" />
-            </LinearLayout>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/use_location_action"
+                style="@style/Widget.PropCycle.Button.Light"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/space_sm"
+                android:layout_weight="1"
+                android:text="@string/recycle_use_location"
+                app:icon="@drawable/ic_location"
+                app:iconGravity="textStart"
+                app:iconTint="@color/pc_icon" />
         </LinearLayout>
 
-        <Space
-            android:layout_width="1dp"
-            android:layout_height="22dp" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/external_map_search_action"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:text="@string/recycle_external_map_action"
+            app:icon="@drawable/ic_location"
+            app:iconTint="@color/pc_icon" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/status_card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_md"
+            app:cardBackgroundColor="@color/pc_surface_container"
+            app:cardCornerRadius="18dp"
+            app:cardElevation="0dp"
+            app:strokeColor="@color/pc_primary_container"
+            app:strokeWidth="1dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="@dimen/space_md">
+
+                <ProgressBar
+                    android:id="@+id/search_progress"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:contentDescription="@string/recycle_searching"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/status_text"
+                    style="@style/TextAppearance.PropCycle.Caption"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/space_sm"
+                    android:layout_weight="1"
+                    android:text="@string/recycle_initial_status"
+                    android:textColor="@color/pc_ink" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/retry_action"
+                    style="@style/Widget.Material3.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/recycle_retry"
+                    android:visibility="gone" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_marginTop="@dimen/space_md"
+            app:cardBackgroundColor="@color/pc_surface_container"
+            app:cardCornerRadius="28dp"
+            app:cardElevation="2dp"
+            app:strokeColor="@color/pc_primary_container"
+            app:strokeWidth="1dp">
+
+            <FrameLayout
+                android:id="@+id/map_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/recycle_map_description">
+
+                <TextView
+                    android:id="@+id/map_placeholder"
+                    style="@style/TextAppearance.PropCycle.Body"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:drawableTopCompat="@drawable/ic_location"
+                    android:gravity="center"
+                    android:padding="@dimen/space_lg"
+                    android:text="@string/recycle_map_loading"
+                    android:textAlignment="center" />
+            </FrameLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/selected_center_card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_md"
+            android:visibility="gone"
+            app:cardBackgroundColor="@color/pc_accent_container"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="0dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/space_md">
+
+                <TextView
+                    android:id="@+id/selected_center_name"
+                    style="@style/TextAppearance.PropCycle.Body"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/selected_center_address"
+                    style="@style/TextAppearance.PropCycle.Caption"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_xs" />
+
+                <TextView
+                    android:id="@+id/selected_center_meta"
+                    style="@style/TextAppearance.PropCycle.Caption"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_xs"
+                    android:textColor="@color/pc_on_accent_container" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/open_maps_action"
+                    style="@style/Widget.PropCycle.Button.Dark"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_sm"
+                    android:text="@string/recycle_open_maps"
+                    app:icon="@drawable/ic_location"
+                    app:iconTint="@color/pc_on_primary" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <TextView
+            style="@style/TextAppearance.PropCycle.Caption"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_md"
+            android:background="@drawable/bg_card_light"
+            android:padding="@dimen/space_md"
+            android:text="@string/recycle_acceptance_notice"
+            android:textColor="@color/pc_text_primary" />
+
+        <TextView
+            android:id="@+id/nearby_heading"
+            style="@style/TextAppearance.PropCycle.Title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_lg"
+            android:text="@string/recycle_nearby_heading"
+            android:textSize="20sp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/center_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_sm"
+            android:clipToPadding="false"
+            android:nestedScrollingEnabled="false"
+            android:overScrollMode="never"
+            android:paddingBottom="@dimen/space_md" />
     </LinearLayout>
-</ScrollView>
+</androidx.core.widget.NestedScrollView>

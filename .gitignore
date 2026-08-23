@@ -5,6 +5,7 @@ local.properties
 *.jks
 *.keystore
 keystore.properties
+secrets.properties
 
 # Android Studio and Gradle (effective after native project approval)
 .gradle/

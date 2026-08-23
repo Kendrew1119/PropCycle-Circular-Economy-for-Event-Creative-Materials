@@ -1,6 +1,7 @@
 package com.propcycle.app.ui.marketplace;
 
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -11,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.propcycle.app.R;
 import com.propcycle.app.data.marketplace.MarketplaceListing;
+import com.propcycle.app.data.marketplace.MarketplaceImageLoader;
 import com.propcycle.app.data.marketplace.MarketplaceListingValidator;
 import com.propcycle.app.databinding.ItemMarketplaceListingBinding;
 
@@ -45,14 +47,19 @@ public final class MarketplaceAdapter
                                     oldItem.getTransactionIntent(),
                                     newItem.getTransactionIntent())
                             && Objects.equals(oldItem.getStatus(), newItem.getStatus())
+                            && Objects.equals(oldItem.getImageUrl(), newItem.getImageUrl())
                             && Objects.equals(oldItem.getUpdatedAt(), newItem.getUpdatedAt());
                 }
             };
 
     private final OnListingClickListener listener;
+    private final MarketplaceImageLoader imageLoader;
 
-    public MarketplaceAdapter(@NonNull OnListingClickListener listener) {
+    public MarketplaceAdapter(
+            @NonNull MarketplaceImageLoader imageLoader,
+            @NonNull OnListingClickListener listener) {
         super(DIFFER);
+        this.imageLoader = imageLoader;
         this.listener = listener;
     }
 
@@ -63,7 +70,7 @@ public final class MarketplaceAdapter
             int viewType) {
         ItemMarketplaceListingBinding binding = ItemMarketplaceListingBinding.inflate(
                 LayoutInflater.from(parent.getContext()), parent, false);
-        return new ListingViewHolder(binding, listener);
+        return new ListingViewHolder(binding, imageLoader, listener);
     }
 
     @Override
@@ -71,16 +78,27 @@ public final class MarketplaceAdapter
         holder.bind(getItem(position), position);
     }
 
+    @Override
+    public void onViewRecycled(@NonNull ListingViewHolder holder) {
+        holder.recycle();
+        super.onViewRecycled(holder);
+    }
+
     static final class ListingViewHolder extends RecyclerView.ViewHolder {
 
         private final ItemMarketplaceListingBinding binding;
+        private final MarketplaceImageLoader imageLoader;
         private final OnListingClickListener listener;
+        private MarketplaceImageLoader.LoadHandle imageLoadHandle;
+        private String expectedImageUrl;
 
         private ListingViewHolder(
                 @NonNull ItemMarketplaceListingBinding binding,
+                @NonNull MarketplaceImageLoader imageLoader,
                 @NonNull OnListingClickListener listener) {
             super(binding.getRoot());
             this.binding = binding;
+            this.imageLoader = imageLoader;
             this.listener = listener;
         }
 
@@ -95,8 +113,7 @@ public final class MarketplaceAdapter
 
             binding.listingTitle.setText(title);
             binding.listingMeta.setText(meta);
-            binding.listingImagePlaceholder.setText(
-                    listing.getImageUrl() == null ? "ITEM" : "IMAGE");
+            bindImage(listing.getImageUrl());
             binding.getRoot().setContentDescription("Open marketplace listing " + title);
             binding.getRoot().setOnClickListener(ignored -> listener.onListingClick(listing));
 
@@ -116,6 +133,52 @@ public final class MarketplaceAdapter
                 params.height = height;
             }
             binding.getRoot().setLayoutParams(params);
+        }
+
+        private void bindImage(String imageUrl) {
+            recycle();
+            expectedImageUrl = imageUrl;
+            binding.listingImage.setImageDrawable(null);
+            binding.listingImage.setVisibility(View.GONE);
+            binding.listingImagePlaceholder.setText("ITEM");
+            binding.listingImagePlaceholder.setVisibility(View.VISIBLE);
+            binding.listingImageProgress.setVisibility(View.GONE);
+            if (imageUrl == null || imageUrl.trim().isEmpty()) {
+                return;
+            }
+            binding.listingImagePlaceholder.setText("Loading photo...");
+            binding.listingImageProgress.setVisibility(View.VISIBLE);
+            imageLoadHandle = imageLoader.load(imageUrl, new MarketplaceImageLoader.Callback() {
+                @Override
+                public void onLoaded(@NonNull android.graphics.Bitmap bitmap) {
+                    if (!Objects.equals(expectedImageUrl, imageUrl)) {
+                        return;
+                    }
+                    imageLoadHandle = null;
+                    binding.listingImageProgress.setVisibility(View.GONE);
+                    binding.listingImage.setImageBitmap(bitmap);
+                    binding.listingImage.setVisibility(View.VISIBLE);
+                    binding.listingImagePlaceholder.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onError() {
+                    if (!Objects.equals(expectedImageUrl, imageUrl)) {
+                        return;
+                    }
+                    imageLoadHandle = null;
+                    binding.listingImageProgress.setVisibility(View.GONE);
+                    binding.listingImagePlaceholder.setText("PHOTO UNAVAILABLE");
+                }
+            });
+        }
+
+        private void recycle() {
+            expectedImageUrl = null;
+            if (imageLoadHandle != null) {
+                imageLoadHandle.cancel();
+                imageLoadHandle = null;
+            }
         }
     }
 }

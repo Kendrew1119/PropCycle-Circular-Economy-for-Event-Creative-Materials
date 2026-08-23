@@ -1,0 +1,42 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function validSegment(value) {
+      return value.size() >= 1
+          && value.size() <= 128;
+    }
+
+    function validMarketplaceImage(ownerId, listingId, fileName) {
+      return request.resource != null
+          && validSegment(ownerId)
+          && validSegment(listingId)
+          && fileName.matches('primary_[A-Za-z0-9_-]+[.]jpg')
+          && request.resource.size > 0
+          && request.resource.size <= 4 * 1024 * 1024
+          && request.resource.contentType == 'image/jpeg'
+          && request.resource.metadata.ownerId == ownerId
+          && request.resource.metadata.listingId == listingId
+          && request.resource.metadata.kind == 'marketplace-primary';
+    }
+
+    match /marketplace/{ownerId}/{listingId}/{fileName} {
+      allow read: if signedIn()
+          && validSegment(ownerId)
+          && validSegment(listingId)
+          && fileName.matches('primary_[A-Za-z0-9_-]+[.]jpg');
+      allow write: if signedIn()
+          && request.auth.uid == ownerId
+          && (request.resource == null
+              || validMarketplaceImage(ownerId, listingId, fileName));
+    }
+
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

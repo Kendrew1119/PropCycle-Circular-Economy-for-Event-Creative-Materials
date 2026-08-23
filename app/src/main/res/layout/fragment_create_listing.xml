@@ -30,6 +30,7 @@
                 android:src="@drawable/ic_menu" />
 
             <TextView
+                android:id="@+id/create_listing_heading"
                 style="@style/TextAppearance.PropCycle.Heading"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -50,6 +51,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/create_listing_form"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="22dp"
@@ -57,18 +59,96 @@
             android:orientation="vertical"
             android:padding="18dp">
 
-            <TextView
-                android:id="@+id/listing_photo_placeholder"
-                android:layout_width="150dp"
-                android:layout_height="158dp"
-                android:layout_gravity="center_horizontal"
+            <FrameLayout
+                android:id="@+id/listing_photo_container"
+                android:layout_width="match_parent"
+                android:layout_height="210dp"
                 android:background="@drawable/bg_card_dark"
-                android:contentDescription="Item photo placeholder; image upload is deferred"
+                android:clipToOutline="true">
+
+                <ImageView
+                    android:id="@+id/listing_photo_preview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:contentDescription="Selected marketplace item photo"
+                    android:scaleType="centerCrop"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/listing_photo_placeholder"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:contentDescription="Marketplace item photo placeholder"
+                    android:gravity="center"
+                    android:text="Add one clear item photo\n(optional)"
+                    android:textAlignment="center"
+                    android:textColor="@color/pc_white"
+                    android:textSize="15sp" />
+
+                <ProgressBar
+                    android:id="@+id/listing_photo_progress"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:indeterminate="true"
+                    android:visibility="gone" />
+            </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/photo_camera_action"
+                    style="@style/TextAppearance.PropCycle.Caption"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/touch_target"
+                    android:layout_marginEnd="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_pill_dark"
+                    android:clickable="true"
+                    android:contentDescription="Take a marketplace item photo"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:text="Camera"
+                    android:textColor="@color/pc_white"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/photo_gallery_action"
+                    style="@style/TextAppearance.PropCycle.Caption"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/touch_target"
+                    android:layout_marginStart="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_pill"
+                    android:clickable="true"
+                    android:contentDescription="Choose a marketplace item photo"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:text="Choose photo"
+                    android:textColor="@color/pc_ink"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/photo_clear_action"
+                style="@style/TextAppearance.PropCycle.Caption"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/touch_target"
+                android:layout_gravity="center_horizontal"
+                android:clickable="true"
+                android:contentDescription="Clear the newly selected marketplace photo"
+                android:focusable="true"
                 android:gravity="center"
-                android:text="Item Photo\ncoming later"
-                android:textAlignment="center"
-                android:textColor="@color/pc_white"
-                android:textSize="14sp" />
+                android:paddingStart="18dp"
+                android:paddingEnd="18dp"
+                android:text="Clear new photo"
+                android:textColor="@color/pc_text_secondary"
+                android:textStyle="bold"
+                android:visibility="gone" />
 
             <EditText
                 android:id="@+id/listing_title_input"
@@ -155,12 +235,13 @@
                 android:paddingTop="16dp" />
 
             <TextView
+                android:id="@+id/create_listing_media_note"
                 style="@style/TextAppearance.PropCycle.Caption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 android:layout_marginTop="14dp"
-                android:text="Images remain deferred; listing details are stored securely."
+                android:text="One photo is securely uploaded only when you publish."
                 android:textColor="@color/pc_ink"
                 android:textStyle="italic" />
         </LinearLayout>
@@ -183,7 +264,16 @@
             android:indeterminate="true"
             android:visibility="gone" />
 
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/create_listing_upload_progress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:max="100"
+            android:visibility="gone" />
+
         <LinearLayout
+            android:id="@+id/create_listing_action_row"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"

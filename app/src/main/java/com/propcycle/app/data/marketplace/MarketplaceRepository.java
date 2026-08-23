@@ -3,6 +3,8 @@ package com.propcycle.app.data.marketplace;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.google.firebase.Timestamp;
+
 import java.util.List;
 
 /** Boundary between marketplace screens and Firebase. */
@@ -14,6 +16,7 @@ public interface MarketplaceRepository {
         PERMISSION_DENIED,
         NETWORK,
         NOT_FOUND,
+        CONFLICT,
         UNKNOWN
     }
 
@@ -59,6 +62,12 @@ public interface MarketplaceRepository {
         void onError(@NonNull RepositoryError error);
     }
 
+    interface MutationCallback {
+        void onUpdated();
+
+        void onError(@NonNull RepositoryError error);
+    }
+
     @NonNull
     Subscription observeAvailableListings(@NonNull ListingsObserver observer);
 
@@ -68,8 +77,24 @@ public interface MarketplaceRepository {
             @NonNull ListingObserver observer);
 
     void createListing(
+            @NonNull String listingId,
             @NonNull NewMarketplaceListing listing,
+            @Nullable String imageUrl,
             @NonNull CreateCallback callback);
+
+    void updateListing(
+            @NonNull String listingId,
+            @NonNull NewMarketplaceListing listing,
+            @Nullable Timestamp expectedUpdatedAt,
+            @Nullable String expectedImageUrl,
+            @Nullable String replacementImageUrl,
+            @NonNull MutationCallback callback);
+
+    void setListingStatus(
+            @NonNull String listingId,
+            @NonNull String targetStatus,
+            @Nullable Timestamp expectedUpdatedAt,
+            @NonNull MutationCallback callback);
 
     @Nullable
     String currentUserId();

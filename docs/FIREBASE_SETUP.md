@@ -10,6 +10,8 @@ The following items are already correct on this PC:
 - `app/google-services.json` exists.
 - The JSON package name is `com.propcycle.app`.
 - The JSON project ID is `propcycle-e5f14`.
+- The current local JSON includes Storage bucket
+  `propcycle-e5f14.firebasestorage.app`.
 - The JSON file is ignored by Git.
 - Cloud Firestore was created in Singapore.
 - The project uses Groovy Gradle files, not Kotlin Gradle files.
@@ -20,6 +22,12 @@ The following items are already correct on this PC:
 - Phase 2A app-side code and local checks are complete.
 - Phase 2B scanner dependencies include Firebase AI Logic, CameraX, Android
   Photo Picker, and build-specific App Check providers.
+- Phase 2C.1 uses the existing Authentication and Firestore setup for owner-only
+  listing edits, withdrawal, and relisting. It does not need another API key.
+- Phase 2C.2 adds Firebase Cloud Storage for one optional marketplace photo.
+  Its Android code, Firestore/Storage Rules, and local Rules tests are included.
+- Phase 2C.2 app/local checks are complete; deployment and live image checks are
+  still owner tasks.
 
 Do not add `firebase-analytics`. Firebase shows Analytics as an example, but
 PropCycle does not use Analytics in Phase 2A or Phase 2B.
@@ -33,6 +41,10 @@ deployed or that the two-account live smoke test passed.
 For the Phase 2B scanner, also complete the AI Logic and App Check owner steps
 in [AI_SCANNER_SETUP.md](AI_SCANNER_SETUP.md). Do not create or paste a raw
 Gemini API key.
+
+For Phase 2C.2, the Firebase owner must also enable the default Storage bucket,
+download a fresh `google-services.json`, and deploy Storage Rules. Follow the
+complete [Marketplace image setup guide](MARKETPLACE_IMAGE_SETUP.md).
 
 ## Step 1 - Enable email and password login
 
@@ -106,13 +118,14 @@ the next command.
 Run:
 
 ```powershell
-.\firebase-tests\node_modules\.bin\firebase.cmd deploy --only firestore --project propcycle-e5f14
+.\firebase-tests\node_modules\.bin\firebase.cmd deploy --only firestore,storage --project propcycle-e5f14
 ```
 
-This command uploads both files:
+This command uploads these reviewed files:
 
 - `firestore.rules`
 - `firestore.indexes.json`
+- `storage.rules`
 
 Wait until PowerShell shows **Deploy complete**.
 
@@ -125,6 +138,7 @@ Wait until PowerShell shows **Deploy complete**.
 4. Open the **Indexes** tab.
 5. Wait until both composite indexes show **Enabled**. An index may show
    **Building** for several minutes.
+6. Open **Storage > Rules** and confirm the marketplace image rules are present.
 
 The two required indexes are:
 
@@ -225,8 +239,38 @@ While signed in as Account A:
 6. In Firebase Console > Firestore Database > Data, confirm that the
    `marketplaceListings` collection exists.
 
-Listing pictures are still placeholders. Cloud Storage and photo upload are not
-enabled yet.
+Phase 2C.2 can add one optional listing photo after the Firebase owner completes
+the [Storage setup](MARKETPLACE_IMAGE_SETUP.md). A text-only listing remains
+valid when no photo is chosen.
+
+### 5A - Test owner edit, withdraw, and relist
+
+Keep Account A signed in and keep the listing detail page open:
+
+1. Confirm **Manage your listing** appears. A different user must never see
+   these owner buttons.
+2. Press **Edit details**.
+3. Change the title, description, category, condition, transaction type,
+   fulfilment method, and the matching price or exchange terms.
+4. Press **Save changes**. The detail page should show the new values.
+5. In Firestore, confirm `ownerId` and `createdAt` did not change. `imageUrl`
+   changes only when the owner chose a valid replacement photo. `updatedAt`
+   should have a newer server time.
+6. Press **Withdraw**, read the confirmation, and confirm it.
+7. The detail page should show **Withdrawn** and the button should change to
+   **Relist**.
+8. Log in as Account B. Account A's withdrawn listing must not appear in Market.
+   Account B must not be able to open it from an old direct link or start a new
+   chat for it.
+9. Return to Account A on the still-open detail page and press **Relist**.
+10. Return to Account B. Refresh Market and confirm the listing appears again.
+
+For the conflict check, open Account A's edit page on two devices. Save a change
+on Device 1, then try to save the older form on Device 2. Device 2 must ask the
+user to reopen the listing; it must not overwrite Device 1 silently.
+
+Existing chats are kept when a listing is withdrawn. Only creation of a new chat
+is blocked.
 
 ## Step 6 - Test chat with two accounts
 
@@ -300,7 +344,6 @@ Choose the account that has access to `propcycle-e5f14`.
 These services are not needed now and should remain disabled:
 
 - Firebase Analytics
-- Cloud Storage and image upload
 - Google Maps, Places, and location
 - recycling-centre APIs
 - permanent scan history, Room, and WorkManager
@@ -308,8 +351,9 @@ These services are not needed now and should remain disabled:
 - Push notifications
 - Lending booking, return, and rating logic
 
-The narrow CameraX/Photo Picker/Firebase AI Logic scanner is now Phase 2B. It
-does not authorise any item above.
+Cloud Storage is enabled only for the narrow Phase 2C.2 marketplace path. It
+does not authorise avatars, lending images, scan history, multiple listing
+images, or any item above.
 
 Official Firebase references:
 
@@ -319,3 +363,6 @@ Official Firebase references:
 - [Firebase CLI](https://firebase.google.com/docs/cli)
 - [Firebase AI Logic Android setup](https://firebase.google.com/docs/ai-logic/get-started?platform=android)
 - [Firebase App Check debug provider](https://firebase.google.com/docs/app-check/android/debug-provider)
+- [Cloud Storage Android setup](https://firebase.google.com/docs/storage/android/start)
+- [Cloud Storage Android uploads](https://firebase.google.com/docs/storage/android/upload-files)
+- [Cloud Storage Security Rules](https://firebase.google.com/docs/storage/security)

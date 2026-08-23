@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.propcycle.app.R;
 import com.propcycle.app.data.marketplace.MarketplaceListing;
+import com.propcycle.app.data.marketplace.MarketplaceImageLoader;
 import com.propcycle.app.databinding.FragmentMarketplaceBinding;
 import com.propcycle.app.ui.common.ScreenNavigation;
 
@@ -25,6 +26,7 @@ public final class MarketplaceFragment extends Fragment {
 
     private FragmentMarketplaceBinding binding;
     private MarketplaceAdapter adapter;
+    private MarketplaceImageLoader imageLoader;
     private MarketplaceViewModel viewModel;
 
     @Nullable
@@ -43,7 +45,8 @@ public final class MarketplaceFragment extends Fragment {
         ScreenNavigation.bindChrome(this, view);
         viewModel = new ViewModelProvider(this).get(MarketplaceViewModel.class);
 
-        adapter = new MarketplaceAdapter(this::openListing);
+        imageLoader = new MarketplaceImageLoader(requireContext());
+        adapter = new MarketplaceAdapter(imageLoader, this::openListing);
         StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(
                 2,
                 StaggeredGridLayoutManager.VERTICAL);
@@ -135,6 +138,10 @@ public final class MarketplaceFragment extends Fragment {
     public void onDestroyView() {
         binding.marketplaceList.setAdapter(null);
         adapter = null;
+        if (imageLoader != null) {
+            imageLoader.close();
+            imageLoader = null;
+        }
         binding = null;
         super.onDestroyView();
     }

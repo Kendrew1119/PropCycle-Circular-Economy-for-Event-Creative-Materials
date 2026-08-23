@@ -16,6 +16,11 @@ service cloud.firestore {
           && value.size() <= maximum;
     }
 
+    function safeSegment(value) {
+      return boundedString(value, 1, 128)
+          && value.matches('^[A-Za-z0-9_-]+$');
+    }
+
     function validProfile() {
       return request.resource.data.keys().hasAll([
             'displayName', 'createdAt', 'updatedAt'
@@ -59,12 +64,17 @@ service cloud.firestore {
           );
     }
 
-    function validNullableImageUrl(imageUrl) {
+    function validListingImageUrl(imageUrl, ownerId, listingId) {
       return imageUrl == null
-          || (imageUrl is string && imageUrl.size() <= 2048);
+          || (imageUrl is string
+              && imageUrl.size() <= 512
+              && imageUrl.matches(
+                  '^gs://[A-Za-z0-9._-]+/marketplace/'
+                  + ownerId + '/' + listingId
+                  + '/primary_[A-Za-z0-9_-]+[.]jpg$'));
     }
 
-    function validListing() {
+    function validListing(listingId) {
       return request.resource.data.keys().hasAll([
             'ownerId', 'title', 'titleNormalized', 'description', 'category',
             'condition', 'transactionIntent', 'fulfilmentMethod', 'priceMinor',
@@ -75,16 +85,19 @@ service cloud.firestore {
             'condition', 'transactionIntent', 'fulfilmentMethod', 'priceMinor',
             'exchangeTerms', 'imageUrl', 'status', 'createdAt', 'updatedAt'
           ])
-          && boundedString(request.resource.data.ownerId, 1, 128)
-          && boundedString(request.resource.data.title, 1, 120)
-          && boundedString(request.resource.data.titleNormalized, 1, 120)
-          && request.resource.data.description is string
-          && request.resource.data.description.size() <= 2000
+          && safeSegment(request.resource.data.ownerId)
+          && safeSegment(listingId)
+          && boundedString(request.resource.data.title, 3, 100)
+          && boundedString(request.resource.data.titleNormalized, 3, 100)
+          && boundedString(request.resource.data.description, 1, 1000)
           && validCategory(request.resource.data.category)
           && validCondition(request.resource.data.condition)
           && validTransaction(request.resource.data)
           && request.resource.data.fulfilmentMethod in ['pickup', 'meetup']
-          && validNullableImageUrl(request.resource.data.imageUrl)
+          && validListingImageUrl(
+              request.resource.data.imageUrl,
+              request.resource.data.ownerId,
+              listingId)
           && request.resource.data.status in ['available', 'withdrawn']
           && request.resource.data.createdAt is timestamp
           && request.resource.data.updatedAt is timestamp;
@@ -206,7 +219,7 @@ service cloud.firestore {
       allow create: if signedIn()
           && request.resource.data.ownerId == currentUid()
           && exists(/databases/$(database)/documents/users/$(currentUid()))
-          && validListing()
+          && validListing(listingId)
           && request.resource.data.status == 'available'
           && request.resource.data.createdAt == request.time
           && request.resource.data.updatedAt == request.time;
@@ -215,7 +228,12 @@ service cloud.firestore {
           && request.resource.data.ownerId == resource.data.ownerId
           && request.resource.data.createdAt == resource.data.createdAt
           && request.resource.data.updatedAt == request.time
-          && validListing();
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+            'title', 'titleNormalized', 'description', 'category', 'condition',
+            'transactionIntent', 'fulfilmentMethod', 'priceMinor',
+            'exchangeTerms', 'imageUrl', 'status', 'updatedAt'
+          ])
+          && validListing(listingId);
       allow delete: if false;
     }
 

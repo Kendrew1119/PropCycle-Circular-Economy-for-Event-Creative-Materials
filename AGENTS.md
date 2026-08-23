@@ -1,27 +1,50 @@
 # PropCycle Native Android Direction
 
-## Current phase: Phase 2B AI smart scanner
+## Current phase: Phase 2D recycling-centre map
+
+Phase 2D app-side implementation and local verification are complete. Google
+Cloud billing/API enablement, restricted real-key setup, and the documented
+real-device search/permission checks remain deliberate owner tasks. Do not
+start another integration until the user authorises it.
+
+Phase 2C.2 app-side implementation and local verification are complete.
+Production Firestore/Storage Rules deployment and the documented two-account,
+two-device live image checks remain deliberate owner tasks.
 
 Phase 2A's app-side implementation and local verification are complete. Email/password accounts, marketplace listings, conversation discovery, and participant-only real-time text chat remain in place. Firebase production Rules/index deployment and the two-account live smoke test remain deliberate owner checks.
 
-On 12 August 2026, the user explicitly authorised the next narrow slice: make the existing AI Smart Scanner and AI Result wireframes functional with CameraX capture, Android Photo Picker, and Firebase AI Logic using Gemini. Implement only this scanner slice. Keep every other proposal module and screen unchanged until its own phase is authorised.
+Phase 2B's app-side AI scanner implementation and local verification are complete. Firebase AI Logic enablement, authenticated-users enforcement, private debug App Check registration, quota/budget review, and one live Gemini scan remain deliberate owner checks.
 
-During Phase 2B:
+On 23 August 2026, the user explicitly authorised Phase 2C.1: extend the existing text-only Firestore marketplace so an owner can edit, withdraw, and relist their own listing. Implement only this marketplace-owner slice. Keep images, Maps/location, lending, persistence, notifications, and every other integration deferred.
+
+Phase 2C.1 app-side implementation and local verification are complete. Production Rules/index deployment plus the documented two-account and two-device live checks remain owner tasks.
+
+On 23 August 2026, the user explicitly authorised Phase 2C.2 Marketplace Images. Implement one optional marketplace image with camera or Android Photo Picker, secure Firebase Cloud Storage upload/replacement, authenticated display, and owner-scoped cleanup. Keep Maps, scanner prefill, listing deletion, lending, notifications, and every other integration deferred.
+
+On 23 August 2026, the user explicitly authorised Phase 2D: make the existing
+Recycle Center screen functional with Google Maps, Places Text Search, current
+foreground location, and a manual area fallback. Implement only this one map
+slice and keep every other proposal screen and module unchanged.
+
+During Phase 2D:
 
 - The obsolete Expo/React Native source, configuration, generated output, dependencies, default assets, and `.env` were removed on 5 August 2026 at the user's explicit direction. Do not restore that stack.
 - Preserve the proposal/course documents and planning files that remain in the repository.
 - Create the native Gradle project at the repository root; do not create an `android-native/` side project.
-- Use the proposal's monochrome wireframes as the visual source of truth. Preserve their hierarchy, proportions, card shapes, labels, and navigation relationships while applying Android insets and accessibility requirements.
-- Preserve the proposal-faithful Java/XML UI shell. Functional loading, empty, validation, authentication-required, offline/cache, and error states may be added to the affected screens without redesigning the mock-up.
-- Preserve the completed Phase 2A Firebase Authentication, Cloud Firestore marketplace, and participant-only chat implementation.
+- Use the proposal's Recycle Center hierarchy as the structural source of truth: heading and subtitle, prominent map, then a nearby-point list with name, approximate distance, and rating. The user has approved a polished, user-friendly light-theme treatment rather than pixel-perfect reproduction.
+- Preserve the completed Phase 2A Firebase Authentication and marketplace/chat behaviour, Phase 2B scanner, Phase 2C.1 owner edit/withdraw/relist behaviour, and Phase 2C.2 marketplace images.
 - Keep `google-services.json` ignored and require each developer to obtain it from the correct Firebase project. The app must still compile and present a setup message when the file is absent; it must never fake a successful backend operation.
-- Use stable CameraX preview and image capture plus Android Photo Picker. Request only the camera permission and keep gallery selection usable when camera access is denied or unavailable.
-- Normalize one selected image into a bounded, orientation-corrected, metadata-stripped temporary JPEG in app-private cache. Delete temporary scanner files after use. Do not add Cloud Storage or permanent scan history.
-- Use Firebase AI Logic with the Gemini Developer API through the Firebase Android SDK. Do not embed or request a raw Gemini API key. Require a configured Firebase app and signed-in user, show a disclosure before transmission, allow one request at a time, validate structured output, and label confidence as an uncalibrated model estimate.
-- Use the App Check debug provider only in debug builds and Play Integrity only in release builds. Each developer registers their own debug token; no token is committed.
-- Preserve the scanner and result wireframe hierarchy while adding permission, loading, setup-required, authentication-required, offline, malformed-response, retry, and review states.
-- Add a simple, detailed AI scanner setup guide. Firebase AI Logic is not emulated, so automated tests must use local fakes/parsers and live requests remain a deliberate manual test.
-- Do not add Maps/Places/location, recycling-centre APIs, Room/scan history, Hilt, WorkManager, lending booking/rating logic, Cloud Storage/image upload, FCM, automated notifications, presence, Remote Config, or any other API/integration in this slice. Their existing proposal screens remain static and visibly deferred.
+- Use Maps SDK for Android 20.0.0, Places SDK for Android 5.3.0 (New), and Fused Location Provider 21.4.0. Do not call a raw Maps/Places web service and do not add a custom backend.
+- Keep the Maps key outside Git in ignored `secrets.properties`. Commit only a harmless setup-required fallback. The Android manifest may receive the build-injected value, but the real key must have Android package/SHA-1 restrictions and API restrictions for only the enabled Android APIs.
+- Request only foreground coarse and fine location together. Accept approximate location, never request background location, never track continuously, and never store or upload precise coordinates.
+- Manual area search must remain usable when permission is denied, location is disabled or unavailable, Google Play services are unavailable, or the user prefers not to share location.
+- Search only after an explicit user action, allow one Places request at a time, cap results at ten, bias around the current location when available, and request only place ID, display name, formatted address, coordinates, and rating.
+- Places has no supported recycling-centre place type. Use a bounded Text Search query for recycling centres instead of inventing type filtering. When location is known, sort locally by straight-line distance and label the value approximate.
+- Keep map markers and the nearby list selection in sync. Allow the selected place to open in an installed map app through a standard geo intent. Do not add directions, route drawing, turn-by-turn navigation, or travel-time claims.
+- Do not claim that a result accepts the user's material. Show a clear reminder to check with the centre before travelling.
+- Show setup-required, Google Play services unavailable, permission-denied, location-unavailable, offline, loading, empty, API/quota/key error, retry, and manual-search states without inventing results.
+- Add plain JVM tests for query normalisation, result limits, rating/distance formatting, and distance sorting. At the user's request, do not launch an emulator; verify configured and missing-key builds, tests, lint, XML/navigation integrity, and secret scanning, then provide the manual live checklist.
+- Do not add the separate lending map, marketplace location, scanner prefill, saved favourites/history, Room, Hilt, WorkManager, background tracking, geofencing, route APIs, recycling-material acceptance data, photos, FCM/notifications, or any other integration in this slice.
 - Keep all twenty drawn screens reachable for review. Do not add the undrawn booking, return, rating, scan-history, or account-detail surfaces until their layouts are planned and separately scheduled.
 - Treat the external `C:\Users\B2B\Downloads\Group7-PropCycle.pdf` as the UI/module source of truth and `plan.md` as the implementation-planning source of truth.
 

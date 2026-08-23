@@ -216,6 +216,30 @@ test("a valid listing write succeeds while a forged owner fails", async () => {
     invalidCategory,
   ));
 
+  await assertFails(setDoc(
+    doc(ownerDatabase, "marketplaceListings", "unsafe.listing"),
+    valid,
+  ));
+
+  const prematureImage = {
+    ...valid,
+    imageUrl: "https://example.test/not-enabled.jpg",
+  };
+  await assertFails(setDoc(
+    doc(ownerDatabase, "marketplaceListings", "premature-image"),
+    prematureImage,
+  ));
+
+  const listingWithImage = {
+    ...valid,
+    imageUrl: "gs://demo-propcycle.firebasestorage.app/marketplace/"
+      + `${OWNER_UID}/listing-with-image/primary_version-one.jpg`,
+  };
+  await assertSucceeds(setDoc(
+    doc(ownerDatabase, "marketplaceListings", "listing-with-image"),
+    listingWithImage,
+  ));
+
   const existingListing = doc(
     ownerDatabase,
     "marketplaceListings",
@@ -229,6 +253,115 @@ test("a valid listing write succeeds while a forged owner fails", async () => {
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
   }));
+});
+
+test("only the owner can edit allowed listing fields", async () => {
+  await seedBaseData();
+  const ownerDatabase = signedIn(OWNER_UID);
+  const contactDatabase = signedIn(CONTACT_UID);
+  const ownerListing = doc(ownerDatabase, "marketplaceListings", LISTING_ID);
+  const contactListing = doc(contactDatabase, "marketplaceListings", LISTING_ID);
+
+  await assertFails(updateDoc(contactListing, {
+    status: "withdrawn",
+    updatedAt: serverTimestamp(),
+  }));
+  await assertSucceeds(updateDoc(ownerListing, {
+    title: "Reusable Green Event Backdrop",
+    titleNormalized: "reusable green event backdrop",
+    description: "Updated details from the listing owner.",
+    category: "decoration",
+    condition: "like_new",
+    transactionIntent: "sale",
+    fulfilmentMethod: "meetup",
+    priceMinor: 2500,
+    exchangeTerms: "",
+    updatedAt: serverTimestamp(),
+  }));
+  await assertFails(updateDoc(contactListing, {
+    title: "Forged edit",
+    titleNormalized: "forged edit",
+    updatedAt: serverTimestamp(),
+  }));
+});
+
+test("listing owner can withdraw and relist while public visibility follows status", async () => {
+  await seedBaseData();
+  const ownerDatabase = signedIn(OWNER_UID);
+  const contactDatabase = signedIn(CONTACT_UID);
+  const ownerListing = doc(ownerDatabase, "marketplaceListings", LISTING_ID);
+  const contactListing = doc(contactDatabase, "marketplaceListings", LISTING_ID);
+
+  await assertSucceeds(updateDoc(ownerListing, {
+    status: "withdrawn",
+    updatedAt: serverTimestamp(),
+  }));
+  await assertSucceeds(getDoc(ownerListing));
+  await assertFails(getDoc(contactListing));
+
+  const publicQuery = query(
+    collection(contactDatabase, "marketplaceListings"),
+    where("status", "==", "available"),
+    orderBy("createdAt", "desc"),
+    limit(50),
+  );
+  const hiddenSnapshot = await assertSucceeds(getDocs(publicQuery));
+  assert.equal(hiddenSnapshot.size, 0);
+  await assertFails(setDoc(
+    doc(contactDatabase, "chatThreads", THREAD_ID),
+    threadData(),
+  ));
+
+  await assertSucceeds(updateDoc(ownerListing, {
+    status: "available",
+    updatedAt: serverTimestamp(),
+  }));
+  await assertSucceeds(getDoc(contactListing));
+  const visibleSnapshot = await assertSucceeds(getDocs(publicQuery));
+  assert.equal(visibleSnapshot.size, 1);
+});
+
+test("listing updates validate image ownership, unknown fields, and status", async () => {
+  await seedBaseData();
+  const ownerDatabase = signedIn(OWNER_UID);
+  const contactDatabase = signedIn(CONTACT_UID);
+  const ownerListing = doc(ownerDatabase, "marketplaceListings", LISTING_ID);
+  const contactListing = doc(contactDatabase, "marketplaceListings", LISTING_ID);
+
+  const validImageUrl = "gs://demo-propcycle.firebasestorage.app/marketplace/"
+    + `${OWNER_UID}/${LISTING_ID}/primary_version-one.jpg`;
+  await assertSucceeds(updateDoc(ownerListing, {
+    imageUrl: validImageUrl,
+    updatedAt: serverTimestamp(),
+  }));
+  await assertFails(updateDoc(contactListing, {
+    imageUrl: validImageUrl,
+    updatedAt: serverTimestamp(),
+  }));
+
+  await assertFails(updateDoc(ownerListing, {
+    imageUrl: "https://example.test/forged.jpg",
+    updatedAt: serverTimestamp(),
+  }));
+  await assertFails(updateDoc(ownerListing, {
+    imageUrl: "gs://demo-propcycle.firebasestorage.app/marketplace/"
+      + `${CONTACT_UID}/${LISTING_ID}/primary_forged.jpg`,
+    updatedAt: serverTimestamp(),
+  }));
+  await assertFails(updateDoc(ownerListing, {
+    imageUrl: "gs://demo-propcycle.firebasestorage.app/marketplace/"
+      + `${OWNER_UID}/different-listing/primary_forged.jpg`,
+    updatedAt: serverTimestamp(),
+  }));
+  await assertFails(updateDoc(ownerListing, {
+    hiddenAdminNote: "not allowed",
+    updatedAt: serverTimestamp(),
+  }));
+  await assertFails(updateDoc(ownerListing, {
+    status: "completed",
+    updatedAt: serverTimestamp(),
+  }));
+  await assertFails(deleteDoc(ownerListing));
 });
 
 test("the bounded available-listing query succeeds and an unbounded query fails", async () => {

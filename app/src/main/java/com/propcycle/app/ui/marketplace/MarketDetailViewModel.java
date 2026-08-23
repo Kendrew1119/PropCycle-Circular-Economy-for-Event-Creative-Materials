@@ -11,14 +11,17 @@ import androidx.lifecycle.MutableLiveData;
 import com.propcycle.app.data.chat.ChatRepository;
 import com.propcycle.app.data.marketplace.FirestoreMarketplaceRepository;
 import com.propcycle.app.data.marketplace.MarketplaceListing;
+import com.propcycle.app.data.marketplace.MarketplaceListingStatusPolicy;
 import com.propcycle.app.data.marketplace.MarketplaceRepository;
 
-/** Owns the live detail document and owner-aware action state. */
+/** Owns the live detail document plus owner edit/withdraw/relist actions. */
 public final class MarketDetailViewModel extends AndroidViewModel {
 
     private final MarketplaceRepository repository;
     private final MutableLiveData<State> state = new MutableLiveData<>(State.loading());
     private final MutableLiveData<String> chatNotice = new MutableLiveData<>();
+    private final MutableLiveData<OwnerActionState> ownerActionState =
+            new MutableLiveData<>(OwnerActionState.idle());
     private final MutableLiveData<Event<String>> openedThread = new MutableLiveData<>();
     private MarketplaceRepository.Subscription subscription;
     private String loadedListingId;
@@ -37,6 +40,11 @@ public final class MarketDetailViewModel extends AndroidViewModel {
     @NonNull
     public LiveData<String> getChatNotice() {
         return chatNotice;
+    }
+
+    @NonNull
+    public LiveData<OwnerActionState> getOwnerActionState() {
+        return ownerActionState;
     }
 
     @NonNull
@@ -75,9 +83,10 @@ public final class MarketDetailViewModel extends AndroidViewModel {
                                             : "This marketplace listing no longer exists."));
                             return;
                         }
-                        boolean ownedByCurrentUser = repository.currentUserId() != null
-                                && repository.currentUserId().equals(listing.getOwnerId());
-                        state.setValue(State.content(listing, ownedByCurrentUser, fromCache));
+                        String currentUserId = repository.currentUserId();
+                        boolean owner = currentUserId != null
+                                && currentUserId.equals(listing.getOwnerId());
+                        state.setValue(State.content(listing, owner, fromCache));
                     }
 
                     @Override
@@ -87,12 +96,71 @@ public final class MarketDetailViewModel extends AndroidViewModel {
                 });
     }
 
+    public void requestStatusChange(@NonNull String targetStatus) {
+        OwnerActionState action = ownerActionState.getValue();
+        State current = state.getValue();
+        if (action != null && action.isBusy()) {
+            return;
+        }
+        if (current == null || current.getListing() == null || !current.isOwner()) {
+            ownerActionState.setValue(OwnerActionState.error(
+                    "Only the listing owner can change availability."));
+            return;
+        }
+
+        MarketplaceListing listing = current.getListing();
+        boolean allowed = MarketplaceListingStatusPolicy.AVAILABLE.equals(targetStatus)
+                ? MarketplaceListingStatusPolicy.canRelist(true, listing.getStatus())
+                : MarketplaceListingStatusPolicy.WITHDRAWN.equals(targetStatus)
+                        && MarketplaceListingStatusPolicy.canWithdraw(true, listing.getStatus());
+        if (!allowed) {
+            ownerActionState.setValue(OwnerActionState.error(
+                    "The listing changed. Review its latest status and try again."));
+            return;
+        }
+        if (listing.getId() == null || listing.getUpdatedAt() == null) {
+            ownerActionState.setValue(OwnerActionState.error(
+                    "Reopen this listing before changing its availability."));
+            return;
+        }
+
+        ownerActionState.setValue(OwnerActionState.loading(
+                MarketplaceListingStatusPolicy.WITHDRAWN.equals(targetStatus)
+                        ? "Withdrawing listing..."
+                        : "Relisting item..."));
+        repository.setListingStatus(
+                listing.getId(),
+                targetStatus,
+                listing.getUpdatedAt(),
+                new MarketplaceRepository.MutationCallback() {
+                    @Override
+                    public void onUpdated() {
+                        ownerActionState.setValue(OwnerActionState.success(
+                                MarketplaceListingStatusPolicy.WITHDRAWN.equals(targetStatus)
+                                        ? "Listing withdrawn. It is hidden from public browse."
+                                        : "Listing relisted. People can find it again."));
+                    }
+
+                    @Override
+                    public void onError(@NonNull MarketplaceRepository.RepositoryError error) {
+                        ownerActionState.setValue(OwnerActionState.error(error.getMessage()));
+                    }
+                });
+    }
+
     public void requestChat() {
         State current = state.getValue();
-        if (current == null || current.getListing() == null || current.isOwner() || openingChat) {
+        if (current == null || current.getListing() == null || openingChat) {
             return;
         }
         MarketplaceListing listing = current.getListing();
+        if (!MarketplaceListingStatusPolicy.canContactSeller(
+                current.isOwner(), listing.getStatus())) {
+            chatNotice.setValue(current.isOwner()
+                    ? "Use the owner controls to manage this listing."
+                    : "This listing is not available for a new conversation.");
+            return;
+        }
         String listingId = listing.getId();
         String ownerId = listing.getOwnerId();
         String title = listing.getTitle();
@@ -209,6 +277,54 @@ public final class MarketDetailViewModel extends AndroidViewModel {
 
         public boolean isFromCache() {
             return fromCache;
+        }
+    }
+
+    public static final class OwnerActionState {
+
+        public enum Kind {
+            IDLE,
+            LOADING,
+            SUCCESS,
+            ERROR
+        }
+
+        private final Kind kind;
+        private final String message;
+
+        private OwnerActionState(@NonNull Kind kind, @NonNull String message) {
+            this.kind = kind;
+            this.message = message;
+        }
+
+        private static OwnerActionState idle() {
+            return new OwnerActionState(Kind.IDLE, "");
+        }
+
+        private static OwnerActionState loading(@NonNull String message) {
+            return new OwnerActionState(Kind.LOADING, message);
+        }
+
+        private static OwnerActionState success(@NonNull String message) {
+            return new OwnerActionState(Kind.SUCCESS, message);
+        }
+
+        private static OwnerActionState error(@NonNull String message) {
+            return new OwnerActionState(Kind.ERROR, message);
+        }
+
+        @NonNull
+        public Kind getKind() {
+            return kind;
+        }
+
+        @NonNull
+        public String getMessage() {
+            return message;
+        }
+
+        public boolean isBusy() {
+            return kind == Kind.LOADING;
         }
     }
 

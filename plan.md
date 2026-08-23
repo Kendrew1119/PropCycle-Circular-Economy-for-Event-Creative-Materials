@@ -4,7 +4,7 @@
 > **Re-planning date:** 5 August 2026<br>
 > **Course:** UCCD3223 Mobile Applications Development, June 2026 Trimester<br>
 > **Team:** Group 7, four members<br>
-> **Status:** Proposal-parity UI and Phase 2A app/local verification complete; Phase 2B AI Smart Scanner authorised on 12 August 2026<br>
+> **Status:** Phase 2A, Phase 2B, Phase 2C.1, Phase 2C.2, and Phase 2D app/local slices complete; production/live owner checks remain pending<br>
 > **Target platform:** Android only<br>
 > **Primary implementation language:** Java
 
@@ -18,7 +18,7 @@ This document is the single source of truth for the native Android implementatio
 2. Treat the proposal mock-ups as the screen and flow authority.
 3. Use native Android Views with XML layouts; do not use Jetpack Compose.
 4. Write team-owned Android application source in Java.
-5. Keep the twenty drawn proposal screens. Phase 2A replaces mock data only for email/password authentication, user-profile creation, marketplace listings, conversation discovery, and participant-only real-time text chat. Phase 2B additionally makes only the existing Scanner and AI Result screens functional.
+5. Keep the twenty drawn proposal screens. Phase 2A replaces mock data for email/password authentication, user-profile creation, basic marketplace listings, conversation discovery, and participant-only real-time text chat. Phase 2B makes the Scanner and AI Result screens functional. Phase 2C.1 extends marketplace owner editing and `available`/`withdrawn` status management. Phase 2C.2 adds one optional marketplace image. Phase 2D makes only the existing Recycling Centre map/list screen functional without changing the module hierarchy.
 6. Keep the obsolete Expo/React Native stack deleted as explicitly directed on 5 August 2026; do not restore it or create a side-by-side legacy tree.
 7. Do not embed unrestricted Gemini, Firebase Admin, or Google Maps credentials in the application.
 
@@ -35,10 +35,10 @@ This document is the single source of truth for the native Android implementatio
 | Android baseline | `minSdk 24`, `compileSdk 36`, `targetSdk 36` | Android 7+ device reach and the 2026 target API requirement |
 | App architecture | Single Activity, Fragments, Navigation Component, MVVM-style state holders and repositories | Clear lifecycle handling, testability, and one navigation graph |
 | Local database | Room 2.8.x over SQLite, using Java `annotationProcessor`, in a later authorised slice | Compile-time SQL checks while meeting the future device-storage requirement; Room 3 is excluded because it requires Kotlin/KSP |
-| Cloud data | Firebase Authentication and Cloud Firestore now; Cloud Storage later | Firestore snapshot listeners provide real-time chat without cross-database rule gaps; Phase 2B scanner images are not stored in the cloud |
+| Cloud data | Firebase Authentication and Cloud Firestore; Phase 2C.2 adds a narrow Firebase Cloud Storage marketplace path | Firestore snapshot listeners provide real-time chat; marketplace media uses authenticated `gs://` references while Phase 2B scanner images are never stored in the cloud |
 | AI | Phase 2B: Firebase AI Logic Android SDK for Java, exact source-pinned Gemini model, and App Check; Remote Config later | Keeps a raw Gemini key out of the client and protects the currently authorised scanner without opening another integration |
-| Camera/media | Phase 2B: CameraX plus Android Photo Picker | Native capture and gallery selection with only camera permission; temporary scanner images remain app-private |
-| Maps/location | Maps SDK for Android, Places SDK for Android, Fused Location Provider | Native map, nearby recycling centre, listing, and lending flows |
+| Camera/media | Phase 2B scanner and Phase 2C.2 marketplace: CameraX plus Android Photo Picker | Native capture and gallery selection with only camera permission; temporary inputs remain app-private and only an explicitly published marketplace JPEG uploads |
+| Maps/location | Phase 2D: Maps SDK for Android 20.0.0, Places SDK for Android 5.3.0 (New), and Fused Location Provider 21.4.0 | Native recycling-centre map and explicit Text Search; listing/lending maps remain later work |
 | Background work | WorkManager Java `Worker` | Reliable draft/upload retry and deferred sync |
 | Dependency injection | Hilt with Java annotation processing | Consistent construction, compile-time checks, and test replacement |
 | Distribution | Signed APK for course submission; AAB/store release after compatibility review | Separates the assessed deliverable from optional store publication |
@@ -80,6 +80,12 @@ UI fidelity rules for this milestone:
 | Phase 2A owner checks | Deliberately pending | The Firebase owner still deploys the reviewed production Rules/indexes and completes the documented two-account live smoke test; local success is not reported as production deployment evidence |
 | Phase 2B scanner app slice | App-side implementation and local verification complete | Configured debug/release builds and the missing-config debug build pass; all 47 JVM tests pass; lint has 0 fatal issues and 0 errors (327 warnings remain across the full project); emulator checks pass for preview, capture, private processing, Photo Picker, camera denial fallback, consent, signed-out blocking, and invalid-result handling |
 | Phase 2B owner/live checks | Deliberately pending | The owner still enables Firebase AI Logic, enforces authenticated-users mode, registers a private debug App Check token, reviews quota/budget settings, and completes one deliberate live Gemini request using `docs/AI_SCANNER_SETUP.md` |
+| Phase 2C.1 marketplace owner slice | App-side implementation and local verification complete | Configured debug/release and missing-config debug builds pass; all 51 JVM tests and 12 Firestore Rules tests pass; 20 navigation destinations remain; resource XML parses; lint has 0 fatal issues and 0 errors (331 project-wide warnings); no emulator was launched at the user's request |
+| Phase 2C.1 live checks | Deliberately pending until handoff | Deploy the reviewed Rules/indexes, then use two real accounts to verify owner/non-owner actions, public hiding after withdrawal, relisting, conflict handling, and chat availability |
+| Phase 2C.2 marketplace image slice | App-side implementation and local verification complete | Configured debug/release and missing-config debug builds pass; 54 JVM tests and 17 combined Firestore/Storage Rules tests pass; all 68 resource XML files parse; 20 navigation destinations remain; lint has 0 fatal issues and 0 errors (351 project-wide warnings); no emulator was launched at the user's request |
+| Phase 2C.2 owner/live checks | Deliberately pending until handoff | Confirm the default Storage bucket/Blaze billing, deploy reviewed Firestore and Storage Rules, then verify create/display/replace/cleanup with two accounts and two devices using `docs/MARKETPLACE_IMAGE_SETUP.md` |
+| Phase 2D recycling-centre map | App-side implementation and local verification complete | Current fixed SDKs compile; configured debug/release and missing-key/missing-Firebase debug builds pass; all 60 JVM tests pass; all 69 resource XML files parse; 20 navigation destinations remain; lint has 0 fatal issues and 0 errors (327 project-wide warnings); no emulator was launched |
+| Phase 2D owner/live checks | Deliberately pending until handoff | Enable billing/APIs, create and restrict an Android key, then verify real results, permission choices, map/list selection, and geo-intent handoff using `docs/RECYCLE_MAP_SETUP.md` |
 
 ### Authorised Phase 2A Firebase essentials - 9 August 2026
 
@@ -156,12 +162,98 @@ Phase 2B implementation rules:
   Config, Hilt, WorkManager, FCM/notifications, lending workflows, and every
   other API/module stay unchanged and deferred.
 
+### Authorised Phase 2C.1 Marketplace Owner Management - 23 August 2026
+
+The user has authorised a narrow continuation of the existing text-only
+marketplace. This slice uses the current Firebase Auth/Firestore configuration
+and starts no new external service.
+
+| Implement in Phase 2C.1 | Explicitly defer |
+|---|---|
+| Reuse Create Listing as an owner-only edit form for title, description, category, condition, transaction intent, fulfilment, sale price, and exchange terms | Cloud Storage/images, scanner prefill, draft/outbox, location/distance, reservation, completion, payment, recent activity, and notifications |
+| Owner-only withdraw and relist with confirmation; public browse remains `status == available`; owner can directly read a withdrawn listing | Permanent deletion, admin moderation, automatic expiry, scheduled reminders, and trusted automation |
+| Immutable `ownerId`, `createdAt`, and `imageUrl`; server `updatedAt`; conflict-safe transaction and strict client/Rules validation | New marketplace fields, map entry, precise address, delivery, or an in-app transaction system |
+| Loading, validation, configuration, authentication, permission, offline, conflict, success, and recovery states | Any other module or API |
+
+Phase 2C.1 implementation rules:
+
+- Preserve the proposal's browse -> detail -> chat structure and existing
+  create form, but prioritise a polished, accessible, user-friendly light theme
+  rather than pixel-perfect reproduction.
+- Use stable IDs: transaction intent is `sale`, `donation`, or `exchange`;
+  fulfilment is `pickup` or `meetup`; current status is `available` or
+  `withdrawn`.
+- Only the authenticated owner sees Edit and Withdraw/Relist. Non-owners see
+  Chat only for an available listing. Confirm status changes before writing.
+- Perform edits/status changes with a Firestore transaction against the loaded
+  server version. Do not silently overwrite a newer edit from another device.
+- Security Rules independently enforce ownership, exact field shape, immutable
+  owner/creation/image fields, allowed mutable fields, valid status, and server
+  timestamps. The client never treats UI hiding as authorisation.
+- Keep production deployment and live two-account verification pending. At the
+  user's request, do not launch an emulator; run builds, JVM tests, Firestore
+  Rules tests, lint, and static checks, then hand off the exact live checklist.
+- Maps/Places/location, recycling APIs, Cloud Storage/images, Room/history,
+  Remote Config, Hilt, WorkManager, FCM/notifications, lending workflows, and
+  all other integrations remain deferred.
+
+### Authorised Phase 2C.2 Marketplace Images - 23 August 2026
+
+| Implement in Phase 2C.2 | Explicitly defer |
+|---|---|
+| One optional CameraX or Android Photo Picker image, normalised into a metadata-stripped JPEG at no more than 1600 px longest edge and 4 MiB | Multiple images, video, broad storage permission, image editing/cropping, scanner prefill, and permanent local drafts |
+| Versioned Firebase Storage object under the authenticated owner's listing path; private `gs://` Firestore reference; authenticated card/detail display | Public download-token URLs, unauthenticated media, arbitrary paths, service-account code, and embedded bucket/API credentials |
+| New-listing upload with failed-create cleanup; conflict-safe owner replacement followed by old-version cleanup | Permanent listing deletion, background orphan cleanup, WorkManager, trusted automation, moderation, and scheduled expiry |
+| Setup/auth/offline/processing/upload/progress/retry states; Firestore and Storage Rules tests | Maps/location, payments, reservation/completion, lending, notifications, and every unrelated API/module |
+
+Cloud Storage currently requires Blaze billing and an owner-provisioned default
+bucket. This remains a deliberate console/live gate. App code and automated
+rules tests must still work locally and compile when Firebase configuration is
+absent.
+
+### Authorised Phase 2D Recycling Centre Map - 23 August 2026
+
+| Implement in Phase 2D | Explicitly defer |
+|---|---|
+| One functional Recycling Centre screen using Maps SDK for Android and Places Text Search (New), with at most ten results | Separate lending/marketplace maps, raw REST/geocoding, route drawing, directions, travel time, favourites, centre photos, and material-acceptance claims |
+| One foreground current-location request using Fused Location Provider; accept coarse location; no continuous updates | Background location, tracking, geofencing, persisted/uploaded coordinates, and precise home/address collection |
+| Manual city/area search when location is denied, disabled, unavailable, or unwanted | Requiring permission before any search or silently using a fixed fake location |
+| Proposal-faithful map plus nearby list, synchronised selection, approximate straight-line distance, rating, address, retry, and standard geo-intent handoff | Booking/drop-off workflow, navigation SDK, API-derived opening hours, calling/messaging, saved activity, and notifications |
+| Ignored local Maps key with checked setup-required fallback; Android package/SHA-1 and API restrictions documented | Committed key, unrestricted key, service-account credentials, or a claim that client-side hiding alone secures an APK key |
+
+Phase 2D implementation rules:
+
+- Search only after the user taps a button. Allow one request at a time and
+  ignore obsolete responses. Request only place ID, display name, formatted
+  address, coordinates, and rating.
+- Use the text query `recycling centre` because Places does not define a
+  supported recycling-centre place type. Bias within a bounded radius around a
+  one-time current location when available; otherwise include the manual
+  Malaysia area in the query.
+- Request coarse and fine foreground permissions together and work with either
+  result. The app must remain useful through manual search when permission or
+  Google Play services is unavailable.
+- Never store, upload, log, or continuously observe the user's position.
+  Distances are local straight-line estimates and must be labelled approximate.
+- Keep markers and list selection in sync and offer only a standard geo-intent
+  handoff. Do not imply route, travel time, or accepted-material verification.
+- Provide setup, loading, permission, location-unavailable, offline, empty,
+  quota/key/API failure, retry, and manual-search states without sample results
+  masquerading as live data.
+- Keep the real key in ignored `secrets.properties`, with a harmless committed
+  fallback for team builds. Restrict the production key by Android package and
+  signing SHA-1 and to Maps SDK for Android plus Places API (New).
+- No emulator launch is required in this phase. Automated verification covers
+  configured/missing-key builds, JVM policy tests, lint, resource/navigation
+  integrity, and secret scanning. The owner completes the real-service/device
+  checks in `docs/RECYCLE_MAP_SETUP.md`.
+
 ## 2. Course constraints and delivery targets
 
 | Milestone | Date | Planning status |
 |---|---|---|
 | Part 1 proposal | 15 July 2026, before 5:00 PM | Past milestone; confirm the team's submission record; PDF is the scope baseline |
-| Native plan approval | 12 August 2026 | UI milestone and Phase 2A app/local work complete; narrow Phase 2B AI scanner approved; other integrations remain open |
+| Native plan approval | 23 August 2026 | UI milestone plus Phase 2A/2B/2C.1/2C.2/2D app/local work complete; live owner gates and later integrations remain open |
 | Feature freeze | Target: 29 August 2026 | No new functionality after this point |
 | Release candidate | Target: 2 September 2026 | All release gates must pass |
 | Working app and final report | 5 September 2026, before 5:00 PM | Fixed deadline |
@@ -406,7 +498,8 @@ Package names are finalised before project generation. Do not create empty place
 | User/listing/lending/request metadata | Cloud Firestore with persistent disk cache disabled | Public data can use in-memory cache; account-private offline data is stored explicitly in UID-scoped Room tables |
 | Real-time messages | Cloud Firestore thread/message documents with snapshot listeners | Sending requires connectivity; unsent composer text stays in saved state and no cross-account SDK disk queue is used |
 | Phase 2B scanner working image | One orientation-corrected, bounded, metadata-stripped JPEG in app-private temporary cache | No permanent offline copy; delete after result, cancellation, or failure; no Cloud Storage upload |
-| Later published images | Cloud Storage after a separately authorised publish intent; UID-scoped app-private draft copy or durable picker grant before upload | Deferred with Storage/Room/WorkManager; Phase 2B opens no upload path |
+| Phase 2C.2 marketplace image | One bounded, metadata-stripped JPEG in Cloud Storage at `marketplace/{ownerUid}/{listingId}/primary_{version}.jpg`; private `gs://` reference in Firestore | Upload needs connectivity; failed-create and replaced-version cleanup are immediate best effort; no Room/WorkManager retry or permanent local draft |
+| Other later published images | Cloud Storage only after a separately authorised publish intent; UID-scoped app-private draft copy or durable picker grant if delayed upload is approved | Avatars, lending media, multiple marketplace images, and durable outbox remain deferred with Room/WorkManager |
 | Later scan history/drafts/outbox | Room, scoped by initiating account UID | Deferred; Phase 2B does not claim saved scans, drafts, or retry queues |
 | Theme and non-sensitive settings | Preferences DataStore through its RxJava Java API | Immediate local persistence behind a `SettingsDataSource` |
 | Phase 2B AI model/prompt policy | Exact `gemini-3.6-flash` model and bounded structured prompt pinned in reviewed Java source | A fresh scan requires connectivity; Remote Config and persistent result caching remain deferred |
@@ -455,11 +548,21 @@ Phase 2A Firestore Rules allow access only when `auth.uid` is an immutable threa
 
 ### Cloud Storage paths
 
-- `users/{uid}/avatar/...`
-- `marketplace/{uid}/{listingId}/{imageId}.jpg`
-- `lending/{uid}/{itemId}/{imageId}.jpg`
+Current authorised path:
 
-Local drafts keep images app-private; cloud image upload starts only after an explicit publish action. An owner-only Firestore `DRAFT` metadata document supports lifecycle/recovery, but does not authorise Cloud Storage because Storage Rules cannot read Firestore. Storage writes/deletes require `request.auth.uid` to match the `{uid}` path segment, valid MIME type/size, and agreeing owner metadata. List access is denied. Authenticated reads are allowed for marketplace/lending image paths because other users must view published content; authenticated avatar reads are allowed only for non-sensitive profile avatars, while avatar writes/deletes remain owner-only. The app reveals unguessable content-image paths only from a published Firestore document. This creates a short staging interval that is not strict atomic visibility—if strict owner-only staging followed by rule-verified publication is required, OD-13 must provide a trusted promotion/signed-access design. Firestore Rules separately validate document ownership and image-manifest length. Neither rule system is claimed to count sibling files. Automatic orphan cleanup is also not promised unless OD-13 selects a trusted backend.
+- `marketplace/{ownerUid}/{listingId}/primary_{version}.jpg`
+
+Future paths such as avatars, lending media, and multiple marketplace images are
+still closed. Phase 2C.2 Storage writes/deletes require `request.auth.uid` to
+match the `{ownerUid}` segment, a JPEG no larger than 4 MiB, a versioned primary
+filename, and matching owner/listing/kind metadata. Authenticated reads support
+marketplace display; all other paths are denied. Firestore Rules separately
+require `imageUrl` to be null or a matching owner/listing `gs://` path. The app
+uploads only after the owner presses Publish or Save, deletes a newly uploaded
+object if the Firestore write fails, and deletes the previous version after a
+successful conflict-safe replacement. A process kill or network loss can still
+interrupt best-effort cleanup; scheduled orphan cleanup requires a separately
+approved trusted backend or WorkManager design and is not claimed here.
 
 ### Room 2.8.x tables
 
@@ -518,17 +621,16 @@ remain estimates and are labelled/reviewed accordingly.
 
 ### Marketplace listing lifecycle
 
+Current authorised Phase 2C.1 lifecycle:
+
 ```text
-local draft -> available -> reserved -> completed
-                    |            |
-                    +-> withdrawn+-> available (reservation cancelled)
+available <-> withdrawn
 ```
 
-- Transaction intent is `sale`, `donation`, or `exchange`; fulfilment is a separate `pickup`, `meetup`, or other approved handover value. The designer must confirm how the mock-up's "pickup" label maps to these fields.
-- Donation requires price `0`; sale requires a non-negative RM price; exchange requires a short description of what the owner will consider. Fulfilment states who arranges collection and never implies in-app delivery or payment.
-- Only the owner can edit, withdraw, reserve, or complete a listing.
-- Non-owners can view and open a related chat/request action.
-- Completion records recent activity. Eco/impact credit from an owner-only completion is labelled self-reported; stronger badge/impact evidence requires counterparty confirmation or OD-13 trusted computation, so the baseline does not claim a tamper-proof eco score.
+- Transaction intent is `sale`, `donation`, or `exchange`; fulfilment is a separate `pickup` or `meetup` value.
+- Donation requires price `0`; sale requires a positive RM price; exchange requires a short description of what the owner will consider. Fulfilment never implies in-app delivery or payment.
+- Only the owner can edit, withdraw, or relist. Withdrawn listings disappear from public browse and new contact-chat creation, but the owner retains direct access.
+- Reservation, completion, recent activity, impact credit, counterparty confirmation, and stronger trust evidence remain later work.
 
 ### Lending lifecycle
 
@@ -736,7 +838,9 @@ This schedule assumes plan approval by 6 August 2026 and four parallel contribut
 | 5-6 Aug | Plan and contract freeze | Confirm namespace, API baseline, Git strategy | Screen inventory/design tokens | AI schema/cache contract | Firebase schema/rules contract |
 | 7-9 Aug | Native foundation | Create approved project, CI, auth/navigation shell | XML component library, welcome/login/register/home shells | Room 2.8 database and scanner spike | Firebase emulator/config, repository interfaces/rule skeleton |
 | 10-14 Aug | Narrow Phase 2B scanner vertical slice | Authentication/App Check integration review; no map work in this slice | Preserve Scanner/AI Result wireframes and all scanner states | Camera/gallery -> bounded temporary image -> AI -> review flow; no save/history | Peer-review only; no new user/activity/notification backend |
-| 15-19 Aug | Marketplace vertical slice | Marketplace distance/geohash integration | Browse/detail/post/chat layouts | Draft/image handoff and local retry support | Listings, Storage, search/filter, chat data/rules |
+| 23 Aug re-baseline | Narrow Phase 2C.1 marketplace owner slice | Integration/release review; no new API | User-friendly edit/detail owner actions | Conflict/state tests; no images or local drafts | Owner edit/status repository and Security Rules tests |
+| 23-24 Aug re-baseline | Narrow Phase 2C.2 marketplace image slice | Storage/config integration review | Camera/gallery/create/edit image states | Reused bounded metadata-stripping pipeline and policy tests | Storage repository, Firestore/Storage Rules, and setup guide |
+| 23-24 Aug re-baseline | Narrow Phase 2D recycling-centre map slice | Maps/Places restricted-key integration review | Proposal-faithful map/list and permission/manual states | Query/distance/result policy tests | Places Text Search repository and detailed setup guide |
 | 20-24 Aug | Lending vertical slice | Lending map and date/navigation integration | Lending screens/calendar/request states | Shared image/local helpers and performance | Lending, deterministic booked-day transaction, return, eligible ratings |
 | 25-27 Aug | Supporting modules | Auth guards, deep links, settings permissions | Home/recent/profile/messages/notifications visual completion | Scan history, offline and failure states | Notifications, my activity, status/ownership edge cases |
 | 28-29 Aug | End-to-end integration and feature freeze | Full navigation/release build | Designer/accessibility pass | AI/offline/performance pass | Rules/emulator/data integrity pass |
@@ -751,7 +855,7 @@ No new feature begins after 29 August. Only release-blocking correctness, securi
 
 Repository cleanup is complete: on 5 August 2026, the user explicitly authorised direct deletion of the obsolete Expo/React Native source, Node/Expo configuration and dependencies, generated output, placeholder services/database files, default Expo assets/licence boilerplate, and old `.env`. The user subsequently authorised the native Gradle skeleton and, on 9 August 2026, the proposal-parity UI milestone.
 
-The environment, proposal-parity UI, Phase 2A Firebase essentials, and narrow Phase 2B AI scanner portions of this sequence are authorised. Later integrations still require their relevant decision gates:
+The environment, proposal-parity UI, Phase 2A Firebase essentials, narrow Phase 2B AI scanner, Phase 2C.1 marketplace owner management, Phase 2C.2 marketplace images, and Phase 2D recycling-centre map portions of this sequence are authorised. Later integrations still require their relevant decision gates:
 
 1. Review and approve this plan, open decisions, namespace, design assets/tokens, and ownership.
 2. Retrieve/recreate Firebase, Maps, and AI configuration from the owning consoles; do not treat the deleted `.env` or Git history as a secret store.
@@ -760,9 +864,12 @@ The environment, proposal-parity UI, Phase 2A Firebase essentials, and narrow Ph
 5. **Phase 2A app-side implementation and local verification completed:** add only Firebase Authentication and Cloud Firestore for email/password accounts, text-only marketplace listings, and participant-only listing chat; include deny-by-default rules, indexes, emulator tests, and the developer setup guide. Production Rules/index deployment and the two-account live smoke test still follow `docs/FIREBASE_SETUP.md` as owner checks.
 6. **Phase 2B authorised:** implement only CameraX capture, Android Photo Picker, bounded temporary image handling, authenticated Firebase AI Logic/Gemini structured analysis, build-specific App Check, result review states, local parser/image-bound tests, and `docs/AI_SCANNER_SETUP.md`.
 7. The project owner enables AI Logic with the Gemini Developer API, enforces authenticated-users mode in AI Logic Settings, registers each developer's debug token, verifies AI Logic enforcement and one live request, reviews quotas/budget alerts, and later completes release Play Integrity/SHA-256 setup.
-8. After separate approval for each remaining service, implement later scheduled vertical slices without restoring or converting TypeScript/Expo source.
-9. Run parity review against all twenty PDF mock-ups and the two explicitly derived completion surfaces.
-10. Pass security, adaptive-layout, offline/account-switch, test, and release gates before submission.
+8. **Phase 2C.1 authorised:** add owner-only text editing plus `available`/`withdrawn` management using the existing Auth/Firestore stack; keep images, Maps, Room, lending, activity, notifications, and deletion deferred in that slice.
+9. **Phase 2C.2 authorised:** add one safely prepared marketplace image, authenticated Storage upload/display/replacement, matching Firestore/Storage Rules, local tests, and `docs/MARKETPLACE_IMAGE_SETUP.md`; keep other images and integrations deferred.
+10. **Phase 2D authorised:** make only the Recycling Centre screen functional with Maps SDK, Places Text Search (New), one-time foreground location, manual area fallback, restricted-key setup, local policy tests, and `docs/RECYCLE_MAP_SETUP.md`.
+11. After separate approval for each remaining service, implement later scheduled vertical slices without restoring or converting TypeScript/Expo source.
+12. Run structural review against all twenty PDF mock-ups and the two explicitly derived completion surfaces, prioritising accessibility and usability over pixel-perfect copying.
+13. Pass security, adaptive-layout, offline/account-switch, test, and release gates before submission.
 
 Brownfield React Native embedding and automated TSX-to-Java conversion are out of scope because the selected target is one clean native architecture.
 
@@ -791,7 +898,7 @@ Brownfield React Native embedding and automated TSX-to-Java conversion are out o
 
 ## 17. Open decisions requiring team confirmation
 
-These choices do not block documentation, but they must be closed before the related implementation or release gate. OD-02 is resolved for Phase 2A. Phase 2B also fixes the debug-versus-release App Check provider policy, while OD-14's owner console/certificate/live-release checks remain open.
+These choices do not block documentation, but they must be closed before the related implementation or release gate. OD-02 is resolved for Phase 2A. Phase 2B fixes the debug-versus-release App Check provider policy. Phase 2C.1 fixes the current marketplace transaction, fulfilment, and status vocabulary. Phase 2C.2 fixes the one-image Storage path and authenticated-read policy. Phase 2D fixes the recycling-centre location privacy and search policy while listing/lending map semantics remain open.
 
 | ID | Decision | Recommended default |
 |---|---|---|
@@ -805,7 +912,7 @@ These choices do not block documentation, but they must be closed before the rel
 | OD-08 | Store publication | Signed course APK first; AppGallery/Play submission only after GMS/store-policy review |
 | OD-09 | Microphone icon in home search | Remove it unless voice search is a real accepted requirement; do not ship an inert control or request microphone permission unnecessarily |
 | OD-10 | Earlier-plan enhancements not required by the PDF | Keep text-only scanner lookup, home impact/statistics/tip panels, and marketplace map/list switch out of the baseline unless the designer/team explicitly schedules them |
-| OD-11 | Marketplace semantics | Use transaction intent (`sale`, `donation`, `exchange`) separately from fulfilment (`pickup`, `meetup`); designer confirms the mock-up labels and whether Market has any map entry |
+| OD-11 | Marketplace semantics | **Resolved for Phase 2C.1:** transaction intent is `sale`, `donation`, or `exchange`; fulfilment is `pickup` or `meetup`; status is `available` or `withdrawn`. Marketplace map/location and later reservation/completion semantics remain separately deferred |
 | OD-12 | Proposal wording "rent or borrow" | Default to borrowing with optional informational deposit/fee arranged in chat; no in-app payment. Team must decide whether any rental fee is permitted and update copy consistently |
 | OD-13 | Trusted automation backend | Baseline has no custom backend. If automated FCM, cross-device schedules, stored global/eco/trust aggregates, orphan cleanup, or abuse-resistant per-user AI limits are required, select a Java-capable trusted service, owner, tests, secrets/billing plan, and schedule first |
 | OD-14 | App Check release prerequisites | **Provider policy resolved for Phase 2B:** debug provider only in debug builds and Play Integrity only in release builds. The owner still confirms the Play entry/project links/permissions/release SHA-256, tests the exact signed APK, and records any non-enforced restriction; never use a debug token/provider in release |
@@ -826,7 +933,10 @@ Current registration/login text must claim only the implemented email/password b
 - [WorkManager](https://developer.android.com/develop/background-work/background-tasks/persistent)
 - [Android 16 large-screen behaviour changes](https://developer.android.com/about/versions/16/behavior-changes-16)
 - [Maps SDK for Android](https://developers.google.com/maps/documentation/android-sdk/start)
-- [Places Nearby Search](https://developers.google.com/maps/documentation/places/android-sdk/nearby-search)
+- [Maps API key security](https://developers.google.com/maps/api-security-best-practices)
+- [Secrets Gradle plugin](https://developers.google.com/maps/documentation/android-sdk/secrets-gradle-plugin)
+- [Places Text Search](https://developers.google.com/maps/documentation/places/android-sdk/text-search)
+- [Places SDK policies](https://developers.google.com/maps/documentation/places/android-sdk/policies)
 - [Firebase AI Logic](https://firebase.google.com/docs/ai-logic)
 - [Firebase AI Logic Android setup](https://firebase.google.com/docs/ai-logic/get-started?platform=android)
 - [Firebase AI Logic multimodal generation](https://firebase.google.com/docs/ai-logic/generate-text?platform=android)
@@ -840,13 +950,16 @@ Current registration/login text must claim only the implemented email/password b
 
 ## 19. Plan approval checklist
 
-The UI milestone, Phase 2A Firebase essentials, and narrow Phase 2B AI scanner are authorised. Later production functionality begins only after the team confirms the relevant items below:
+The UI milestone, Phase 2A Firebase essentials, narrow Phase 2B AI scanner, Phase 2C.1 marketplace owner management, Phase 2C.2 marketplace images, and Phase 2D recycling-centre map are authorised. Later production functionality begins only after the team confirms the relevant items below:
 
 - [ ] Every proposal screen/module is represented correctly.
 - [ ] Java/XML/no-Compose policy is accepted.
 - [ ] API 24 minimum and API 36 target are accepted.
 - [x] Screen IDs, navigation model, and designer Home fan are accepted for the current UI pass.
 - [x] Phase 2B scanner uses temporary app-private files and Firebase AI Logic only; no raw key, Cloud Storage, Room/history, map, or automatic publish is opened.
+- [x] Phase 2C.1 uses only existing Auth/Firestore for owner text editing and `available`/`withdrawn`; images, deletion, map, reservation/completion, activity, and notifications remain deferred.
+- [x] Phase 2C.2 uses one bounded JPEG, an owner/listing-scoped Storage path, authenticated display, and private `gs://` references; multiple images, deletion, map, lending, and background cleanup remain deferred.
+- [x] Phase 2D uses only foreground one-time location plus manual area search, Maps/Places Android SDKs, approximate local distance, and restricted local key setup; routes, tracking, history, lending/marketplace maps, and acceptance claims remain deferred.
 - [ ] Later Firebase/Room/Maps data ownership is accepted.
 - [ ] Authentication alternatives, marketplace semantics, lending fee wording, and optional enhancements are closed.
 - [ ] Push/trusted-backend scope has a named owner and deadline, or the excluded automation is explicitly accepted.

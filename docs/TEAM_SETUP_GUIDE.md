@@ -2,8 +2,8 @@
 
 This guide explains how a teammate can clone the private repository, open the
 correct Android project, connect to the shared development Firebase project,
-build the app, run it, verify the Phase 2A features, and set up the narrow Phase
-2B AI Smart Scanner.
+build the app, run it, verify the implemented features, and find the detailed
+Firebase, AI scanner, marketplace-image, and Recycling Centre map setup guides.
 
 The instructions use Windows PowerShell because the current team machines use
 Windows. Run commands from the repository root unless a step says otherwise.
@@ -24,7 +24,11 @@ The project currently contains:
 - CameraX preview/capture and one-image Android Photo Picker input;
 - authenticated Firebase AI Logic/Gemini structured analysis with build-specific
   App Check;
-- Firestore Security Rules, composite indexes, and emulator tests; and
+- one optional marketplace photo with Firebase Cloud Storage, authenticated
+  display, and owner-only replacement;
+- one functional Recycling Centre map/list with Places Text Search, one-time
+  foreground location, and manual area fallback;
+- Firestore and Storage Security Rules, composite indexes, and emulator tests; and
 - the full twenty-screen proposal UI, with unrelated modules still using static
   content.
 
@@ -36,11 +40,22 @@ Phase 2A app-side code and local verification are complete. Production
 Firestore Rules/index deployment and the two-account live cloud smoke test
 remain deliberate owner checks.
 
-Phase 2B adds only the existing Scanner and AI Result journey. The following
-integrations remain deliberately excluded: Maps/Places/location,
-recycling-centre APIs, Cloud Storage/image upload, permanent scan history,
-Room, Remote Config, WorkManager, push notifications, lending transactions,
-ratings, and presence.
+Phase 2C.2 app-side code and local checks are also complete. The Firebase owner
+still confirms billing/bucket setup, deploys the reviewed Storage and Firestore
+Rules, and performs the documented real-device image checks.
+
+Phase 2D app-side code and local checks are complete. The Google Cloud owner
+still enables billing and the two required APIs, provides a properly restricted
+Android key, and completes the real-device checklist in
+`docs/RECYCLE_MAP_SETUP.md`.
+
+Phase 2B adds only the existing Scanner and AI Result journey. Phase 2C.1 adds
+marketplace owner editing/withdraw/relist, Phase 2C.2 adds one marketplace
+photo, and Phase 2D makes only the Recycling Centre map/list functional. The
+following integrations remain deliberately excluded: lending/marketplace maps,
+routes, background location, multiple images, avatars, lending
+images, permanent scan history, Room, Remote Config, WorkManager, push
+notifications, lending transactions, ratings, and presence.
 
 ## Read this safety box before setup
 
@@ -49,6 +64,7 @@ Never commit or send any of these files through Git:
 - `app/google-services.json`
 - `.firebaserc`
 - `local.properties`
+- `secrets.properties`
 - `.env` or any `.env.*` file
 - a service-account JSON file
 - a signing keystore or its passwords
@@ -66,9 +82,9 @@ approved Firebase project and must not force-add it to Git.
 
 | Person | Required work |
 |---|---|
-| Every teammate | Obtain GitHub access, clone, install Android tools, open the repository root, obtain `google-services.json`, build, run, and test their own changes. |
-| Firebase project owner | Add approved teammates, enable only the approved Firebase services, complete Firebase AI Logic guided setup, and control App Check enforcement/production release setup. |
-| Assigned Firebase maintainer | Run the Rules test suite and deliberately deploy reviewed Firestore Rules and indexes. |
+| Every teammate | Obtain GitHub access, clone, install Android tools, open the repository root, obtain `google-services.json`, create their ignored restricted-key `secrets.properties`, build, run, and test their own changes. |
+| Firebase/Google Cloud project owner | Add approved teammates, enable only the approved Firebase services, enable the Phase 2C.2 Storage bucket/billing, complete Firebase AI Logic setup, and enable/restrict the Phase 2D Maps/Places services. |
+| Assigned Firebase maintainer | Run the Rules test suite and deliberately deploy reviewed Firestore Rules, Storage Rules, and indexes. |
 | Every scanner developer | Register their own App Check debug token. Never share or commit it. |
 | Nobody | Commit credentials, share a service account, restore Expo/React Native, or enable deferred services without approval. |
 
@@ -93,6 +109,8 @@ If you only need to review the static UI, GitHub access is enough. Real login,
 marketplace, chat, and AI scanner testing also needs the local Firebase
 configuration from the approved project. A live scanner request additionally
 needs AI Logic enabled and that developer's App Check debug token registered.
+A live in-app Recycling Centre map/search additionally needs the ignored,
+restricted Maps key described in `docs/RECYCLE_MAP_SETUP.md`.
 
 ## 2. Install the required desktop tools
 
@@ -469,13 +487,13 @@ If the wrong Google account opens, use:
 Do not continue to cloud deployment until `projects:list` shows
 `propcycle-e5f14` and the project owner has authorised you to deploy.
 
-## 11. Run Firestore Security Rules tests locally
+## 11. Run Firestore and Storage Security Rules tests locally
 
-Rules tests run against a local Firestore emulator and a demo project. They do
-not read or change cloud Firestore data, and they do not require
+Rules tests run against local Firestore and Storage emulators with a demo
+project. They do not read or change cloud Firebase data, and they do not require
 `google-services.json`.
 
-Stop any Firebase emulators already using port 8080, then run:
+Stop any Firebase emulators already using port 8080 or 9199, then run:
 
 ```powershell
 $env:JAVA_HOME='C:\Program Files\Android\Android Studio\jbr'
@@ -485,10 +503,11 @@ npm.cmd run test:rules
 Set-Location ..
 ```
 
-The command starts the Firestore emulator, runs the Node Rules tests, prints the
-results, and shuts the emulator down. Do not deploy if any test fails.
+The command starts the Firestore and Storage emulators, runs both Node Rules
+test files, prints the results, and shuts the emulators down. Do not deploy if
+any test fails.
 
-## 12. Deploy reviewed Firestore Rules and indexes
+## 12. Deploy reviewed Firestore/Storage Rules and indexes
 
 This is a shared cloud change. Only the assigned Firebase maintainer should run
 it after peer review and a passing Rules suite.
@@ -496,7 +515,7 @@ it after peer review and a passing Rules suite.
 From the repository root:
 
 ```powershell
-.\firebase-tests\node_modules\.bin\firebase.cmd deploy --only firestore:rules,firestore:indexes --project propcycle-e5f14
+.\firebase-tests\node_modules\.bin\firebase.cmd deploy --only firestore,storage --project propcycle-e5f14
 ```
 
 The explicit project ID protects against deploying to a different active alias.
@@ -508,6 +527,8 @@ Then check Firebase Console:
    longer temporary test-mode Rules.
 2. Open **Firestore Database > Indexes**.
 3. Wait until both composite indexes show **Enabled**.
+4. Open **Storage > Rules** and confirm the owner-only marketplace image rules
+   are deployed.
 
 The required indexes are:
 
@@ -634,9 +655,10 @@ $env:JAVA_HOME='C:\Program Files\Android\Android Studio\jbr'
 ```
 
 This includes pure validation tests for authentication, marketplace listings,
-chat, the scanner structured-result parser, and scanner image-size bounds.
+chat, the scanner structured-result parser, scanner image-size bounds, and the
+marketplace image path/size policy.
 
-### Run Firestore Rules tests
+### Run Firestore and Storage Rules tests
 
 ```powershell
 $env:JAVA_HOME='C:\Program Files\Android\Android Studio\jbr'
@@ -698,7 +720,8 @@ For cloud testing, Firebase Console should now show:
 - `users/{accountAUid}` in Firestore; and
 - a new `marketplaceListings/{listingId}` document.
 
-The listing image remains a placeholder because Cloud Storage is deferred.
+The listing may remain text-only. If the project owner has completed Phase
+2C.2 Storage setup, Account A may add one optional photo.
 
 ### Account B: discover the listing and start chat
 
@@ -770,6 +793,67 @@ local unit tests. Check service failure paths manually and make only a small
 number of deliberate live requests. The scanner must not create Cloud Storage
 objects or permanent scan-history records.
 
+## 18B. Verify Phase 2C.1 marketplace owner management
+
+No new Firebase product or API key is needed. First deploy the reviewed
+`firestore.rules` and `firestore.indexes.json` as described earlier in this
+guide. Then use two cloud test accounts:
+
+1. Account A creates a text-only listing and opens its detail page.
+2. Confirm Account A sees **Edit details** and **Withdraw**.
+3. Edit every supported field once and save. Confirm the detail page refreshes.
+4. In Firestore, confirm `ownerId` and `createdAt` stayed unchanged. `imageUrl`
+   stays unchanged unless Account A deliberately chooses a valid replacement
+   in Phase 2C.2. `updatedAt` must change to a newer server timestamp.
+5. Account B opens the available listing. Confirm Account B sees **Chat with
+   seller** but no owner-management card.
+6. Account A withdraws the listing after reading the confirmation.
+7. Confirm the listing disappears from Account B's public Market list. Account
+   B must not open it using an old direct link or start a new listing chat.
+8. Confirm Account A remains on the withdrawn detail page, can edit it, and sees
+   **Relist**.
+9. Account A relists it. Confirm Account B can discover and open it again.
+10. Keep any chat created before withdrawal. Withdrawal blocks only a new chat;
+    it does not delete an existing conversation.
+
+Use two Account A sessions for the conflict case. Open the same edit form on two
+devices. Save on Device 1, then save the older form on Device 2. Device 2 must
+show a conflict/reopen message and must not replace Device 1's newer values.
+
+Also check airplane mode while editing. The app may show cached details, but it
+must not report a successful edit, withdrawal, or relist without a network
+connection.
+
+## 18C. Verify Phase 2C.2 marketplace images
+
+The Firebase owner must first enable the default Storage bucket, download a
+fresh `google-services.json`, run both Rules test files, and deploy Firestore and
+Storage Rules. Follow the complete
+[Marketplace image setup guide](MARKETPLACE_IMAGE_SETUP.md).
+
+The minimum live check is:
+
+1. Account A creates a listing with one Photo Picker image.
+2. Confirm the image appears on its detail page and marketplace card.
+3. Confirm Firestore stores a private `gs://` reference, not a public token URL.
+4. Account A replaces the image with a camera photo.
+5. Confirm the new image appears and the old Storage object is removed.
+6. Account B can view the authenticated image but cannot edit or delete it.
+7. Deny camera permission and confirm Photo Picker still works.
+8. Check offline, rotation, failed-upload cleanup, and two-device conflict cases
+   from the detailed guide.
+
+## 18D. Verify Phase 2D Recycling Centre map
+
+The Google Cloud project owner must enable billing, Maps SDK for Android, and
+Places API (New). Every developer then creates their own ignored
+`secrets.properties` entry using a key restricted to package
+`com.propcycle.app`, that developer's signing SHA-1, and only those two APIs.
+
+Follow the complete [Recycling Centre map setup guide](RECYCLE_MAP_SETUP.md).
+It includes the exact Cloud Console steps, `signingReport` command, local file,
+permission tests, missing-key build, security checks, and troubleshooting.
+
 ## 19. Daily Git safety check
 
 Before committing:
@@ -786,6 +870,7 @@ or `node_modules` appear. In particular:
 git check-ignore -v .\app\google-services.json
 git check-ignore -v .\.firebaserc
 git check-ignore -v .\local.properties
+git check-ignore -v .\secrets.properties
 ```
 
 If a protected local file was accidentally staged but not committed, unstage
@@ -870,6 +955,13 @@ Check all of these:
 
 The app deliberately does not fake a successful backend operation when the file
 is missing.
+
+### The Recycling Centre page says Maps setup is required
+
+Follow `docs/RECYCLE_MAP_SETUP.md`. Check that `secrets.properties` is in the
+repository root, contains `MAPS_API_KEY=...`, and is ignored by Git. Also check
+billing, Maps SDK for Android, Places API (New), package `com.propcycle.app`,
+the current signing SHA-1, and the key's API restrictions.
 
 ### `No matching client found for package name`
 
@@ -986,13 +1078,15 @@ new ones:
 4. Confirm API 36 and Build-Tools 36.0.0 are installed.
 5. Run the baseline `:app:assembleDebug` command.
 6. Confirm the Firebase JSON identity and ignored path.
-7. Confirm Email/Password and deployed Firestore configuration.
+7. Confirm Email/Password and deployed Firestore/Storage configuration.
 8. Run Java unit tests and local Rules tests.
 9. Run the app on one known-good emulator.
 10. For scanner failures, confirm AI Logic, authenticated-users mode, and that
     device's registered App Check debug token.
-11. Separate camera input from AI by testing the gallery fallback.
-12. Only then investigate a feature-specific failure.
+11. For marketplace image failures, confirm the default bucket, fresh
+    `google-services.json`, Storage Rules, sign-in, and billing/quota state.
+12. Separate camera input from AI or Storage by testing the gallery fallback.
+13. Only then investigate a feature-specific failure.
 
 Do not solve an environment error by changing application architecture,
 downgrading random versions, enabling deferred Firebase products, or weakening
@@ -1010,6 +1104,9 @@ Security Rules.
 - [Firestore Security Rules](https://firebase.google.com/docs/firestore/security/get-started)
 - [Firestore indexes](https://firebase.google.com/docs/firestore/query-data/indexing)
 - [Firebase Local Emulator Suite](https://firebase.google.com/docs/emulator-suite)
+- [Cloud Storage Android setup](https://firebase.google.com/docs/storage/android/start)
+- [Cloud Storage Android uploads](https://firebase.google.com/docs/storage/android/upload-files)
+- [Cloud Storage Security Rules](https://firebase.google.com/docs/storage/security)
 - [Firebase AI Logic Android setup](https://firebase.google.com/docs/ai-logic/get-started?platform=android)
 - [Firebase App Check debug provider](https://firebase.google.com/docs/app-check/android/debug-provider)
 - [CameraX image capture](https://developer.android.com/media/camera/camerax/take-photo)
@@ -1018,4 +1115,6 @@ Security Rules.
 For the shorter one-PC Firebase owner checklist, see
 [FIREBASE_SETUP.md](FIREBASE_SETUP.md). This teammate guide is the primary
 starting point for a new clone. For the scanner service and device setup, use
-[AI_SCANNER_SETUP.md](AI_SCANNER_SETUP.md).
+[AI_SCANNER_SETUP.md](AI_SCANNER_SETUP.md). For Storage, marketplace photo, and
+two-account image checks, use
+[MARKETPLACE_IMAGE_SETUP.md](MARKETPLACE_IMAGE_SETUP.md).
