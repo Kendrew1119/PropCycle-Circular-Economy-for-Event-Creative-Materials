@@ -2,7 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/pc_background"
+    android:background="@color/pc_welcome_background"
     android:paddingStart="@dimen/screen_horizontal"
     android:paddingTop="@dimen/screen_vertical"
     android:paddingEnd="@dimen/screen_horizontal"
@@ -22,81 +22,127 @@
             android:layout_marginStart="12dp"
             android:layout_marginEnd="12dp"
             android:layout_marginBottom="@dimen/space_lg"
-            android:background="@drawable/bg_card_light"
+            android:background="@drawable/bg_welcome_illustration_card"
             android:contentDescription="Welcome illustration placeholder"
+            android:elevation="@dimen/elevation_subtle"
             android:importantForAccessibility="yes">
 
-            <TextView
+            <ImageView
                 android:layout_width="148dp"
                 android:layout_height="148dp"
                 android:layout_gravity="center"
                 android:background="@drawable/bg_circle_gray"
-                android:gravity="center"
-                android:text="♻"
-                android:textColor="@color/pc_ink"
-                android:textSize="70sp" />
+                android:contentDescription="PropCycle check-mark logo"
+                android:padding="@dimen/space_md"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_launcher_foreground"
+                android:tint="@color/pc_primary" />
 
-            <TextView
-                android:layout_width="58dp"
-                android:layout_height="58dp"
+            <ImageView
+                android:layout_width="26dp"
+                android:layout_height="26dp"
                 android:layout_gravity="top|start"
-                android:layout_marginStart="38dp"
-                android:layout_marginTop="38dp"
-                android:background="@drawable/bg_circle_white"
-                android:gravity="center"
-                android:text="○"
-                android:textColor="@color/pc_border"
-                android:textSize="32sp" />
+                android:layout_marginStart="26dp"
+                android:layout_marginTop="48dp"
+                android:alpha="0.48"
+                android:contentDescription="@null"
+                android:importantForAccessibility="no"
+                android:rotation="-8"
+                android:src="@drawable/ic_welcome_leaf" />
 
-            <TextView
-                android:layout_width="72dp"
-                android:layout_height="72dp"
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_gravity="top|start"
+                android:layout_marginStart="94dp"
+                android:layout_marginTop="28dp"
+                android:alpha="0.32"
+                android:contentDescription="@null"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_welcome_sparkle" />
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:layout_gravity="top|end"
-                android:layout_marginTop="26dp"
-                android:layout_marginEnd="36dp"
-                android:background="@drawable/bg_circle_gray"
-                android:gravity="center"
-                android:text="○"
-                android:textColor="@color/pc_white"
-                android:textSize="38sp" />
+                android:layout_marginTop="44dp"
+                android:layout_marginEnd="32dp"
+                android:alpha="0.42"
+                android:contentDescription="@null"
+                android:importantForAccessibility="no"
+                android:rotation="7"
+                android:src="@drawable/ic_welcome_heart" />
 
-            <TextView
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+            <ImageView
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_gravity="center_vertical|end"
+                android:layout_marginEnd="28dp"
+                android:alpha="0.36"
+                android:contentDescription="@null"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_welcome_package" />
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:layout_gravity="bottom|start"
-                android:layout_marginStart="52dp"
-                android:layout_marginBottom="34dp"
-                android:background="@drawable/bg_circle_gray"
-                android:gravity="center"
-                android:text="○"
-                android:textColor="@color/pc_white"
-                android:textSize="26sp" />
+                android:layout_marginStart="28dp"
+                android:layout_marginBottom="72dp"
+                android:alpha="0.40"
+                android:contentDescription="@null"
+                android:importantForAccessibility="no"
+                android:rotation="-6"
+                android:src="@drawable/ic_welcome_package" />
 
-            <TextView
-                android:layout_width="64dp"
-                android:layout_height="64dp"
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_gravity="bottom|start"
+                android:layout_marginStart="82dp"
+                android:layout_marginBottom="24dp"
+                android:alpha="0.30"
+                android:contentDescription="@null"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_welcome_heart" />
+
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
                 android:layout_gravity="bottom|end"
-                android:layout_marginEnd="42dp"
-                android:layout_marginBottom="32dp"
-                android:background="@drawable/bg_circle_white"
-                android:gravity="center"
-                android:text="○"
-                android:textColor="@color/pc_border"
-                android:textSize="34sp" />
+                android:layout_marginEnd="82dp"
+                android:layout_marginBottom="24dp"
+                android:alpha="0.28"
+                android:contentDescription="@null"
+                android:importantForAccessibility="no"
+                android:rotation="10"
+                android:src="@drawable/ic_welcome_leaf" />
+
+            <ImageView
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:layout_gravity="bottom|end"
+                android:layout_marginEnd="28dp"
+                android:layout_marginBottom="54dp"
+                android:alpha="0.44"
+                android:contentDescription="@null"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_welcome_sparkle" />
         </FrameLayout>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Text"
+            android:text="PropCycle"
             android:textAppearance="@style/TextAppearance.PropCycle.Display" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/space_sm"
-            android:text="Text"
-            android:textAppearance="@style/TextAppearance.PropCycle.Body" />
+            android:text="Give materials a second life."
+            android:textAppearance="@style/TextAppearance.PropCycle.Body"
+            android:textColor="@color/pc_text_secondary" />
     </LinearLayout>
 
     <com.google.android.material.button.MaterialButton

@@ -13,4 +13,6 @@
     <dimen name="pill_corner">40dp</dimen>
     <dimen name="stroke_thin">1dp</dimen>
     <dimen name="stroke_medium">2dp</dimen>
+    <dimen name="elevation_subtle">2dp</dimen>
+    <dimen name="welcome_recycle_symbol_size">82sp</dimen>
 </resources>

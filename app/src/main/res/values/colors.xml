@@ -26,6 +26,11 @@
     <color name="pc_transparent">#00000000</color>
     <color name="pc_camera_surface">#183328</color>
 
+    <!-- Welcome screen surfaces. -->
+    <color name="pc_welcome_background">#E6EBE1</color>
+    <color name="pc_welcome_card_surface">#F8FAF7</color>
+    <color name="pc_welcome_card_border">#DCE4DA</color>
+
     <!-- Compatibility names retained for proposal layouts while they migrate. -->
     <color name="pc_surface_mid">@color/pc_surface_container</color>
     <color name="pc_surface_dark">@color/pc_text_muted</color>
