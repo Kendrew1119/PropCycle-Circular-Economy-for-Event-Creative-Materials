@@ -14,5 +14,8 @@
     <dimen name="stroke_thin">1dp</dimen>
     <dimen name="stroke_medium">2dp</dimen>
     <dimen name="elevation_subtle">2dp</dimen>
+    <dimen name="home_feature_card_min_height">226dp</dimen>
     <dimen name="welcome_recycle_symbol_size">82sp</dimen>
+    <dimen name="login_panel_min_height">436dp</dimen>
+    <dimen name="login_brand_logo_size">84dp</dimen>
 </resources>
