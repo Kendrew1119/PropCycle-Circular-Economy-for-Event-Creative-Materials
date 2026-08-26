@@ -92,46 +92,17 @@
                     android:layout_gravity="center"
                     android:indeterminate="true"
                     android:visibility="gone" />
+
+                <ImageButton
+                    android:id="@+id/photo_add_action"
+                    style="@style/Widget.PropCycle.IconButton"
+                    android:layout_gravity="bottom|end"
+                    android:layout_marginEnd="18dp"
+                    android:layout_marginBottom="18dp"
+                    android:contentDescription="Add or change item photo"
+                    android:elevation="@dimen/elevation_subtle"
+                    android:src="@drawable/ic_add" />
             </FrameLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/photo_camera_action"
-                    style="@style/TextAppearance.PropCycle.Caption"
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/touch_target"
-                    android:layout_marginEnd="5dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/bg_pill_dark"
-                    android:clickable="true"
-                    android:contentDescription="Take a marketplace item photo"
-                    android:focusable="true"
-                    android:gravity="center"
-                    android:text="Camera"
-                    android:textColor="@color/pc_white"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/photo_gallery_action"
-                    style="@style/TextAppearance.PropCycle.Caption"
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/touch_target"
-                    android:layout_marginStart="5dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/bg_pill"
-                    android:clickable="true"
-                    android:contentDescription="Choose a marketplace item photo"
-                    android:focusable="true"
-                    android:gravity="center"
-                    android:text="Choose photo"
-                    android:textColor="@color/pc_ink"
-                    android:textStyle="bold" />
-            </LinearLayout>
 
             <TextView
                 android:id="@+id/photo_clear_action"
@@ -181,11 +152,10 @@
             <AutoCompleteTextView
                 android:id="@+id/listing_transaction_input"
                 style="@style/Widget.PropCycle.Field"
-                android:layout_marginTop="10dp"
-                android:hint="Sale, donation, or exchange"
                 android:importantForAutofill="no"
                 android:inputType="none"
-                android:maxLines="1" />
+                android:maxLines="1"
+                android:visibility="gone" />
 
             <AutoCompleteTextView
                 android:id="@+id/listing_fulfilment_input"

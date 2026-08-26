@@ -129,8 +129,7 @@ public final class CreateListingFragment extends Fragment {
                     destinationArguments);
         });
 
-        binding.photoCameraAction.setOnClickListener(ignored -> onCameraAction());
-        binding.photoGalleryAction.setOnClickListener(ignored -> openPhotoPicker());
+        binding.photoAddAction.setOnClickListener(this::showPhotoSourceChoice);
         binding.photoClearAction.setOnClickListener(ignored -> {
             stopCamera();
             displayedLocalPath = null;
@@ -271,6 +270,21 @@ public final class CreateListingFragment extends Fragment {
         created.setVisibility(View.GONE);
         binding.listingPhotoContainer.addView(created, 0);
         previewView = created;
+    }
+
+    private void showPhotoSourceChoice(@NonNull View anchor) {
+        new MaterialAlertDialogBuilder(anchor.getContext())
+                .setTitle("Add photo")
+                .setItems(
+                        new CharSequence[]{"Camera", "Choose photo"},
+                        (dialog, selected) -> {
+                            if (selected == 0) {
+                                onCameraAction();
+                            } else {
+                                openPhotoPicker();
+                            }
+                        })
+                .show();
     }
 
     private void onCameraAction() {
@@ -530,11 +544,9 @@ public final class CreateListingFragment extends Fragment {
         binding.menuButton.setEnabled(!state.isBusy());
         binding.menuButton.setAlpha(state.isBusy() ? 0.55f : 1f);
         setFormEnabled(enabled);
-        binding.photoCameraAction.setEnabled(enabled);
-        binding.photoGalleryAction.setEnabled(enabled);
+        binding.photoAddAction.setEnabled(enabled);
         binding.photoClearAction.setEnabled(enabled);
-        binding.photoCameraAction.setAlpha(enabled ? 1f : 0.55f);
-        binding.photoGalleryAction.setAlpha(enabled ? 1f : 0.55f);
+        binding.photoAddAction.setAlpha(enabled ? 1f : 0.55f);
         boolean conflict = state.getKind() == CreateListingViewModel.State.Kind.CONFLICT;
         binding.primaryAction.setEnabled(enabled && !state.isFromCache() && !conflict);
         binding.primaryAction.setAlpha(binding.primaryAction.isEnabled() ? 1f : 0.55f);
@@ -568,14 +580,12 @@ public final class CreateListingFragment extends Fragment {
             previewView.setVisibility(View.VISIBLE);
             binding.listingPhotoPreview.setVisibility(View.GONE);
             binding.listingPhotoPlaceholder.setVisibility(View.GONE);
-            binding.photoCameraAction.setText("Capture photo");
             binding.photoClearAction.setVisibility(View.GONE);
             return;
         }
         if (previewView != null) {
             previewView.setVisibility(View.GONE);
         }
-        binding.photoCameraAction.setText("Camera");
         File selected = viewModel.getSelectedImageFile();
         if (selected != null && selected.isFile()) {
             cancelImageLoad();
