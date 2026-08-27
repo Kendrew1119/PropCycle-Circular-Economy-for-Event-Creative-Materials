@@ -18,6 +18,10 @@
     <string name="home_overview_title">PropCycle Overview</string>
     <string name="home_overview_body">Reuse, lend, share, and responsibly recycle event and creative materials.</string>
     <string name="home_overview_summary">Reuse • Lend • Share • Recycle</string>
+    <string name="home_search_hint">Search for materials, listings, or resources...</string>
+    <string name="home_scanner_title">AI Smart Scanner</string>
+    <string name="home_scanner_description">Scan any material to identify, categorize, and get reuse suggestions.</string>
+    <string name="home_scanner_open">Open AI Smart Scanner</string>
     <string name="home_quick_actions_title">Quick Actions</string>
     <string name="home_quick_recycle">Recycle</string>
     <string name="home_quick_create_listing">Create Listing</string>
@@ -34,7 +38,7 @@
     <string name="home_recent_title">Recent Activities</string>
     <string name="home_recent_view_all">View all activities</string>
     <string name="home_eco_tip_title">Eco Tip</string>
-    <string name="home_eco_tip_body">Before recycling, check whether an item can be reused or lent to someone else.</string>
+    <string name="home_eco_tip_body">Extend the life of materials by reusing, sharing, and choosing sustainable options.</string>
     <string name="bottom_navigation_home">Home</string>
     <string name="bottom_navigation_marketplace">Marketplace</string>
     <string name="bottom_navigation_lend_out">Lend Out</string>

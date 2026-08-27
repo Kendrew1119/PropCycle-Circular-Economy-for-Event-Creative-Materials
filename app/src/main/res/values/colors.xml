@@ -26,6 +26,7 @@
     <color name="pc_transparent">#00000000</color>
     <color name="pc_camera_surface">#183328</color>
 
+
     <!-- Welcome screen surfaces. -->
     <color name="pc_welcome_background">@color/pc_background</color>
     <color name="pc_welcome_card_surface">#F8FAF7</color>

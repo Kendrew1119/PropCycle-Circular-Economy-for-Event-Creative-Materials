@@ -10,12 +10,12 @@
         android:id="@+id/app_header"
         android:layout_width="0dp"
         android:layout_height="@dimen/app_header_height"
-        android:background="@color/pc_background"
-        android:elevation="1dp"
+        android:background="@color/pc_primary"
+        android:elevation="3dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingStart="@dimen/space_md"
-        android:paddingEnd="@dimen/space_sm"
+        android:paddingEnd="@dimen/space_xs"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -24,30 +24,37 @@
         <ImageButton
             android:id="@+id/app_header_settings"
             style="@style/Widget.PropCycle.IconButton"
+            android:background="@drawable/bg_circle_header_settings"
             android:contentDescription="@string/home_settings_open"
-            android:src="@drawable/ic_settings" />
+            android:padding=\
 
         <TextView
             android:id="@+id/app_header_title"
             style="@style/TextAppearance.PropCycle.Title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/space_sm"
+            android:layout_marginStart="@dimen/space_xs"
             android:layout_weight="1"
-            android:maxLines="1" />
+            android:maxLines="1"
+            android:textColor="@color/pc_on_primary"
+            android:textSize="20sp" />
 
         <ImageButton
             android:id="@+id/app_header_notifications"
             style="@style/Widget.PropCycle.IconButton"
+            android:background="@drawable/bg_circle_header_action"
             android:contentDescription="@string/notifications"
-            android:src="@drawable/ic_notifications" />
+            android:padding=\
+            android:tint="@color/pc_primary" />
 
         <ImageButton
             android:id="@+id/app_header_profile"
             style="@style/Widget.PropCycle.IconButton"
             android:layout_marginStart="@dimen/space_xs"
+            android:background="@drawable/bg_circle_header_action"
             android:contentDescription="@string/profile"
-            android:src="@drawable/ic_person" />
+            android:padding=\
+            android:tint="@color/pc_primary" />
     </LinearLayout>
 
     <androidx.fragment.app.FragmentContainerView
@@ -74,6 +81,7 @@
         app:itemHorizontalTranslationEnabled="false"
         app:itemIconSize="@dimen/bottom_navigation_icon_size"
         app:itemIconTint="@color/bottom_navigation_item_tint"
+        app:itemPaddingTop="6dp"
         app:itemTextAppearanceActive="@style/TextAppearance.PropCycle.BottomNavigation.Active"
         app:itemTextAppearanceInactive="@style/TextAppearance.PropCycle.BottomNavigation"
         app:itemTextColor="@color/bottom_navigation_item_tint"
