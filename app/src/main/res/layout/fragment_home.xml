@@ -67,7 +67,7 @@
             android:paddingStart="@dimen/screen_horizontal"
             android:paddingTop="@dimen/screen_vertical"
             android:paddingEnd="@dimen/screen_horizontal"
-            android:paddingBottom="250dp">
+            android:paddingBottom="@dimen/space_xl">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -78,8 +78,8 @@
                 <ImageButton
                     android:id="@+id/menu_button"
                     style="@style/Widget.PropCycle.IconButton"
-                    android:contentDescription="Open app pages"
-                    android:src="@drawable/ic_menu" />
+                    android:contentDescription="@string/home_settings_open"
+                    android:src="@drawable/ic_settings" />
 
                 <Space
                     android:layout_width="0dp"
@@ -264,89 +264,5 @@
             </FrameLayout>
         </LinearLayout>
     </ScrollView>
-
-    <FrameLayout
-        android:id="@+id/home_menu_fan_container"
-        android:layout_width="252dp"
-        android:layout_height="252dp"
-        android:layout_gravity="bottom|end"
-        android:importantForAccessibility="no"
-        android:visibility="gone">
-
-        <ImageView
-            android:id="@+id/home_menu_fan_background"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:contentDescription="@null"
-            android:importantForAccessibility="no"
-            android:scaleType="fitXY"
-            android:src="@drawable/home_menu_fan" />
-
-        <TextView
-            android:id="@+id/market_action"
-            android:layout_width="82dp"
-            android:layout_height="82dp"
-            android:layout_gravity="top|end"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
-            android:background="@drawable/home_menu_bubble"
-            android:clickable="true"
-            android:contentDescription="Open marketplace"
-            android:elevation="4dp"
-            android:focusable="true"
-            android:gravity="center"
-            android:text="Market"
-            android:textColor="@color/pc_ink"
-            android:textSize="13sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/lend_action"
-            android:layout_width="82dp"
-            android:layout_height="82dp"
-            android:layout_gravity="center"
-            android:background="@drawable/home_menu_bubble"
-            android:clickable="true"
-            android:contentDescription="Open resource sharing"
-            android:elevation="4dp"
-            android:focusable="true"
-            android:gravity="center"
-            android:text="Share"
-            android:textColor="@color/pc_ink"
-            android:textSize="13sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/map_action"
-            android:layout_width="82dp"
-            android:layout_height="82dp"
-            android:layout_gravity="bottom|start"
-            android:layout_marginStart="10dp"
-            android:layout_marginBottom="10dp"
-            android:background="@drawable/home_menu_bubble"
-            android:clickable="true"
-            android:contentDescription="Open lending map"
-            android:elevation="4dp"
-            android:focusable="true"
-            android:gravity="center"
-            android:text="Map"
-            android:textColor="@color/pc_ink"
-            android:textSize="13sp"
-            android:textStyle="bold" />
-
-        <ImageButton
-            android:id="@+id/home_menu_close"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_gravity="bottom|end"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="10dp"
-            android:background="@drawable/home_menu_close_button"
-            android:contentDescription="Close quick navigation"
-            android:elevation="8dp"
-            android:padding="17dp"
-            android:src="@drawable/ic_close"
-            app:tint="@color/pc_white" />
-    </FrameLayout>
 
 </FrameLayout>

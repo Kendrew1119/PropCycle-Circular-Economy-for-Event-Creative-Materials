@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.OvershootInterpolator;
 import android.widget.Toast;
 import android.widget.TextView;
 
@@ -65,7 +64,7 @@ public final class WireframeFragment extends Fragment {
             bind(view, R.id.profile_button,
                     clicked -> ScreenNavigation.navigateAuthenticated(
                             this, R.id.profileFragment, null));
-            bindHomeQuickMenu(view, controller);
+            bindHomeSettingsMenu(view);
         } else if (destinationId == R.id.lendResourceFragment) {
             bindNavigation(view, R.id.primary_action, controller, R.id.lendingListFragment);
         } else if (destinationId == R.id.lendingMapFragment) {
@@ -88,95 +87,14 @@ public final class WireframeFragment extends Fragment {
         }
     }
 
-    private void bindHomeQuickMenu(
-            @NonNull View root,
-            @NonNull NavController controller) {
+    private void bindHomeSettingsMenu(@NonNull View root) {
         View menuButton = root.findViewById(R.id.menu_button);
-        View fanContainer = root.findViewById(R.id.home_menu_fan_container);
-        View closeButton = root.findViewById(R.id.home_menu_close);
-        View marketAction = root.findViewById(R.id.market_action);
-        View shareAction = root.findViewById(R.id.lend_action);
-        View mapAction = root.findViewById(R.id.map_action);
-        if (menuButton == null
-                || fanContainer == null
-                || closeButton == null
-                || marketAction == null
-                || shareAction == null
-                || mapAction == null) {
+        if (menuButton == null) {
             return;
         }
-
-        float fanSize = 252f * getResources().getDisplayMetrics().density;
-        fanContainer.setPivotX(fanSize);
-        fanContainer.setPivotY(fanSize);
-        fanContainer.setTag(Boolean.FALSE);
-        fanContainer.setVisibility(View.GONE);
-        fanContainer.setImportantForAccessibility(
-                View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS);
-        menuButton.setContentDescription("Open quick navigation");
-
-        menuButton.setOnClickListener(clicked -> setHomeMenuExpanded(
-                menuButton,
-                fanContainer,
-                !Boolean.TRUE.equals(fanContainer.getTag())));
-        closeButton.setOnClickListener(clicked ->
-                setHomeMenuExpanded(menuButton, fanContainer, false));
-        marketAction.setOnClickListener(clicked -> {
-            setHomeMenuExpanded(menuButton, fanContainer, false);
-            ScreenNavigation.navigateAuthenticated(this, R.id.marketplaceFragment, null);
-        });
-        shareAction.setOnClickListener(clicked -> {
-            setHomeMenuExpanded(menuButton, fanContainer, false);
-            controller.navigate(R.id.lendResourceFragment);
-        });
-        mapAction.setOnClickListener(clicked -> {
-            setHomeMenuExpanded(menuButton, fanContainer, false);
-            controller.navigate(R.id.lendingMapFragment);
-        });
-    }
-
-    private static void setHomeMenuExpanded(
-            @NonNull View menuButton,
-            @NonNull View fanContainer,
-            boolean expanded) {
-        fanContainer.animate().cancel();
-        fanContainer.setTag(expanded);
-        menuButton.setContentDescription(
-                expanded ? "Close quick navigation" : "Open quick navigation");
-
-        if (expanded) {
-            fanContainer.setImportantForAccessibility(
-                    View.IMPORTANT_FOR_ACCESSIBILITY_NO);
-            fanContainer.setAlpha(0f);
-            fanContainer.setScaleX(0.76f);
-            fanContainer.setScaleY(0.76f);
-            fanContainer.setVisibility(View.VISIBLE);
-            fanContainer.animate()
-                    .alpha(1f)
-                    .scaleX(1f)
-                    .scaleY(1f)
-                    .setDuration(220L)
-                    .setInterpolator(new OvershootInterpolator(0.7f))
-                    .start();
-            return;
-        }
-
-        fanContainer.setImportantForAccessibility(
-                View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS);
-        if (fanContainer.getVisibility() != View.VISIBLE) {
-            return;
-        }
-        fanContainer.animate()
-                .alpha(0f)
-                .scaleX(0.82f)
-                .scaleY(0.82f)
-                .setDuration(150L)
-                .withEndAction(() -> {
-                    if (!Boolean.TRUE.equals(fanContainer.getTag())) {
-                        fanContainer.setVisibility(View.GONE);
-                    }
-                })
-                .start();
+        menuButton.setContentDescription(getString(R.string.home_settings_open));
+        menuButton.setOnClickListener(
+                clicked -> ScreenNavigation.navigate(this, R.id.settingsFragment, null));
     }
 
     private void bindAccountLabels(@NonNull View root) {

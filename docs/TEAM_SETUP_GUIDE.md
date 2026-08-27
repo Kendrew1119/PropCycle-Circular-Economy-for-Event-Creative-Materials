@@ -956,13 +956,6 @@ Check all of these:
 The app deliberately does not fake a successful backend operation when the file
 is missing.
 
-### The Recycling Centre page says Maps setup is required
-
-Follow `docs/RECYCLE_MAP_SETUP.md`. Check that `secrets.properties` is in the
-repository root, contains `MAPS_API_KEY=...`, and is ignored by Git. Also check
-billing, Maps SDK for Android, Places API (New), package `com.propcycle.app`,
-the current signing SHA-1, and the key's API restrictions.
-
 ### `No matching client found for package name`
 
 The downloaded JSON belongs to a different Android app. Download it from the

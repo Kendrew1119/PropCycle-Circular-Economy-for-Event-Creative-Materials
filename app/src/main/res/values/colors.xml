@@ -11,7 +11,7 @@
     <color name="pc_accent_container">#F8E3C8</color>
     <color name="pc_on_accent_container">#4B2C08</color>
 
-    <color name="pc_background">#F7F8F3</color>
+    <color name="pc_background">#E6EBE1</color>
     <color name="pc_surface">#FFFFFF</color>
     <color name="pc_surface_container">#E2F0E6</color>
     <color name="pc_surface_container_high">#C3DDCB</color>
@@ -27,7 +27,7 @@
     <color name="pc_camera_surface">#183328</color>
 
     <!-- Welcome screen surfaces. -->
-    <color name="pc_welcome_background">#E6EBE1</color>
+    <color name="pc_welcome_background">@color/pc_background</color>
     <color name="pc_welcome_card_surface">#F8FAF7</color>
     <color name="pc_login_panel_surface">@color/pc_welcome_card_surface</color>
     <color name="pc_login_field_border">#C8D4C6</color>
