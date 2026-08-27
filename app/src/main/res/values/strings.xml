@@ -44,6 +44,9 @@
     <string name="ai_result_initial_status">Scan an item to see an AI result.</string>
     <string name="ai_result_disclaimer">This percentage is an uncalibrated model estimate, not a guarantee. Review the item, material and local recycling rules before acting.</string>
     <string name="ai_result_guidance_heading">What to do next</string>
+    <string name="ai_result_guidance_recommendation_label">Recommended action</string>
+    <string name="ai_result_guidance_upcycling_label">Upcycling ideas</string>
+    <string name="ai_result_guidance_safety_label">Safety note</string>
     <string name="ai_result_waiting_guidance">A recycling suggestion will appear here after analysis.</string>
     <string name="ai_result_next_step">Please select the next step!</string>
     <string name="ai_result_scan_again">Scan again</string>
@@ -61,6 +64,17 @@
     <string name="ai_result_recycle">Recycle Now</string>
     <string name="ai_result_sell">Sell Item</string>
     <string name="ai_result_lend">Lend Out</string>
+    <string name="ai_result_details_material_label">Material</string>
+    <string name="ai_result_details_category_label">Category</string>
+    <string name="ai_result_details_recyclable_label">Recyclable</string>
+    <string name="ai_result_details_model_estimate_label">Model estimate</string>
+    <string name="ai_result_details_guidance_label">Guidance</string>
+    <string name="ai_result_details_environment_label">Environmental note</string>
+    <string name="ai_result_details_safety_label">Safety note</string>
+    <string name="ai_result_details_disclaimer_label">Important note</string>
+    <string name="ai_result_details_recyclable_yes">Yes</string>
+    <string name="ai_result_details_recyclable_no_or_unsure">No or unsure</string>
+    <string name="ai_result_details_model_estimate_value">%1$d%% (uncalibrated)</string>
 
     <!-- Phase 2D recycling-centre map. -->
     <string name="recycle_center_title">Recycle Center</string>

@@ -1,6 +1,12 @@
 package com.propcycle.app.ui.scanner;
 
+import android.animation.ValueAnimator;
+import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,13 +20,19 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.propcycle.app.R;
 import com.propcycle.app.data.scanner.ScanAnalysis;
+import com.propcycle.app.databinding.DialogAiResultDetailsBinding;
 import com.propcycle.app.databinding.FragmentAiResultBinding;
 import com.propcycle.app.ui.common.ScreenNavigation;
 
+import java.text.BreakIterator;
 import java.util.List;
+import java.util.Locale;
 
 /** Renders a validated AI result without treating it as authoritative environmental advice. */
 public final class AiResultFragment extends Fragment {
+
+    private static final long REVEAL_DURATION_MILLIS = 180L;
+    private static final long REVEAL_STAGGER_MILLIS = 100L;
 
     @Nullable
     private FragmentAiResultBinding binding;
@@ -57,6 +69,56 @@ public final class AiResultFragment extends Fragment {
             }
         });
         binding.scanAgainAction.setOnClickListener(ignored -> scanAgain());
+        presentResultFlow(analysis != null && savedInstanceState == null);
+    }
+
+    private void presentResultFlow(boolean animate) {
+        if (binding == null) {
+            return;
+        }
+        View[] stages = getRevealStages(binding);
+        if (!animate || !areRevealAnimationsEnabled()) {
+            for (View stage : stages) {
+                stage.animate().cancel();
+                stage.setVisibility(View.VISIBLE);
+                stage.setAlpha(1f);
+                stage.setTranslationY(0f);
+            }
+            return;
+        }
+
+        float entranceOffset = getResources().getDimension(R.dimen.space_sm);
+        for (int index = 0; index < stages.length; index++) {
+            View stage = stages[index];
+            stage.animate().cancel();
+            stage.setVisibility(View.INVISIBLE);
+            stage.setAlpha(0f);
+            stage.setTranslationY(entranceOffset);
+            stage.animate()
+                    .alpha(1f)
+                    .translationY(0f)
+                    .setDuration(REVEAL_DURATION_MILLIS)
+                    .setStartDelay(index * REVEAL_STAGGER_MILLIS)
+                    .withStartAction(() -> stage.setVisibility(View.VISIBLE))
+                    .start();
+        }
+    }
+
+    @NonNull
+    private static View[] getRevealStages(@NonNull FragmentAiResultBinding currentBinding) {
+        return new View[]{
+                currentBinding.helloBubble,
+                currentBinding.identificationBubble,
+                currentBinding.resultDisclaimer,
+                currentBinding.nextStepSection,
+                currentBinding.resultGuidanceCard,
+                currentBinding.resultActionsContainer
+        };
+    }
+
+    private static boolean areRevealAnimationsEnabled() {
+        return Build.VERSION.SDK_INT < Build.VERSION_CODES.O
+                || ValueAnimator.areAnimatorsEnabled();
     }
 
     @Nullable
@@ -119,14 +181,62 @@ public final class AiResultFragment extends Fragment {
     }
 
     private void showDetails() {
-        if (analysis == null) {
+        ScanAnalysis currentAnalysis = analysis;
+        if (currentAnalysis == null) {
             return;
         }
+        DialogAiResultDetailsBinding detailsBinding =
+                DialogAiResultDetailsBinding.inflate(getLayoutInflater());
+        detailsBinding.detailsMaterialValue.setText(currentAnalysis.getMaterial());
+        detailsBinding.detailsCategoryValue.setText(currentAnalysis.getCategory().getDisplayName());
+        detailsBinding.detailsRecyclableValue.setText(currentAnalysis.isRecyclable()
+                ? R.string.ai_result_details_recyclable_yes
+                : R.string.ai_result_details_recyclable_no_or_unsure);
+        detailsBinding.detailsModelEstimateValue.setText(getString(
+                R.string.ai_result_details_model_estimate_value,
+                currentAnalysis.getUncalibratedModelEstimatePercent()));
+        detailsBinding.detailsGuidanceValue.setText(formatGuidanceForDisplay(
+                currentAnalysis.getRecyclingGuidance()));
+        detailsBinding.detailsEnvironmentValue.setText(currentAnalysis.getEnvironmentalNote());
+        detailsBinding.detailsSafetyValue.setText(currentAnalysis.getSafetyNote());
+        detailsBinding.detailsDisclaimerValue.setText(ScanAnalysis.MALAYSIA_DISCLAIMER);
+
         new MaterialAlertDialogBuilder(requireContext())
-                .setTitle(analysis.getItemName())
-                .setMessage(buildDetails(analysis))
-                .setPositiveButton("Close", null)
+                .setTitle(currentAnalysis.getItemName())
+                .setView(detailsBinding.getRoot())
+                .setPositiveButton(R.string.close, null)
                 .show();
+    }
+
+    @NonNull
+    private static String formatGuidanceForDisplay(@NonNull String guidance) {
+        String source = guidance.trim();
+        if (source.isEmpty()) {
+            return guidance;
+        }
+
+        StringBuilder formatted = new StringBuilder();
+        BreakIterator sentences = BreakIterator.getSentenceInstance(Locale.getDefault());
+        for (String paragraph : source.split("[\\r\\n]+")) {
+            String trimmedParagraph = paragraph.trim();
+            if (trimmedParagraph.isEmpty()) {
+                continue;
+            }
+            sentences.setText(trimmedParagraph);
+            int start = sentences.first();
+            for (int end = sentences.next();
+                    end != BreakIterator.DONE;
+                    start = end, end = sentences.next()) {
+                String sentence = trimmedParagraph.substring(start, end).trim();
+                if (!sentence.isEmpty()) {
+                    if (formatted.length() > 0) {
+                        formatted.append('\n');
+                    }
+                    formatted.append("\u2022 ").append(sentence);
+                }
+            }
+        }
+        return formatted.length() == 0 ? guidance : formatted.toString();
     }
 
     private void openEditableListing() {
@@ -147,28 +257,35 @@ public final class AiResultFragment extends Fragment {
     }
 
     @NonNull
-    private static String buildGuidance(@NonNull ScanAnalysis value) {
-        StringBuilder text = new StringBuilder(value.getRecyclingGuidance());
-        text.append("\n\nUpcycling ideas:");
+    private CharSequence buildGuidance(@NonNull ScanAnalysis value) {
+        SpannableStringBuilder text = new SpannableStringBuilder();
+        appendGuidanceHeading(text, getString(R.string.ai_result_guidance_recommendation_label));
+        text.append('\n').append(formatGuidanceForDisplay(value.getRecyclingGuidance()));
+
+        appendGuidanceHeading(text, getString(R.string.ai_result_guidance_upcycling_label));
         List<String> ideas = value.getUpcyclingIdeas();
         for (String idea : ideas) {
-            text.append("\n- ").append(idea);
+            text.append('\n').append("\u2022 ").append(idea);
         }
-        text.append("\n\nSafety note:\n").append(value.getSafetyNote());
-        return text.toString();
+
+        appendGuidanceHeading(text, getString(R.string.ai_result_guidance_safety_label));
+        text.append('\n').append(formatGuidanceForDisplay(value.getSafetyNote()));
+        return text;
     }
 
-    @NonNull
-    private static String buildDetails(@NonNull ScanAnalysis value) {
-        return "Material: " + value.getMaterial()
-                + "\nCategory: " + value.getCategory().getDisplayName()
-                + "\nRecyclable estimate: " + (value.isRecyclable() ? "Yes" : "No or unsure")
-                + "\nUncalibrated model estimate: "
-                + value.getUncalibratedModelEstimatePercent() + "%"
-                + "\n\nGuidance:\n" + value.getRecyclingGuidance()
-                + "\n\nEnvironmental note:\n" + value.getEnvironmentalNote()
-                + "\n\nSafety note:\n" + value.getSafetyNote()
-                + "\n\n" + ScanAnalysis.MALAYSIA_DISCLAIMER;
+    private static void appendGuidanceHeading(
+            @NonNull SpannableStringBuilder text,
+            @NonNull String heading) {
+        if (text.length() > 0) {
+            text.append("\n\n");
+        }
+        int start = text.length();
+        text.append(heading);
+        text.setSpan(
+                new StyleSpan(Typeface.BOLD),
+                start,
+                text.length(),
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
     }
 
     private static void setActionEnabled(@NonNull View action, boolean enabled) {
@@ -178,6 +295,11 @@ public final class AiResultFragment extends Fragment {
 
     @Override
     public void onDestroyView() {
+        if (binding != null) {
+            for (View stage : getRevealStages(binding)) {
+                stage.animate().cancel();
+            }
+        }
         binding = null;
         super.onDestroyView();
     }

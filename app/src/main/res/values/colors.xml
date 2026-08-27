@@ -33,6 +33,13 @@
     <color name="pc_login_field_border">#C8D4C6</color>
     <color name="pc_welcome_card_border">#DCE4DA</color>
 
+    <!-- AI Result screen surfaces. -->
+    <color name="pc_ai_result_background">@color/pc_welcome_background</color>
+    <color name="pc_ai_result_card_surface">@color/pc_welcome_card_surface</color>
+    <color name="pc_ai_result_card_border">@color/pc_welcome_card_border</color>
+    <color name="pc_ai_result_warning_surface">#FCF3E7</color>
+    <color name="pc_ai_result_warning_border">#E6C69E</color>
+
     <!-- Compatibility names retained for proposal layouts while they migrate. -->
     <color name="pc_surface_mid">@color/pc_surface_container</color>
     <color name="pc_surface_dark">@color/pc_text_muted</color>

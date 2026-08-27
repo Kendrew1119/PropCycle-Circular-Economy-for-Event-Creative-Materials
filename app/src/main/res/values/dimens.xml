@@ -14,6 +14,10 @@
     <dimen name="stroke_thin">1dp</dimen>
     <dimen name="stroke_medium">2dp</dimen>
     <dimen name="elevation_subtle">2dp</dimen>
+    <dimen name="ai_result_section_spacing">12dp</dimen>
+    <dimen name="ai_result_action_min_height">52dp</dimen>
+    <dimen name="ai_result_warning_corner">18dp</dimen>
+    <dimen name="ai_result_bubble_cue_corner">6dp</dimen>
     <dimen name="home_feature_card_min_height">226dp</dimen>
     <dimen name="welcome_recycle_symbol_size">82sp</dimen>
     <dimen name="login_panel_min_height">436dp</dimen>

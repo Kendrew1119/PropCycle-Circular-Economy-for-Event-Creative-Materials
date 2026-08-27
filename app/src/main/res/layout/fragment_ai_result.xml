@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/pc_ai_result_background"
     android:clipToPadding="false"
     android:fillViewport="true"
     android:overScrollMode="ifContentScrolls">
@@ -12,9 +14,9 @@
         android:gravity="center_horizontal"
         android:orientation="vertical"
         android:paddingStart="@dimen/screen_horizontal"
-        android:paddingTop="40dp"
+        android:paddingTop="@dimen/space_lg"
         android:paddingEnd="@dimen/screen_horizontal"
-        android:paddingBottom="32dp">
+        android:paddingBottom="@dimen/space_lg">
 
         <TextView
             android:id="@+id/hello_bubble"
@@ -22,41 +24,44 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
-            android:background="@drawable/bg_pill"
-            android:paddingStart="18dp"
-            android:paddingTop="11dp"
-            android:paddingEnd="18dp"
-            android:paddingBottom="11dp"
+            android:background="@drawable/bg_ai_result_hello"
+            android:elevation="@dimen/elevation_subtle"
+            android:outlineProvider="background"
+            android:paddingStart="@dimen/space_md"
+            android:paddingTop="@dimen/space_sm"
+            android:paddingEnd="@dimen/space_md"
+            android:paddingBottom="@dimen/space_sm"
             android:text="@string/ai_result_hello"
             android:textSize="15sp" />
 
         <LinearLayout
             android:id="@+id/identification_bubble"
-            android:layout_width="245dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
-            android:layout_marginTop="12dp"
-            android:background="@drawable/bg_card_light"
+            android:layout_marginEnd="@dimen/space_sm"
+            android:layout_marginTop="@dimen/space_sm"
+            android:background="@drawable/bg_ai_result_card"
+            android:elevation="@dimen/elevation_subtle"
             android:orientation="vertical"
-            android:paddingStart="18dp"
-            android:paddingTop="13dp"
-            android:paddingEnd="18dp"
-            android:paddingBottom="9dp">
+            android:outlineProvider="background"
+            android:padding="@dimen/space_md">
 
             <TextView
                 android:id="@+id/result_heading"
-                style="@style/TextAppearance.PropCycle.Caption"
+                style="@style/TextAppearance.PropCycle.Body"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/ai_result_heading"
-                android:textColor="@color/pc_ink" />
+                android:textColor="@color/pc_text_primary"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/result_item_name"
                 style="@style/TextAppearance.PropCycle.Body"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="3dp"
+                android:layout_marginTop="@dimen/space_xs"
                 android:text="@string/ai_result_waiting_item"
                 android:textStyle="bold" />
 
@@ -65,48 +70,63 @@
                 style="@style/TextAppearance.PropCycle.Caption"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="@dimen/space_sm"
                 android:text="@string/ai_result_material_placeholder"
-                android:textColor="@color/pc_ink" />
+                android:textColor="@color/pc_text_secondary" />
 
             <TextView
                 android:id="@+id/result_category"
                 style="@style/TextAppearance.PropCycle.Caption"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
+                android:layout_marginTop="@dimen/space_xs"
                 android:text="@string/ai_result_category_placeholder"
-                android:textColor="@color/pc_ink" />
+                android:textColor="@color/pc_text_secondary" />
 
             <TextView
                 android:id="@+id/result_route"
                 style="@style/TextAppearance.PropCycle.Caption"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
+                android:layout_marginTop="@dimen/space_xs"
                 android:text="@string/ai_result_route_placeholder"
-                android:textColor="@color/pc_ink" />
+                android:textColor="@color/pc_text_secondary" />
 
             <TextView
                 android:id="@+id/result_confidence"
                 style="@style/TextAppearance.PropCycle.Caption"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
+                android:layout_marginTop="@dimen/space_xs"
                 android:text="@string/ai_result_confidence_placeholder"
                 android:textColor="@color/pc_primary"
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/result_status"
+                style="@style/TextAppearance.PropCycle.Caption"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_sm"
+                android:accessibilityLiveRegion="polite"
+                android:gravity="start"
+                android:text="@string/ai_result_initial_status"
+                android:textAlignment="viewStart"
+                android:textColor="@color/pc_text_secondary" />
+
+            <TextView
                 android:id="@+id/result_details_action"
                 style="@style/TextAppearance.PropCycle.Caption"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/touch_target"
+                android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 android:clickable="true"
                 android:focusable="true"
-                android:gravity="center_vertical"
+                android:gravity="center"
                 android:minWidth="@dimen/touch_target"
+                android:minHeight="@dimen/touch_target"
+                android:paddingStart="@dimen/space_sm"
+                android:paddingEnd="@dimen/space_sm"
                 android:text="@string/ai_result_view_details"
                 android:textColor="@color/pc_primary"
                 android:textStyle="italic" />
@@ -114,62 +134,43 @@
         </LinearLayout>
 
         <TextView
-            android:id="@+id/result_status"
-            style="@style/TextAppearance.PropCycle.Caption"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:gravity="center"
-            android:accessibilityLiveRegion="polite"
-            android:text="@string/ai_result_initial_status"
-            android:textAlignment="center"
-            android:textColor="@color/pc_text_secondary" />
-
-        <TextView
             android:id="@+id/result_disclaimer"
             style="@style/TextAppearance.PropCycle.Caption"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/bg_scanner_disclosure"
-            android:lineSpacingExtra="2dp"
-            android:padding="13dp"
+            android:layout_marginStart="@dimen/space_sm"
+            android:layout_marginTop="@dimen/space_sm"
+            android:layout_marginEnd="@dimen/space_sm"
+            android:background="@drawable/bg_ai_result_warning"
+            android:elevation="@dimen/elevation_subtle"
+            android:lineSpacingExtra="1dp"
+            android:outlineProvider="background"
+            android:padding="@dimen/ai_result_section_spacing"
             android:text="@string/ai_result_disclaimer"
             android:textColor="@color/pc_text_primary" />
 
         <LinearLayout
+            android:id="@+id/next_step_section"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="18dp"
-            android:gravity="center_vertical"
+            android:layout_marginTop="@dimen/ai_result_section_spacing"
+            android:gravity="top"
             android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/mascot"
-                android:layout_width="84dp"
-                android:layout_height="84dp"
-                android:contentDescription="@string/ai_result_mascot_description"
-                android:fontFamily="monospace"
-                android:gravity="center"
-                android:text="@string/ai_result_mascot"
-                android:textColor="@color/pc_ink"
-                android:textSize="15sp" />
 
             <TextView
                 android:id="@+id/next_step_bubble"
                 style="@style/TextAppearance.PropCycle.Body"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:layout_weight="1"
-                android:background="@drawable/bg_card_light"
-                android:gravity="center"
-                android:minHeight="84dp"
-                android:paddingStart="16dp"
-                android:paddingTop="14dp"
-                android:paddingEnd="16dp"
-                android:paddingBottom="14dp"
+                android:layout_marginEnd="@dimen/space_sm"
+                android:background="@drawable/bg_ai_result_prompt_bubble"
+                android:elevation="@dimen/elevation_subtle"
+                android:gravity="start|center_vertical"
+                android:minHeight="@dimen/touch_target"
+                android:outlineProvider="background"
+                android:padding="@dimen/ai_result_section_spacing"
                 android:text="@string/ai_result_next_step"
+                android:textAlignment="viewStart"
                 android:textSize="15sp" />
 
         </LinearLayout>
@@ -178,10 +179,13 @@
             android:id="@+id/result_guidance_card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
-            android:background="@drawable/bg_card_light"
+            android:layout_marginEnd="@dimen/space_sm"
+            android:layout_marginTop="@dimen/ai_result_section_spacing"
+            android:background="@drawable/bg_ai_result_card"
+            android:elevation="@dimen/elevation_subtle"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:outlineProvider="background"
+            android:padding="@dimen/space_md">
 
             <TextView
                 style="@style/TextAppearance.PropCycle.Body"
@@ -192,71 +196,97 @@
 
             <TextView
                 android:id="@+id/result_guidance"
-                style="@style/TextAppearance.PropCycle.Caption"
+                style="@style/TextAppearance.PropCycle.Body"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:lineSpacingExtra="2dp"
+                android:layout_marginTop="@dimen/space_sm"
+                android:lineSpacingExtra="4dp"
                 android:text="@string/ai_result_waiting_guidance"
                 android:textColor="@color/pc_text_primary" />
 
         </LinearLayout>
 
-        <TextView
+        <LinearLayout
+            android:id="@+id/result_actions_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_md"
+            android:orientation="vertical">
+
+            <TextView
             android:id="@+id/recycle_action"
             style="@style/TextAppearance.PropCycle.Body"
-            android:layout_width="200dp"
-            android:layout_height="@dimen/touch_target"
-            android:layout_marginTop="22dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:alpha="0.5"
-            android:background="@drawable/bg_pill"
+            android:background="@drawable/bg_ai_result_action"
             android:clickable="true"
             android:contentDescription="@string/ai_result_recycle_description"
             android:enabled="false"
             android:focusable="true"
             android:gravity="center"
+            android:minHeight="@dimen/ai_result_action_min_height"
+            android:paddingTop="@dimen/ai_result_section_spacing"
+            android:paddingBottom="@dimen/ai_result_section_spacing"
             android:text="@string/ai_result_recycle"
+            android:textColor="@color/pc_on_primary"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/sell_action"
             style="@style/TextAppearance.PropCycle.Body"
-            android:layout_width="200dp"
-            android:layout_height="@dimen/touch_target"
-            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_sm"
             android:alpha="0.5"
-            android:background="@drawable/bg_pill"
+            android:background="@drawable/bg_ai_result_action"
             android:clickable="true"
             android:contentDescription="@string/ai_result_sell_description"
             android:enabled="false"
             android:focusable="true"
             android:gravity="center"
+            android:minHeight="@dimen/ai_result_action_min_height"
+            android:paddingTop="@dimen/ai_result_section_spacing"
+            android:paddingBottom="@dimen/ai_result_section_spacing"
             android:text="@string/ai_result_sell"
+            android:textColor="@color/pc_on_primary"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/lend_action"
             style="@style/TextAppearance.PropCycle.Body"
-            android:layout_width="200dp"
-            android:layout_height="@dimen/touch_target"
-            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_sm"
             android:alpha="0.5"
-            android:background="@drawable/bg_pill"
+            android:background="@drawable/bg_ai_result_action"
             android:clickable="true"
             android:contentDescription="@string/ai_result_lend_description"
             android:enabled="false"
             android:focusable="true"
             android:gravity="center"
+            android:minHeight="@dimen/ai_result_action_min_height"
+            android:paddingTop="@dimen/ai_result_section_spacing"
+            android:paddingBottom="@dimen/ai_result_section_spacing"
             android:text="@string/ai_result_lend"
+            android:textColor="@color/pc_on_primary"
             android:textStyle="bold" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/scan_again_action"
             style="@style/Widget.PropCycle.Button.Light"
-            android:layout_width="200dp"
-            android:layout_height="52dp"
-            android:layout_marginTop="16dp"
-            android:text="@string/ai_result_scan_again" />
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_sm"
+            android:minHeight="@dimen/ai_result_action_min_height"
+            android:text="@string/ai_result_scan_again"
+            android:textColor="@color/pc_on_primary"
+            app:backgroundTint="@color/pc_primary"
+            app:cornerRadius="@dimen/pill_corner"
+            app:strokeColor="@color/pc_primary_container"
+            app:strokeWidth="@dimen/stroke_thin" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
