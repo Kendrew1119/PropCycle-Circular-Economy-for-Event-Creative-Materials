@@ -11,11 +11,14 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.navigation.NavController;
+import androidx.navigation.NavDestination;
 import androidx.navigation.NavOptions;
 import androidx.navigation.fragment.NavHostFragment;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.propcycle.app.core.firebase.FirebaseEnvironment;
+import com.propcycle.app.ui.common.ScreenNavigation;
 
 /** Hosts the proposal UI, restores an authenticated session, and supports debug visual QA. */
 public final class MainActivity extends AppCompatActivity {
@@ -37,6 +40,7 @@ public final class MainActivity extends AppCompatActivity {
             view.setPadding(bars.left, bars.top, bars.right, bars.bottom);
             return windowInsets;
         });
+        bindBottomNavigation();
 
         if (savedInstanceState == null) {
             String requestedScreen = BuildConfig.DEBUG
@@ -68,6 +72,30 @@ public final class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void bindBottomNavigation() {
+        BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
+        NavController controller = navController();
+        bottomNavigation.setOnItemSelectedListener(item -> {
+            @IdRes int destination = destinationForBottomNavigationItem(item.getItemId());
+            if (destination == View.NO_ID) {
+                return false;
+            }
+            NavDestination current = controller.getCurrentDestination();
+            if (current == null || current.getId() != destination) {
+                ScreenNavigation.navigateTopLevel(this, controller, destination);
+            }
+            return true;
+        });
+        controller.addOnDestinationChangedListener((ignored, destination, arguments) -> {
+            @IdRes int itemId = bottomNavigationItemForDestination(destination.getId());
+            bottomNavigation.setVisibility(
+                    isAppDestination(destination.getId()) ? View.VISIBLE : View.GONE);
+            if (itemId != View.NO_ID) {
+                bottomNavigation.getMenu().findItem(itemId).setChecked(true);
+            }
+        });
+    }
+
     private NavController navController() {
         NavHostFragment host = (NavHostFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.nav_host_fragment);
@@ -75,6 +103,44 @@ public final class MainActivity extends AppCompatActivity {
             throw new IllegalStateException("Navigation host is unavailable");
         }
         return host.getNavController();
+    }
+
+    @IdRes
+    private static int destinationForBottomNavigationItem(@IdRes int itemId) {
+        if (itemId == R.id.bottom_nav_home) {
+            return R.id.homeFragment;
+        } else if (itemId == R.id.bottom_nav_marketplace) {
+            return R.id.marketplaceFragment;
+        } else if (itemId == R.id.bottom_nav_lend_out) {
+            return R.id.lendingListFragment;
+        } else if (itemId == R.id.bottom_nav_recycle_center) {
+            return R.id.recycleCenterFragment;
+        } else if (itemId == R.id.bottom_nav_messages) {
+            return R.id.messagesFragment;
+        }
+        return View.NO_ID;
+    }
+
+    @IdRes
+    private static int bottomNavigationItemForDestination(@IdRes int destination) {
+        if (destination == R.id.homeFragment) {
+            return R.id.bottom_nav_home;
+        } else if (destination == R.id.marketplaceFragment) {
+            return R.id.bottom_nav_marketplace;
+        } else if (destination == R.id.lendingListFragment) {
+            return R.id.bottom_nav_lend_out;
+        } else if (destination == R.id.recycleCenterFragment) {
+            return R.id.bottom_nav_recycle_center;
+        } else if (destination == R.id.messagesFragment) {
+            return R.id.bottom_nav_messages;
+        }
+        return View.NO_ID;
+    }
+
+    private static boolean isAppDestination(@IdRes int destination) {
+        return destination != R.id.welcomeFragment
+                && destination != R.id.loginFragment
+                && destination != R.id.registerFragment;
     }
 
     @IdRes

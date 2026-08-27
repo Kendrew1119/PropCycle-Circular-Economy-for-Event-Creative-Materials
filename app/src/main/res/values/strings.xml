@@ -12,6 +12,33 @@
     <string name="send">Send message</string>
     <string name="home_greeting">Hey %1$s,</string>
     <string name="home_settings_open">Open settings menu</string>
+    <string name="bottom_navigation_home">Home</string>
+    <string name="bottom_navigation_marketplace">Marketplace</string>
+    <string name="bottom_navigation_lend_out">Lend Out</string>
+    <string name="bottom_navigation_recycle_center">Recycle Center</string>
+    <string name="bottom_navigation_messages">Messages</string>
+
+    <string name="recycle_center_title">Recycle Center</string>
+    <string name="recycle_center_subtitle">Find a nearby organization or community.</string>
+    <string name="recycle_area_hint">City or area, for example Petaling Jaya</string>
+    <string name="recycle_search_area">Search area</string>
+    <string name="recycle_use_location">Use location</string>
+    <string name="recycle_external_map_action">Search in map app</string>
+    <string name="recycle_initial_status">Search by city or area, or use your current approximate location.</string>
+    <string name="recycle_searching">Searching recycling centres</string>
+    <string name="recycle_retry">Retry</string>
+    <string name="recycle_map_description">Map showing recycling-centre search results</string>
+    <string name="recycle_map_loading">The live map will appear here after Maps setup.</string>
+    <string name="recycle_map_setup_required">Add a restricted Maps key to show the in-app map. Manual map-app search still works.</string>
+    <string name="recycle_play_services_unavailable">Google Play services is unavailable. Use manual search to open another map app.</string>
+    <string name="recycle_open_maps">Open in map app</string>
+    <string name="recycle_acceptance_notice">Place information can change. Contact the centre to confirm it accepts your item before travelling.</string>
+    <string name="recycle_nearby_heading">Nearby Recycle Points</string>
+    <string name="recycle_nearby_count">Nearby Recycle Points · %1$d</string>
+    <string name="recycle_selected_meta">%1$s · %2$s</string>
+    <string name="recycle_area_error">Enter a city or area using 2 to 80 characters.</string>
+    <string name="recycle_external_search">In-app Maps setup is unavailable, so this search will open in an installed map app.</string>
+    <string name="recycle_no_map_app">No map app is available on this device.</string>
 
     <!-- Phase 2B AI scanner. -->
     <string name="scanner_title">AI Smart Scanner</string>
