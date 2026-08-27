@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:height="@dimen/stroke_thin"
+        android:bottom="@dimen/ai_result_section_spacing"
+        android:gravity="bottom">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/pc_login_field_border" />
+        </shape>
+    </item>
+</layer-list>

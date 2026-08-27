@@ -22,4 +22,7 @@
     <dimen name="welcome_recycle_symbol_size">82sp</dimen>
     <dimen name="login_panel_min_height">436dp</dimen>
     <dimen name="login_brand_logo_size">84dp</dimen>
+    <dimen name="create_listing_photo_width">264dp</dimen>
+    <dimen name="create_listing_photo_height">156dp</dimen>
+    <dimen name="create_listing_description_height">112dp</dimen>
 </resources>

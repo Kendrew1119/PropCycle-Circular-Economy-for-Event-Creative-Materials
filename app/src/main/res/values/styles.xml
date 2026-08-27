@@ -66,4 +66,24 @@
         <item name="android:textColorHint">@color/pc_text_secondary</item>
         <item name="android:textSize">15sp</item>
     </style>
+
+    <style name="Widget.PropCycle.CreateListing.Field" parent="Widget.PropCycle.Field">
+        <item name="android:background">@drawable/bg_create_listing_field</item>
+        <item name="android:gravity">bottom|start</item>
+        <item name="android:paddingStart">0dp</item>
+        <item name="android:paddingEnd">@dimen/space_sm</item>
+        <item name="android:paddingBottom">@dimen/space_md</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="Widget.PropCycle.CreateListing.Description" parent="Widget.PropCycle.CreateListing.Field">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:minHeight">@dimen/create_listing_description_height</item>
+        <item name="android:background">@drawable/bg_create_listing_description</item>
+        <item name="android:gravity">top|start</item>
+        <item name="android:paddingStart">@dimen/space_md</item>
+        <item name="android:paddingTop">@dimen/ai_result_section_spacing</item>
+        <item name="android:paddingEnd">@dimen/space_md</item>
+        <item name="android:paddingBottom">@dimen/ai_result_section_spacing</item>
+    </style>
 </resources>

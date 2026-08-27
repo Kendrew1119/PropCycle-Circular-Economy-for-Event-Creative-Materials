@@ -2,7 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/pc_background"
+    android:background="@color/pc_welcome_background"
     android:clipToPadding="false"
     android:fillViewport="true"
     android:paddingStart="@dimen/screen_horizontal"
@@ -39,32 +39,34 @@
                 android:text="Complete your\nlisting"
                 android:textSize="31sp" />
 
-            <TextView
-                android:layout_width="54dp"
-                android:layout_height="64dp"
-                android:contentDescription="Decorative burst"
-                android:fontFamily="sans"
-                android:gravity="center"
-                android:text="\\ | /\n--  "
-                android:textColor="@color/pc_ink"
-                android:textSize="22sp" />
+            <ImageView
+                android:layout_width="@dimen/touch_target"
+                android:layout_height="@dimen/touch_target"
+                android:contentDescription="@null"
+                android:importantForAccessibility="no"
+                android:padding="@dimen/space_sm"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_listing_burst" />
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/create_listing_form"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="22dp"
-            android:background="@drawable/bg_card_gray"
+            android:layout_marginTop="@dimen/space_md"
             android:orientation="vertical"
-            android:padding="18dp">
+            android:paddingStart="@dimen/space_xs"
+            android:paddingEnd="@dimen/space_xs">
 
             <FrameLayout
                 android:id="@+id/listing_photo_container"
-                android:layout_width="match_parent"
-                android:layout_height="210dp"
-                android:background="@drawable/bg_card_dark"
-                android:clipToOutline="true">
+                android:layout_width="@dimen/create_listing_photo_width"
+                android:layout_height="@dimen/create_listing_photo_height"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/bg_create_listing_photo"
+                android:clipToOutline="true"
+                android:elevation="@dimen/elevation_subtle"
+                android:outlineProvider="background">
 
                 <ImageView
                     android:id="@+id/listing_photo_preview"
@@ -80,10 +82,11 @@
                     android:layout_height="match_parent"
                     android:contentDescription="Marketplace item photo placeholder"
                     android:gravity="center"
+                    android:padding="@dimen/space_md"
                     android:text="Add one clear item photo\n(optional)"
                     android:textAlignment="center"
-                    android:textColor="@color/pc_white"
-                    android:textSize="15sp" />
+                    android:textColor="@color/pc_text_secondary"
+                    android:textSize="16sp" />
 
                 <ProgressBar
                     android:id="@+id/listing_photo_progress"
@@ -97,8 +100,8 @@
                     android:id="@+id/photo_add_action"
                     style="@style/Widget.PropCycle.IconButton"
                     android:layout_gravity="bottom|end"
-                    android:layout_marginEnd="18dp"
-                    android:layout_marginBottom="18dp"
+                    android:layout_marginEnd="@dimen/ai_result_section_spacing"
+                    android:layout_marginBottom="@dimen/ai_result_section_spacing"
                     android:contentDescription="Add or change item photo"
                     android:elevation="@dimen/elevation_subtle"
                     android:src="@drawable/ic_add" />
@@ -110,6 +113,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/touch_target"
                 android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/space_xs"
                 android:clickable="true"
                 android:contentDescription="Clear the newly selected marketplace photo"
                 android:focusable="true"
@@ -121,54 +125,94 @@
                 android:textStyle="bold"
                 android:visibility="gone" />
 
+            <TextView
+                style="@style/TextAppearance.PropCycle.Caption"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_lg"
+                android:labelFor="@id/listing_title_input"
+                android:text="Item name"
+                android:textColor="@color/pc_text_primary"
+                android:textStyle="bold" />
+
             <EditText
                 android:id="@+id/listing_title_input"
-                style="@style/Widget.PropCycle.Field"
-                android:layout_marginTop="18dp"
-                android:hint="Item name"
+                style="@style/Widget.PropCycle.CreateListing.Field"
+                android:layout_marginTop="0dp"
+                android:hint="Enter item name"
                 android:importantForAutofill="no"
                 android:inputType="textCapSentences"
                 android:maxLength="100"
                 android:maxLines="1" />
 
+            <TextView
+                style="@style/TextAppearance.PropCycle.Caption"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_md"
+                android:labelFor="@id/listing_category_input"
+                android:text="Category"
+                android:textColor="@color/pc_text_primary"
+                android:textStyle="bold" />
+
             <AutoCompleteTextView
                 android:id="@+id/listing_category_input"
-                style="@style/Widget.PropCycle.Field"
-                android:layout_marginTop="10dp"
-                android:hint="Category"
+                style="@style/Widget.PropCycle.CreateListing.Field"
+                android:layout_marginTop="0dp"
+                android:hint="Select category"
                 android:importantForAutofill="no"
                 android:inputType="none"
                 android:maxLines="1" />
 
+            <TextView
+                style="@style/TextAppearance.PropCycle.Caption"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_md"
+                android:labelFor="@id/listing_condition_input"
+                android:text="Condition"
+                android:textColor="@color/pc_text_primary"
+                android:textStyle="bold" />
+
             <AutoCompleteTextView
                 android:id="@+id/listing_condition_input"
-                style="@style/Widget.PropCycle.Field"
-                android:layout_marginTop="10dp"
-                android:hint="Condition"
+                style="@style/Widget.PropCycle.CreateListing.Field"
+                android:layout_marginTop="0dp"
+                android:hint="Select condition"
                 android:importantForAutofill="no"
                 android:inputType="none"
                 android:maxLines="1" />
 
             <AutoCompleteTextView
                 android:id="@+id/listing_transaction_input"
-                style="@style/Widget.PropCycle.Field"
+                style="@style/Widget.PropCycle.CreateListing.Field"
                 android:importantForAutofill="no"
                 android:inputType="none"
                 android:maxLines="1"
                 android:visibility="gone" />
 
+            <TextView
+                style="@style/TextAppearance.PropCycle.Caption"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_md"
+                android:labelFor="@id/listing_fulfilment_input"
+                android:text="Pickup"
+                android:textColor="@color/pc_text_primary"
+                android:textStyle="bold" />
+
             <AutoCompleteTextView
                 android:id="@+id/listing_fulfilment_input"
-                style="@style/Widget.PropCycle.Field"
-                android:layout_marginTop="10dp"
-                android:hint="Pickup or meet-up"
+                style="@style/Widget.PropCycle.CreateListing.Field"
+                android:layout_marginTop="0dp"
+                android:hint="Select pickup or meet-up"
                 android:importantForAutofill="no"
                 android:inputType="none"
                 android:maxLines="1" />
 
             <EditText
                 android:id="@+id/listing_price_input"
-                style="@style/Widget.PropCycle.Field"
+                style="@style/Widget.PropCycle.CreateListing.Field"
                 android:layout_marginTop="10dp"
                 android:digits="0123456789."
                 android:hint="Price (RM)"
@@ -179,7 +223,7 @@
 
             <EditText
                 android:id="@+id/listing_exchange_terms_input"
-                style="@style/Widget.PropCycle.Field"
+                style="@style/Widget.PropCycle.CreateListing.Description"
                 android:layout_height="82dp"
                 android:layout_marginTop="10dp"
                 android:gravity="top|start"
@@ -191,29 +235,35 @@
                 android:paddingTop="16dp"
                 android:visibility="gone" />
 
+            <TextView
+                style="@style/TextAppearance.PropCycle.Caption"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_md"
+                android:labelFor="@id/listing_description_input"
+                android:text="Description"
+                android:textColor="@color/pc_text_primary"
+                android:textStyle="bold" />
+
             <EditText
                 android:id="@+id/listing_description_input"
-                style="@style/Widget.PropCycle.Field"
-                android:layout_height="96dp"
-                android:layout_marginTop="10dp"
-                android:gravity="top|start"
-                android:hint="Description"
+                style="@style/Widget.PropCycle.CreateListing.Description"
+                android:layout_marginTop="@dimen/space_xs"
+                android:hint="Describe your item"
                 android:importantForAutofill="no"
                 android:inputType="textCapSentences|textMultiLine"
                 android:maxLength="1000"
-                android:maxLines="5"
-                android:paddingTop="16dp" />
+                android:maxLines="5" />
 
             <TextView
                 android:id="@+id/create_listing_media_note"
                 style="@style/TextAppearance.PropCycle.Caption"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:layout_marginTop="14dp"
+                android:layout_marginTop="@dimen/space_md"
+                android:lineSpacingExtra="2dp"
                 android:text="One photo is securely uploaded only when you publish."
-                android:textColor="@color/pc_ink"
-                android:textStyle="italic" />
+                android:textColor="@color/pc_text_secondary" />
         </LinearLayout>
 
         <TextView
@@ -246,34 +296,36 @@
             android:id="@+id/create_listing_action_row"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/space_md"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <TextView
+            <ImageView
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:contentDescription="@null"
+                android:importantForAccessibility="no"
+                android:padding="@dimen/space_sm"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_listing_megaphone" />
+
+            <View
                 android:layout_width="0dp"
-                android:layout_height="72dp"
-                android:layout_weight="1"
-                android:contentDescription="Megaphone illustration"
-                android:fontFamily="sans"
-                android:gravity="start|center_vertical"
-                android:text="> )))"
-                android:textColor="@color/pc_ink"
-                android:textSize="28sp"
-                android:textStyle="bold" />
+                android:layout_height="1dp"
+                android:layout_weight="1" />
 
             <TextView
                 android:id="@+id/primary_action"
                 style="@style/TextAppearance.PropCycle.Caption"
                 android:layout_width="92dp"
                 android:layout_height="@dimen/touch_target"
-                android:background="@drawable/bg_pill"
+                android:background="@drawable/bg_pill_dark"
                 android:clickable="true"
                 android:contentDescription="Publish marketplace listing"
                 android:focusable="true"
                 android:gravity="center"
                 android:text="Publish"
-                android:textColor="@color/pc_ink"
+                android:textColor="@color/pc_on_primary"
                 android:textStyle="bold" />
         </LinearLayout>
     </LinearLayout>
