@@ -69,50 +69,78 @@
             android:paddingEnd="@dimen/screen_horizontal"
             android:paddingBottom="@dimen/space_xl">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/touch_target"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <ImageButton
-                    android:id="@+id/menu_button"
-                    style="@style/Widget.PropCycle.IconButton"
-                    android:contentDescription="@string/home_settings_open"
-                    android:src="@drawable/ic_settings" />
-
-                <Space
-                    android:layout_width="0dp"
-                    android:layout_height="1dp"
-                    android:layout_weight="1" />
-
-                <ImageButton
-                    android:id="@+id/notification_button"
-                    style="@style/Widget.PropCycle.IconButton"
-                    android:contentDescription="Open notifications"
-                    android:src="@drawable/ic_notifications" />
-
-                <ImageButton
-                    android:id="@+id/profile_button"
-                    style="@style/Widget.PropCycle.IconButton"
-                    android:layout_marginStart="@dimen/space_sm"
-                    android:background="@drawable/bg_circle_gray"
-                    android:contentDescription="Open profile"
-                    android:src="@drawable/ic_person" />
-            </LinearLayout>
-
             <TextView
                 android:id="@+id/home_greeting"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/space_lg"
+                android:layout_marginTop="@dimen/space_xs"
                 android:text="Hey HuiMin,"
                 android:textAppearance="@style/TextAppearance.PropCycle.Display" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_xs"
+                android:text="@string/home_greeting_support"
+                android:textAppearance="@style/TextAppearance.PropCycle.Caption"
+                android:textSize="14sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_md"
+                android:background="@drawable/bg_home_feature_card"
+                android:elevation="@dimen/elevation_subtle"
+                android:gravity="top"
+                android:orientation="horizontal"
+                android:outlineProvider="background"
+                android:padding="@dimen/space_md">
+
+                <ImageView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@drawable/bg_home_feature_icon"
+                    android:contentDescription="@null"
+                    android:importantForAccessibility="no"
+                    android:padding="12dp"
+                    android:src="@drawable/ic_welcome_recycle" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/space_md"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/home_overview_title"
+                        android:textAppearance="@style/TextAppearance.PropCycle.Title"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/space_xs"
+                        android:text="@string/home_overview_body"
+                        android:textAppearance="@style/TextAppearance.PropCycle.Caption" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/space_sm"
+                        android:text="@string/home_overview_summary"
+                        android:textColor="@color/pc_primary"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="58dp"
-                android:layout_marginTop="@dimen/space_lg"
+                android:layout_marginTop="@dimen/space_md"
                 android:background="@drawable/bg_home_search"
                 android:elevation="@dimen/elevation_subtle"
                 android:gravity="center_vertical"
@@ -147,7 +175,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/space_lg"
+                android:layout_marginTop="@dimen/space_md"
                 android:minHeight="@dimen/home_feature_card_min_height"
                 android:baselineAligned="false"
                 android:orientation="horizontal">
@@ -214,14 +242,257 @@
                 </LinearLayout>
             </LinearLayout>
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_lg"
+                android:text="@string/home_quick_actions_title"
+                android:textAppearance="@style/TextAppearance.PropCycle.Title"
+                android:textSize="20sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_sm"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/home_recycle_action"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/space_sm"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_home_feature_card"
+                    android:clickable="true"
+                    android:contentDescription="@string/home_quick_recycle"
+                    android:elevation="@dimen/elevation_subtle"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:gravity="center"
+                    android:minHeight="104dp"
+                    android:orientation="vertical"
+                    android:outlineProvider="background"
+                    android:padding="@dimen/space_sm">
+
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@drawable/bg_home_feature_icon"
+                        android:contentDescription="@null"
+                        android:importantForAccessibility="no"
+                        android:padding="8dp"
+                        android:src="@drawable/ic_welcome_recycle" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/space_sm"
+                        android:gravity="center"
+                        android:text="@string/home_quick_recycle"
+                        android:textColor="@color/pc_text_primary"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/home_create_listing_action"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/space_sm"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_home_feature_card"
+                    android:clickable="true"
+                    android:contentDescription="@string/home_quick_create_listing"
+                    android:elevation="@dimen/elevation_subtle"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:gravity="center"
+                    android:minHeight="104dp"
+                    android:orientation="vertical"
+                    android:outlineProvider="background"
+                    android:padding="@dimen/space_sm">
+
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@drawable/bg_home_feature_icon"
+                        android:contentDescription="@null"
+                        android:importantForAccessibility="no"
+                        android:padding="8dp"
+                        android:src="@drawable/ic_add" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/space_sm"
+                        android:gravity="center"
+                        android:maxLines="2"
+                        android:text="@string/home_quick_create_listing"
+                        android:textColor="@color/pc_text_primary"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/home_lend_resource_action"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_sm"
+                android:background="@drawable/bg_home_feature_card"
+                android:clickable="true"
+                android:contentDescription="@string/home_quick_lend_resource"
+                android:elevation="@dimen/elevation_subtle"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
+                android:gravity="center"
+                android:minHeight="64dp"
+                android:orientation="horizontal"
+                android:outlineProvider="background"
+                android:paddingStart="@dimen/space_md"
+                android:paddingTop="@dimen/space_sm"
+                android:paddingEnd="@dimen/space_md"
+                android:paddingBottom="@dimen/space_sm">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/bg_home_feature_icon"
+                    android:contentDescription="@null"
+                    android:importantForAccessibility="no"
+                    android:padding="8dp"
+                    android:src="@drawable/ic_welcome_exchange" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/space_md"
+                    android:text="@string/home_quick_lend_resource"
+                    android:textColor="@color/pc_text_primary"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_lg"
+                android:text="@string/home_impact_title"
+                android:textAppearance="@style/TextAppearance.PropCycle.Title"
+                android:textSize="20sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_sm"
+                android:background="@drawable/bg_home_feature_card"
+                android:elevation="@dimen/elevation_subtle"
+                android:orientation="vertical"
+                android:outlineProvider="background"
+                android:padding="@dimen/space_md">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/home_impact_empty_value"
+                            android:textColor="@color/pc_primary"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/space_xs"
+                            android:text="@string/home_impact_reused"
+                            android:textAppearance="@style/TextAppearance.PropCycle.Caption" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/home_impact_empty_value"
+                            android:textColor="@color/pc_primary"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/space_xs"
+                            android:text="@string/home_impact_lent"
+                            android:textAppearance="@style/TextAppearance.PropCycle.Caption" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/home_impact_empty_value"
+                            android:textColor="@color/pc_primary"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/space_xs"
+                            android:text="@string/home_impact_recycled"
+                            android:textAppearance="@style/TextAppearance.PropCycle.Caption" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_md"
+                    android:gravity="center"
+                    android:text="@string/home_impact_empty_message"
+                    android:textAppearance="@style/TextAppearance.PropCycle.Caption" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_lg"
+                android:text="@string/home_recent_title"
+                android:textAppearance="@style/TextAppearance.PropCycle.Title"
+                android:textSize="20sp" />
+
             <FrameLayout
                 android:id="@+id/recent_action"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/space_lg"
+                android:layout_marginTop="@dimen/space_sm"
                 android:background="@drawable/bg_home_recent_action"
                 android:clickable="true"
-                android:contentDescription="View Recent Activities"
+                android:contentDescription="@string/home_recent_view_all"
                 android:elevation="@dimen/elevation_subtle"
                 android:focusable="true"
                 android:minHeight="56dp"
@@ -247,7 +518,7 @@
                     android:maxLines="2"
                     android:paddingStart="@dimen/space_2xl"
                     android:paddingEnd="@dimen/space_2xl"
-                    android:text="View Recent Activities"
+                    android:text="@string/home_recent_view_all"
                     android:textAppearance="@style/TextAppearance.PropCycle.Body"
                     android:textColor="@color/pc_primary"
                     android:textStyle="bold" />
@@ -262,6 +533,50 @@
                     android:rotation="180"
                     android:src="@drawable/ic_back" />
             </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_lg"
+                android:background="@drawable/bg_home_feature_card"
+                android:elevation="@dimen/elevation_subtle"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:outlineProvider="background"
+                android:padding="@dimen/space_md">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/bg_home_feature_icon"
+                    android:contentDescription="@null"
+                    android:importantForAccessibility="no"
+                    android:padding="9dp"
+                    android:src="@drawable/ic_welcome_leaf" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/space_md"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/home_eco_tip_title"
+                        android:textColor="@color/pc_primary"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/space_xs"
+                        android:text="@string/home_eco_tip_body"
+                        android:textAppearance="@style/TextAppearance.PropCycle.Caption" />
+                </LinearLayout>
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 

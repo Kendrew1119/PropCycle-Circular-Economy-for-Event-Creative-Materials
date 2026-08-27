@@ -2,9 +2,7 @@ package com.propcycle.app.ui.common;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.PopupMenu;
 
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
@@ -19,30 +17,18 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.propcycle.app.R;
 import com.propcycle.app.core.firebase.FirebaseEnvironment;
 
-/** Shared back, menu, authenticated-routing, and logout behavior. */
+/** Shared local back controls and authenticated routing behavior. */
 public final class ScreenNavigation {
 
     private ScreenNavigation() {
     }
 
     public static void bindChrome(@NonNull Fragment fragment, @NonNull View root) {
-        bind(root, R.id.menu_button, anchor -> showMenu(fragment, anchor));
+        hide(root, R.id.menu_button);
         bind(root, R.id.back_button,
                 ignored -> NavHostFragment.findNavController(fragment).popBackStack());
         bind(root, R.id.close_button,
                 ignored -> NavHostFragment.findNavController(fragment).popBackStack());
-    }
-
-    public static void showMenu(@NonNull Fragment fragment, @NonNull View anchor) {
-        PopupMenu popup = new PopupMenu(fragment.requireContext(), anchor);
-        popup.inflate(R.menu.menu_ui_review);
-        FirebaseAuth auth = FirebaseEnvironment.auth(fragment.requireContext());
-        MenuItem logout = popup.getMenu().findItem(R.id.menu_logout);
-        if (logout != null) {
-            logout.setVisible(auth != null && auth.getCurrentUser() != null);
-        }
-        popup.setOnMenuItemClickListener(item -> navigateFromMenu(fragment, item));
-        popup.show();
     }
 
     public static boolean navigateAuthenticated(
@@ -91,57 +77,6 @@ public final class ScreenNavigation {
                 NavHostFragment.findNavController(fragment), destination);
     }
 
-    private static boolean navigateFromMenu(
-            @NonNull Fragment fragment,
-            @NonNull MenuItem item) {
-        int itemId = item.getItemId();
-        if (itemId == R.id.menu_logout) {
-            FirebaseAuth auth = FirebaseEnvironment.auth(fragment.requireContext());
-            if (auth != null) {
-                auth.signOut();
-            }
-            navigateClearingBackStack(fragment, R.id.loginFragment);
-            return true;
-        }
-
-        @IdRes int destination;
-        if (itemId == R.id.menu_home) {
-            destination = R.id.homeFragment;
-        } else if (itemId == R.id.menu_marketplace) {
-            destination = R.id.marketplaceFragment;
-        } else if (itemId == R.id.menu_create_listing) {
-            destination = R.id.createListingFragment;
-        } else if (itemId == R.id.menu_lending) {
-            destination = R.id.lendingListFragment;
-        } else if (itemId == R.id.menu_lending_map) {
-            destination = R.id.lendingMapFragment;
-        } else if (itemId == R.id.menu_recycle) {
-            destination = R.id.recycleCenterFragment;
-        } else if (itemId == R.id.menu_messages) {
-            destination = R.id.messagesFragment;
-        } else if (itemId == R.id.menu_notifications) {
-            destination = R.id.notificationsFragment;
-        } else if (itemId == R.id.menu_profile) {
-            destination = R.id.profileFragment;
-        } else if (itemId == R.id.menu_settings) {
-            destination = R.id.settingsFragment;
-        } else {
-            return false;
-        }
-
-        if (requiresAuthentication(destination)) {
-            FirebaseAuth auth = FirebaseEnvironment.auth(fragment.requireContext());
-            if (auth == null || auth.getCurrentUser() == null) {
-                navigateClearingBackStack(fragment, R.id.loginFragment);
-            } else {
-                navigateTopLevel(NavHostFragment.findNavController(fragment), destination);
-            }
-        } else {
-            navigateTopLevel(NavHostFragment.findNavController(fragment), destination);
-        }
-        return true;
-    }
-
     private static void navigateTopLevel(
             @NonNull NavController controller,
             @IdRes int destination) {
@@ -181,6 +116,14 @@ public final class ScreenNavigation {
         View target = root.findViewById(viewId);
         if (target != null) {
             target.setOnClickListener(listener);
+        }
+    }
+
+    private static void hide(@NonNull View root, @IdRes int viewId) {
+        View target = root.findViewById(viewId);
+        if (target != null) {
+            target.setVisibility(View.GONE);
+            target.setOnClickListener(null);
         }
     }
 }

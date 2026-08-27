@@ -20,7 +20,7 @@
             style="@style/Widget.PropCycle.IconButton"
             android:background="@color/pc_transparent"
             android:contentDescription="@string/menu"
-            android:src="@drawable/ic_menu" />
+            android:src="@drawable/ic_settings" />
 
         <TextView
             style="@style/TextAppearance.PropCycle.Heading"

@@ -2,6 +2,7 @@ package com.propcycle.app;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 
 import androidx.annotation.IdRes;
 import androidx.annotation.Nullable;
@@ -40,7 +41,7 @@ public final class MainActivity extends AppCompatActivity {
             view.setPadding(bars.left, bars.top, bars.right, bars.bottom);
             return windowInsets;
         });
-        bindBottomNavigation();
+        bindNavigationChrome();
 
         if (savedInstanceState == null) {
             String requestedScreen = BuildConfig.DEBUG
@@ -72,9 +73,20 @@ public final class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void bindBottomNavigation() {
+    private void bindNavigationChrome() {
+        View appHeader = findViewById(R.id.app_header);
+        TextView appHeaderTitle = findViewById(R.id.app_header_title);
         BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
         NavController controller = navController();
+        findViewById(R.id.app_header_settings).setOnClickListener(
+                ignored -> ScreenNavigation.navigateTopLevel(
+                        this, controller, R.id.settingsFragment));
+        findViewById(R.id.app_header_notifications).setOnClickListener(
+                ignored -> ScreenNavigation.navigateTopLevel(
+                        this, controller, R.id.notificationsFragment));
+        findViewById(R.id.app_header_profile).setOnClickListener(
+                ignored -> ScreenNavigation.navigateTopLevel(
+                        this, controller, R.id.profileFragment));
         bottomNavigation.setOnItemSelectedListener(item -> {
             @IdRes int destination = destinationForBottomNavigationItem(item.getItemId());
             if (destination == View.NO_ID) {
@@ -88,8 +100,10 @@ public final class MainActivity extends AppCompatActivity {
         });
         controller.addOnDestinationChangedListener((ignored, destination, arguments) -> {
             @IdRes int itemId = bottomNavigationItemForDestination(destination.getId());
-            bottomNavigation.setVisibility(
-                    isAppDestination(destination.getId()) ? View.VISIBLE : View.GONE);
+            boolean showAppChrome = isAppDestination(destination.getId());
+            appHeader.setVisibility(showAppChrome ? View.VISIBLE : View.GONE);
+            bottomNavigation.setVisibility(showAppChrome ? View.VISIBLE : View.GONE);
+            appHeaderTitle.setText(destination.getLabel());
             if (itemId != View.NO_ID) {
                 bottomNavigation.getMenu().findItem(itemId).setChecked(true);
             }

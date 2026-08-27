@@ -153,6 +153,7 @@ public final class CreateListingFragment extends Fragment {
         if (!editMode) {
             return;
         }
+        binding.menuButton.setVisibility(View.VISIBLE);
         binding.menuButton.setImageResource(R.drawable.ic_back);
         binding.menuButton.setContentDescription("Go back without saving");
         binding.menuButton.setOnClickListener(ignored ->

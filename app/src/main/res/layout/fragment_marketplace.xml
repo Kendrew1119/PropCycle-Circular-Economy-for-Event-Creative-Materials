@@ -8,18 +8,6 @@
     android:paddingTop="@dimen/screen_vertical"
     android:paddingEnd="@dimen/screen_horizontal">
 
-    <ImageButton
-        android:id="@+id/menu_button"
-        style="@style/Widget.PropCycle.IconButton"
-        android:background="@color/pc_transparent"
-        android:contentDescription="Open navigation menu"
-        android:src="@drawable/ic_menu" />
-
-    <TextView
-        style="@style/TextAppearance.PropCycle.Heading"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="XX Market" />
 
     <EditText
         android:id="@+id/market_search_input"

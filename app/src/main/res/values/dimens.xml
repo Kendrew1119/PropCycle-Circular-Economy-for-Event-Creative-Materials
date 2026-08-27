@@ -9,6 +9,9 @@
     <dimen name="screen_horizontal">24dp</dimen>
     <dimen name="screen_vertical">20dp</dimen>
     <dimen name="touch_target">48dp</dimen>
+    <dimen name="app_header_height">56dp</dimen>
+    <dimen name="bottom_navigation_height">56dp</dimen>
+    <dimen name="bottom_navigation_icon_size">22dp</dimen>
     <dimen name="card_corner">22dp</dimen>
     <dimen name="pill_corner">40dp</dimen>
     <dimen name="stroke_thin">1dp</dimen>

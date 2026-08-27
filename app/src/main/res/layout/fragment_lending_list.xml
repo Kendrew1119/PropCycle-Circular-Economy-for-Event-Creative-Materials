@@ -16,26 +16,6 @@
         android:paddingEnd="@dimen/screen_horizontal"
         android:paddingBottom="@dimen/space_xl">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <ImageButton
-                android:id="@+id/menu_button"
-                style="@style/Widget.PropCycle.IconButton"
-                android:contentDescription="@string/menu"
-                android:src="@drawable/ic_menu" />
-
-            <TextView
-                style="@style/TextAppearance.PropCycle.Heading"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:layout_weight="1"
-                android:text="Lend Out" />
-        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -54,14 +34,22 @@
                 android:src="@drawable/ic_search"
                 app:tint="@color/pc_ink" />
 
-            <TextView
+            <EditText
+                android:id="@+id/lending_search_input"
                 style="@style/TextAppearance.PropCycle.Body"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_marginStart="12dp"
                 android:layout_weight="1"
-                android:text="Search..."
-                android:textColor="@color/pc_text_secondary" />
+                android:background="@color/pc_transparent"
+                android:hint="Search..."
+                android:importantForAutofill="no"
+                android:inputType="text"
+                android:maxLines="1"
+                android:paddingStart="0dp"
+                android:paddingEnd="0dp"
+                android:textColor="@color/pc_ink"
+                android:textColorHint="@color/pc_text_secondary" />
         </LinearLayout>
 
         <HorizontalScrollView
@@ -76,42 +64,65 @@
                 android:orientation="horizontal">
 
                 <TextView
+                    android:id="@+id/lending_filter_all"
                     android:layout_width="64dp"
-                    android:layout_height="40dp"
+                    android:layout_height="@dimen/touch_target"
                     android:background="@drawable/bg_pill_dark"
+                    android:clickable="true"
+                    android:focusable="true"
                     android:gravity="center"
                     android:text="All"
                     android:textColor="@color/pc_white"
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/lending_filter_equipment"
                     android:layout_width="94dp"
-                    android:layout_height="40dp"
+                    android:layout_height="@dimen/touch_target"
                     android:layout_marginStart="@dimen/space_sm"
                     android:background="@drawable/bg_pill"
+                    android:clickable="true"
+                    android:focusable="true"
                     android:gravity="center"
                     android:text="Equipment"
                     android:textColor="@color/pc_ink" />
 
                 <TextView
+                    android:id="@+id/lending_filter_materials"
                     android:layout_width="90dp"
-                    android:layout_height="40dp"
+                    android:layout_height="@dimen/touch_target"
                     android:layout_marginStart="@dimen/space_sm"
                     android:background="@drawable/bg_pill"
+                    android:clickable="true"
+                    android:focusable="true"
                     android:gravity="center"
                     android:text="Materials"
                     android:textColor="@color/pc_ink" />
 
                 <TextView
+                    android:id="@+id/lending_filter_nearby"
                     android:layout_width="82dp"
-                    android:layout_height="40dp"
+                    android:layout_height="@dimen/touch_target"
                     android:layout_marginStart="@dimen/space_sm"
                     android:background="@drawable/bg_pill"
+                    android:clickable="true"
+                    android:focusable="true"
                     android:gravity="center"
                     android:text="Nearby"
                     android:textColor="@color/pc_ink" />
             </LinearLayout>
         </HorizontalScrollView>
+
+        <TextView
+            android:id="@+id/lending_empty_state"
+            style="@style/TextAppearance.PropCycle.Body"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_lg"
+            android:gravity="center"
+            android:text="@string/lending_no_results"
+            android:textColor="@color/pc_text_secondary"
+            android:visibility="gone" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -129,6 +140,7 @@
 
                 <LinearLayout
                     android:id="@+id/item_card"
+                    android:tag="equipment nearby"
                     android:layout_width="match_parent"
                     android:layout_height="230dp"
                     android:background="@drawable/bg_lending_listing_card"
@@ -154,6 +166,8 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/lending_item_wooden_crates"
+                    android:tag="materials"
                     android:layout_width="match_parent"
                     android:layout_height="180dp"
                     android:layout_marginTop="@dimen/space_md"
@@ -177,6 +191,8 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/lending_item_fabric_panels"
+                    android:tag="materials"
                     android:layout_width="match_parent"
                     android:layout_height="210dp"
                     android:layout_marginTop="@dimen/space_md"
@@ -203,6 +219,7 @@
 
                 <LinearLayout
                     android:id="@+id/item_card_secondary"
+                    android:tag="equipment"
                     android:layout_width="match_parent"
                     android:layout_height="180dp"
                     android:background="@drawable/bg_lending_listing_card"
@@ -228,6 +245,8 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/lending_item_led_lights"
+                    android:tag="equipment nearby"
                     android:layout_width="match_parent"
                     android:layout_height="245dp"
                     android:layout_marginTop="@dimen/space_md"
@@ -251,6 +270,8 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/lending_item_signage_frames"
+                    android:tag="equipment"
                     android:layout_width="match_parent"
                     android:layout_height="175dp"
                     android:layout_marginTop="@dimen/space_md"

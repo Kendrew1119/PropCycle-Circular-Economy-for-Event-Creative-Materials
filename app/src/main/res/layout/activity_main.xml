@@ -6,6 +6,50 @@
     android:layout_height="match_parent"
     android:background="@color/pc_background">
 
+    <LinearLayout
+        android:id="@+id/app_header"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/app_header_height"
+        android:background="@color/pc_background"
+        android:elevation="1dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="@dimen/space_md"
+        android:paddingEnd="@dimen/space_sm"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/app_header_settings"
+            style="@style/Widget.PropCycle.IconButton"
+            android:contentDescription="@string/home_settings_open"
+            android:src="@drawable/ic_settings" />
+
+        <TextView
+            android:id="@+id/app_header_title"
+            style="@style/TextAppearance.PropCycle.Title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/space_sm"
+            android:layout_weight="1"
+            android:maxLines="1" />
+
+        <ImageButton
+            android:id="@+id/app_header_notifications"
+            style="@style/Widget.PropCycle.IconButton"
+            android:contentDescription="@string/notifications"
+            android:src="@drawable/ic_notifications" />
+
+        <ImageButton
+            android:id="@+id/app_header_profile"
+            style="@style/Widget.PropCycle.IconButton"
+            android:layout_marginStart="@dimen/space_xs"
+            android:contentDescription="@string/profile"
+            android:src="@drawable/ic_person" />
+    </LinearLayout>
+
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/nav_host_fragment"
         android:name="androidx.navigation.fragment.NavHostFragment"
@@ -15,21 +59,25 @@
         app:layout_constraintBottom_toTopOf="@id/bottom_navigation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/app_header"
         app:navGraph="@navigation/nav_graph" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
+        style="@style/Widget.MaterialComponents.BottomNavigationView"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:minHeight="80dp"
+        android:layout_height="@dimen/bottom_navigation_height"
         android:background="@drawable/bg_bottom_navigation"
         android:elevation="2dp"
         android:visibility="gone"
+        app:itemActiveIndicatorStyle="@null"
         app:itemHorizontalTranslationEnabled="false"
-        app:itemIconSize="24dp"
+        app:itemIconSize="@dimen/bottom_navigation_icon_size"
         app:itemIconTint="@color/bottom_navigation_item_tint"
+        app:itemTextAppearanceActive="@style/TextAppearance.PropCycle.BottomNavigation.Active"
+        app:itemTextAppearanceInactive="@style/TextAppearance.PropCycle.BottomNavigation"
         app:itemTextColor="@color/bottom_navigation_item_tint"
+        app:labelMaxLines="2"
         app:labelVisibilityMode="labeled"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

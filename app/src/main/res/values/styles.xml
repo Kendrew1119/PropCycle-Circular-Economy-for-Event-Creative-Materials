@@ -30,6 +30,16 @@
         <item name="android:textSize">13sp</item>
     </style>
 
+    <style name="TextAppearance.PropCycle.BottomNavigation" parent="TextAppearance.Material3.LabelSmall">
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textSize">10sp</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
+    <style name="TextAppearance.PropCycle.BottomNavigation.Active" parent="TextAppearance.PropCycle.BottomNavigation">
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
     <style name="Widget.PropCycle.Button.Dark" parent="Widget.Material3.Button">
         <item name="backgroundTint">@color/pc_primary</item>
         <item name="android:textColor">@color/pc_on_primary</item>

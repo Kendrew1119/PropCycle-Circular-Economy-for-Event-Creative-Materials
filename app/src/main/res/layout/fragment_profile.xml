@@ -15,11 +15,6 @@
         android:paddingEnd="@dimen/screen_horizontal"
         android:paddingBottom="@dimen/space_xl">
 
-        <ImageButton
-            android:id="@+id/menu_button"
-            style="@style/Widget.PropCycle.IconButton"
-            android:contentDescription="@string/menu"
-            android:src="@drawable/ic_menu" />
 
         <TextView
             android:id="@+id/profile_avatar_initial"
@@ -183,5 +178,13 @@
                 android:textColor="@color/pc_ink"
                 android:textSize="28sp" />
         </LinearLayout>
+
+        <Button
+            android:id="@+id/logout_action"
+            style="@style/Widget.PropCycle.Button.Dark"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_xl"
+            android:text="@string/profile_logout" />
     </LinearLayout>
 </ScrollView>
