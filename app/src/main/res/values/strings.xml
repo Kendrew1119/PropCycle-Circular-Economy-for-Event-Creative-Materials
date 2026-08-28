@@ -42,6 +42,7 @@
     <string name="home_impact_recycled_empty">Recycled: no data yet</string>
     <string name="home_recent_title">Recent Activities</string>
     <string name="home_recent_view_all">View all activities</string>
+    <string name="recent_activity_empty">Your scans, listings, lending updates, and recycling-centre searches will appear here on this device.</string>
     <string name="home_recent_view_all_short">View all</string>
     <string name="home_recent_preview_title">Activity history</string>
     <string name="home_recent_preview_empty">Open your account activity history</string>
@@ -86,6 +87,8 @@
     <string name="scanner_disclosure">Before you continue: a temporary copy of the selected image will be sent to Firebase AI Logic for Gemini analysis. It is not saved to PropCycle scan history or Cloud Storage. Check the result because AI can be wrong.</string>
     <string name="scanner_disclosure_consent">I understand and want to send this image for AI analysis.</string>
     <string name="scanner_analyse">Analyse item</string>
+    <string name="scanner_take_photo">Take Photo</string>
+    <string name="scanner_choose_photo">Choose Photo</string>
     <string name="scanner_retry">Try again</string>
     <string name="scanner_sign_in">Sign in</string>
     <string name="scanner_setup_help">Setup help</string>

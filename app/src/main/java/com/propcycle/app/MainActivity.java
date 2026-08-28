@@ -103,7 +103,9 @@ public final class MainActivity extends AppCompatActivity {
             boolean showAppChrome = isAppDestination(destination.getId());
             appHeader.setVisibility(showAppChrome ? View.VISIBLE : View.GONE);
             bottomNavigation.setVisibility(showAppChrome ? View.VISIBLE : View.GONE);
-            appHeaderTitle.setText(destination.getLabel());
+            boolean hideHeaderTitle = destination.getId() == R.id.recentActivitiesFragment
+                    || destination.getId() == R.id.scannerFragment;
+            appHeaderTitle.setText(hideHeaderTitle ? "" : destination.getLabel());
             if (itemId != View.NO_ID) {
                 bottomNavigation.getMenu().findItem(itemId).setChecked(true);
             }

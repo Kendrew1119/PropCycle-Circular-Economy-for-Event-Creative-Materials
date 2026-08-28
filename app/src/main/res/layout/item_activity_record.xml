@@ -1,64 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/space_sm"
-    android:background="@drawable/bg_card_light"
+    android:layout_marginStart="4dp"
+    android:layout_marginEnd="4dp"
+    android:layout_marginBottom="10dp"
+    android:background="@drawable/bg_recent_activity_card"
     android:clickable="true"
+    android:elevation="3dp"
     android:focusable="true"
+    android:foreground="?attr/selectableItemBackground"
     android:gravity="center_vertical"
-    android:minHeight="72dp"
+    android:minHeight="96dp"
     android:orientation="horizontal"
-    android:padding="@dimen/space_md">
+    android:outlineProvider="background"
+    android:paddingStart="11dp"
+    android:paddingTop="11dp"
+    android:paddingEnd="6dp"
+    android:paddingBottom="11dp">
 
     <TextView
         android:id="@+id/activity_icon"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:background="@drawable/bg_circle_gray"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/bg_recent_activity_icon"
         android:gravity="center"
         android:importantForAccessibility="no"
         android:text="•"
-        android:textColor="@color/pc_primary"
-        android:textSize="22sp"
+        android:textColor="@color/pc_brand_deep_blue"
+        android:textSize="20sp"
         android:textStyle="bold" />
 
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/space_md"
+        android:layout_marginStart="10dp"
         android:layout_weight="1"
+        android:importantForAccessibility="no"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/activity_title"
-            style="@style/TextAppearance.PropCycle.Body"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:maxLines="2"
+            android:textColor="@color/pc_brand_text_primary"
+            android:textSize="16sp"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/activity_detail"
-            style="@style/TextAppearance.PropCycle.Caption"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:maxLines="2"
-            android:textColor="@color/pc_text_secondary" />
+            android:layout_marginTop="3dp"
+            android:lineSpacingMultiplier="1.08"
+            android:maxLines="3"
+            android:textColor="@color/pc_brand_text_secondary"
+            android:textSize="13sp" />
 
         <TextView
             android:id="@+id/activity_time"
-            style="@style/TextAppearance.PropCycle.Caption"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:textColor="@color/pc_primary" />
+            android:layout_marginTop="6dp"
+            android:drawablePadding="6dp"
+            android:maxLines="1"
+            android:textColor="@color/pc_brand_deep_blue"
+            android:textSize="13sp"
+            app:drawableStartCompat="@drawable/ic_history"
+            app:drawableTint="@color/pc_brand_deep_blue" />
     </LinearLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:contentDescription="@null"
         android:importantForAccessibility="no"
-        android:text="›"
-        android:textSize="28sp" />
+        android:padding="12dp"
+        android:rotation="180"
+        android:src="@drawable/ic_back"
+        app:tint="@color/pc_brand_deep_blue" />
 </LinearLayout>

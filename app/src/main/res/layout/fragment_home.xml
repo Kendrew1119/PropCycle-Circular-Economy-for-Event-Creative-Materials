@@ -103,7 +103,10 @@
                     android:minHeight="@dimen/home_overview_min_height"
                     android:orientation="horizontal"
                     android:outlineProvider="background"
-                    android:padding="@dimen/home_card_padding">
+                    android:paddingStart="12dp"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="12dp"
+                    android:paddingBottom="8dp">
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -210,9 +213,9 @@
                         android:orientation="vertical"
                         android:outlineProvider="background"
                         android:paddingStart="6dp"
-                        android:paddingTop="8dp"
+                        android:paddingTop="4dp"
                         android:paddingEnd="6dp"
-                        android:paddingBottom="8dp">
+                        android:paddingBottom="4dp">
 
                         <ImageView
                             android:layout_width="64dp"
@@ -225,11 +228,11 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
+                            android:layout_marginTop="2dp"
                             android:gravity="center"
                             android:importantForAccessibility="no"
                             android:maxLines="2"
-                            android:minLines="2"
+                            android:minLines="1"
                             android:text="@string/home_quick_recycle"
                             android:textColor="@color/pc_brand_deep_blue"
                             android:textSize="12sp"
@@ -249,7 +252,7 @@
                         <ImageView
                             android:layout_width="30dp"
                             android:layout_height="30dp"
-                            android:layout_marginTop="4dp"
+                            android:layout_marginTop="2dp"
                             android:background="@drawable/bg_home_action_arrow_green"
                             android:contentDescription="@null"
                             android:importantForAccessibility="no"
@@ -277,9 +280,9 @@
                         android:orientation="vertical"
                         android:outlineProvider="background"
                         android:paddingStart="6dp"
-                        android:paddingTop="8dp"
+                        android:paddingTop="4dp"
                         android:paddingEnd="6dp"
-                        android:paddingBottom="8dp">
+                        android:paddingBottom="4dp">
 
                         <ImageView
                             android:layout_width="64dp"
@@ -292,11 +295,11 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
+                            android:layout_marginTop="2dp"
                             android:gravity="center"
                             android:importantForAccessibility="no"
                             android:maxLines="2"
-                            android:minLines="2"
+                            android:minLines="1"
                             android:text="@string/home_quick_create_listing"
                             android:textColor="@color/pc_brand_deep_blue"
                             android:textSize="12sp"
@@ -316,7 +319,7 @@
                         <ImageView
                             android:layout_width="30dp"
                             android:layout_height="30dp"
-                            android:layout_marginTop="4dp"
+                            android:layout_marginTop="2dp"
                             android:background="@drawable/bg_home_action_arrow_yellow"
                             android:contentDescription="@null"
                             android:importantForAccessibility="no"
@@ -343,9 +346,9 @@
                         android:orientation="vertical"
                         android:outlineProvider="background"
                         android:paddingStart="6dp"
-                        android:paddingTop="8dp"
+                        android:paddingTop="4dp"
                         android:paddingEnd="6dp"
-                        android:paddingBottom="8dp">
+                        android:paddingBottom="4dp">
 
                         <ImageView
                             android:layout_width="70dp"
@@ -358,11 +361,11 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
+                            android:layout_marginTop="2dp"
                             android:gravity="center"
                             android:importantForAccessibility="no"
                             android:maxLines="2"
-                            android:minLines="2"
+                            android:minLines="1"
                             android:text="@string/home_quick_lend_resource"
                             android:textColor="@color/pc_brand_deep_blue"
                             android:textSize="12sp"
@@ -382,7 +385,7 @@
                         <ImageView
                             android:layout_width="30dp"
                             android:layout_height="30dp"
-                            android:layout_marginTop="4dp"
+                            android:layout_marginTop="2dp"
                             android:background="@drawable/bg_home_action_arrow_blue"
                             android:contentDescription="@null"
                             android:importantForAccessibility="no"
@@ -408,9 +411,9 @@
                     android:orientation="horizontal"
                     android:outlineProvider="background"
                     android:paddingStart="10dp"
-                    android:paddingTop="10dp"
+                    android:paddingTop="6dp"
                     android:paddingEnd="10dp"
-                    android:paddingBottom="10dp">
+                    android:paddingBottom="6dp">
 
                     <ImageView
                         android:layout_width="54dp"

@@ -22,7 +22,7 @@
     <dimen name="home_action_corner">18dp</dimen>
     <dimen name="home_pill_corner">25dp</dimen>
     <dimen name="home_card_padding">14dp</dimen>
-    <dimen name="home_overview_min_height">124dp</dimen>
+    <dimen name="home_overview_min_height">110dp</dimen>
     <dimen name="home_overview_icon_container">54dp</dimen>
     <dimen name="home_overview_icon_size">28dp</dimen>
     <dimen name="home_overview_title_size">19sp</dimen>
@@ -30,14 +30,14 @@
     <dimen name="home_search_height">50dp</dimen>
     <dimen name="home_search_icon_size">22dp</dimen>
     <dimen name="home_search_text_size">15sp</dimen>
-    <dimen name="home_scanner_min_height">100dp</dimen>
+    <dimen name="home_scanner_min_height">84dp</dimen>
     <dimen name="home_scanner_icon_container">52dp</dimen>
     <dimen name="home_scanner_icon_size">27dp</dimen>
     <dimen name="home_scanner_title_size">18sp</dimen>
     <dimen name="home_section_spacing">18dp</dimen>
     <dimen name="home_section_title_size">20sp</dimen>
     <dimen name="home_section_title_gap">8dp</dimen>
-    <dimen name="home_quick_action_height">154dp</dimen>
+    <dimen name="home_quick_action_height">136dp</dimen>
     <dimen name="home_quick_icon_container">42dp</dimen>
     <dimen name="home_quick_label_size">13sp</dimen>
     <dimen name="home_quick_arrow_size">17dp</dimen>
@@ -67,4 +67,5 @@
     <dimen name="create_listing_photo_width">264dp</dimen>
     <dimen name="create_listing_photo_height">156dp</dimen>
     <dimen name="create_listing_description_height">112dp</dimen>
+    <dimen name="scanner_preview_size">280dp</dimen>
 </resources>

@@ -13,6 +13,7 @@
     <color name="pc_brand_text_primary">#1B1B1B</color>
     <color name="pc_brand_text_secondary">#686868</color>
     <color name="pc_brand_outline">#D7D3C8</color>
+    <color name="pc_scanner_notice_surface">#FFF2C8</color>
     <!-- Core light eco palette. -->
     <color name="pc_primary">#1F5C42</color>
     <color name="pc_on_primary">#FFFFFF</color>
