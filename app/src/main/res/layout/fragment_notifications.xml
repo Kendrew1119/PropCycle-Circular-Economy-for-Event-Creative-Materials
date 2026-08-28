@@ -1,288 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/pc_background"
-    android:clipToPadding="false"
-    android:fillViewport="true">
+    android:orientation="vertical"
+    android:paddingStart="@dimen/screen_horizontal"
+    android:paddingTop="@dimen/space_md"
+    android:paddingEnd="@dimen/screen_horizontal"
+    android:paddingBottom="@dimen/space_md">
 
-    <LinearLayout
+    <TextView
+        style="@style/TextAppearance.PropCycle.Heading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Notifications" />
+
+    <TextView
+        style="@style/TextAppearance.PropCycle.Caption"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingStart="@dimen/screen_horizontal"
-        android:paddingTop="@dimen/space_md"
-        android:paddingEnd="@dimen/screen_horizontal"
-        android:paddingBottom="@dimen/space_xl">
+        android:layout_marginTop="@dimen/space_xs"
+        android:text="Manage lending requests and returns here. Automatic phone push is not enabled."
+        android:textColor="@color/pc_text_secondary" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+    <TextView
+        android:id="@+id/lending_request_status"
+        style="@style/TextAppearance.PropCycle.Caption"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_md"
+        android:textColor="@color/pc_text_secondary" />
 
-            <ImageButton
-                android:id="@+id/menu_button"
-                style="@style/Widget.PropCycle.IconButton"
-                android:contentDescription="@string/menu"
-                android:src="@drawable/ic_settings" />
+    <ProgressBar
+        android:id="@+id/lending_request_progress"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/space_md" />
 
-            <TextView
-                style="@style/TextAppearance.PropCycle.Heading"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:layout_weight="1"
-                android:text="Notifications" />
-        </LinearLayout>
+    <TextView
+        android:id="@+id/lending_request_empty"
+        style="@style/TextAppearance.PropCycle.Body"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_lg"
+        android:gravity="center"
+        android:text="No lending updates yet."
+        android:textColor="@color/pc_text_secondary"
+        android:visibility="gone" />
 
-        <TextView
-            style="@style/TextAppearance.PropCycle.Body"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/space_sm"
-            android:text="You have 2 unread messages."
-            android:textColor="@color/pc_text_secondary" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="92dp"
-            android:layout_marginTop="@dimen/space_lg"
-            android:background="@drawable/bg_card_dark"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:padding="@dimen/space_md">
-
-            <TextView
-                android:layout_width="52dp"
-                android:layout_height="52dp"
-                android:background="@drawable/bg_circle_white"
-                android:gravity="center"
-                android:text="01"
-                android:textColor="@color/pc_ink"
-                android:textStyle="bold" />
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/space_md"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="New message received"
-                    android:textColor="@color/pc_white"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/space_xs"
-                    android:text="XXXX asked about your listing."
-                    android:textColor="@color/pc_white"
-                    android:textSize="13sp" />
-            </LinearLayout>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="now"
-                android:textColor="@color/pc_white"
-                android:textSize="12sp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="92dp"
-            android:layout_marginTop="12dp"
-            android:background="@drawable/bg_card_dark"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:padding="@dimen/space_md">
-
-            <TextView
-                android:layout_width="52dp"
-                android:layout_height="52dp"
-                android:background="@drawable/bg_circle_white"
-                android:gravity="center"
-                android:text="02"
-                android:textColor="@color/pc_ink"
-                android:textStyle="bold" />
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/space_md"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Borrow request updated"
-                    android:textColor="@color/pc_white"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/space_xs"
-                    android:text="Your resource request was accepted."
-                    android:textColor="@color/pc_white"
-                    android:textSize="13sp" />
-            </LinearLayout>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="5m"
-                android:textColor="@color/pc_white"
-                android:textSize="12sp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="92dp"
-            android:layout_marginTop="12dp"
-            android:background="@drawable/bg_card_gray"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:padding="@dimen/space_md">
-
-            <TextView
-                android:layout_width="52dp"
-                android:layout_height="52dp"
-                android:background="@drawable/bg_circle_white"
-                android:gravity="center"
-                android:text="03"
-                android:textColor="@color/pc_ink"
-                android:textStyle="bold" />
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/space_md"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    style="@style/TextAppearance.PropCycle.Body"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Listing published"
-                    android:textStyle="bold" />
-
-                <TextView
-                    style="@style/TextAppearance.PropCycle.Caption"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/space_xs"
-                    android:text="Your marketplace item is now visible." />
-            </LinearLayout>
-
-            <TextView
-                style="@style/TextAppearance.PropCycle.Caption"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="2h" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="92dp"
-            android:layout_marginTop="12dp"
-            android:background="@drawable/bg_card_light"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:padding="@dimen/space_md">
-
-            <TextView
-                android:layout_width="52dp"
-                android:layout_height="52dp"
-                android:background="@drawable/bg_circle_gray"
-                android:gravity="center"
-                android:text="04"
-                android:textColor="@color/pc_ink"
-                android:textStyle="bold" />
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/space_md"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    style="@style/TextAppearance.PropCycle.Body"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Recycle point nearby"
-                    android:textStyle="bold" />
-
-                <TextView
-                    style="@style/TextAppearance.PropCycle.Caption"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/space_xs"
-                    android:text="A verified centre is 0.8 km away." />
-            </LinearLayout>
-
-            <TextView
-                style="@style/TextAppearance.PropCycle.Caption"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="1d" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="92dp"
-            android:layout_marginTop="12dp"
-            android:background="@drawable/bg_card_light"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:padding="@dimen/space_md">
-
-            <TextView
-                android:layout_width="52dp"
-                android:layout_height="52dp"
-                android:background="@drawable/bg_circle_gray"
-                android:gravity="center"
-                android:text="05"
-                android:textColor="@color/pc_ink"
-                android:textStyle="bold" />
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/space_md"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    style="@style/TextAppearance.PropCycle.Body"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Eco badge unlocked"
-                    android:textStyle="bold" />
-
-                <TextView
-                    style="@style/TextAppearance.PropCycle.Caption"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/space_xs"
-                    android:text="You extended another resource lifecycle." />
-            </LinearLayout>
-
-            <TextView
-                style="@style/TextAppearance.PropCycle.Caption"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="3d" />
-        </LinearLayout>
-    </LinearLayout>
-</ScrollView>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/lending_request_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/space_sm"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:paddingBottom="@dimen/space_lg" />
+</LinearLayout>

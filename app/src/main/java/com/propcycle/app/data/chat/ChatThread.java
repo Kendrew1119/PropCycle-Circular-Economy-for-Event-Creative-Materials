@@ -2,10 +2,11 @@ package com.propcycle.app.data.chat;
 
 import androidx.annotation.NonNull;
 
-/** Immutable presentation-safe view of a marketplace chat thread. */
+/** Immutable presentation-safe view of a marketplace or lending chat thread. */
 public final class ChatThread {
 
     private final String threadId;
+    private final String contextType;
     private final String contextId;
     private final String contextTitle;
     private final String ownerUid;
@@ -17,6 +18,7 @@ public final class ChatThread {
 
     public ChatThread(
             @NonNull String threadId,
+            @NonNull String contextType,
             @NonNull String contextId,
             @NonNull String contextTitle,
             @NonNull String ownerUid,
@@ -26,6 +28,7 @@ public final class ChatThread {
             long lastMessageAtMillis,
             long updatedAtMillis) {
         this.threadId = threadId;
+        this.contextType = contextType;
         this.contextId = contextId;
         this.contextTitle = contextTitle;
         this.ownerUid = ownerUid;
@@ -39,6 +42,11 @@ public final class ChatThread {
     @NonNull
     public String getThreadId() {
         return threadId;
+    }
+
+    @NonNull
+    public String getContextType() {
+        return contextType;
     }
 
     @NonNull

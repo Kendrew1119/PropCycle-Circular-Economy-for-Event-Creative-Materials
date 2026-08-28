@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_home_canvas">
@@ -119,7 +120,7 @@
                             android:contentDescription="@null"
                             android:importantForAccessibility="no"
                             android:src="@drawable/ic_welcome_recycle"
-                            android:tint="@color/pc_on_primary" />
+                            app:tint="@color/pc_on_primary" />
                     </FrameLayout>
 
                     <LinearLayout
@@ -263,7 +264,7 @@
                     android:importantForAccessibility="no"
                     android:rotation="180"
                     android:src="@drawable/ic_back"
-                    android:tint="@color/pc_accent" />
+                    app:tint="@color/pc_accent" />
             </LinearLayout>
 
             <FrameLayout
@@ -345,7 +346,7 @@
                         android:importantForAccessibility="no"
                         android:rotation="180"
                         android:src="@drawable/ic_back"
-                        android:tint="@color/pc_accent" />
+                        app:tint="@color/pc_accent" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -377,7 +378,7 @@
                         android:importantForAccessibility="no"
                         android:padding="10dp"
                         android:src="@drawable/ic_add"
-                        android:tint="@color/pc_accent" />
+                        app:tint="@color/pc_accent" />
 
                     <TextView
                         android:layout_width="match_parent"
@@ -399,7 +400,7 @@
                         android:importantForAccessibility="no"
                         android:rotation="180"
                         android:src="@drawable/ic_back"
-                        android:tint="@color/pc_accent" />
+                        app:tint="@color/pc_accent" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -451,7 +452,7 @@
                         android:importantForAccessibility="no"
                         android:rotation="180"
                         android:src="@drawable/ic_back"
-                        android:tint="@color/pc_accent" />
+                        app:tint="@color/pc_accent" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -558,7 +559,7 @@
                                 android:importantForAccessibility="no"
                                 android:padding="10dp"
                                 android:src="@drawable/ic_welcome_exchange"
-                                android:tint="@color/pc_accent" />
+                                app:tint="@color/pc_accent" />
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -676,7 +677,7 @@
                     android:contentDescription="@null"
                     android:importantForAccessibility="no"
                     android:src="@drawable/ic_history"
-                    android:tint="@color/pc_accent" />
+                    app:tint="@color/pc_accent" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -701,7 +702,7 @@
                     android:importantForAccessibility="no"
                     android:rotation="180"
                     android:src="@drawable/ic_back"
-                    android:tint="@color/pc_accent" />
+                    app:tint="@color/pc_accent" />
             </FrameLayout>
 
             <FrameLayout

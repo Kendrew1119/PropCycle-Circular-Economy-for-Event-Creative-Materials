@@ -106,7 +106,11 @@ public final class ConversationFragment extends Fragment {
             binding.contextTitle.setText("Conversation");
             binding.threadAvatar.setText("P");
         }
-        binding.contextCaption.setText("Marketplace listing");
+        binding.contextCaption.setText(
+                state.getThread() != null
+                        && "lending".equals(state.getThread().getContextType())
+                        ? "Lending item"
+                        : "Marketplace listing");
 
         adapter.submitList(state.getMessages(), viewModel.currentUserId());
         if (!state.getMessages().isEmpty()) {

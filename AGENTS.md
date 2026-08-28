@@ -1,11 +1,55 @@
 # PropCycle Native Android Direction
 
-## Current phase: Phase 2D recycling-centre map
+## Current phase: Phase 2E P2P equipment lending - app/local complete
+
+Phase 2E app-side implementation and local verification are complete. Firebase
+production Rules deployment plus the documented two-account/two-device item,
+image, request, collision, chat, return, rating, and optional map checks remain
+deliberate owner tasks in `docs/LENDING_SETUP.md`. Do not start another
+integration until the user authorises it.
+
+On 28 August 2026, after explicitly requesting a pull of the team's latest UI
+work, the user authorised the next planned phase and asked to continue toward a
+complete system. Phase 2E makes the existing Lend Resource, Lending List,
+Lending Map, Lending Detail, Notifications, Messages, and Conversation surfaces
+functional as one bounded Firebase lending lifecycle. Preserve the pulled UI
+direction and every completed earlier module.
+
+The completed Phase 2E contract is:
+
+- Use the existing Firebase Auth, Firestore, Storage, Maps, and foreground
+  location integrations. Do not introduce a custom backend, payment provider,
+  FCM sender, routes, background location, Room, Hilt, or WorkManager.
+- Resolve the proposal's "rent or borrow" wording as borrowing with an optional
+  informational RM deposit arranged between users. PropCycle never collects a
+  fee, deposit, or payment.
+- Allow an authenticated owner to publish, edit, withdraw, and relist one
+  lending item. One optional protected JPEG may use an owner/item-scoped Cloud
+  Storage path. Keep precise private addresses out of public documents.
+- Discovery uses authenticated real-time list data. The map shows only items
+  that an owner deliberately published with an approximate location. Manual
+  title/area search remains usable without location permission or a Maps key.
+- Borrow requests use Malaysia calendar dates, inclusive ranges of at most 31
+  days, owner approval/rejection, collision-safe booked-day locks, pickup,
+  borrower return reporting, owner return confirmation, and one immutable
+  borrower-to-owner rating. Integrate these actions into existing screens and
+  dialogs; do not add a new top-level module.
+- Extend the existing participant-only chat contract to lending items. In-app
+  request updates belong on the existing Notifications screen; automated OS
+  push remains explicitly unavailable without a trusted sender.
+- Enforce ownership, immutable participants, exact field allowlists, state
+  transitions, bounded queries, and rating eligibility in Security Rules and
+  automated emulator tests. Never rely on hidden buttons for authorisation.
+- Keep `google-services.json`, `secrets.properties`, API keys, App Check tokens,
+  service-account credentials, and keystores outside Git.
+- Do not launch an emulator unless the user later asks. Run JVM tests, Firebase
+  Rules tests, debug/release and missing-configuration builds, lint, XML and
+  navigation checks, and secret scanning. Document the remaining two-account,
+  two-device real-service checks.
 
 Phase 2D app-side implementation and local verification are complete. Google
 Cloud billing/API enablement, restricted real-key setup, and the documented
-real-device search/permission checks remain deliberate owner tasks. Do not
-start another integration until the user authorises it.
+real-device search/permission checks remain deliberate owner tasks.
 
 Phase 2C.2 app-side implementation and local verification are complete.
 Production Firestore/Storage Rules deployment and the documented two-account,

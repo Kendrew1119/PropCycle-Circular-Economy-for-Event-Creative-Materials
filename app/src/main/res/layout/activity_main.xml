@@ -26,7 +26,9 @@
             style="@style/Widget.PropCycle.IconButton"
             android:background="@drawable/bg_circle_header_settings"
             android:contentDescription="@string/home_settings_open"
-            android:padding=\
+            android:padding="12dp"
+            android:src="@drawable/ic_settings"
+            app:tint="@color/pc_on_primary" />
 
         <TextView
             android:id="@+id/app_header_title"
@@ -44,8 +46,9 @@
             style="@style/Widget.PropCycle.IconButton"
             android:background="@drawable/bg_circle_header_action"
             android:contentDescription="@string/notifications"
-            android:padding=\
-            android:tint="@color/pc_primary" />
+            android:padding="12dp"
+            android:src="@drawable/ic_notifications"
+            app:tint="@color/pc_primary" />
 
         <ImageButton
             android:id="@+id/app_header_profile"
@@ -53,8 +56,9 @@
             android:layout_marginStart="@dimen/space_xs"
             android:background="@drawable/bg_circle_header_action"
             android:contentDescription="@string/profile"
-            android:padding=\
-            android:tint="@color/pc_primary" />
+            android:padding="12dp"
+            android:src="@drawable/ic_person"
+            app:tint="@color/pc_primary" />
     </LinearLayout>
 
     <androidx.fragment.app.FragmentContainerView

@@ -49,6 +49,20 @@ public final class ChatValidator {
     }
 
     @Nullable
+    public static String lendingThreadError(
+            @Nullable String itemId,
+            @Nullable String ownerUid,
+            @Nullable String contextTitle,
+            @Nullable String contactUid) {
+        String error = marketplaceThreadError(itemId, ownerUid, contextTitle, contactUid);
+        if (error == null) {
+            return null;
+        }
+        return error.replace("marketplace listing", "lending item")
+                .replace("own listing", "own item");
+    }
+
+    @Nullable
     public static String threadIdError(@Nullable String threadId) {
         return isValidPathSegment(threadId, MAX_THREAD_ID_LENGTH)
                 ? null
@@ -76,6 +90,14 @@ public final class ChatValidator {
             @NonNull String ownerUid,
             @NonNull String contactUid) {
         return "marketplace_" + listingId + "_" + ownerUid + "_" + contactUid;
+    }
+
+    @NonNull
+    public static String lendingThreadId(
+            @NonNull String itemId,
+            @NonNull String ownerUid,
+            @NonNull String contactUid) {
+        return "lending_" + itemId + "_" + ownerUid + "_" + contactUid;
     }
 
     private static boolean isValidPathSegment(@Nullable String value, int maximumLength) {

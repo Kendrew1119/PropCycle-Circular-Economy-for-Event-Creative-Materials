@@ -106,6 +106,11 @@ public final class ScreenNavigation {
                 || destination == R.id.createListingFragment
                 || destination == R.id.scannerFragment
                 || destination == R.id.messagesFragment
+                || destination == R.id.lendResourceFragment
+                || destination == R.id.lendingMapFragment
+                || destination == R.id.lendingListFragment
+                || destination == R.id.lendingDetailFragment
+                || destination == R.id.notificationsFragment
                 || destination == R.id.profileFragment;
     }
 

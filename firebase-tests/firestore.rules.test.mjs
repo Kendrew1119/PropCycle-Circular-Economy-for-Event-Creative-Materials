@@ -29,6 +29,10 @@ const CONTACT_UID = "contact-user";
 const OUTSIDER_UID = "outsider-user";
 const LISTING_ID = "listing-one";
 const THREAD_ID = `marketplace_${LISTING_ID}_${OWNER_UID}_${CONTACT_UID}`;
+const LENDING_ITEM_ID = "lending-item-one";
+const LENDING_REQUEST_ID = "lending-request-one";
+const LENDING_THREAD_ID =
+  `lending_${LENDING_ITEM_ID}_${OWNER_UID}_${CONTACT_UID}`;
 
 let testEnvironment;
 
@@ -91,6 +95,77 @@ function threadData() {
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
   };
+}
+
+function lendingItemData(ownerId = OWNER_UID) {
+  return {
+    ownerId,
+    title: "Portable LED Lights",
+    titleNormalized: "portable led lights",
+    description: "A compact light set for community events.",
+    category: "event_gear",
+    condition: "good",
+    pickupMethod: "meetup",
+    areaLabel: "Petaling Jaya",
+    maxBorrowDays: 7,
+    depositMinor: 5000,
+    latitude: 3.11,
+    longitude: 101.64,
+    imageUrl: null,
+    status: "available",
+    createdAt: Timestamp.fromMillis(1000),
+    updatedAt: Timestamp.fromMillis(1000),
+  };
+}
+
+function lendingRequestData() {
+  return {
+    itemId: LENDING_ITEM_ID,
+    itemTitle: "Portable LED Lights",
+    ownerUid: OWNER_UID,
+    borrowerUid: CONTACT_UID,
+    participantIds: [OWNER_UID, CONTACT_UID],
+    startDate: "2026-09-10",
+    endDate: "2026-09-11",
+    dayKeys: ["2026-09-10", "2026-09-11"],
+    status: "pending",
+    lockToken: "",
+    returnReported: false,
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
+  };
+}
+
+async function seedLendingData({ includeRequest = false } = {}) {
+  await testEnvironment.withSecurityRulesDisabled(async (context) => {
+    const database = context.firestore();
+    const timestamp = Timestamp.fromMillis(1000);
+    await Promise.all([
+      setDoc(doc(database, "users", OWNER_UID), {
+        displayName: "Owner",
+        createdAt: timestamp,
+        updatedAt: timestamp,
+      }),
+      setDoc(doc(database, "users", CONTACT_UID), {
+        displayName: "Borrower",
+        createdAt: timestamp,
+        updatedAt: timestamp,
+      }),
+      setDoc(
+        doc(database, "lendingItems", LENDING_ITEM_ID),
+        lendingItemData(),
+      ),
+    ]);
+    if (includeRequest) {
+      const request = lendingRequestData();
+      request.createdAt = timestamp;
+      request.updatedAt = timestamp;
+      await setDoc(
+        doc(database, "lendingRequests", LENDING_REQUEST_ID),
+        request,
+      );
+    }
+  });
 }
 
 async function seedBaseData({ includeThread = false } = {}) {
@@ -544,4 +619,199 @@ test("rules reject unauthenticated reads and malformed message batches", async (
     });
     await assertFails(batch.commit());
   }
+});
+
+test("lending item creation is owner-only and validates privacy-safe fields", async () => {
+  await seedLendingData();
+  const ownerDatabase = signedIn(OWNER_UID);
+  const contactDatabase = signedIn(CONTACT_UID);
+  const valid = lendingItemData();
+  valid.createdAt = serverTimestamp();
+  valid.updatedAt = serverTimestamp();
+  await assertSucceeds(setDoc(
+    doc(ownerDatabase, "lendingItems", "second-lending-item"),
+    valid,
+  ));
+
+  const forged = lendingItemData(OWNER_UID);
+  forged.createdAt = serverTimestamp();
+  forged.updatedAt = serverTimestamp();
+  await assertFails(setDoc(
+    doc(contactDatabase, "lendingItems", "forged-lending-item"),
+    forged,
+  ));
+
+  const precise = lendingItemData();
+  precise.latitude = "3.123456";
+  precise.createdAt = serverTimestamp();
+  precise.updatedAt = serverTimestamp();
+  await assertFails(setDoc(
+    doc(ownerDatabase, "lendingItems", "invalid-location-item"),
+    precise,
+  ));
+});
+
+test("lending browse is bounded and withdrawn items stay owner-only", async () => {
+  await seedLendingData();
+  const contactDatabase = signedIn(CONTACT_UID);
+  const ownerDatabase = signedIn(OWNER_UID);
+  await assertSucceeds(getDocs(query(
+    collection(contactDatabase, "lendingItems"),
+    where("status", "==", "available"),
+    limit(50),
+  )));
+  await assertFails(getDocs(collection(contactDatabase, "lendingItems")));
+  await assertSucceeds(updateDoc(
+    doc(ownerDatabase, "lendingItems", LENDING_ITEM_ID),
+    {status: "withdrawn", updatedAt: serverTimestamp()},
+  ));
+  await assertSucceeds(getDoc(
+    doc(ownerDatabase, "lendingItems", LENDING_ITEM_ID),
+  ));
+  await assertFails(getDoc(
+    doc(contactDatabase, "lendingItems", LENDING_ITEM_ID),
+  ));
+});
+
+test("borrower creates a bounded lending request and outsiders cannot read it", async () => {
+  await seedLendingData();
+  const contactDatabase = signedIn(CONTACT_UID);
+  const ownerDatabase = signedIn(OWNER_UID);
+  const outsiderDatabase = signedIn(OUTSIDER_UID);
+  await assertSucceeds(setDoc(
+    doc(contactDatabase, "lendingRequests", LENDING_REQUEST_ID),
+    lendingRequestData(),
+  ));
+  await assertSucceeds(getDoc(
+    doc(ownerDatabase, "lendingRequests", LENDING_REQUEST_ID),
+  ));
+  await assertFails(getDoc(
+    doc(outsiderDatabase, "lendingRequests", LENDING_REQUEST_ID),
+  ));
+
+  const forged = lendingRequestData();
+  forged.ownerUid = OUTSIDER_UID;
+  forged.participantIds = [OUTSIDER_UID, CONTACT_UID];
+  await assertFails(setDoc(
+    doc(contactDatabase, "lendingRequests", "forged-request"),
+    forged,
+  ));
+});
+
+test("lending approval requires owner-created date locks", async () => {
+  await seedLendingData({includeRequest: true});
+  const ownerDatabase = signedIn(OWNER_UID);
+  const contactDatabase = signedIn(CONTACT_UID);
+  const token = "12345678901234567890123456789012";
+  await assertFails(updateDoc(
+    doc(ownerDatabase, "lendingRequests", LENDING_REQUEST_ID),
+    {status: "approved", lockToken: token, updatedAt: serverTimestamp()},
+  ));
+  const batch = writeBatch(ownerDatabase);
+  batch.update(doc(ownerDatabase, "lendingRequests", LENDING_REQUEST_ID), {
+    status: "approved",
+    lockToken: token,
+    updatedAt: serverTimestamp(),
+  });
+  for (const day of ["2026-09-10", "2026-09-11"]) {
+    batch.set(
+      doc(ownerDatabase, "lendingItems", LENDING_ITEM_ID, "bookedDays", day),
+      {
+        requestId: LENDING_REQUEST_ID,
+        lockToken: token,
+        date: day,
+        updatedAt: serverTimestamp(),
+      },
+    );
+  }
+  await assertSucceeds(batch.commit());
+  await assertFails(updateDoc(
+    doc(contactDatabase, "lendingRequests", LENDING_REQUEST_ID),
+    {status: "active", updatedAt: serverTimestamp()},
+  ));
+
+  const cancelBatch = writeBatch(contactDatabase);
+  cancelBatch.update(
+    doc(contactDatabase, "lendingRequests", LENDING_REQUEST_ID),
+    {status: "cancelled", updatedAt: serverTimestamp()},
+  );
+  for (const day of ["2026-09-10", "2026-09-11"]) {
+    cancelBatch.delete(doc(
+      contactDatabase,
+      "lendingItems",
+      LENDING_ITEM_ID,
+      "bookedDays",
+      day,
+    ));
+  }
+  await assertSucceeds(cancelBatch.commit());
+});
+
+test("lending return and rating lifecycle is participant-scoped", async () => {
+  await seedLendingData({includeRequest: true});
+  await testEnvironment.withSecurityRulesDisabled(async (context) => {
+    await updateDoc(
+      doc(context.firestore(), "lendingRequests", LENDING_REQUEST_ID),
+      {
+        status: "active",
+        lockToken: "12345678901234567890123456789012",
+        updatedAt: Timestamp.fromMillis(2000),
+      },
+    );
+  });
+  const contactDatabase = signedIn(CONTACT_UID);
+  const ownerDatabase = signedIn(OWNER_UID);
+  await assertSucceeds(updateDoc(
+    doc(contactDatabase, "lendingRequests", LENDING_REQUEST_ID),
+    {returnReported: true, updatedAt: serverTimestamp()},
+  ));
+  await assertSucceeds(updateDoc(
+    doc(ownerDatabase, "lendingRequests", LENDING_REQUEST_ID),
+    {status: "returned", updatedAt: serverTimestamp()},
+  ));
+
+  const ratingBatch = writeBatch(contactDatabase);
+  ratingBatch.set(
+    doc(
+      contactDatabase,
+      "lendingRatings",
+      `${LENDING_REQUEST_ID}_${CONTACT_UID}`,
+    ),
+    {
+      requestId: LENDING_REQUEST_ID,
+      itemId: LENDING_ITEM_ID,
+      raterUid: CONTACT_UID,
+      recipientUid: OWNER_UID,
+      score: 5,
+      comment: "Helpful owner and item as described.",
+      createdAt: serverTimestamp(),
+    },
+  );
+  ratingBatch.update(
+    doc(contactDatabase, "lendingRequests", LENDING_REQUEST_ID),
+    {status: "rated", updatedAt: serverTimestamp()},
+  );
+  await assertSucceeds(ratingBatch.commit());
+  await assertFails(updateDoc(
+    doc(ownerDatabase, "lendingRatings", `${LENDING_REQUEST_ID}_${CONTACT_UID}`),
+    {score: 1},
+  ));
+});
+
+test("only the borrower creates the canonical lending chat thread", async () => {
+  await seedLendingData();
+  const contactDatabase = signedIn(CONTACT_UID);
+  const ownerDatabase = signedIn(OWNER_UID);
+  const data = threadData();
+  data.contextType = "lending";
+  data.contextId = LENDING_ITEM_ID;
+  data.contextTitle = "Portable LED Lights";
+  await assertSucceeds(setDoc(
+    doc(contactDatabase, "chatThreads", LENDING_THREAD_ID),
+    data,
+  ));
+  await assertFails(setDoc(
+    doc(ownerDatabase, "chatThreads", `${LENDING_THREAD_ID}-forged`),
+    data,
+  ));
 });

@@ -33,6 +33,7 @@ public final class ChatRepository {
     public static final String THREADS_COLLECTION = "chatThreads";
     public static final String MESSAGES_COLLECTION = "messages";
     public static final String LISTINGS_COLLECTION = "marketplaceListings";
+    public static final String LENDING_COLLECTION = "lendingItems";
     private static final int THREAD_LIMIT = 50;
     private static final int MESSAGE_LIMIT = 100;
 
@@ -113,6 +114,66 @@ public final class ChatRepository {
                 if (read.isSuccessful() && read.getResult() != null && read.getResult().exists()) {
                     verifyExistingThread(
                             read.getResult(), cleanListingId, cleanOwnerUid, contactUid);
+                    return Tasks.forResult(threadId);
+                }
+                return Tasks.forException(original);
+            });
+        });
+    }
+
+    /** Lending entry point using the same participant-only conversation contract. */
+    @NonNull
+    public static Task<String> createOrGetLendingThread(
+            @NonNull Context context,
+            @NonNull String itemId,
+            @NonNull String ownerUid,
+            @NonNull String contextTitle) {
+        FirebaseAuth auth = FirebaseEnvironment.auth(context.getApplicationContext());
+        FirebaseFirestore firestore = FirebaseEnvironment.firestore(context.getApplicationContext());
+        if (auth == null || firestore == null) {
+            return Tasks.forException(new IllegalStateException(FirebaseEnvironment.SETUP_MESSAGE));
+        }
+        FirebaseUser user = auth.getCurrentUser();
+        if (user == null) {
+            return Tasks.forException(new IllegalStateException("Sign in to start a conversation."));
+        }
+        String cleanItemId = itemId.trim();
+        String cleanOwnerUid = ownerUid.trim();
+        String cleanTitle = contextTitle.trim();
+        String contactUid = user.getUid();
+        String validationError = ChatValidator.lendingThreadError(
+                cleanItemId, cleanOwnerUid, cleanTitle, contactUid);
+        if (validationError != null) {
+            return Tasks.forException(new IllegalArgumentException(validationError));
+        }
+
+        String threadId = ChatValidator.lendingThreadId(
+                cleanItemId, cleanOwnerUid, contactUid);
+        DocumentReference thread = firestore.collection(THREADS_COLLECTION).document(threadId);
+        Map<String, Object> values = new HashMap<>();
+        values.put("contextType", "lending");
+        values.put("contextId", cleanItemId);
+        values.put("contextTitle", cleanTitle);
+        values.put("ownerUid", cleanOwnerUid);
+        values.put("contactUid", contactUid);
+        values.put("participantIds", Arrays.asList(cleanOwnerUid, contactUid));
+        values.put("lastMessageId", "");
+        values.put("lastMessageText", "");
+        values.put("lastMessageSenderId", "");
+        values.put("lastMessageAt", FieldValue.serverTimestamp());
+        values.put("createdAt", FieldValue.serverTimestamp());
+        values.put("updatedAt", FieldValue.serverTimestamp());
+        return thread.set(values).continueWithTask(create -> {
+            if (create.isSuccessful()) {
+                return Tasks.forResult(threadId);
+            }
+            Exception original = create.getException() == null
+                    ? new IllegalStateException("The conversation could not be opened.")
+                    : create.getException();
+            return thread.get().continueWithTask(read -> {
+                if (read.isSuccessful() && read.getResult() != null && read.getResult().exists()) {
+                    verifyExistingLendingThread(
+                            read.getResult(), cleanItemId, cleanOwnerUid, contactUid);
                     return Tasks.forResult(threadId);
                 }
                 return Tasks.forException(original);
@@ -298,17 +359,35 @@ public final class ChatRepository {
         }
     }
 
+    private static void verifyExistingLendingThread(
+            @NonNull DocumentSnapshot existing,
+            @NonNull String itemId,
+            @NonNull String ownerUid,
+            @NonNull String contactUid) {
+        List<String> expectedParticipants = Arrays.asList(ownerUid, contactUid);
+        if (!"lending".equals(existing.getString("contextType"))
+                || !itemId.equals(existing.getString("contextId"))
+                || !ownerUid.equals(existing.getString("ownerUid"))
+                || !contactUid.equals(existing.getString("contactUid"))
+                || !expectedParticipants.equals(existing.get("participantIds"))) {
+            throw new IllegalStateException("The existing conversation does not match this item.");
+        }
+    }
+
     @Nullable
     private static ChatThread mapThread(@NonNull DocumentSnapshot document) {
         String contextId = document.getString("contextId");
+        String contextType = document.getString("contextType");
         String contextTitle = document.getString("contextTitle");
         String ownerUid = document.getString("ownerUid");
         String contactUid = document.getString("contactUid");
-        if (contextId == null || contextTitle == null || ownerUid == null || contactUid == null) {
+        if (contextType == null || contextId == null || contextTitle == null
+                || ownerUid == null || contactUid == null) {
             return null;
         }
         return new ChatThread(
                 document.getId(),
+                contextType,
                 contextId,
                 contextTitle,
                 ownerUid,

@@ -3,7 +3,8 @@
 This guide explains how a teammate can clone the private repository, open the
 correct Android project, connect to the shared development Firebase project,
 build the app, run it, verify the implemented features, and find the detailed
-Firebase, AI scanner, marketplace-image, and Recycling Centre map setup guides.
+Firebase, AI scanner, marketplace-image, Recycling Centre map, and P2P lending
+setup guides.
 
 The instructions use Windows PowerShell because the current team machines use
 Windows. Run commands from the repository root unless a step says otherwise.
@@ -28,6 +29,9 @@ The project currently contains:
   display, and owner-only replacement;
 - one functional Recycling Centre map/list with Places Text Search, one-time
   foreground location, and manual area fallback;
+- one functional P2P lending lifecycle with a protected optional photo,
+  real-time list/optional map, requests, booked-day locks, chat, return, and
+  rating;
 - Firestore and Storage Security Rules, composite indexes, and emulator tests; and
 - the full twenty-screen proposal UI, with unrelated modules still using static
   content.
@@ -49,13 +53,17 @@ still enables billing and the two required APIs, provides a properly restricted
 Android key, and completes the real-device checklist in
 `docs/RECYCLE_MAP_SETUP.md`.
 
+Phase 2E app-side code and local checks are complete. The Firebase owner still
+deploys the reviewed Rules and completes the two-account/two-device checklist
+in `docs/LENDING_SETUP.md`.
+
 Phase 2B adds only the existing Scanner and AI Result journey. Phase 2C.1 adds
 marketplace owner editing/withdraw/relist, Phase 2C.2 adds one marketplace
-photo, and Phase 2D makes only the Recycling Centre map/list functional. The
-following integrations remain deliberately excluded: lending/marketplace maps,
-routes, background location, multiple images, avatars, lending
-images, permanent scan history, Room, Remote Config, WorkManager, push
-notifications, lending transactions, ratings, and presence.
+photo, Phase 2D makes the Recycling Centre map/list functional, and Phase 2E
+adds the bounded lending lifecycle. The following integrations remain
+deliberately excluded: marketplace location, routes, background location,
+multiple images, avatars, permanent scan history, Room, Remote Config,
+WorkManager, payment processing, automated push notifications, and presence.
 
 ## Read this safety box before setup
 
@@ -83,7 +91,7 @@ approved Firebase project and must not force-add it to Git.
 | Person | Required work |
 |---|---|
 | Every teammate | Obtain GitHub access, clone, install Android tools, open the repository root, obtain `google-services.json`, create their ignored restricted-key `secrets.properties`, build, run, and test their own changes. |
-| Firebase/Google Cloud project owner | Add approved teammates, enable only the approved Firebase services, enable the Phase 2C.2 Storage bucket/billing, complete Firebase AI Logic setup, and enable/restrict the Phase 2D Maps/Places services. |
+| Firebase/Google Cloud project owner | Add approved teammates, enable only the approved Firebase services, enable the Storage bucket/billing, complete Firebase AI Logic setup, enable/restrict Maps/Places, and complete the Phase 2E live lending checklist. |
 | Assigned Firebase maintainer | Run the Rules test suite and deliberately deploy reviewed Firestore Rules, Storage Rules, and indexes. |
 | Every scanner developer | Register their own App Check debug token. Never share or commit it. |
 | Nobody | Commit credentials, share a service account, restore Expo/React Native, or enable deferred services without approval. |

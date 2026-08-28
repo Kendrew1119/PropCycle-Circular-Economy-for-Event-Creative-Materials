@@ -28,6 +28,10 @@ The following items are already correct on this PC:
   Its Android code, Firestore/Storage Rules, and local Rules tests are included.
 - Phase 2C.2 app/local checks are complete; deployment and live image checks are
   still owner tasks.
+- Phase 2E adds lending items, participant-private requests, booked-day locks,
+  lending chat, return/rating actions, and one optional protected lending
+  image. Its app/local checks are complete; production deployment and the
+  two-account/two-device checks remain owner tasks.
 
 Do not add `firebase-analytics`. Firebase shows Analytics as an example, but
 PropCycle does not use Analytics in Phase 2A or Phase 2B.
@@ -45,6 +49,11 @@ Gemini API key.
 For Phase 2C.2, the Firebase owner must also enable the default Storage bucket,
 download a fresh `google-services.json`, and deploy Storage Rules. Follow the
 complete [Marketplace image setup guide](MARKETPLACE_IMAGE_SETUP.md).
+
+For Phase 2E, deploy the reviewed Firestore and Storage Rules again, then follow
+the complete [P2P lending setup guide](LENDING_SETUP.md). It explains the item,
+request, approval/date-lock, chat, return, rating, privacy, and live security
+checks in simple steps.
 
 ## Step 1 - Enable email and password login
 

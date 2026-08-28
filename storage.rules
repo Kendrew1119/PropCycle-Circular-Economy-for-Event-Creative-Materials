@@ -24,6 +24,19 @@ service firebase.storage {
           && request.resource.metadata.kind == 'marketplace-primary';
     }
 
+    function validLendingImage(ownerId, itemId, fileName) {
+      return request.resource != null
+          && validSegment(ownerId)
+          && validSegment(itemId)
+          && fileName.matches('primary_[A-Za-z0-9_-]+[.]jpg')
+          && request.resource.size > 0
+          && request.resource.size <= 4 * 1024 * 1024
+          && request.resource.contentType == 'image/jpeg'
+          && request.resource.metadata.ownerId == ownerId
+          && request.resource.metadata.itemId == itemId
+          && request.resource.metadata.kind == 'lending-primary';
+    }
+
     match /marketplace/{ownerId}/{listingId}/{fileName} {
       allow read: if signedIn()
           && validSegment(ownerId)
@@ -33,6 +46,17 @@ service firebase.storage {
           && request.auth.uid == ownerId
           && (request.resource == null
               || validMarketplaceImage(ownerId, listingId, fileName));
+    }
+
+    match /lending/{ownerId}/{itemId}/{fileName} {
+      allow read: if signedIn()
+          && validSegment(ownerId)
+          && validSegment(itemId)
+          && fileName.matches('primary_[A-Za-z0-9_-]+[.]jpg');
+      allow write: if signedIn()
+          && request.auth.uid == ownerId
+          && (request.resource == null
+              || validLendingImage(ownerId, itemId, fileName));
     }
 
     match /{allPaths=**} {

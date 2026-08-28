@@ -23,11 +23,9 @@
     <fragment android:id="@+id/createListingFragment" android:name="com.propcycle.app.ui.marketplace.CreateListingFragment" android:label="Create Listing" tools:layout="@layout/fragment_create_listing">
         <argument android:name="listingId" android:defaultValue="" app:argType="string" />
     </fragment>
-    <fragment android:id="@+id/recycleCenterFragment" android:name="com.propcycle.app.ui.WireframeFragment" android:label="Recycle Center" tools:layout="@layout/fragment_recycle_center">
-        <argument android:name="layoutResId" android:defaultValue="@layout/fragment_recycle_center" app:argType="reference" />
-    </fragment>
-    <fragment android:id="@+id/lendResourceFragment" android:name="com.propcycle.app.ui.WireframeFragment" android:label="Lend Resource" tools:layout="@layout/fragment_lend_resource">
-        <argument android:name="layoutResId" android:defaultValue="@layout/fragment_lend_resource" app:argType="reference" />
+    <fragment android:id="@+id/recycleCenterFragment" android:name="com.propcycle.app.ui.recycle.RecycleCenterFragment" android:label="Recycle Center" tools:layout="@layout/fragment_recycle_center" />
+    <fragment android:id="@+id/lendResourceFragment" android:name="com.propcycle.app.ui.lending.LendResourceFragment" android:label="Lend Resource" tools:layout="@layout/fragment_lend_resource">
+        <argument android:name="itemId" android:defaultValue="" app:argType="string" />
     </fragment>
     <fragment android:id="@+id/marketplaceFragment" android:name="com.propcycle.app.ui.marketplace.MarketplaceFragment" android:label="Marketplace" tools:layout="@layout/fragment_marketplace" />
     <fragment android:id="@+id/marketDetailFragment" android:name="com.propcycle.app.ui.marketplace.MarketDetailFragment" android:label="Marketplace Item" tools:layout="@layout/fragment_market_detail">
@@ -36,17 +34,12 @@
     <fragment android:id="@+id/conversationFragment" android:name="com.propcycle.app.ui.chat.ConversationFragment" android:label="Conversation" tools:layout="@layout/fragment_conversation">
         <argument android:name="threadId" android:defaultValue="" app:argType="string" />
     </fragment>
-    <fragment android:id="@+id/lendingMapFragment" android:name="com.propcycle.app.ui.WireframeFragment" android:label="Lending Map" tools:layout="@layout/fragment_lending_map">
-        <argument android:name="layoutResId" android:defaultValue="@layout/fragment_lending_map" app:argType="reference" />
+    <fragment android:id="@+id/lendingMapFragment" android:name="com.propcycle.app.ui.lending.LendingMapFragment" android:label="Lending Map" tools:layout="@layout/fragment_lending_map" />
+    <fragment android:id="@+id/lendingListFragment" android:name="com.propcycle.app.ui.lending.LendingListFragment" android:label="Lend Out" tools:layout="@layout/fragment_lending_list" />
+    <fragment android:id="@+id/lendingDetailFragment" android:name="com.propcycle.app.ui.lending.LendingDetailFragment" android:label="Lending Item" tools:layout="@layout/fragment_lending_detail">
+        <argument android:name="itemId" android:defaultValue="" app:argType="string" />
     </fragment>
-    <fragment android:id="@+id/lendingListFragment" android:name="com.propcycle.app.ui.WireframeFragment" android:label="Lend Out" tools:layout="@layout/fragment_lending_list">
-        <argument android:name="layoutResId" android:defaultValue="@layout/fragment_lending_list" app:argType="reference" />
-    </fragment>
-    <fragment android:id="@+id/lendingDetailFragment" android:name="com.propcycle.app.ui.WireframeFragment" android:label="Lending Item" tools:layout="@layout/fragment_lending_detail">
-        <argument android:name="layoutResId" android:defaultValue="@layout/fragment_lending_detail" app:argType="reference" />
-    </fragment>
-    <fragment android:id="@+id/notificationsFragment" android:name="com.propcycle.app.ui.WireframeFragment" android:label="Notifications" tools:layout="@layout/fragment_notifications">
-        <argument android:name="layoutResId" android:defaultValue="@layout/fragment_notifications" app:argType="reference" />
+    <fragment android:id="@+id/notificationsFragment" android:name="com.propcycle.app.ui.lending.LendingRequestsFragment" android:label="Notifications" tools:layout="@layout/fragment_notifications">
     </fragment>
     <fragment android:id="@+id/messagesFragment" android:name="com.propcycle.app.ui.chat.MessagesFragment" android:label="Messages" tools:layout="@layout/fragment_messages" />
     <fragment android:id="@+id/settingsFragment" android:name="com.propcycle.app.ui.WireframeFragment" android:label="Settings" tools:layout="@layout/fragment_settings">

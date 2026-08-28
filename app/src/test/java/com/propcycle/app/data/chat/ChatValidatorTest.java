@@ -54,6 +54,18 @@ public final class ChatValidatorTest {
     }
 
     @Test
+    public void lendingThread_isValidatedAndUsesItsOwnNamespace() {
+        assertNull(ChatValidator.lendingThreadError(
+                "item123", "owner123", "Portable lights", "borrower123"));
+        assertNotNull(ChatValidator.lendingThreadError(
+                "item123", "same-user", "Portable lights", "same-user"));
+        assertEquals(
+                "lending_item123_owner123_borrower123",
+                ChatValidator.lendingThreadId(
+                        "item123", "owner123", "borrower123"));
+    }
+
+    @Test
     public void threadNavigation_requiresOneDocumentId() {
         assertNotNull(ChatValidator.threadIdError(""));
         assertNotNull(ChatValidator.threadIdError("threads/nested"));

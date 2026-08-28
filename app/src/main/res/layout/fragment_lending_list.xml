@@ -1,293 +1,145 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/pc_background"
-    android:clipToPadding="false"
-    android:fillViewport="true">
+    android:orientation="vertical"
+    android:paddingStart="@dimen/screen_horizontal"
+    android:paddingTop="@dimen/space_md"
+    android:paddingEnd="@dimen/screen_horizontal"
+    android:paddingBottom="@dimen/space_md">
+
+    <TextView
+        style="@style/TextAppearance.PropCycle.Heading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Lend Out" />
+
+    <TextView
+        style="@style/TextAppearance.PropCycle.Caption"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_xs"
+        android:text="Borrow useful equipment from the community or share your own."
+        android:textColor="@color/pc_text_secondary" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_md"
+        android:hint="Search title or area"
+        app:boxBackgroundColor="@color/pc_surface"
+        app:startIconDrawable="@drawable/ic_search">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/lending_search_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionSearch"
+            android:inputType="text"
+            android:maxLines="1" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_sm"
+        android:scrollbars="none">
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/lending_filter_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:selectionRequired="true"
+            app:singleSelection="true">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/lending_filter_all"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="All" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/lending_filter_equipment"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Equipment" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/lending_filter_tools"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tools" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/lending_filter_electronics"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Electronics" />
+        </com.google.android.material.chip.ChipGroup>
+    </HorizontalScrollView>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingStart="@dimen/screen_horizontal"
-        android:paddingTop="@dimen/space_md"
-        android:paddingEnd="@dimen/screen_horizontal"
-        android:paddingBottom="@dimen/space_xl">
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="54dp"
-            android:layout_marginTop="@dimen/space_md"
-            android:background="@drawable/bg_field"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingStart="18dp"
-            android:paddingEnd="18dp">
-
-            <ImageView
-                android:layout_width="22dp"
-                android:layout_height="22dp"
-                android:contentDescription="Search"
-                android:src="@drawable/ic_search"
-                app:tint="@color/pc_ink" />
-
-            <EditText
-                android:id="@+id/lending_search_input"
-                style="@style/TextAppearance.PropCycle.Body"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginStart="12dp"
-                android:layout_weight="1"
-                android:background="@color/pc_transparent"
-                android:hint="Search..."
-                android:importantForAutofill="no"
-                android:inputType="text"
-                android:maxLines="1"
-                android:paddingStart="0dp"
-                android:paddingEnd="0dp"
-                android:textColor="@color/pc_ink"
-                android:textColorHint="@color/pc_text_secondary" />
-        </LinearLayout>
-
-        <HorizontalScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/space_md"
-            android:scrollbars="none">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/lending_filter_all"
-                    android:layout_width="64dp"
-                    android:layout_height="@dimen/touch_target"
-                    android:background="@drawable/bg_pill_dark"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:gravity="center"
-                    android:text="All"
-                    android:textColor="@color/pc_white"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/lending_filter_equipment"
-                    android:layout_width="94dp"
-                    android:layout_height="@dimen/touch_target"
-                    android:layout_marginStart="@dimen/space_sm"
-                    android:background="@drawable/bg_pill"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:gravity="center"
-                    android:text="Equipment"
-                    android:textColor="@color/pc_ink" />
-
-                <TextView
-                    android:id="@+id/lending_filter_materials"
-                    android:layout_width="90dp"
-                    android:layout_height="@dimen/touch_target"
-                    android:layout_marginStart="@dimen/space_sm"
-                    android:background="@drawable/bg_pill"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:gravity="center"
-                    android:text="Materials"
-                    android:textColor="@color/pc_ink" />
-
-                <TextView
-                    android:id="@+id/lending_filter_nearby"
-                    android:layout_width="82dp"
-                    android:layout_height="@dimen/touch_target"
-                    android:layout_marginStart="@dimen/space_sm"
-                    android:background="@drawable/bg_pill"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:gravity="center"
-                    android:text="Nearby"
-                    android:textColor="@color/pc_ink" />
-            </LinearLayout>
-        </HorizontalScrollView>
+        android:layout_marginTop="@dimen/space_sm"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/lending_empty_state"
-            style="@style/TextAppearance.PropCycle.Body"
-            android:layout_width="match_parent"
+            android:id="@+id/lending_status"
+            style="@style/TextAppearance.PropCycle.Caption"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/space_lg"
-            android:gravity="center"
-            android:text="@string/lending_no_results"
-            android:textColor="@color/pc_text_secondary"
-            android:visibility="gone" />
+            android:layout_weight="1"
+            android:textColor="@color/pc_text_secondary" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/open_lending_map_action"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/space_md"
-            android:baselineAligned="false"
-            android:orientation="horizontal">
+            android:text="Map" />
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/space_sm"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:id="@+id/item_card"
-                    android:tag="equipment nearby"
-                    android:layout_width="match_parent"
-                    android:layout_height="230dp"
-                    android:background="@drawable/bg_lending_listing_card"
-                    android:clickable="true"
-                    android:contentDescription="View display stand listing"
-                    android:focusable="true"
-                    android:gravity="bottom"
-                    android:orientation="vertical"
-                    android:padding="14dp">
-
-                    <TextView
-                        style="@style/TextAppearance.PropCycle.Body"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Display Stand"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        style="@style/TextAppearance.PropCycle.Caption"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="2 days  •  Nearby" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/lending_item_wooden_crates"
-                    android:tag="materials"
-                    android:layout_width="match_parent"
-                    android:layout_height="180dp"
-                    android:layout_marginTop="@dimen/space_md"
-                    android:background="@drawable/bg_lending_listing_card"
-                    android:gravity="bottom"
-                    android:orientation="vertical"
-                    android:padding="14dp">
-
-                    <TextView
-                        style="@style/TextAppearance.PropCycle.Body"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Wooden Crates"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        style="@style/TextAppearance.PropCycle.Caption"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="1 week  •  Pick-up" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/lending_item_fabric_panels"
-                    android:tag="materials"
-                    android:layout_width="match_parent"
-                    android:layout_height="210dp"
-                    android:layout_marginTop="@dimen/space_md"
-                    android:background="@drawable/bg_lending_listing_card"
-                    android:gravity="bottom"
-                    android:orientation="vertical"
-                    android:padding="14dp">
-
-                    <TextView
-                        style="@style/TextAppearance.PropCycle.Body"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Fabric Panels"
-                        android:textStyle="bold" />
-                </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/space_sm"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:id="@+id/item_card_secondary"
-                    android:tag="equipment"
-                    android:layout_width="match_parent"
-                    android:layout_height="180dp"
-                    android:background="@drawable/bg_lending_listing_card"
-                    android:clickable="true"
-                    android:contentDescription="View photo backdrop listing"
-                    android:focusable="true"
-                    android:gravity="bottom"
-                    android:orientation="vertical"
-                    android:padding="14dp">
-
-                    <TextView
-                        style="@style/TextAppearance.PropCycle.Body"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Photo Backdrop"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        style="@style/TextAppearance.PropCycle.Caption"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="3 days  •  Available" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/lending_item_led_lights"
-                    android:tag="equipment nearby"
-                    android:layout_width="match_parent"
-                    android:layout_height="245dp"
-                    android:layout_marginTop="@dimen/space_md"
-                    android:background="@drawable/bg_lending_listing_card"
-                    android:gravity="bottom"
-                    android:orientation="vertical"
-                    android:padding="14dp">
-
-                    <TextView
-                        style="@style/TextAppearance.PropCycle.Body"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="LED Light Set"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        style="@style/TextAppearance.PropCycle.Caption"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Weekend  •  Nearby" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/lending_item_signage_frames"
-                    android:tag="equipment"
-                    android:layout_width="match_parent"
-                    android:layout_height="175dp"
-                    android:layout_marginTop="@dimen/space_md"
-                    android:background="@drawable/bg_lending_listing_card"
-                    android:gravity="bottom"
-                    android:orientation="vertical"
-                    android:padding="14dp">
-
-                    <TextView
-                        style="@style/TextAppearance.PropCycle.Body"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Signage Frames"
-                        android:textStyle="bold" />
-                </LinearLayout>
-            </LinearLayout>
-        </LinearLayout>
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/create_lending_action"
+            style="@style/Widget.PropCycle.Button.Dark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Lend item" />
     </LinearLayout>
-</ScrollView>
+
+    <ProgressBar
+        android:id="@+id/lending_progress"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/space_md" />
+
+    <TextView
+        android:id="@+id/lending_empty_state"
+        style="@style/TextAppearance.PropCycle.Body"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_lg"
+        android:gravity="center"
+        android:text="No available lending items match this search."
+        android:textColor="@color/pc_text_secondary"
+        android:visibility="gone" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/lending_item_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/space_sm"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:paddingBottom="@dimen/space_lg" />
+</LinearLayout>
