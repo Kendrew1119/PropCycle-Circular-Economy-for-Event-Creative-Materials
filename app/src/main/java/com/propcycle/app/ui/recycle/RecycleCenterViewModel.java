@@ -23,6 +23,7 @@ import com.propcycle.app.core.maps.MapsEnvironment;
 import com.propcycle.app.data.recycle.GeoPoint;
 import com.propcycle.app.data.recycle.RecyclingCenter;
 import com.propcycle.app.data.recycle.RecyclingCenterRepository;
+import com.propcycle.app.data.activity.ActivityLogRepository;
 
 import java.util.List;
 
@@ -31,6 +32,7 @@ public final class RecycleCenterViewModel extends AndroidViewModel {
 
     private final MutableLiveData<RecycleCenterUiState> state = new MutableLiveData<>();
     private final FusedLocationProviderClient locationClient;
+    private final ActivityLogRepository activityLog;
     private RecyclingCenterRepository repository;
     private CancellationTokenSource locationCancellation;
     private int operationGeneration;
@@ -39,6 +41,7 @@ public final class RecycleCenterViewModel extends AndroidViewModel {
     public RecycleCenterViewModel(@NonNull Application application) {
         super(application);
         locationClient = LocationServices.getFusedLocationProviderClient(application);
+        activityLog = new ActivityLogRepository(application);
         initialise(application);
     }
 
@@ -65,7 +68,8 @@ public final class RecycleCenterViewModel extends AndroidViewModel {
         state.setValue(RecycleCenterUiState.message(
                 RecycleCenterUiState.Kind.SEARCHING,
                 "Searching recycling centres near " + area + "…"));
-        repository.search(area, null, callbackFor(generation, null));
+        repository.search(area, null, callbackFor(
+                generation, null, "Recycling centres searched near " + area.trim()));
     }
 
     @SuppressLint("MissingPermission")
@@ -102,7 +106,8 @@ public final class RecycleCenterViewModel extends AndroidViewModel {
                     state.setValue(RecycleCenterUiState.message(
                             RecycleCenterUiState.Kind.SEARCHING,
                             "Searching within about 25 km of your location…"));
-                    repository.search(null, point, callbackFor(generation, point));
+                    repository.search(null, point, callbackFor(
+                            generation, point, "Recycling centres searched near current area"));
                 })
                 .addOnFailureListener(error -> {
                     if (isCurrent(generation)
@@ -167,13 +172,22 @@ public final class RecycleCenterViewModel extends AndroidViewModel {
     @NonNull
     private RecyclingCenterRepository.Callback callbackFor(
             int generation,
-            GeoPoint origin) {
+            GeoPoint origin,
+            @NonNull String activityTitle) {
         return new RecyclingCenterRepository.Callback() {
             @Override
             public void onSuccess(@NonNull List<RecyclingCenter> values) {
                 if (!isCurrent(generation)) {
                     return;
                 }
+                activityLog.record(
+                        ActivityLogRepository.TYPE_RECYCLE_SEARCH,
+                        activityTitle,
+                        values.isEmpty()
+                                ? "No matching centre was found."
+                                : values.size() + " result(s) found. Confirm accepted materials before travelling.",
+                        ActivityLogRepository.DESTINATION_RECYCLE,
+                        "");
                 state.setValue(values.isEmpty()
                         ? RecycleCenterUiState.empty(origin)
                         : RecycleCenterUiState.content(values, origin));

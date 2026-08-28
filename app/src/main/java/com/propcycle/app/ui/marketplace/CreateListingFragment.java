@@ -42,6 +42,8 @@ import com.propcycle.app.data.marketplace.MarketplaceListing;
 import com.propcycle.app.data.marketplace.MarketplaceListingValidator;
 import com.propcycle.app.databinding.FragmentCreateListingBinding;
 import com.propcycle.app.ui.common.ScreenNavigation;
+import com.propcycle.app.ui.scanner.ScanPrefillPolicy;
+import com.propcycle.app.data.scanner.ScanAnalysis;
 
 import java.io.File;
 import java.util.Locale;
@@ -51,6 +53,8 @@ import java.util.concurrent.ExecutionException;
 public final class CreateListingFragment extends Fragment {
 
     private static final String ARG_LISTING_ID = "listingId";
+    private static final String ARG_SCAN_ANALYSIS = "scanAnalysisJson";
+    private static final String ARG_SCAN_IMAGE = "scanImagePath";
     private static final String STATE_PERMISSION_REQUESTED = "cameraPermissionRequested";
 
     private FragmentCreateListingBinding binding;
@@ -147,6 +151,33 @@ public final class CreateListingFragment extends Fragment {
                 text(binding.listingDescriptionInput)));
 
         viewModel.start(listingId);
+        if (!editMode && savedInstanceState == null) {
+            applyScannerDraft(arguments);
+        }
+    }
+
+    private void applyScannerDraft(@Nullable Bundle arguments) {
+        if (arguments == null) {
+            return;
+        }
+        String analysisJson = arguments.getString(ARG_SCAN_ANALYSIS, "");
+        if (!analysisJson.trim().isEmpty()) {
+            try {
+                ScanPrefillPolicy.MarketplaceDraft draft =
+                        ScanPrefillPolicy.marketplace(ScanAnalysis.fromJson(analysisJson));
+                binding.listingTitleInput.setText(draft.title());
+                binding.listingCategoryInput.setText(draft.category(), false);
+                binding.listingConditionInput.setText(draft.condition(), false);
+                binding.listingTransactionInput.setText(draft.transaction(), false);
+                binding.listingFulfilmentInput.setText(draft.fulfilment(), false);
+                binding.listingDescriptionInput.setText(draft.description());
+                updateTransactionFields();
+            } catch (ScanAnalysis.ValidationException ignored) {
+                viewModel.showImageMessage(
+                        "The AI draft expired. Review the listing details manually.");
+            }
+        }
+        viewModel.processTransferredImage(arguments.getString(ARG_SCAN_IMAGE, ""));
     }
 
     private void configureChrome() {

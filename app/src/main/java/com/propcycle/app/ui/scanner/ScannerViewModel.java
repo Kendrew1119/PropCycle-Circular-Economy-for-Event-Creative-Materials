@@ -13,6 +13,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.propcycle.app.data.scanner.ScanAnalysis;
 import com.propcycle.app.data.scanner.ScannerAiRepository;
 import com.propcycle.app.data.scanner.ScannerImageProcessor;
+import com.propcycle.app.data.activity.ActivityLogRepository;
 
 import java.io.File;
 import java.util.concurrent.CompletableFuture;
@@ -23,9 +24,10 @@ public final class ScannerViewModel extends AndroidViewModel {
 
     private final ScannerImageProcessor imageProcessor;
     private final ScannerAiRepository aiRepository;
+    private final ActivityLogRepository activityLog;
     private final MutableLiveData<ScannerUiState> state =
             new MutableLiveData<>(ScannerUiState.idle());
-    private final MutableLiveData<Event<ScanAnalysis>> completedAnalysis =
+    private final MutableLiveData<Event<CompletedScan>> completedAnalysis =
             new MutableLiveData<>();
     private final AtomicLong imageGeneration = new AtomicLong();
 
@@ -43,6 +45,7 @@ public final class ScannerViewModel extends AndroidViewModel {
         aiRepository = new ScannerAiRepository(
                 application,
                 ContextCompat.getMainExecutor(application));
+        activityLog = new ActivityLogRepository(application);
     }
 
     @NonNull
@@ -51,7 +54,7 @@ public final class ScannerViewModel extends AndroidViewModel {
     }
 
     @NonNull
-    public LiveData<Event<ScanAnalysis>> getCompletedAnalysis() {
+    public LiveData<Event<CompletedScan>> getCompletedAnalysis() {
         return completedAnalysis;
     }
 
@@ -217,9 +220,22 @@ public final class ScannerViewModel extends AndroidViewModel {
                 if (cleared || requestedImage != currentImage) {
                     return;
                 }
-                deleteCurrentImage();
+                final File transferredFile;
+                try {
+                    transferredFile = requestedImage.transferFileOwnership();
+                } catch (IllegalStateException unavailable) {
+                    deleteCurrentImage();
+                    state.setValue(ScannerUiState.of(
+                            ScannerUiState.Kind.ERROR,
+                            "The prepared photo expired. Take or choose it again.",
+                            false));
+                    return;
+                }
+                currentImage = null;
+                activityLog.recordScan(analysis);
                 state.setValue(ScannerUiState.idle());
-                completedAnalysis.setValue(new Event<>(analysis));
+                completedAnalysis.setValue(new Event<>(
+                        new CompletedScan(analysis, transferredFile.getAbsolutePath())));
             }
 
             @Override
@@ -295,6 +311,27 @@ public final class ScannerViewModel extends AndroidViewModel {
             }
             handled = true;
             return value;
+        }
+    }
+
+    /** Valid analysis plus its app-private, temporary photo for an editable next step. */
+    public static final class CompletedScan {
+        private final ScanAnalysis analysis;
+        private final String imagePath;
+
+        private CompletedScan(@NonNull ScanAnalysis analysis, @NonNull String imagePath) {
+            this.analysis = analysis;
+            this.imagePath = imagePath;
+        }
+
+        @NonNull
+        public ScanAnalysis getAnalysis() {
+            return analysis;
+        }
+
+        @NonNull
+        public String getImagePath() {
+            return imagePath;
         }
     }
 }

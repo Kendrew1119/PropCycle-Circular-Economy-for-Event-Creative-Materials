@@ -15,6 +15,7 @@
         android:paddingBottom="@dimen/space_xl">
 
         <LinearLayout
+            android:id="@+id/dark_theme_setting"
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:gravity="center_vertical"
@@ -54,15 +55,18 @@
                 android:textStyle="bold" />
 
             <Switch
+                android:id="@+id/dark_theme_switch"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/touch_target"
                 android:checked="false"
                 android:contentDescription="Dark Theme, off"
+                android:enabled="false"
                 android:minWidth="@dimen/touch_target"
                 android:showText="false" />
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/push_notification_setting"
             android:layout_width="match_parent"
             android:layout_height="76dp"
             android:layout_marginTop="12dp"
@@ -81,19 +85,25 @@
                 android:textStyle="bold" />
 
             <Switch
+                android:id="@+id/push_notifications_switch"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/touch_target"
-                android:checked="true"
-                android:contentDescription="Push Notifications, on"
+                android:checked="false"
+                android:contentDescription="Push Notifications, unavailable"
+                android:enabled="false"
                 android:minWidth="@dimen/touch_target"
                 android:showText="false" />
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/location_setting"
             android:layout_width="match_parent"
             android:layout_height="76dp"
             android:layout_marginTop="12dp"
             android:background="@drawable/bg_card_light"
+            android:clickable="true"
+            android:contentDescription="Manage Android location permission"
+            android:focusable="true"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:paddingStart="@dimen/space_lg"
@@ -108,15 +118,19 @@
                 android:textStyle="bold" />
 
             <Switch
+                android:id="@+id/location_switch"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/touch_target"
-                android:checked="true"
-                android:contentDescription="Location, on"
+                android:checked="false"
+                android:clickable="false"
+                android:contentDescription="Location permission status"
+                android:focusable="false"
                 android:minWidth="@dimen/touch_target"
                 android:showText="false" />
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/account_details_action"
             android:layout_width="match_parent"
             android:layout_height="76dp"
             android:layout_marginTop="12dp"
@@ -147,12 +161,13 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/clear_history_action"
             android:layout_width="match_parent"
             android:layout_height="76dp"
             android:layout_marginTop="12dp"
             android:background="@drawable/bg_card_light"
             android:clickable="true"
-            android:contentDescription="Open second Account Details entry"
+            android:contentDescription="Clear this account's activity history on this device"
             android:focusable="true"
             android:gravity="center_vertical"
             android:orientation="horizontal"
@@ -164,7 +179,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Account Details"
+                android:text="Clear Local Activity"
                 android:textStyle="bold" />
 
             <TextView

@@ -9,6 +9,13 @@ import org.junit.Test;
 public final class AuthInputValidatorTest {
 
     @Test
+    public void displayNameValidation_supportsProfileEditBoundary() {
+        assertTrue(AuthInputValidator.validateDisplayName("Aisyah Tan").isValid());
+        assertFalse(AuthInputValidator.validateDisplayName("   ").isValid());
+        assertFalse(AuthInputValidator.validateDisplayName("x".repeat(81)).isValid());
+    }
+
+    @Test
     public void login_acceptsTrimmedEmailAndValidPassword() {
         AuthInputValidator.ValidationResult result =
                 AuthInputValidator.validateLogin("  member@example.com  ", "secret1");

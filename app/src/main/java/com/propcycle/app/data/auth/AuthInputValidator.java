@@ -27,12 +27,9 @@ public final class AuthInputValidator {
             String displayName,
             String email,
             String password) {
-        String normalizedName = normalize(displayName);
-        if (normalizedName.isEmpty()) {
-            return ValidationResult.error("Enter your full name.");
-        }
-        if (normalizedName.length() > MAX_DISPLAY_NAME_LENGTH) {
-            return ValidationResult.error("Full name must be 80 characters or fewer.");
+        ValidationResult nameResult = validateDisplayName(displayName);
+        if (!nameResult.isValid()) {
+            return nameResult;
         }
 
         ValidationResult emailResult = validateEmail(email);
@@ -40,6 +37,17 @@ public final class AuthInputValidator {
             return emailResult;
         }
         return validatePassword(password);
+    }
+
+    public static ValidationResult validateDisplayName(String displayName) {
+        String normalizedName = normalize(displayName);
+        if (normalizedName.isEmpty()) {
+            return ValidationResult.error("Enter your full name.");
+        }
+        if (normalizedName.length() > MAX_DISPLAY_NAME_LENGTH) {
+            return ValidationResult.error("Full name must be 80 characters or fewer.");
+        }
+        return ValidationResult.valid();
     }
 
     private static ValidationResult validateEmail(String email) {

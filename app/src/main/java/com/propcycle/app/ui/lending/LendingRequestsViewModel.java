@@ -9,6 +9,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.gms.tasks.Task;
+import com.propcycle.app.data.activity.ActivityLogRepository;
 import com.propcycle.app.data.lending.FirestoreLendingRepository;
 import com.propcycle.app.data.lending.LendingRequest;
 
@@ -46,6 +47,7 @@ public final class LendingRequestsViewModel extends AndroidViewModel {
     }
 
     private final FirestoreLendingRepository repository;
+    private final ActivityLogRepository activityLog;
     private final MutableLiveData<State> state = new MutableLiveData<>(new State(
             true, false, null, null, Collections.emptyList()));
     private FirestoreLendingRepository.Subscription subscription =
@@ -56,6 +58,7 @@ public final class LendingRequestsViewModel extends AndroidViewModel {
     public LendingRequestsViewModel(@NonNull Application application) {
         super(application);
         repository = new FirestoreLendingRepository(application);
+        activityLog = new ActivityLogRepository(application);
     }
 
     @NonNull public LiveData<State> getState() { return state; }
@@ -102,8 +105,17 @@ public final class LendingRequestsViewModel extends AndroidViewModel {
         }
         state.setValue(new State(false, fromCache, "Saving lending update...",
                 request.getId(), requests));
-        task.addOnSuccessListener(ignored -> state.setValue(new State(
-                        false, fromCache, "Lending update saved.", null, requests)))
+        task.addOnSuccessListener(ignored -> {
+                    activityLog.record(
+                            ActivityLogRepository.TYPE_LENDING_STATUS,
+                            activityTitle(action),
+                            request.getItemTitle() == null
+                                    ? "Lending item" : request.getItemTitle(),
+                            ActivityLogRepository.DESTINATION_LENDING_REQUESTS,
+                            request.getId());
+                    state.setValue(new State(
+                            false, fromCache, "Lending update saved.", null, requests));
+                })
                 .addOnFailureListener(error -> state.setValue(new State(
                         false, fromCache,
                         LendingListViewModel.safeMessage(
@@ -115,12 +127,34 @@ public final class LendingRequestsViewModel extends AndroidViewModel {
         state.setValue(new State(false, fromCache, "Saving rating...",
                 request.getId(), requests));
         repository.rate(request.getId(), score, comment)
-                .addOnSuccessListener(ignored -> state.setValue(new State(
-                        false, fromCache, "Thank you. Your rating was saved.", null, requests)))
+                .addOnSuccessListener(ignored -> {
+                    activityLog.record(
+                            ActivityLogRepository.TYPE_LENDING_STATUS,
+                            "Lending experience rated",
+                            request.getItemTitle() == null
+                                    ? "Lending item" : request.getItemTitle(),
+                            ActivityLogRepository.DESTINATION_LENDING_REQUESTS,
+                            request.getId());
+                    state.setValue(new State(
+                            false, fromCache, "Thank you. Your rating was saved.", null, requests));
+                })
                 .addOnFailureListener(error -> state.setValue(new State(
                         false, fromCache,
                         LendingListViewModel.safeMessage(error, "The rating could not be saved."),
                         null, requests)));
+    }
+
+    @NonNull
+    private static String activityTitle(@NonNull LendingRequestAdapter.Action action) {
+        return switch (action) {
+            case APPROVE -> "Borrowing request approved";
+            case REJECT -> "Borrowing request rejected";
+            case CANCEL -> "Borrowing request cancelled";
+            case ACTIVATE -> "Borrowing started";
+            case REPORT_RETURN -> "Item return reported";
+            case CONFIRM_RETURN -> "Item return confirmed";
+            case RATE -> "Lending experience rated";
+        };
     }
 
     public void stop() {

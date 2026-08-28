@@ -97,13 +97,21 @@ public final class ScannerFragment extends Fragment {
 
         viewModel.getState().observe(getViewLifecycleOwner(), this::render);
         viewModel.getCompletedAnalysis().observe(getViewLifecycleOwner(), event -> {
-            ScanAnalysis analysis = event == null ? null : event.getIfNotHandled();
-            if (analysis == null || binding == null) {
+            ScannerViewModel.CompletedScan completed =
+                    event == null ? null : event.getIfNotHandled();
+            if (completed == null || binding == null) {
                 return;
             }
             stopCamera();
             Bundle arguments = new Bundle();
-            arguments.putString("analysisJson", analysis.toJson());
+            arguments.putString("analysisJson", completed.getAnalysis().toJson());
+            arguments.putString("scanImagePath", completed.getImagePath());
+            Bundle sourceArguments = getArguments();
+            arguments.putString(
+                    "handoffTarget",
+                    sourceArguments == null
+                            ? ""
+                            : sourceArguments.getString("handoffTarget", ""));
             ScreenNavigation.navigate(this, R.id.aiResultFragment, arguments);
         });
 

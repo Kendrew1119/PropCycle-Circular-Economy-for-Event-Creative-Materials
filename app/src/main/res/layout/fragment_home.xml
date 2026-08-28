@@ -160,11 +160,15 @@
             </FrameLayout>
 
             <LinearLayout
+                android:id="@+id/home_search_action"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:layout_marginTop="12dp"
                 android:background="@drawable/bg_home_search"
+                android:clickable="true"
+                android:contentDescription="Search marketplace or lending items"
                 android:elevation="3dp"
+                android:focusable="true"
                 android:gravity="center_vertical"
                 android:outlineProvider="background"
                 android:orientation="horizontal"
@@ -190,11 +194,6 @@
                     android:textColor="@color/pc_text_secondary"
                     android:textSize="16sp" />
 
-                <ImageButton
-                    style="@style/Widget.PropCycle.IconButton"
-                    android:background="@color/pc_transparent"
-                    android:contentDescription="Search by voice"
-                    android:src="@drawable/ic_mic" />
             </LinearLayout>
             <LinearLayout
                 android:id="@+id/scanner_card"
@@ -515,6 +514,7 @@
                                 android:src="@drawable/ic_material_box" />
 
                             <TextView
+                                android:id="@+id/home_reused_value"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="@dimen/space_xs"
@@ -525,6 +525,7 @@
                                 android:textStyle="bold" />
 
                             <TextView
+                                android:id="@+id/home_lent_value"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:importantForAccessibility="no"
@@ -562,6 +563,7 @@
                                 app:tint="@color/pc_accent" />
 
                             <TextView
+                                android:id="@+id/home_scanned_value"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="@dimen/space_xs"
@@ -572,6 +574,7 @@
                                 android:textStyle="bold" />
 
                             <TextView
+                                android:id="@+id/home_scanned_label"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:importantForAccessibility="no"
@@ -621,7 +624,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:importantForAccessibility="no"
-                                android:text="@string/home_impact_recycled"
+                                android:text="Scanned"
                                 android:textColor="@color/pc_text_secondary"
                                 android:textSize="14sp" />
                         </LinearLayout>
@@ -635,6 +638,7 @@
                         android:importantForAccessibility="no" />
 
                     <TextView
+                        android:id="@+id/home_impact_message"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"

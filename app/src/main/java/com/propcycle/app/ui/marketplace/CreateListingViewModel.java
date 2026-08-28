@@ -11,6 +11,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.firebase.Timestamp;
+import com.propcycle.app.data.activity.ActivityLogRepository;
 import com.propcycle.app.data.marketplace.FirebaseMarketplaceImageRepository;
 import com.propcycle.app.data.marketplace.FirestoreMarketplaceRepository;
 import com.propcycle.app.data.marketplace.MarketplaceImagePolicy;
@@ -37,6 +38,7 @@ public final class CreateListingViewModel extends AndroidViewModel {
     private final MarketplaceRepository repository;
     private final FirebaseMarketplaceImageRepository imageRepository;
     private final ScannerImageProcessor imageProcessor;
+    private final ActivityLogRepository activityLog;
     private final MutableLiveData<State> state =
             new MutableLiveData<>(State.ready(Mode.CREATE, "", false));
     private final MutableLiveData<MarketplaceListing> initialForm =
@@ -65,6 +67,7 @@ public final class CreateListingViewModel extends AndroidViewModel {
         repository = new FirestoreMarketplaceRepository(application);
         imageRepository = new FirebaseMarketplaceImageRepository(application);
         imageProcessor = new ScannerImageProcessor(application);
+        activityLog = new ActivityLogRepository(application);
     }
 
     @NonNull
@@ -224,6 +227,21 @@ public final class CreateListingViewModel extends AndroidViewModel {
 
     public void processGalleryImage(@NonNull Uri uri) {
         processImage(imageProcessor.process(uri));
+    }
+
+    /** Consumes only an app-private processed image transferred by the AI scanner. */
+    public void processTransferredImage(@Nullable String absolutePath) {
+        if (absolutePath == null || absolutePath.trim().isEmpty() || hasSelectedImage()) {
+            return;
+        }
+        File transferred = ScannerImageProcessor.resolveTransferredImage(
+                getApplication(), absolutePath);
+        if (transferred == null) {
+            showImageMessage(
+                    "The scan photo is no longer available. You can add another photo.");
+            return;
+        }
+        processImage(imageProcessor.process(transferred));
     }
 
     public void processCapturedImage(@NonNull File captureFile) {
@@ -465,6 +483,12 @@ public final class CreateListingViewModel extends AndroidViewModel {
                                     uploadedImageUrl == null
                                             ? "Listing published."
                                             : "Listing and photo published."));
+                            activityLog.record(
+                                    ActivityLogRepository.TYPE_MARKETPLACE_LISTED,
+                                    "Marketplace listing published",
+                                    listing.getTitle(),
+                                    ActivityLogRepository.DESTINATION_MARKETPLACE,
+                                    createdId);
                             completedListing.setValue(new Event<>(createdId));
                         }
 
@@ -498,6 +522,12 @@ public final class CreateListingViewModel extends AndroidViewModel {
                             existingImageUrl = uploadedImageUrl;
                             deleteSelectedImage();
                         }
+                        activityLog.record(
+                                ActivityLogRepository.TYPE_MARKETPLACE_UPDATED,
+                                "Marketplace listing updated",
+                                listing.getTitle(),
+                                ActivityLogRepository.DESTINATION_MARKETPLACE,
+                                targetListingId);
                         cleanupOldImageThenComplete(
                                 targetListingId, oldImageUrl, uploadedImageUrl);
                     }

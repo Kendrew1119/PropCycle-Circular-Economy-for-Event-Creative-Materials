@@ -64,7 +64,7 @@ Figure 4.1.5 shows the lending module, which allows users to borrow and lend reu
 
  Figure 4.1.6 Communication and User Management
 
-Figure 4.1.6 presents the supporting communication and user-management functions. The notification page keeps users informed about new activities and updates, while the messaging page displays all ongoing conversations. Users can also manage application preferences through the settings page and view their personal information, eco badges, and published listings from the profile page.
+Figure 4.1.6 presents the supporting communication and user-management functions. The notification page keeps users informed about new activities and updates, while the messaging page displays all ongoing conversations. Users can also manage application preferences through the settings page and view their personal information, local activity summary, and published listings from the profile page. Reward points and eco badges were removed from the implementation scope at the user's direction on 28 August 2026.
 
 4.2 Implementation Technology Revision (Planning Addendum)
 

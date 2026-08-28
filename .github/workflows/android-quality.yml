@@ -1,0 +1,80 @@
+name: Android quality checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: android-quality-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  android:
+    name: Java tests, build, and lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Verify Java Android project
+        run: |
+          chmod +x gradlew
+          ./gradlew :app:testDebugUnitTest :app:assembleDebug :app:assembleRelease :app:lintDebug --stacktrace
+
+      - name: Keep local-only files out of Git
+        shell: bash
+        run: |
+          if git ls-files | grep -E '(^|/)(google-services\.json|secrets\.properties|local\.properties|keystore\.properties|\.firebaserc|\.env([^/]*)?|[^/]+\.(jks|keystore))$'; then
+            echo 'A local configuration, credential, or signing file is tracked.'
+            exit 1
+          fi
+          if git ls-files | grep -E '\.(kt|kts|tsx|ts)$|(^|/)(app\.json|expo-env\.d\.ts|yarn\.lock)$'; then
+            echo 'Unexpected Kotlin, React Native, Expo, or TypeScript source is tracked.'
+            exit 1
+          fi
+          if git grep -I -n -E 'AIza[0-9A-Za-z_-]{30,}|-----BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY-----' -- .; then
+            echo 'A possible credential was found in tracked files.'
+            exit 1
+          fi
+
+  firebase-rules:
+    name: Firebase Security Rules tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java 21 for Firebase emulators
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Set up Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: firebase-tests/package-lock.json
+
+      - name: Install locked Rules-test dependencies
+        working-directory: firebase-tests
+        run: npm ci
+
+      - name: Test Firestore and Storage Rules locally
+        working-directory: firebase-tests
+        run: npm run test:rules

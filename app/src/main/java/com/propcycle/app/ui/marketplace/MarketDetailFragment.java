@@ -56,6 +56,14 @@ public final class MarketDetailFragment extends Fragment {
         viewModel.getState().observe(getViewLifecycleOwner(), this::render);
         viewModel.getOwnerActionState().observe(
                 getViewLifecycleOwner(), this::renderOwnerAction);
+        viewModel.getSellerName().observe(getViewLifecycleOwner(), name -> {
+            if (binding == null || name == null || name.trim().isEmpty()) {
+                return;
+            }
+            binding.sellerName.setText(name);
+            binding.sellerAvatar.setText(
+                    name.substring(0, 1).toUpperCase(Locale.ROOT));
+        });
         viewModel.getChatNotice().observe(getViewLifecycleOwner(), notice -> {
             boolean show = notice != null && !notice.trim().isEmpty();
             binding.marketDetailActionStatus.setVisibility(show ? View.VISIBLE : View.GONE);

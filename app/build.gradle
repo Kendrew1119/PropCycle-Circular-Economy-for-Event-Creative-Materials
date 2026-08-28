@@ -27,6 +27,12 @@ android {
         versionName '0.1.0'
 
         buildConfigField 'boolean', 'USE_FIREBASE_EMULATORS', useFirebaseEmulators.toString()
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments += ["room.schemaLocation": "$projectDir/schemas".toString()]
+            }
+        }
     }
 
     buildFeatures {
@@ -81,6 +87,11 @@ dependencies {
     implementation 'com.google.guava:guava:31.0.1-android'
     implementation 'org.reactivestreams:reactive-streams:1.0.4'
     implementation 'com.google.code.gson:gson:2.14.0'
+
+    def roomVersion = '2.8.4'
+    implementation "androidx.room:room-runtime:${roomVersion}"
+    annotationProcessor "androidx.room:room-compiler:${roomVersion}"
+    testImplementation "androidx.room:room-testing:${roomVersion}"
 
     testImplementation 'junit:junit:4.13.2'
 }

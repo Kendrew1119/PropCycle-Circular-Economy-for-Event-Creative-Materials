@@ -18,6 +18,7 @@ import com.propcycle.app.data.lending.LendingItem;
 import com.propcycle.app.data.marketplace.MarketplaceImageLoader;
 import com.propcycle.app.databinding.FragmentLendingListBinding;
 import com.propcycle.app.ui.common.ScreenNavigation;
+import com.propcycle.app.ui.common.ResourceCreationFlow;
 
 /** Functional real-time lending browse list. */
 public final class LendingListFragment extends Fragment {
@@ -48,6 +49,16 @@ public final class LendingListFragment extends Fragment {
 
         viewModel = new ViewModelProvider(this).get(LendingListViewModel.class);
         viewModel.getState().observe(getViewLifecycleOwner(), this::render);
+        Bundle arguments = getArguments();
+        String initialQuery = arguments == null
+                ? "" : arguments.getString("initialQuery", "");
+        String initialCategory = arguments == null
+                ? "all" : arguments.getString("initialCategory", "all");
+        if (savedInstanceState == null) {
+            binding.lendingSearchInput.setText(initialQuery);
+            viewModel.setQuery(initialQuery);
+            applyInitialCategory(initialCategory);
+        }
         binding.lendingSearchInput.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
             @Override public void afterTextChanged(Editable s) { }
@@ -62,13 +73,41 @@ public final class LendingListFragment extends Fragment {
                     : selected == R.id.lending_filter_tools
                             ? "tools"
                             : selected == R.id.lending_filter_electronics
-                                    ? "electronics" : "all";
+                                    ? "electronics"
+                                    : selected == R.id.lending_filter_event_gear
+                                            ? "event_gear"
+                                            : selected == R.id.lending_filter_craft
+                                                    ? "craft"
+                                                    : selected == R.id.lending_filter_other
+                                                            ? "other" : "all";
             viewModel.setCategory(category);
         });
         binding.createLendingAction.setOnClickListener(ignored ->
-                ScreenNavigation.navigateAuthenticated(this, R.id.lendResourceFragment, null));
-        binding.openLendingMapAction.setOnClickListener(ignored ->
-                ScreenNavigation.navigateAuthenticated(this, R.id.lendingMapFragment, null));
+                ResourceCreationFlow.show(this, ResourceCreationFlow.TARGET_LENDING));
+        binding.openLendingMapAction.setOnClickListener(ignored -> {
+            Bundle mapArguments = new Bundle();
+            mapArguments.putString("initialQuery", viewModel.getQuery());
+            mapArguments.putString("initialCategory", viewModel.getCategory());
+            ScreenNavigation.navigateAuthenticated(this, R.id.lendingMapFragment, mapArguments);
+        });
+    }
+
+    private void applyInitialCategory(@Nullable String category) {
+        int checked = "equipment".equals(category)
+                ? R.id.lending_filter_equipment
+                : "tools".equals(category)
+                        ? R.id.lending_filter_tools
+                        : "electronics".equals(category)
+                                ? R.id.lending_filter_electronics
+                                : "event_gear".equals(category)
+                                        ? R.id.lending_filter_event_gear
+                                        : "craft".equals(category)
+                                                ? R.id.lending_filter_craft
+                                                : "other".equals(category)
+                                                        ? R.id.lending_filter_other
+                                                        : R.id.lending_filter_all;
+        binding.lendingFilterGroup.check(checked);
+        viewModel.setCategory(category == null ? "all" : category);
     }
 
     @Override

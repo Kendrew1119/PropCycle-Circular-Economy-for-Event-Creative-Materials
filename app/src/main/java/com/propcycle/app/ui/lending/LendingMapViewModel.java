@@ -56,6 +56,7 @@ public final class LendingMapViewModel extends AndroidViewModel {
             FirestoreLendingRepository.Subscription.NONE;
     private List<LendingItem> source = Collections.emptyList();
     private String query = "";
+    private String category = "all";
     @Nullable private Double latitude;
     @Nullable private Double longitude;
     private boolean fromCache;
@@ -97,6 +98,14 @@ public final class LendingMapViewModel extends AndroidViewModel {
         publish(null);
     }
 
+    public void setCategory(@Nullable String value) {
+        category = value == null ? "all" : value;
+        publish(null);
+    }
+
+    @NonNull public String getQuery() { return query; }
+    @NonNull public String getCategory() { return category; }
+
     public void setLocation(double rawLatitude, double rawLongitude) {
         latitude = LendingPolicy.roundLatitude(rawLatitude);
         longitude = LendingPolicy.roundLongitude(rawLongitude);
@@ -110,7 +119,7 @@ public final class LendingMapViewModel extends AndroidViewModel {
     private void publish(@Nullable String message) {
         state.setValue(new State(false, fromCache, message,
                 LendingPolicy.filterAndSort(
-                        source, query, "all", latitude, longitude),
+                        source, query, category, latitude, longitude),
                 latitude, longitude));
     }
 

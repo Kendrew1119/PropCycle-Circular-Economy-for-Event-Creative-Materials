@@ -505,6 +505,38 @@ public final class ScannerImageProcessor implements Closeable {
         }
     }
 
+    /** Resolves only a processed image inside PropCycle's private scanner cache. */
+    @Nullable
+    public static File resolveTransferredImage(
+            @NonNull Context context,
+            @Nullable String absolutePath) {
+        if (absolutePath == null || absolutePath.trim().isEmpty()) {
+            return null;
+        }
+        File scannerDirectory = new File(
+                context.getApplicationContext().getCacheDir(), CACHE_DIRECTORY_NAME);
+        File candidate = new File(absolutePath);
+        try {
+            String expectedParent = scannerDirectory.getCanonicalPath() + File.separator;
+            String candidatePath = candidate.getCanonicalPath();
+            return candidatePath.startsWith(expectedParent)
+                    && candidate.getName().startsWith(OUTPUT_PREFIX)
+                    && candidate.getName().endsWith(JPEG_SUFFIX)
+                    && candidate.isFile()
+                    ? candidate
+                    : null;
+        } catch (IOException ignored) {
+            return null;
+        }
+    }
+
+    /** Deletes an unconsumed scanner handoff without accepting an arbitrary file path. */
+    public static void deleteTransferredImage(
+            @NonNull Context context,
+            @Nullable String absolutePath) {
+        deleteQuietly(resolveTransferredImage(context, absolutePath));
+    }
+
     @Override
     public void close() {
         if (closed.compareAndSet(false, true)) {
@@ -672,6 +704,22 @@ public final class ScannerImageProcessor implements Closeable {
 
         public synchronized boolean isDeleted() {
             return deleted;
+        }
+
+        /**
+         * Transfers the cache file to the next screen and clears this object's in-memory copy.
+         * The receiving screen must pass the file back through {@link ScannerImageProcessor#process(File)}
+         * or delete it when the journey is abandoned.
+         */
+        @NonNull
+        public synchronized File transferFileOwnership() {
+            if (deleted || !file.isFile()) {
+                throw new IllegalStateException("The temporary scanner image is unavailable.");
+            }
+            Arrays.fill(encodedBytes, (byte) 0);
+            encodedBytes = new byte[0];
+            deleted = true;
+            return file;
         }
 
         /** Deletes the cache file and clears the in-memory copy. Safe to call repeatedly. */

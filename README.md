@@ -4,7 +4,7 @@
 > **University:** Universiti Tunku Abdul Rahman (UTAR)<br>
 > **Theme:** UN SDG 12 - Responsible Consumption and Production<br>
 > **Team:** Group 7, four members<br>
-> **Current phase:** Phase 2E P2P Equipment Lending - app/local work complete
+> **Current phase:** Phase 2G Functional Journey Correction - app/local logic and verification complete; owner live checks pending
 
 PropCycle helps campus event organisers, creative makers, cosplayers, toy miniaturists, and DIY communities keep useful materials and equipment in circulation. A user can identify a material with Gemini-assisted scanning, sell/donate/exchange leftover materials, find a recycling centre, or lend and borrow equipment through one connected Android application.
 
@@ -19,7 +19,7 @@ The implementation target has changed from React Native with Expo to a clean nat
 | UI | Android Views with XML and Material Components |
 | Navigation | One Activity, Fragments, and AndroidX Navigation |
 | State/architecture | ViewModel, LiveData, SavedStateHandle, repositories, optional use cases |
-| Local data | Phase 2B uses temporary app-private scanner cache only; Room and Preferences DataStore remain later work |
+| Local data | Room 2.8.4/SQLite stores account-scoped scan and recent-activity history; temporary scanner images remain app-private and are deleted after handoff/use |
 | Cloud | Firebase Auth, Firestore, and participant-only chat from Phase 2A; AI Logic/App Check from Phase 2B; private marketplace images from Phase 2C.2; lending items, requests, date locks, ratings, chat, and protected images from Phase 2E; Remote Config and FCM remain later work |
 | AI | Phase 2B uses the Firebase AI Logic Android SDK for Java with a source-pinned Gemini model and structured response validation |
 | Camera/media | Phase 2B uses CameraX and Photo Picker for temporary scanner input; Phase 2C.2 and Phase 2E reuse safe preparation for one optional protected marketplace or lending image |
@@ -56,7 +56,7 @@ The supplied proposal PDF is the authority for the twenty drawn screens and thei
 
 At the user's explicit direction, the obsolete Expo/React Native implementation was removed from the working tree on 5 August 2026. This includes the Node dependency tree, Expo/Node configuration, TS/TSX application source, generated output, placeholder database/service files, default Expo imagery/licence boilerplate, and the old `.env`.
 
-- There is no React Native/Expo application. A native Android Gradle project exists at the repository root. The twenty proposal screens are implemented with Java/XML. Phase 2A makes accounts, marketplace listings, and text chat functional; Phase 2B makes the Scanner and AI Result journey functional; Phase 2C.1 adds owner listing management; Phase 2C.2 adds one optional marketplace image; Phase 2D makes the Recycling Centre map/list functional; Phase 2E completes the app-side lending lifecycle.
+- There is no React Native/Expo application. A native Android Gradle project exists at the repository root. The twenty proposal screens are implemented with Java/XML. Phase 2A makes accounts, marketplace listings, and text chat functional; Phase 2B makes the Scanner and AI Result journey functional; Phase 2C.1 adds owner listing management; Phase 2C.2 adds one optional marketplace image; Phase 2D makes the Recycling Centre map/list functional; Phase 2E completes the app-side lending lifecycle; Phase 2F adds repeatable release-readiness gates; Phase 2G connects the proposal-wide user journeys and replaces remaining mock logic with truthful local/account data.
 - The native project currently uses namespace/application ID `com.propcycle.app`. Confirm this is the final team-owned ID before registering the long-lived production Firebase app or signing a release.
 - Android Studio and Android SDK Platform 36 are configured locally through ignored `local.properties`. The wrapper is pinned to Gradle 9.5.1 and the project uses Android Gradle Plugin 9.3.0 with Java 17 source compatibility.
 - The repository retains planning documents, course documents, project/agent guidance, and generic editor settings alongside the native app.
@@ -75,6 +75,8 @@ At the user's explicit direction, the obsolete Expo/React Native implementation 
 - [Marketplace image setup guide](docs/MARKETPLACE_IMAGE_SETUP.md) - detailed Storage enablement, Rules deployment, live checks, and troubleshooting.
 - [Recycling Centre map setup guide](docs/RECYCLE_MAP_SETUP.md) - detailed API, billing, restricted-key, SHA-1, live-test, and troubleshooting steps.
 - [P2P lending setup guide](docs/LENDING_SETUP.md) - detailed Firebase deployment, two-account lifecycle, privacy, map, image, security, and troubleshooting steps.
+- [Phase 2F release checklist](docs/PHASE_2F_RELEASE_CHECKLIST.md) - local/GitHub gates, reviewed Firebase deployment, two-device journeys, AI/Maps checks, signing, hashing, and safe evidence capture.
+- [Functional flow and UX logic audit](docs/FUNCTIONAL_FLOW_AUDIT.md) - every proposal screen, the AI-to-form decision, lending item-map logic, cross-module rules, and live checks.
 
 ## Completed UI milestone
 
@@ -85,7 +87,7 @@ The user approved proposal-parity UI implementation on 9 August 2026. This miles
 3. Marketplace Browse, Marketplace Item Detail, Conversation, Lending Map Search, Lending List, and Lending Resource Detail.
 4. Notifications, Messages, Settings, and User Profile.
 
-The original screen pass used deterministic mock content and local navigation so the full flow could be reviewed before integrations. Phase 2A connects Firebase email/password accounts, Firestore marketplace listings, listing-linked conversation discovery, and participant-only real-time text chat. Phase 2B adds CameraX capture, Android Photo Picker, and authenticated Firebase AI Logic/Gemini analysis to the two scanner screens. Phase 2C.1 adds owner listing management, Phase 2C.2 adds one optional authenticated marketplace image, Phase 2D adds the real Recycling Centre map/list search, and Phase 2E adds functional lending discovery and transactions. Room/scan history, marketplace location, presence, OS push delivery, and payment processing remain deferred.
+The original screen pass used deterministic mock content and local navigation so the full flow could be reviewed before integrations. Phase 2A connects Firebase email/password accounts, Firestore marketplace listings, listing-linked conversation discovery, and participant-only real-time text chat. Phase 2B adds CameraX capture, Android Photo Picker, and authenticated Firebase AI Logic/Gemini analysis to the two scanner screens. Phase 2C.1 adds owner listing management, Phase 2C.2 adds one optional authenticated marketplace image, Phase 2D adds the real Recycling Centre map/list search, and Phase 2E adds functional lending discovery and transactions. Phase 2G adds Room-backed scan/activity history, AI draft/photo handoff, item-first lending map flow, real Home/Profile support data, and honest Settings behavior. Marketplace location, presence, OS push delivery, and payment processing remain deferred.
 
 ## Phase 2A Firebase scope
 
@@ -101,7 +103,7 @@ Phase 2A app-side code and local verification are complete. The project owner mu
 ## Phase 2B AI scanner scope
 
 - The Scanner screen supports stable CameraX preview/capture and one-image Android Photo Picker selection. Gallery use stays available when camera permission is denied or camera hardware is unavailable.
-- A selected image is rotated correctly, bounded, recompressed without original metadata, kept only in app-private temporary cache, and deleted after use. Phase 2B does not add Cloud Storage or permanent scan history.
+- A selected image is rotated correctly, bounded, recompressed without original metadata, kept only in app-private temporary cache, transferred only to a user-selected review form, and deleted after use or abandonment. Phase 2G stores the validated text result/activity in Room but never stores the scan image permanently.
 - A signed-in user sees a disclosure before one processed image is sent to Firebase AI Logic using the Gemini Developer API. No raw Gemini API key is created, requested, or embedded.
 - Structured output is validated before the AI Result screen displays it. Confidence is labelled as an uncalibrated model estimate, and the user reviews the result before using an existing next action.
 - Missing Firebase setup, signed-out, permission-denied, offline, malformed-response, retry, and one-request-at-a-time states are part of this slice.
@@ -205,6 +207,24 @@ files parse; all 20 navigation destinations remain; lint reports 0 fatal
 issues and 0 errors (321 project-wide warnings). No Android emulator was
 launched at the user's request.
 
+## Phase 2F release-hardening scope
+
+Phase 2F adds no new user-facing feature. The current assessed feature set is
+frozen while the team verifies it. GitHub now checks every push and pull request
+to `main` with Java tests, setup-fallback debug/release builds, lint, Firebase
+Emulator Security Rules tests, and secret/technology-policy checks. Teammates
+can run the matching Windows preflight from the repository root:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\verify-release-readiness.ps1
+```
+
+The [Phase 2F release checklist](docs/PHASE_2F_RELEASE_CHECKLIST.md) separates
+local evidence from owner-only production deployment, two-account/two-device,
+live Gemini, real Maps, accessibility, signing, and exact-candidate checks.
+Phase 2F is not complete until those release-blocking live rows are recorded.
+No Firebase/Maps/App Check/signing secret belongs in GitHub or the repository.
+
 The UI shell currently locks stable AppCompat 1.7.1, Material Components 1.14.0, ConstraintLayout 2.2.2, and AndroidX Navigation 2.9.8. The newly approved visual direction uses the light-colour interface theme, and the Home hamburger controls the three-destination fan for Market, Share, and Map. Final export-quality brand assets can replace the current launcher asset when supplied.
 
 ## Build and run
@@ -220,7 +240,7 @@ $env:JAVA_HOME='C:\Program Files\Android\Android Studio\jbr'
 
 The generated APK is `app\build\outputs\apk\debug\app-debug.apk`. The normal launch begins at Welcome. All drawn screens remain reachable; on Home, the hamburger control opens the approved fan destinations Market, Share, and Map.
 
-No service file or real Maps key is needed to compile or review setup states. Real account, marketplace, chat, marketplace-image, lending, and AI scanner testing requires each authorised teammate's ignored `app/google-services.json`. A real in-app map requires ignored `secrets.properties`. The normal process is in the [teammate guide](docs/TEAM_SETUP_GUIDE.md), the Firebase owner checklist is in [Firebase setup](docs/FIREBASE_SETUP.md), the Storage procedure is in [Marketplace image setup](docs/MARKETPLACE_IMAGE_SETUP.md), the scanner procedure is in [AI Smart Scanner setup](docs/AI_SCANNER_SETUP.md), Maps setup is in [Recycling Centre map setup](docs/RECYCLE_MAP_SETUP.md), and lending setup is in [P2P lending setup](docs/LENDING_SETUP.md).
+No service file or real Maps key is needed to compile or review setup states. Real account, marketplace, chat, marketplace-image, lending, and AI scanner testing requires each authorised teammate's ignored `app/google-services.json`. A real in-app map requires ignored `secrets.properties`. The normal process is in the [teammate guide](docs/TEAM_SETUP_GUIDE.md), the Firebase owner checklist is in [Firebase setup](docs/FIREBASE_SETUP.md), the Storage procedure is in [Marketplace image setup](docs/MARKETPLACE_IMAGE_SETUP.md), the scanner procedure is in [AI Smart Scanner setup](docs/AI_SCANNER_SETUP.md), Maps setup is in [Recycling Centre map setup](docs/RECYCLE_MAP_SETUP.md), lending setup is in [P2P lending setup](docs/LENDING_SETUP.md), and final evidence belongs in the [Phase 2F release checklist](docs/PHASE_2F_RELEASE_CHECKLIST.md).
 
 ## Later implementation gate
 
@@ -237,7 +257,7 @@ Before the remaining production behaviour is added, the team still confirms:
 - team ownership, remaining dates, testing, and release gates;
 - remaining marketplace, lending-fee, and optional-enhancement decisions.
 
-Phase 2A Firebase essentials, the narrow Phase 2B scanner, Phase 2C.1 marketplace owner management, Phase 2C.2 one-image marketplace support, the narrow Phase 2D Recycling Centre map, and Phase 2E P2P lending are authorised and implemented app-side. Marketplace location, routes, background location, multiple images, permanent scan history/local persistence, push notifications, trusted automation, payment processing, Remote Config, and other integrations remain on hold until their relevant decisions are approved. No automated source conversion is planned.
+Phase 2A Firebase essentials, the narrow Phase 2B scanner, Phase 2C.1 marketplace owner management, Phase 2C.2 one-image marketplace support, the narrow Phase 2D Recycling Centre map, Phase 2E P2P lending, Phase 2F release hardening, and Phase 2G functional journey correction are authorised. Phase 2G adds account-scoped Room scan/activity history and corrected cross-module handoffs; Phase 2F owner live/signing evidence remains pending for the corrected build. Marketplace location, routes, background location, multiple images, push notifications, trusted automation, payment processing, Remote Config, WorkManager outbox, and other integrations remain on hold until their relevant decisions are approved. No automated source conversion is planned.
 
 ## Team ownership
 

@@ -183,13 +183,24 @@
                 android:inputType="none"
                 android:maxLines="1" />
 
+            <TextView
+                style="@style/TextAppearance.PropCycle.Caption"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_md"
+                android:labelFor="@id/listing_transaction_input"
+                android:text="Offer type"
+                android:textColor="@color/pc_text_primary"
+                android:textStyle="bold" />
+
             <AutoCompleteTextView
                 android:id="@+id/listing_transaction_input"
                 style="@style/Widget.PropCycle.CreateListing.Field"
+                android:layout_marginTop="0dp"
+                android:hint="Select sale, donation, or exchange"
                 android:importantForAutofill="no"
                 android:inputType="none"
-                android:maxLines="1"
-                android:visibility="gone" />
+                android:maxLines="1" />
 
             <TextView
                 style="@style/TextAppearance.PropCycle.Caption"

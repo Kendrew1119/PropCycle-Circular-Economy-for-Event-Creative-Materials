@@ -103,6 +103,8 @@ public final class ScreenNavigation {
 
     private static boolean requiresAuthentication(@IdRes int destination) {
         return destination == R.id.marketplaceFragment
+                || destination == R.id.homeFragment
+                || destination == R.id.recentActivitiesFragment
                 || destination == R.id.createListingFragment
                 || destination == R.id.scannerFragment
                 || destination == R.id.messagesFragment
@@ -111,6 +113,7 @@ public final class ScreenNavigation {
                 || destination == R.id.lendingListFragment
                 || destination == R.id.lendingDetailFragment
                 || destination == R.id.notificationsFragment
+                || destination == R.id.settingsFragment
                 || destination == R.id.profileFragment;
     }
 

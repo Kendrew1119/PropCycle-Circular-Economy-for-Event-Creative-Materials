@@ -59,7 +59,8 @@ public final class LendingDetailFragment extends Fragment {
         imageLoader = new MarketplaceImageLoader(requireContext());
         viewModel = new ViewModelProvider(this).get(LendingDetailViewModel.class);
         viewModel.getState().observe(getViewLifecycleOwner(), this::render);
-        viewModel.getRequestCreated().observe(getViewLifecycleOwner(), id -> {
+        viewModel.getRequestCreated().observe(getViewLifecycleOwner(), event -> {
+            String id = event == null ? null : event.getIfNotHandled();
             if (id != null && binding != null) {
                 Toast.makeText(requireContext(),
                         "Request sent. Open Notifications to manage it.",

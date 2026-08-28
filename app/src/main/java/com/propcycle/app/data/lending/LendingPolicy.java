@@ -195,7 +195,11 @@ public final class LendingPolicy {
             }
             String title = clean(item.getTitle()).toLowerCase(Locale.ROOT);
             String area = clean(item.getAreaLabel()).toLowerCase(Locale.ROOT);
-            if (!cleanQuery.isEmpty() && !title.contains(cleanQuery) && !area.contains(cleanQuery)) {
+            String itemCategory = displayLabel(item.getCategory()).toLowerCase(Locale.ROOT);
+            if (!cleanQuery.isEmpty()
+                    && !title.contains(cleanQuery)
+                    && !area.contains(cleanQuery)
+                    && !itemCategory.contains(cleanQuery)) {
                 continue;
             }
             if (!cleanCategory.isEmpty() && !"all".equals(cleanCategory)

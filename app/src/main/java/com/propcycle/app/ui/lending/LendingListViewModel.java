@@ -85,6 +85,9 @@ public final class LendingListViewModel extends AndroidViewModel {
         publish(false, null);
     }
 
+    @NonNull public String getQuery() { return query; }
+    @NonNull public String getCategory() { return category; }
+
     public void stop() {
         subscription.remove();
         subscription = FirestoreLendingRepository.Subscription.NONE;

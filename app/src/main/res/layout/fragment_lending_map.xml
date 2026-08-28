@@ -13,14 +13,14 @@
         style="@style/TextAppearance.PropCycle.Heading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Nearby lending" />
+        android:text="Available items nearby" />
 
     <TextView
         style="@style/TextAppearance.PropCycle.Caption"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/space_xs"
-        android:text="Locations are approximate. Confirm the meeting point in chat."
+        android:text="Search community items first. Locations are approximate; confirm the meeting point in chat."
         android:textColor="@color/pc_text_secondary" />
 
     <LinearLayout
@@ -49,7 +49,23 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/space_sm"
             android:text="Near me" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/lending_map_list_action"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/space_xs"
+            android:text="List" />
     </LinearLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/lending_map_category_action"
+        style="@style/Widget.Material3.Button.TextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:text="@string/lending_category_filter_all" />
 
     <FrameLayout
         android:id="@+id/lending_map_container"

@@ -20,11 +20,13 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.propcycle.app.R;
 import com.propcycle.app.data.scanner.ScanAnalysis;
+import com.propcycle.app.data.scanner.ScannerImageProcessor;
 import com.propcycle.app.databinding.DialogAiResultDetailsBinding;
 import com.propcycle.app.databinding.FragmentAiResultBinding;
 import com.propcycle.app.ui.common.ScreenNavigation;
 
 import java.text.BreakIterator;
+import java.io.File;
 import java.util.List;
 import java.util.Locale;
 
@@ -38,6 +40,8 @@ public final class AiResultFragment extends Fragment {
     private FragmentAiResultBinding binding;
     @Nullable
     private ScanAnalysis analysis;
+    private String scanImagePath = "";
+    private String handoffTarget = "";
 
     @Nullable
     @Override
@@ -54,18 +58,26 @@ public final class AiResultFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         ScreenNavigation.bindChrome(this, view);
         analysis = parseAnalysis();
+        Bundle arguments = getArguments();
+        scanImagePath = arguments == null
+                ? "" : arguments.getString("scanImagePath", "");
+        handoffTarget = arguments == null
+                ? "" : arguments.getString("handoffTarget", "");
         render();
 
         binding.resultDetailsAction.setOnClickListener(ignored -> showDetails());
         binding.recycleAction.setOnClickListener(ignored -> {
             if (analysis != null) {
+                deleteUnconsumedImage();
                 ScreenNavigation.navigate(this, R.id.recycleCenterFragment, null);
             }
         });
         binding.sellAction.setOnClickListener(ignored -> openEditableListing());
         binding.lendAction.setOnClickListener(ignored -> {
             if (analysis != null) {
-                ScreenNavigation.navigate(this, R.id.lendResourceFragment, null);
+                Bundle destination = editableDraftArguments();
+                ScreenNavigation.navigateAuthenticated(
+                        this, R.id.lendResourceFragment, destination);
             }
         });
         binding.scanAgainAction.setOnClickListener(ignored -> scanAgain());
@@ -170,6 +182,13 @@ public final class AiResultFragment extends Fragment {
                 R.string.ai_result_confidence_format,
                 analysis.getUncalibratedModelEstimatePercent()));
         binding.resultStatus.setText(R.string.ai_result_review_status);
+        if ("marketplace".equals(handoffTarget)) {
+            binding.nextStepBubble.setText(
+                    "Your marketplace draft is ready. Choose Create Listing, then review it before publishing.");
+        } else if ("lending".equals(handoffTarget)) {
+            binding.nextStepBubble.setText(
+                    "Your lending draft is ready. Choose Lend Resource, then add availability and pickup details.");
+        }
         binding.resultGuidance.setText(buildGuidance(analysis));
         if (hazardous) {
             binding.nextStepBubble.setText(R.string.ai_result_hazardous_next_step);
@@ -246,14 +265,37 @@ public final class AiResultFragment extends Fragment {
         ScreenNavigation.navigateAuthenticated(
                 this,
                 R.id.createListingFragment,
-                null);
+                editableDraftArguments());
+    }
+
+    @NonNull
+    private Bundle editableDraftArguments() {
+        Bundle arguments = new Bundle();
+        if (analysis != null) {
+            arguments.putString("scanAnalysisJson", analysis.toJson());
+        }
+        File image = ScannerImageProcessor.resolveTransferredImage(
+                requireContext(), scanImagePath);
+        if (image != null) {
+            arguments.putString("scanImagePath", image.getAbsolutePath());
+        }
+        return arguments;
     }
 
     private void scanAgain() {
+        deleteUnconsumedImage();
         NavController controller = NavHostFragment.findNavController(this);
         if (!controller.popBackStack(R.id.scannerFragment, false)) {
             controller.navigate(R.id.scannerFragment);
         }
+    }
+
+    private void deleteUnconsumedImage() {
+        if (scanImagePath.isEmpty()) {
+            return;
+        }
+        ScannerImageProcessor.deleteTransferredImage(requireContext(), scanImagePath);
+        scanImagePath = "";
     }
 
     @NonNull
@@ -302,5 +344,13 @@ public final class AiResultFragment extends Fragment {
         }
         binding = null;
         super.onDestroyView();
+    }
+
+    @Override
+    public void onDestroy() {
+        if (getContext() != null) {
+            deleteUnconsumedImage();
+        }
+        super.onDestroy();
     }
 }

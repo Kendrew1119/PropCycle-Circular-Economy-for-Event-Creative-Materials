@@ -1,12 +1,73 @@
 # PropCycle Native Android Direction
 
-## Current phase: Phase 2E P2P equipment lending - app/local complete
+## Current phase: Phase 2G functional journey correction
+
+On 28 August 2026, the user explicitly authorised a complete proposal-wide
+functional/UX logic audit and correction before final UI polishing. This is a
+release-correctness exception to the earlier Phase 2F feature freeze. It does
+not add or remove a top-level module.
+
+The Phase 2G contract is:
+
+- Keep all twenty proposal destinations and the existing Java/XML structure.
+- Treat Create Listing and Lend Resource as shared create/edit review forms.
+  Recommended entry is camera/Photo Picker through AI Scanner, followed by an
+  editable AI-assisted draft; retain manual entry when AI is unavailable.
+- Transfer only the app-private processed scanner JPEG to the selected form,
+  never auto-publish an AI result, and delete abandoned/consumed handoff files.
+- Lending discovery is item-first. List and Map filter Firestore lending items
+  by title/category/area and preserve filter state. Current location only sorts
+  those items by approximate distance; it never performs a place search.
+- Keep Recycling Centre as the only Places search. Do not mix recycling-centre
+  locations with lending item locations.
+- Use Room 2.8.4 with Java `annotationProcessor` for account-scoped local scan
+  and activity history. History must not claim that a centre search means an
+  item was recycled, and clearing history must not delete Firebase records.
+- Replace static Home/Profile/Recent/Settings claims with real account/local
+  data or honest unavailable states. Do not imply dark theme, OS push, payment,
+  routes, or other deferred services are active.
+- Add pure Java tests and a complete flow audit. Do not launch an emulator at
+  the user's request; use builds, JVM tests, lint, XML/navigation, Rules, and
+  secret checks, then list real-device checks separately.
+- Continue to keep `google-services.json`, `secrets.properties`, API keys, App
+  Check tokens, service-account credentials, and keystores outside Git.
+
+Phase 2F local release automation remains in the working milestone, and its
+production/live/signing evidence remains pending. Phase 2G changes must be
+included in the same final release checks.
+
+## Previous phase: Phase 2F release hardening and live readiness
+
+On 28 August 2026, the user authorised the next phase after Phase 2E. Phase 2F
+is a feature freeze and release-readiness slice. Do not add another user-facing
+module or external integration in this phase.
+
+The Phase 2F local contract is:
+
+- Add repeatable teammate and GitHub checks for Java unit tests, debug/release
+  builds, lint, Firebase Emulator Security Rules tests, XML/navigation
+  integrity, Java-first/legacy-stack policy, and tracked-secret protection.
+- Keep CI buildable without `google-services.json` and without a Maps key. CI
+  must never receive Firebase configuration, API keys, App Check tokens,
+  service-account files, signing keystores, or passwords.
+- Write one detailed owner checklist for reviewed production Rules/index
+  deployment, two-account/two-device journeys, Firebase AI Logic/App Check,
+  Maps/Places, accessibility, stability, signed-APK testing, hashes, and safe
+  evidence collection.
+- Do not deploy Firebase, create or commit a signing key, enable billing/APIs,
+  alter cloud settings, or claim live-service success without the project owner
+  deliberately completing and recording those checks.
+- Do not open an Android emulator at the user's request. Local verification may
+  run Gradle, JVM tests, lint, XML/navigation audits, secret checks, and local
+  Firebase emulators.
+- Treat `PASS` from local automation as local evidence only. Phase 2F remains
+  incomplete until the owner records every release-blocking live/device row in
+  `docs/PHASE_2F_RELEASE_CHECKLIST.md`.
 
 Phase 2E app-side implementation and local verification are complete. Firebase
 production Rules deployment plus the documented two-account/two-device item,
 image, request, collision, chat, return, rating, and optional map checks remain
-deliberate owner tasks in `docs/LENDING_SETUP.md`. Do not start another
-integration until the user authorises it.
+deliberate owner tasks in `docs/LENDING_SETUP.md` and the Phase 2F checklist.
 
 On 28 August 2026, after explicitly requesting a pull of the team's latest UI
 work, the user authorised the next planned phase and asked to continue toward a

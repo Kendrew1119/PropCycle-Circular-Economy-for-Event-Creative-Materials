@@ -82,4 +82,25 @@ public final class LendingPolicyTest {
         assertEquals("item-6", result.get(0).getId());
         assertTrue(LendingPolicy.distanceKm(3d, 101d, 3d, 101.01d) > 1d);
     }
+
+    @Test
+    public void listFiltering_searchesTitleAreaAndReadableCategory() {
+        LendingItem craft = new LendingItem();
+        craft.setId("craft-1");
+        craft.setOwnerId("owner");
+        craft.setTitle("Cutting mat");
+        craft.setAreaLabel("Kampar");
+        craft.setCategory("event_gear");
+        craft.setStatus("available");
+
+        List<LendingItem> source = List.of(craft);
+        assertEquals(1, LendingPolicy.filterAndSort(
+                source, "cutting", "all", null, null).size());
+        assertEquals(1, LendingPolicy.filterAndSort(
+                source, "kampar", "all", null, null).size());
+        assertEquals(1, LendingPolicy.filterAndSort(
+                source, "event gear", "all", null, null).size());
+        assertTrue(LendingPolicy.filterAndSort(
+                source, "electronics", "all", null, null).isEmpty());
+    }
 }

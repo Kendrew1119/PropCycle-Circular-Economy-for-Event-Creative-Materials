@@ -9,27 +9,35 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.propcycle.app.data.chat.ChatRepository;
+import com.propcycle.app.data.activity.ActivityLogRepository;
 import com.propcycle.app.data.marketplace.FirestoreMarketplaceRepository;
 import com.propcycle.app.data.marketplace.MarketplaceListing;
 import com.propcycle.app.data.marketplace.MarketplaceListingStatusPolicy;
 import com.propcycle.app.data.marketplace.MarketplaceRepository;
+import com.propcycle.app.core.firebase.FirebaseEnvironment;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 /** Owns the live detail document plus owner edit/withdraw/relist actions. */
 public final class MarketDetailViewModel extends AndroidViewModel {
 
     private final MarketplaceRepository repository;
+    private final ActivityLogRepository activityLog;
     private final MutableLiveData<State> state = new MutableLiveData<>(State.loading());
     private final MutableLiveData<String> chatNotice = new MutableLiveData<>();
     private final MutableLiveData<OwnerActionState> ownerActionState =
             new MutableLiveData<>(OwnerActionState.idle());
     private final MutableLiveData<Event<String>> openedThread = new MutableLiveData<>();
+    private final MutableLiveData<String> sellerName =
+            new MutableLiveData<>("Community member");
     private MarketplaceRepository.Subscription subscription;
     private String loadedListingId;
     private boolean openingChat;
+    private String loadedSellerId = "";
 
     public MarketDetailViewModel(@NonNull Application application) {
         super(application);
         repository = new FirestoreMarketplaceRepository(application);
+        activityLog = new ActivityLogRepository(application);
     }
 
     @NonNull
@@ -50,6 +58,11 @@ public final class MarketDetailViewModel extends AndroidViewModel {
     @NonNull
     public LiveData<Event<String>> getOpenedThread() {
         return openedThread;
+    }
+
+    @NonNull
+    public LiveData<String> getSellerName() {
+        return sellerName;
     }
 
     public void load(@Nullable String listingId) {
@@ -86,12 +99,36 @@ public final class MarketDetailViewModel extends AndroidViewModel {
                         String currentUserId = repository.currentUserId();
                         boolean owner = currentUserId != null
                                 && currentUserId.equals(listing.getOwnerId());
+                        loadSellerName(listing.getOwnerId());
                         state.setValue(State.content(listing, owner, fromCache));
                     }
 
                     @Override
                     public void onError(@NonNull MarketplaceRepository.RepositoryError error) {
                         state.setValue(State.error(error.getType(), error.getMessage()));
+                    }
+                });
+    }
+
+    private void loadSellerName(@Nullable String ownerId) {
+        String cleanId = ownerId == null ? "" : ownerId.trim();
+        if (cleanId.isEmpty() || cleanId.equals(loadedSellerId)) {
+            return;
+        }
+        loadedSellerId = cleanId;
+        sellerName.setValue("Community member");
+        FirebaseFirestore firestore = FirebaseEnvironment.firestore(getApplication());
+        if (firestore == null) {
+            return;
+        }
+        firestore.collection("users").document(cleanId).get()
+                .addOnSuccessListener(snapshot -> {
+                    if (!cleanId.equals(loadedSellerId) || !snapshot.exists()) {
+                        return;
+                    }
+                    String displayName = snapshot.getString("displayName");
+                    if (displayName != null && !displayName.trim().isEmpty()) {
+                        sellerName.setValue(displayName.trim());
                     }
                 });
     }
@@ -135,6 +172,15 @@ public final class MarketDetailViewModel extends AndroidViewModel {
                 new MarketplaceRepository.MutationCallback() {
                     @Override
                     public void onUpdated() {
+                        activityLog.record(
+                                ActivityLogRepository.TYPE_MARKETPLACE_STATUS,
+                                MarketplaceListingStatusPolicy.WITHDRAWN.equals(targetStatus)
+                                        ? "Marketplace listing withdrawn"
+                                        : "Marketplace listing relisted",
+                                listing.getTitle() == null
+                                        ? "Marketplace item" : listing.getTitle(),
+                                ActivityLogRepository.DESTINATION_MARKETPLACE,
+                                listing.getId());
                         ownerActionState.setValue(OwnerActionState.success(
                                 MarketplaceListingStatusPolicy.WITHDRAWN.equals(targetStatus)
                                         ? "Listing withdrawn. It is hidden from public browse."

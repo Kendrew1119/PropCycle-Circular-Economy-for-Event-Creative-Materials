@@ -9,8 +9,10 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.propcycle.app.data.lending.FirestoreLendingRepository;
+import com.propcycle.app.data.activity.ActivityLogRepository;
 import com.propcycle.app.data.lending.LendingItem;
 import com.propcycle.app.data.lending.LendingRating;
+import com.propcycle.app.ui.common.OneTimeEvent;
 
 import java.util.Collections;
 import java.util.List;
@@ -50,9 +52,11 @@ public final class LendingDetailViewModel extends AndroidViewModel {
     }
 
     private final FirestoreLendingRepository repository;
+    private final ActivityLogRepository activityLog;
     private final MutableLiveData<State> state = new MutableLiveData<>(new State(
             true, false, false, null, null, Collections.emptyList()));
-    private final MutableLiveData<String> requestCreated = new MutableLiveData<>();
+    private final MutableLiveData<OneTimeEvent<String>> requestCreated =
+            new MutableLiveData<>();
     private FirestoreLendingRepository.Subscription itemSubscription =
             FirestoreLendingRepository.Subscription.NONE;
     private FirestoreLendingRepository.Subscription ratingSubscription =
@@ -65,10 +69,13 @@ public final class LendingDetailViewModel extends AndroidViewModel {
     public LendingDetailViewModel(@NonNull Application application) {
         super(application);
         repository = new FirestoreLendingRepository(application);
+        activityLog = new ActivityLogRepository(application);
     }
 
     @NonNull public LiveData<State> getState() { return state; }
-    @NonNull public LiveData<String> getRequestCreated() { return requestCreated; }
+    @NonNull public LiveData<OneTimeEvent<String>> getRequestCreated() {
+        return requestCreated;
+    }
     @Nullable public String currentUserId() { return repository.currentUserId(); }
 
     public void start(@Nullable String itemId) {
@@ -111,7 +118,13 @@ public final class LendingDetailViewModel extends AndroidViewModel {
         setBusy("Sending borrowing request...");
         repository.createRequest(item, startDate, endDate)
                 .addOnSuccessListener(id -> {
-                    requestCreated.setValue(id);
+                    activityLog.record(
+                            ActivityLogRepository.TYPE_LENDING_REQUEST,
+                            "Borrowing request sent",
+                            item.getTitle() == null ? "Lending item" : item.getTitle(),
+                            ActivityLogRepository.DESTINATION_LENDING_REQUESTS,
+                            id);
+                    requestCreated.setValue(new OneTimeEvent<>(id));
                     state.setValue(new State(false, false, itemFromCache,
                             "Request sent. Track it from Notifications.", item, ratings));
                 })
@@ -129,6 +142,14 @@ public final class LendingDetailViewModel extends AndroidViewModel {
         String next = "available".equals(item.getStatus()) ? "withdrawn" : "available";
         setBusy("Updating lending item...");
         repository.setItemStatus(item.getId(), next)
+                .addOnSuccessListener(ignored -> activityLog.record(
+                        ActivityLogRepository.TYPE_LENDING_STATUS,
+                        "available".equals(next)
+                                ? "Lending item made available"
+                                : "Lending item withdrawn",
+                        item.getTitle() == null ? "Lending item" : item.getTitle(),
+                        ActivityLogRepository.DESTINATION_LENDING_ITEM,
+                        item.getId()))
                 .addOnFailureListener(error -> state.setValue(new State(
                         false, false, itemFromCache,
                         LendingListViewModel.safeMessage(

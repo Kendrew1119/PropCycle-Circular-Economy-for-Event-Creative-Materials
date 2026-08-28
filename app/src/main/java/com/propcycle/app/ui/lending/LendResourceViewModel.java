@@ -11,6 +11,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.firebase.Timestamp;
+import com.propcycle.app.data.activity.ActivityLogRepository;
 import com.propcycle.app.data.lending.FirebaseLendingImageRepository;
 import com.propcycle.app.data.lending.FirestoreLendingRepository;
 import com.propcycle.app.data.lending.LendingImagePolicy;
@@ -18,6 +19,7 @@ import com.propcycle.app.data.lending.LendingItem;
 import com.propcycle.app.data.lending.LendingPolicy;
 import com.propcycle.app.data.lending.NewLendingItem;
 import com.propcycle.app.data.scanner.ScannerImageProcessor;
+import com.propcycle.app.ui.common.OneTimeEvent;
 
 import java.io.File;
 import java.util.concurrent.CompletableFuture;
@@ -55,10 +57,12 @@ public final class LendResourceViewModel extends AndroidViewModel {
     private final FirestoreLendingRepository repository;
     private final FirebaseLendingImageRepository imageRepository;
     private final ScannerImageProcessor imageProcessor;
+    private final ActivityLogRepository activityLog;
     private final MutableLiveData<State> state = new MutableLiveData<>(
             new State(false, false, true, 0, null));
     private final MutableLiveData<LendingItem> initialItem = new MutableLiveData<>();
-    private final MutableLiveData<String> completedItemId = new MutableLiveData<>();
+    private final MutableLiveData<OneTimeEvent<String>> completedItemId =
+            new MutableLiveData<>();
     private FirestoreLendingRepository.Subscription subscription =
             FirestoreLendingRepository.Subscription.NONE;
     private FirebaseLendingImageRepository.UploadHandle uploadHandle;
@@ -78,11 +82,14 @@ public final class LendResourceViewModel extends AndroidViewModel {
         repository = new FirestoreLendingRepository(application);
         imageRepository = new FirebaseLendingImageRepository(application);
         imageProcessor = new ScannerImageProcessor(application);
+        activityLog = new ActivityLogRepository(application);
     }
 
     @NonNull public LiveData<State> getState() { return state; }
     @NonNull public LiveData<LendingItem> getInitialItem() { return initialItem; }
-    @NonNull public LiveData<String> getCompletedItemId() { return completedItemId; }
+    @NonNull public LiveData<OneTimeEvent<String>> getCompletedItemId() {
+        return completedItemId;
+    }
     public boolean isEditMode() { return editMode; }
     @Nullable public File getSelectedImageFile() {
         return selectedImage == null ? null : selectedImage.getFile();
@@ -156,6 +163,49 @@ public final class LendResourceViewModel extends AndroidViewModel {
         }
         state.setValue(new State(false, true, true, 0, "Preparing photo safely..."));
         imageFuture = imageProcessor.process(uri);
+        imageFuture.whenComplete((image, error) ->
+                ContextCompat.getMainExecutor(getApplication()).execute(() -> {
+                    imageFuture = null;
+                    if (cleared) {
+                        ScannerImageProcessor.deleteQuietly(image);
+                        return;
+                    }
+                    if (error != null || image == null) {
+                        state.setValue(new State(false, false, true, 0,
+                                "The photo could not be prepared. Choose another JPEG image."));
+                        return;
+                    }
+                    selectedImage = image;
+                    removeExistingImage = false;
+                    state.setValue(new State(false, false, true, 0,
+                            "Photo ready. It uploads only when you save."));
+                }));
+    }
+
+    /** Consumes only an app-private processed image transferred by the AI scanner. */
+    public void processTransferredImage(@Nullable String absolutePath) {
+        if (absolutePath == null || absolutePath.trim().isEmpty()
+                || selectedImage != null || isBusy()) {
+            return;
+        }
+        File transferred = ScannerImageProcessor.resolveTransferredImage(
+                getApplication(), absolutePath);
+        if (transferred == null) {
+            state.setValue(new State(false, false, true, 0,
+                    "The scan photo is no longer available. You can add another photo."));
+            return;
+        }
+        processImageFuture(imageProcessor.process(transferred));
+    }
+
+    private void processImageFuture(
+            @NonNull CompletableFuture<ScannerImageProcessor.ProcessedImage> future) {
+        deleteSelectedImage();
+        if (imageFuture != null) {
+            imageFuture.cancel(true);
+        }
+        state.setValue(new State(false, true, true, 0, "Preparing photo safely..."));
+        imageFuture = future;
         imageFuture.whenComplete((image, error) ->
                 ContextCompat.getMainExecutor(getApplication()).execute(() -> {
                     imageFuture = null;
@@ -263,7 +313,15 @@ public final class LendResourceViewModel extends AndroidViewModel {
                 imageRepository.deleteOwned(itemId, oldUrl, quietCompletion());
             }
             deleteSelectedImage();
-            completedItemId.setValue(itemId);
+            activityLog.record(
+                    editMode
+                            ? ActivityLogRepository.TYPE_LENDING_UPDATED
+                            : ActivityLogRepository.TYPE_LENDING_LISTED,
+                    editMode ? "Lending item updated" : "Lending item published",
+                    input.getTitle(),
+                    ActivityLogRepository.DESTINATION_LENDING_ITEM,
+                    itemId);
+            completedItemId.setValue(new OneTimeEvent<>(itemId));
             state.setValue(new State(false, false, true, 100, "Lending item saved."));
         }).addOnFailureListener(error -> {
             if (newlyUploadedUrl != null) {

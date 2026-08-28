@@ -33,9 +33,11 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.CancellationTokenSource;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.propcycle.app.R;
 import com.propcycle.app.core.maps.MapsEnvironment;
 import com.propcycle.app.data.lending.LendingItem;
+import com.propcycle.app.data.lending.LendingPolicy;
 import com.propcycle.app.data.marketplace.MarketplaceImageLoader;
 import com.propcycle.app.databinding.FragmentLendingMapBinding;
 import com.propcycle.app.ui.common.ScreenNavigation;
@@ -101,6 +103,14 @@ public final class LendingMapFragment extends Fragment {
         binding.lendingMapList.setAdapter(adapter);
         locationClient = LocationServices.getFusedLocationProviderClient(requireContext());
         binding.lendingMapLocationAction.setOnClickListener(ignored -> requestLocation());
+        binding.lendingMapCategoryAction.setOnClickListener(ignored -> showCategoryChoice());
+        binding.lendingMapListAction.setOnClickListener(ignored -> {
+            Bundle listArguments = new Bundle();
+            listArguments.putString("initialQuery", viewModel.getQuery());
+            listArguments.putString("initialCategory", viewModel.getCategory());
+            ScreenNavigation.navigateAuthenticated(
+                    this, R.id.lendingListFragment, listArguments);
+        });
         binding.lendingMapSearchInput.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
             @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -108,8 +118,47 @@ public final class LendingMapFragment extends Fragment {
             }
             @Override public void afterTextChanged(Editable s) { }
         });
+        Bundle arguments = getArguments();
+        String initialQuery = arguments == null
+                ? "" : arguments.getString("initialQuery", "");
+        String initialCategory = arguments == null
+                ? "all" : arguments.getString("initialCategory", "all");
+        if (savedInstanceState == null) {
+            binding.lendingMapSearchInput.setText(initialQuery);
+            binding.lendingMapSearchInput.setSelection(initialQuery.length());
+            viewModel.setCategory(initialCategory);
+            updateCategoryLabel();
+        }
         initialiseMap(savedInstanceState);
         viewModel.getState().observe(getViewLifecycleOwner(), this::render);
+    }
+
+    private void showCategoryChoice() {
+        String[] labels = {"All", "Equipment", "Tools", "Electronics", "Event gear", "Craft", "Other"};
+        String[] values = {"all", "equipment", "tools", "electronics", "event_gear", "craft", "other"};
+        int selected = 0;
+        for (int index = 0; index < values.length; index++) {
+            if (values[index].equals(viewModel.getCategory())) {
+                selected = index;
+                break;
+            }
+        }
+        new MaterialAlertDialogBuilder(requireContext())
+                .setTitle("Filter lending items")
+                .setSingleChoiceItems(labels, selected, (dialog, which) -> {
+                    viewModel.setCategory(values[which]);
+                    updateCategoryLabel();
+                    dialog.dismiss();
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    private void updateCategoryLabel() {
+        String category = viewModel.getCategory();
+        String label = "all".equals(category) ? "All" : LendingPolicy.displayLabel(category);
+        binding.lendingMapCategoryAction.setText(
+                getString(R.string.lending_category_filter_format, label));
     }
 
     @Override

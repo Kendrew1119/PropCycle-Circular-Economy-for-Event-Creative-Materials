@@ -93,8 +93,29 @@
                 android:focusable="true"
                 android:gravity="center"
                 android:text="Wood" />
+
+            <TextView
+                android:id="@+id/filter_more_action"
+                style="@style/TextAppearance.PropCycle.Caption"
+                android:layout_width="76dp"
+                android:layout_height="@dimen/touch_target"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/bg_pill"
+                android:clickable="true"
+                android:contentDescription="Choose another marketplace category"
+                android:focusable="true"
+                android:gravity="center"
+                android:text="More" />
         </LinearLayout>
     </HorizontalScrollView>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/marketplace_create_action"
+        style="@style/Widget.Material3.Button.TonalButton"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/touch_target"
+        android:layout_marginBottom="8dp"
+        android:text="List an item" />
 
     <TextView
         android:id="@+id/marketplace_cache_status"

@@ -29,8 +29,10 @@ import com.propcycle.app.R;
 import com.propcycle.app.data.lending.LendingItem;
 import com.propcycle.app.data.lending.LendingPolicy;
 import com.propcycle.app.data.marketplace.MarketplaceImageLoader;
+import com.propcycle.app.data.scanner.ScanAnalysis;
 import com.propcycle.app.databinding.FragmentLendResourceBinding;
 import com.propcycle.app.ui.common.ScreenNavigation;
+import com.propcycle.app.ui.scanner.ScanPrefillPolicy;
 
 import java.io.File;
 import java.util.Locale;
@@ -38,6 +40,9 @@ import java.util.Map;
 
 /** Lending item create/edit form with Photo Picker and optional coarse map point. */
 public final class LendResourceFragment extends Fragment {
+
+    private static final String ARG_SCAN_ANALYSIS = "scanAnalysisJson";
+    private static final String ARG_SCAN_IMAGE = "scanImagePath";
 
     private FragmentLendResourceBinding binding;
     private LendResourceViewModel viewModel;
@@ -89,7 +94,8 @@ public final class LendResourceFragment extends Fragment {
                 populate(item);
             }
         });
-        viewModel.getCompletedItemId().observe(getViewLifecycleOwner(), completedId -> {
+        viewModel.getCompletedItemId().observe(getViewLifecycleOwner(), event -> {
+            String completedId = event == null ? null : event.getIfNotHandled();
             if (completedId == null || binding == null) {
                 return;
             }
@@ -121,6 +127,29 @@ public final class LendResourceFragment extends Fragment {
                 latitude,
                 longitude));
         viewModel.start(itemId);
+        if (itemId.trim().isEmpty() && savedInstanceState == null) {
+            applyScannerDraft(arguments);
+        }
+    }
+
+    private void applyScannerDraft(@Nullable Bundle arguments) {
+        if (arguments == null) {
+            return;
+        }
+        String analysisJson = arguments.getString(ARG_SCAN_ANALYSIS, "");
+        if (!analysisJson.trim().isEmpty()) {
+            try {
+                ScanPrefillPolicy.LendingDraft draft =
+                        ScanPrefillPolicy.lending(ScanAnalysis.fromJson(analysisJson));
+                binding.lendingTitleInput.setText(draft.title());
+                binding.lendingCategoryInput.setText(draft.category(), false);
+                binding.lendingConditionInput.setText(draft.condition(), false);
+                binding.lendingDescriptionInput.setText(draft.description());
+            } catch (ScanAnalysis.ValidationException ignored) {
+                // Manual entry remains available if a saved AI draft is no longer valid.
+            }
+        }
+        viewModel.processTransferredImage(arguments.getString(ARG_SCAN_IMAGE, ""));
     }
 
     private void configureDropdowns() {
