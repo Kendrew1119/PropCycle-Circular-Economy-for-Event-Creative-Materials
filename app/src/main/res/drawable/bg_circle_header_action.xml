@@ -6,7 +6,7 @@
         android:start="6dp"
         android:top="6dp">
         <shape android:shape="oval">
-            <solid android:color="@color/pc_primary_container" />
+            <solid android:color="@color/pc_brand_soft_blue" />
         </shape>
     </item>
 </layer-list>

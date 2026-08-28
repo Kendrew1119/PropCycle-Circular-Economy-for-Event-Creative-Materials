@@ -1,5 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Phase 2G Person 1 visual system. Scoped to shared chrome and Home. -->
+    <color name="pc_brand_primary_blue">#234FA8</color>
+    <color name="pc_brand_deep_blue">#123A7A</color>
+    <color name="pc_brand_soft_blue">#DCE8FA</color>
+    <color name="pc_brand_sky_blue">#AFC8F4</color>
+    <color name="pc_brand_warm_cream">#FBF6E8</color>
+    <color name="pc_brand_surface">#FFFDF8</color>
+    <color name="pc_brand_accent_yellow">#F3D447</color>
+    <color name="pc_brand_accent_red">#D94A3A</color>
+    <color name="pc_brand_eco_green">#67A95A</color>
+    <color name="pc_brand_text_primary">#1B1B1B</color>
+    <color name="pc_brand_text_secondary">#686868</color>
+    <color name="pc_brand_outline">#D7D3C8</color>
     <!-- Core light eco palette. -->
     <color name="pc_primary">#1F5C42</color>
     <color name="pc_on_primary">#FFFFFF</color>

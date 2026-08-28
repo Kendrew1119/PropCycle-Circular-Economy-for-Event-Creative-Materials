@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
-    <solid android:color="@color/pc_surface" />
+    <solid android:color="@color/pc_brand_surface" />
     <stroke
         android:width="@dimen/stroke_thin"
-        android:color="@color/pc_primary_container" />
+        android:color="@color/pc_brand_outline" />
     <corners android:radius="@dimen/home_pill_corner" />
 </shape>

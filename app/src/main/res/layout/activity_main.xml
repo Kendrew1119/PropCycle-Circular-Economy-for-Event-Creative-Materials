@@ -4,16 +4,14 @@
     android:id="@+id/app_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/pc_background">
+    android:background="@color/pc_brand_primary_blue">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/app_header"
         android:layout_width="0dp"
         android:layout_height="@dimen/app_header_height"
-        android:background="@color/pc_primary"
+        android:background="@color/pc_brand_primary_blue"
         android:elevation="3dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
         android:paddingStart="@dimen/space_md"
         android:paddingEnd="@dimen/space_xs"
         android:visibility="gone"
@@ -28,18 +26,23 @@
             android:contentDescription="@string/home_settings_open"
             android:padding="12dp"
             android:src="@drawable/ic_settings"
-            app:tint="@color/pc_on_primary" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/pc_brand_deep_blue" />
 
         <TextView
             android:id="@+id/app_header_title"
             style="@style/TextAppearance.PropCycle.Title"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/space_xs"
-            android:layout_weight="1"
             android:maxLines="1"
             android:textColor="@color/pc_on_primary"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
             android:id="@+id/app_header_notifications"
@@ -48,7 +51,10 @@
             android:contentDescription="@string/notifications"
             android:padding="12dp"
             android:src="@drawable/ic_notifications"
-            app:tint="@color/pc_primary" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/app_header_profile"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/pc_brand_deep_blue" />
 
         <ImageButton
             android:id="@+id/app_header_profile"
@@ -58,8 +64,11 @@
             android:contentDescription="@string/profile"
             android:padding="12dp"
             android:src="@drawable/ic_person"
-            app:tint="@color/pc_primary" />
-    </LinearLayout>
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/pc_brand_deep_blue" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/nav_host_fragment"
@@ -79,13 +88,16 @@
         android:layout_width="0dp"
         android:layout_height="@dimen/bottom_navigation_height"
         android:background="@drawable/bg_bottom_navigation"
-        android:elevation="2dp"
+        android:clipToPadding="false"
+        android:elevation="6dp"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
         android:visibility="gone"
         app:itemActiveIndicatorStyle="@null"
         app:itemHorizontalTranslationEnabled="false"
         app:itemIconSize="@dimen/bottom_navigation_icon_size"
         app:itemIconTint="@color/bottom_navigation_item_tint"
-        app:itemPaddingTop="6dp"
+        app:itemPaddingTop="3dp"
         app:itemTextAppearanceActive="@style/TextAppearance.PropCycle.BottomNavigation.Active"
         app:itemTextAppearanceInactive="@style/TextAppearance.PropCycle.BottomNavigation"
         app:itemTextColor="@color/bottom_navigation_item_tint"
