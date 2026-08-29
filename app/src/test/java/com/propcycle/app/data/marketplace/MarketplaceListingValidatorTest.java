@@ -131,4 +131,22 @@ public final class MarketplaceListingValidatorTest {
         assertFalse(result.isValid());
         assertEquals("Choose pickup or meet-up.", result.getErrorMessage());
     }
+
+    @Test
+    public void validate_acceptsAllowlistedDemoImageAndRejectsUnknownKey() {
+        MarketplaceListingValidator.ValidationResult valid =
+                MarketplaceListingValidator.validate(
+                        "Event banner", "Banner", "Good", "Donation", "Pickup", "", "",
+                        "Reusable banner", "event_banner");
+        assertTrue(valid.isValid());
+        assertNotNull(valid.getListing());
+        assertEquals("event_banner", valid.getListing().getDemoImageKey());
+
+        MarketplaceListingValidator.ValidationResult invalid =
+                MarketplaceListingValidator.validate(
+                        "Event banner", "Banner", "Good", "Donation", "Pickup", "", "",
+                        "Reusable banner", "unknown_sample");
+        assertFalse(invalid.isValid());
+        assertEquals("Choose a valid built-in demo image.", invalid.getErrorMessage());
+    }
 }

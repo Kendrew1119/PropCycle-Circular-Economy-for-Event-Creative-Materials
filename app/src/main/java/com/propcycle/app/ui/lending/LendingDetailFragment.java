@@ -22,6 +22,7 @@ import com.propcycle.app.data.lending.LendingPolicy;
 import com.propcycle.app.data.lending.LendingRating;
 import com.propcycle.app.data.marketplace.MarketplaceImageLoader;
 import com.propcycle.app.databinding.FragmentLendingDetailBinding;
+import com.propcycle.app.ui.common.DemoImageCatalog;
 import com.propcycle.app.ui.common.ScreenNavigation;
 
 import java.text.SimpleDateFormat;
@@ -206,13 +207,23 @@ public final class LendingDetailFragment extends Fragment {
         binding.editLendingAction.setEnabled(!state.isBusy());
         binding.toggleLendingStatusAction.setEnabled(!state.isBusy());
         binding.toggleLendingStatusAction.setText(available ? "Withdraw" : "Relist");
-        updateImage(item.getImageUrl());
+        updateImage(item.getImageUrl(), item.getDemoImageKey());
     }
 
-    private void updateImage(@Nullable String url) {
+    private void updateImage(@Nullable String url, @Nullable String demoImageKey) {
         if ((url == null || url.trim().isEmpty())) {
-            displayedImageUrl = null;
-            binding.lendingDetailImage.setImageResource(R.drawable.ic_bottom_nav_lend_out);
+            if (imageHandle != null) {
+                imageHandle.cancel();
+                imageHandle = null;
+            }
+            int demoDrawable = DemoImageCatalog.drawableFor(demoImageKey);
+            displayedImageUrl = demoDrawable == 0 ? null : "demo:" + demoImageKey;
+            binding.lendingDetailImage.setScaleType(
+                    demoDrawable == 0
+                            ? android.widget.ImageView.ScaleType.CENTER_INSIDE
+                            : android.widget.ImageView.ScaleType.FIT_CENTER);
+            binding.lendingDetailImage.setImageResource(
+                    demoDrawable == 0 ? R.drawable.ic_bottom_nav_lend_out : demoDrawable);
             return;
         }
         if (url.equals(displayedImageUrl)) {
@@ -222,6 +233,8 @@ public final class LendingDetailFragment extends Fragment {
             imageHandle.cancel();
         }
         displayedImageUrl = url;
+        binding.lendingDetailImage.setScaleType(
+                android.widget.ImageView.ScaleType.CENTER_CROP);
         binding.lendingDetailImage.setImageResource(R.drawable.ic_bottom_nav_lend_out);
         imageHandle = imageLoader.load(url, new MarketplaceImageLoader.Callback() {
             @Override public void onLoaded(@NonNull Bitmap bitmap) {

@@ -25,12 +25,14 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.Priority;
 import com.google.android.gms.tasks.CancellationTokenSource;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.propcycle.app.R;
 import com.propcycle.app.data.lending.LendingItem;
 import com.propcycle.app.data.lending.LendingPolicy;
 import com.propcycle.app.data.marketplace.MarketplaceImageLoader;
 import com.propcycle.app.data.scanner.ScanAnalysis;
 import com.propcycle.app.databinding.FragmentLendResourceBinding;
+import com.propcycle.app.ui.common.DemoImageCatalog;
 import com.propcycle.app.ui.common.ScreenNavigation;
 import com.propcycle.app.ui.scanner.ScanPrefillPolicy;
 
@@ -104,10 +106,7 @@ public final class LendResourceFragment extends Fragment {
             ScreenNavigation.navigateAuthenticated(this, R.id.lendingDetailFragment, detail);
         });
 
-        binding.photoAddAction.setOnClickListener(ignored -> photoPicker.launch(
-                new PickVisualMediaRequest.Builder()
-                        .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
-                        .build()));
+        binding.photoAddAction.setOnClickListener(ignored -> showPhotoSourceChoice());
         binding.photoClearAction.setOnClickListener(ignored -> {
             viewModel.removePhoto();
             displayedImage = null;
@@ -130,6 +129,45 @@ public final class LendResourceFragment extends Fragment {
         if (itemId.trim().isEmpty() && savedInstanceState == null) {
             applyScannerDraft(arguments);
         }
+    }
+
+    private void showPhotoSourceChoice() {
+        new MaterialAlertDialogBuilder(requireContext())
+                .setTitle("Add item image")
+                .setItems(new CharSequence[]{
+                        "Choose built-in demo image",
+                        "Choose device photo"
+                }, (dialog, selected) -> {
+                    if (selected == 0) {
+                        showDemoImageChoice();
+                    } else {
+                        openPhotoPicker();
+                    }
+                })
+                .show();
+    }
+
+    private void showDemoImageChoice() {
+        new MaterialAlertDialogBuilder(requireContext())
+                .setTitle("Built-in demo images")
+                .setItems(DemoImageCatalog.labels(), (dialog, index) -> {
+                    String key = DemoImageCatalog.keyAt(index);
+                    if (key == null) {
+                        return;
+                    }
+                    cancelImageLoad();
+                    displayedImage = null;
+                    viewModel.selectDemoImage(key);
+                    showImagePreview();
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    private void openPhotoPicker() {
+        photoPicker.launch(new PickVisualMediaRequest.Builder()
+                .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
+                .build());
     }
 
     private void applyScannerDraft(@Nullable Bundle arguments) {
@@ -332,7 +370,26 @@ public final class LendResourceFragment extends Fragment {
             String path = local.getAbsolutePath();
             if (!path.equals(displayedImage)) {
                 displayedImage = path;
+                binding.lendingPhotoPreview.setScaleType(
+                        android.widget.ImageView.ScaleType.CENTER_CROP);
                 binding.lendingPhotoPreview.setImageURI(Uri.fromFile(local));
+            }
+            binding.photoClearAction.setVisibility(View.VISIBLE);
+            return;
+        }
+        String demoImageKey = viewModel.getSelectedDemoImageKey();
+        int demoDrawable = DemoImageCatalog.drawableFor(demoImageKey);
+        if (demoDrawable != 0) {
+            cancelImageLoad();
+            String demoIdentity = "demo:" + demoImageKey;
+            if (!demoIdentity.equals(displayedImage)) {
+                displayedImage = demoIdentity;
+                binding.lendingPhotoPreview.setScaleType(
+                        android.widget.ImageView.ScaleType.FIT_CENTER);
+                binding.lendingPhotoPreview.setImageResource(demoDrawable);
+                String label = DemoImageCatalog.labelFor(demoImageKey);
+                binding.lendingPhotoPreview.setContentDescription(
+                        "Built-in demo image: " + (label == null ? "sample item" : label));
             }
             binding.photoClearAction.setVisibility(View.VISIBLE);
             return;
@@ -351,6 +408,8 @@ public final class LendResourceFragment extends Fragment {
         }
         cancelImageLoad();
         displayedImage = remote;
+        binding.lendingPhotoPreview.setScaleType(
+                android.widget.ImageView.ScaleType.CENTER_CROP);
         imageHandle = imageLoader.load(remote, new MarketplaceImageLoader.Callback() {
             @Override public void onLoaded(@NonNull Bitmap bitmap) {
                 if (binding != null && remote.equals(displayedImage)) {

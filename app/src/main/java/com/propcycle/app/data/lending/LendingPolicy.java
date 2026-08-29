@@ -3,6 +3,8 @@ package com.propcycle.app.data.lending;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.propcycle.app.data.media.DemoImagePolicy;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.ParseException;
@@ -42,6 +44,23 @@ public final class LendingPolicy {
             @Nullable String depositText,
             @Nullable Double latitude,
             @Nullable Double longitude) {
+        return validateItem(title, description, categoryLabel, conditionLabel, pickupLabel,
+                areaLabel, maxDaysText, depositText, latitude, longitude, "");
+    }
+
+    @NonNull
+    public static NewLendingItem validateItem(
+            @Nullable String title,
+            @Nullable String description,
+            @Nullable String categoryLabel,
+            @Nullable String conditionLabel,
+            @Nullable String pickupLabel,
+            @Nullable String areaLabel,
+            @Nullable String maxDaysText,
+            @Nullable String depositText,
+            @Nullable Double latitude,
+            @Nullable Double longitude,
+            @Nullable String demoImageKey) {
         String cleanTitle = clean(title);
         String cleanDescription = clean(description);
         String cleanArea = clean(areaLabel);
@@ -85,6 +104,10 @@ public final class LendingPolicy {
         }
         Double safeLatitude = latitude == null ? null : roundLatitude(latitude);
         Double safeLongitude = longitude == null ? null : roundLongitude(longitude);
+        String safeDemoImageKey = DemoImagePolicy.normalize(demoImageKey);
+        if (!DemoImagePolicy.isValid(safeDemoImageKey)) {
+            throw new IllegalArgumentException("Choose a valid built-in demo image.");
+        }
         return new NewLendingItem(
                 cleanTitle,
                 cleanTitle.toLowerCase(Locale.ROOT),
@@ -96,7 +119,8 @@ public final class LendingPolicy {
                 maxDays,
                 depositMinor,
                 safeLatitude,
-                safeLongitude);
+                safeLongitude,
+                safeDemoImageKey);
     }
 
     public static long parseMoneyMinor(@Nullable String value) {

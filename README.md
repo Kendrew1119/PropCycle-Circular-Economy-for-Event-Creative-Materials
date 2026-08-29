@@ -22,7 +22,7 @@ The implementation target has changed from React Native with Expo to a clean nat
 | Local data | Room 2.8.4/SQLite stores account-scoped scan and recent-activity history; temporary scanner images remain app-private and are deleted after handoff/use |
 | Cloud | Firebase Auth, Firestore, and participant-only chat from Phase 2A; AI Logic/App Check from Phase 2B; private marketplace images from Phase 2C.2; lending items, requests, date locks, ratings, chat, and protected images from Phase 2E; Remote Config and FCM remain later work |
 | AI | Phase 2B uses the Firebase AI Logic Android SDK for Java with a source-pinned Gemini model and structured response validation |
-| Camera/media | Phase 2B uses CameraX and Photo Picker for temporary scanner input; Phase 2C.2 and Phase 2E reuse safe preparation for one optional protected marketplace or lending image |
+| Camera/media | CameraX and Photo Picker handle personal input; Marketplace and Lending also offer 12 bundled demo illustrations that require no Cloud Storage upload |
 | Maps/location | Phase 2D uses Maps/Places and one-time Fused Location for Recycling Centre; Phase 2E reuses Maps and one-time foreground location only for privacy-rounded optional lending points |
 | Background sync | WorkManager Java Workers |
 | Build | Gradle with Groovy scripts, JDK 17, API 36 compile/target, API 24 minimum |
@@ -71,6 +71,7 @@ At the user's explicit direction, the obsolete Expo/React Native implementation 
 - [Proposal planning copy and technology addendum](proposal.md) - the product idea with the revised implementation direction noted separately.
 - [Agent/development guardrails](AGENTS.md) - completed Phase 2E boundary and rules for later functional implementation.
 - [Teammate setup and run guide](docs/TEAM_SETUP_GUIDE.md) - private-repository access, Android/Firebase setup, build and test commands, device setup, verification, and troubleshooting.
+- [Built-in demo image guide](docs/DEMO_IMAGE_GUIDE.md) - use 12 packaged Marketplace/Lending samples without Firebase Storage billing.
 - [AI Smart Scanner setup guide](docs/AI_SCANNER_SETUP.md) - simple Firebase AI Logic, App Check, camera, live-test, privacy, and troubleshooting steps.
 - [Marketplace image setup guide](docs/MARKETPLACE_IMAGE_SETUP.md) - detailed Storage enablement, Rules deployment, live checks, and troubleshooting.
 - [Recycling Centre map setup guide](docs/RECYCLE_MAP_SETUP.md) - detailed API, billing, restricted-key, SHA-1, live-test, and troubleshooting steps.

@@ -3,6 +3,8 @@ package com.propcycle.app.data.marketplace;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.propcycle.app.data.media.DemoImagePolicy;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Arrays;
@@ -50,6 +52,21 @@ public final class MarketplaceListingValidator {
             @Nullable String rawPrice,
             @Nullable String rawExchangeTerms,
             @Nullable String rawDescription) {
+        return validate(rawTitle, rawCategory, rawCondition, rawTransactionIntent,
+                rawFulfilmentMethod, rawPrice, rawExchangeTerms, rawDescription, "");
+    }
+
+    @NonNull
+    public static ValidationResult validate(
+            @Nullable String rawTitle,
+            @Nullable String rawCategory,
+            @Nullable String rawCondition,
+            @Nullable String rawTransactionIntent,
+            @Nullable String rawFulfilmentMethod,
+            @Nullable String rawPrice,
+            @Nullable String rawExchangeTerms,
+            @Nullable String rawDescription,
+            @Nullable String rawDemoImageKey) {
         String title = trim(rawTitle);
         String description = trim(rawDescription);
         String category = stableCategoryId(rawCategory);
@@ -57,6 +74,7 @@ public final class MarketplaceListingValidator {
         String transactionIntent = stableTransactionIntentId(rawTransactionIntent);
         String fulfilmentMethod = stableFulfilmentMethodId(rawFulfilmentMethod);
         String exchangeTerms = trim(rawExchangeTerms);
+        String demoImageKey = DemoImagePolicy.normalize(rawDemoImageKey);
 
         if (title.length() < 3) {
             return ValidationResult.error("Enter an item name with at least 3 characters.");
@@ -81,6 +99,9 @@ public final class MarketplaceListingValidator {
         }
         if (description.length() > MAX_DESCRIPTION_LENGTH) {
             return ValidationResult.error("Description must be 1000 characters or fewer.");
+        }
+        if (!DemoImagePolicy.isValid(demoImageKey)) {
+            return ValidationResult.error("Choose a valid built-in demo image.");
         }
 
         long priceMinor = 0L;
@@ -111,7 +132,8 @@ public final class MarketplaceListingValidator {
                 transactionIntent,
                 fulfilmentMethod,
                 priceMinor,
-                exchangeTerms);
+                exchangeTerms,
+                demoImageKey);
         return ValidationResult.valid(listing);
     }
 

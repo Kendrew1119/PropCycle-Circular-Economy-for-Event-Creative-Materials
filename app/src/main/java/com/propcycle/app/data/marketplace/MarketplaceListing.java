@@ -20,6 +20,7 @@ public final class MarketplaceListing {
     private String exchangeTerms;
     private String status;
     private String imageUrl;
+    private String demoImageKey;
     private Timestamp createdAt;
     private Timestamp updatedAt;
 
@@ -132,6 +133,15 @@ public final class MarketplaceListing {
 
     public void setImageUrl(@Nullable String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    @Nullable
+    public String getDemoImageKey() {
+        return demoImageKey;
+    }
+
+    public void setDemoImageKey(@Nullable String demoImageKey) {
+        this.demoImageKey = demoImageKey;
     }
 
     @Nullable

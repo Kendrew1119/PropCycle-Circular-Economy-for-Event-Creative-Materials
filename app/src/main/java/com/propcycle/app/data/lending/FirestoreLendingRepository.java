@@ -18,6 +18,7 @@ import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.MetadataChanges;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.propcycle.app.core.firebase.FirebaseEnvironment;
+import com.propcycle.app.data.media.DemoImagePolicy;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -139,6 +140,11 @@ public final class FirestoreLendingRepository {
         if (!LendingPolicy.isSafeSegment(itemId)) {
             return Tasks.forException(new IllegalArgumentException("The lending item ID is invalid."));
         }
+        if (!DemoImagePolicy.isValid(input.getDemoImageKey())
+                || imageUrl != null && DemoImagePolicy.isSelected(input.getDemoImageKey())) {
+            return Tasks.forException(new IllegalArgumentException(
+                    "Choose either a personal photo or a built-in demo image."));
+        }
         Map<String, Object> values = itemValues(input, imageUrl);
         values.put("ownerId", user.getUid());
         values.put("status", "available");
@@ -157,6 +163,11 @@ public final class FirestoreLendingRepository {
         if (firestore == null || user == null || expectedUpdatedAt == null) {
             return Tasks.forException(new IllegalStateException(
                     "Reload the lending item before saving changes."));
+        }
+        if (!DemoImagePolicy.isValid(input.getDemoImageKey())
+                || imageUrl != null && DemoImagePolicy.isSelected(input.getDemoImageKey())) {
+            return Tasks.forException(new IllegalArgumentException(
+                    "Choose either a personal photo or a built-in demo image."));
         }
         DocumentReference itemReference = firestore.collection(ITEMS).document(itemId);
         return firestore.runTransaction(transaction -> {
@@ -570,6 +581,7 @@ public final class FirestoreLendingRepository {
         values.put("latitude", input.getLatitude());
         values.put("longitude", input.getLongitude());
         values.put("imageUrl", imageUrl);
+        values.put("demoImageKey", DemoImagePolicy.normalize(input.getDemoImageKey()));
         return values;
     }
 

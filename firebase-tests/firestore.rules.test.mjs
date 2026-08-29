@@ -74,6 +74,7 @@ function listingData(ownerId = OWNER_UID) {
     priceMinor: 0,
     exchangeTerms: "",
     imageUrl: null,
+    demoImageKey: "",
     status: "available",
     createdAt: Timestamp.fromMillis(1000),
     updatedAt: Timestamp.fromMillis(1000),
@@ -112,6 +113,7 @@ function lendingItemData(ownerId = OWNER_UID) {
     latitude: 3.11,
     longitude: 101.64,
     imageUrl: null,
+    demoImageKey: "",
     status: "available",
     createdAt: Timestamp.fromMillis(1000),
     updatedAt: Timestamp.fromMillis(1000),
@@ -313,6 +315,24 @@ test("a valid listing write succeeds while a forged owner fails", async () => {
   await assertSucceeds(setDoc(
     doc(ownerDatabase, "marketplaceListings", "listing-with-image"),
     listingWithImage,
+  ));
+
+  await assertSucceeds(setDoc(
+    doc(ownerDatabase, "marketplaceListings", "listing-with-demo-image"),
+    {...valid, demoImageKey: "cardboard_box"},
+  ));
+  await assertFails(setDoc(
+    doc(ownerDatabase, "marketplaceListings", "listing-with-forged-demo"),
+    {...valid, demoImageKey: "../../private_photo"},
+  ));
+  await assertFails(setDoc(
+    doc(ownerDatabase, "marketplaceListings", "listing-with-two-images"),
+    {
+      ...valid,
+      demoImageKey: "event_banner",
+      imageUrl: "gs://demo-propcycle.firebasestorage.app/marketplace/"
+        + `${OWNER_UID}/listing-with-two-images/primary_version-one.jpg`,
+    },
   ));
 
   const existingListing = doc(
@@ -631,6 +651,24 @@ test("lending item creation is owner-only and validates privacy-safe fields", as
   await assertSucceeds(setDoc(
     doc(ownerDatabase, "lendingItems", "second-lending-item"),
     valid,
+  ));
+
+  await assertSucceeds(setDoc(
+    doc(ownerDatabase, "lendingItems", "lending-with-demo-image"),
+    {...valid, demoImageKey: "folding_chairs"},
+  ));
+  await assertFails(setDoc(
+    doc(ownerDatabase, "lendingItems", "lending-with-forged-demo"),
+    {...valid, demoImageKey: "unknown_sample"},
+  ));
+  await assertFails(setDoc(
+    doc(ownerDatabase, "lendingItems", "lending-with-two-images"),
+    {
+      ...valid,
+      demoImageKey: "speaker_set",
+      imageUrl: "gs://demo-propcycle.firebasestorage.app/lending/"
+        + `${OWNER_UID}/lending-with-two-images/primary_version-one.jpg`,
+    },
   ));
 
   const forged = lendingItemData(OWNER_UID);

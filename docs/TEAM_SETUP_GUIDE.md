@@ -27,6 +27,8 @@ The project currently contains:
   App Check;
 - one optional marketplace photo with Firebase Cloud Storage, authenticated
   display, and owner-only replacement;
+- 12 built-in Marketplace and Lending demo illustrations that need no Cloud
+  Storage upload or Storage billing;
 - one functional Recycling Centre map/list with Places Text Search, one-time
   foreground location, and manual area fallback;
 - one functional P2P lending lifecycle with a protected optional photo,
@@ -833,6 +835,12 @@ must not report a successful edit, withdrawal, or relist without a network
 connection.
 
 ## 18C. Verify Phase 2C.2 marketplace images
+
+For a classroom demo without Cloud Storage, first use the
+[built-in demo image guide](DEMO_IMAGE_GUIDE.md). The app stores only an
+allowlisted `demoImageKey` in Firestore, while the illustration stays inside
+the APK. Deploy the current Firestore Rules, but a Storage bucket is not needed
+for this option.
 
 The Firebase owner must first enable the default Storage bucket, download a
 fresh `google-services.json`, run both Rules test files, and deploy Firestore and

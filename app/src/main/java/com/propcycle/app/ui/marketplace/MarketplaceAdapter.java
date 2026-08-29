@@ -15,6 +15,7 @@ import com.propcycle.app.data.marketplace.MarketplaceListing;
 import com.propcycle.app.data.marketplace.MarketplaceImageLoader;
 import com.propcycle.app.data.marketplace.MarketplaceListingValidator;
 import com.propcycle.app.databinding.ItemMarketplaceListingBinding;
+import com.propcycle.app.ui.common.DemoImageCatalog;
 
 import java.util.Objects;
 
@@ -48,6 +49,7 @@ public final class MarketplaceAdapter
                                     newItem.getTransactionIntent())
                             && Objects.equals(oldItem.getStatus(), newItem.getStatus())
                             && Objects.equals(oldItem.getImageUrl(), newItem.getImageUrl())
+                            && Objects.equals(oldItem.getDemoImageKey(), newItem.getDemoImageKey())
                             && Objects.equals(oldItem.getUpdatedAt(), newItem.getUpdatedAt());
                 }
             };
@@ -91,6 +93,7 @@ public final class MarketplaceAdapter
         private final OnListingClickListener listener;
         private MarketplaceImageLoader.LoadHandle imageLoadHandle;
         private String expectedImageUrl;
+        private String expectedDemoImageKey;
 
         private ListingViewHolder(
                 @NonNull ItemMarketplaceListingBinding binding,
@@ -113,7 +116,7 @@ public final class MarketplaceAdapter
 
             binding.listingTitle.setText(title);
             binding.listingMeta.setText(meta);
-            bindImage(listing.getImageUrl());
+            bindImage(listing.getImageUrl(), listing.getDemoImageKey());
             binding.getRoot().setContentDescription("Open marketplace listing " + title);
             binding.getRoot().setOnClickListener(ignored -> listener.onListingClick(listing));
 
@@ -135,17 +138,28 @@ public final class MarketplaceAdapter
             binding.getRoot().setLayoutParams(params);
         }
 
-        private void bindImage(String imageUrl) {
+        private void bindImage(String imageUrl, String demoImageKey) {
             recycle();
             expectedImageUrl = imageUrl;
+            expectedDemoImageKey = demoImageKey;
             binding.listingImage.setImageDrawable(null);
             binding.listingImage.setVisibility(View.GONE);
             binding.listingImagePlaceholder.setText("ITEM");
             binding.listingImagePlaceholder.setVisibility(View.VISIBLE);
             binding.listingImageProgress.setVisibility(View.GONE);
             if (imageUrl == null || imageUrl.trim().isEmpty()) {
+                int demoDrawable = DemoImageCatalog.drawableFor(demoImageKey);
+                if (demoDrawable != 0) {
+                    binding.listingImage.setScaleType(
+                            android.widget.ImageView.ScaleType.FIT_CENTER);
+                    binding.listingImage.setImageResource(demoDrawable);
+                    binding.listingImage.setVisibility(View.VISIBLE);
+                    binding.listingImagePlaceholder.setVisibility(View.GONE);
+                }
                 return;
             }
+            binding.listingImage.setScaleType(
+                    android.widget.ImageView.ScaleType.CENTER_CROP);
             binding.listingImagePlaceholder.setText("Loading photo...");
             binding.listingImageProgress.setVisibility(View.VISIBLE);
             imageLoadHandle = imageLoader.load(imageUrl, new MarketplaceImageLoader.Callback() {
@@ -175,6 +189,7 @@ public final class MarketplaceAdapter
 
         private void recycle() {
             expectedImageUrl = null;
+            expectedDemoImageKey = null;
             if (imageLoadHandle != null) {
                 imageLoadHandle.cancel();
                 imageLoadHandle = null;

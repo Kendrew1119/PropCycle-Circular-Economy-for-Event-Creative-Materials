@@ -20,6 +20,7 @@ import com.google.firebase.firestore.MetadataChanges;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.propcycle.app.core.firebase.FirebaseEnvironment;
+import com.propcycle.app.data.media.DemoImagePolicy;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -142,6 +143,8 @@ public final class FirestoreMarketplaceRepository implements MarketplaceReposito
             return;
         }
         if (listingId.trim().isEmpty()
+                || !DemoImagePolicy.isValid(listing.getDemoImageKey())
+                || imageUrl != null && DemoImagePolicy.isSelected(listing.getDemoImageKey())
                 || imageUrl != null
                 && !MarketplaceImagePolicy.isOwnedListingGsUrl(
                         imageUrl, ownerId, listingId)) {
@@ -164,6 +167,7 @@ public final class FirestoreMarketplaceRepository implements MarketplaceReposito
         values.put("exchangeTerms", listing.getExchangeTerms());
         values.put("status", STATUS_AVAILABLE);
         values.put("imageUrl", imageUrl);
+        values.put("demoImageKey", DemoImagePolicy.normalize(listing.getDemoImageKey()));
         values.put("createdAt", FieldValue.serverTimestamp());
         values.put("updatedAt", FieldValue.serverTimestamp());
 
@@ -180,7 +184,8 @@ public final class FirestoreMarketplaceRepository implements MarketplaceReposito
             @NonNull NewMarketplaceListing listing,
             @Nullable Timestamp expectedUpdatedAt,
             @Nullable String expectedImageUrl,
-            @Nullable String replacementImageUrl,
+            @Nullable String expectedDemoImageKey,
+            @Nullable String finalImageUrl,
             @NonNull MutationCallback callback) {
         RepositoryError readinessError = readinessError();
         if (readinessError != null) {
@@ -204,9 +209,11 @@ public final class FirestoreMarketplaceRepository implements MarketplaceReposito
             callback.onError(networkMutationError());
             return;
         }
-        if (replacementImageUrl != null
+        if (!DemoImagePolicy.isValid(listing.getDemoImageKey())
+                || finalImageUrl != null && DemoImagePolicy.isSelected(listing.getDemoImageKey())
+                || finalImageUrl != null
                 && !MarketplaceImagePolicy.isOwnedListingGsUrl(
-                        replacementImageUrl, ownerId, listingId)) {
+                        finalImageUrl, ownerId, listingId)) {
             callback.onError(new RepositoryError(
                     ErrorType.UNKNOWN,
                     "The replacement photo reference is invalid."));
@@ -217,15 +224,14 @@ public final class FirestoreMarketplaceRepository implements MarketplaceReposito
         firestore.runTransaction(transaction -> {
                     DocumentSnapshot current = transaction.get(reference);
                     verifyMutableListing(current, ownerId, expectedUpdatedAt);
-                    if (replacementImageUrl != null
-                            && !java.util.Objects.equals(
-                                    expectedImageUrl, current.getString("imageUrl"))) {
+                    if (!java.util.Objects.equals(
+                            expectedImageUrl, current.getString("imageUrl"))
+                            || !DemoImagePolicy.normalize(expectedDemoImageKey).equals(
+                            DemoImagePolicy.normalize(current.getString("demoImageKey")))) {
                         throw new ListingConflictException();
                     }
                     Map<String, Object> values = editableValues(listing);
-                    if (replacementImageUrl != null) {
-                        values.put("imageUrl", replacementImageUrl);
-                    }
+                    values.put("imageUrl", finalImageUrl);
                     transaction.update(reference, values);
                     return null;
                 })
@@ -339,6 +345,7 @@ public final class FirestoreMarketplaceRepository implements MarketplaceReposito
         values.put("fulfilmentMethod", listing.getFulfilmentMethod());
         values.put("priceMinor", listing.getPriceMinor());
         values.put("exchangeTerms", listing.getExchangeTerms());
+        values.put("demoImageKey", DemoImagePolicy.normalize(listing.getDemoImageKey()));
         values.put("updatedAt", FieldValue.serverTimestamp());
         return values;
     }

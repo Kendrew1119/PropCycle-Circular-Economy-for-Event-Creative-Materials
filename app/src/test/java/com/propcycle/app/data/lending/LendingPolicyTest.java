@@ -103,4 +103,16 @@ public final class LendingPolicyTest {
         assertTrue(LendingPolicy.filterAndSort(
                 source, "electronics", "all", null, null).isEmpty());
     }
+
+    @Test
+    public void itemValidation_acceptsAllowlistedDemoImageAndRejectsUnknownKey() {
+        NewLendingItem item = LendingPolicy.validateItem(
+                "Folding chairs", "Six chairs for a small event.", "Equipment", "Good",
+                "Pickup", "Kampar", "7", "0", null, null, "folding_chairs");
+        assertEquals("folding_chairs", item.getDemoImageKey());
+
+        assertThrows(IllegalArgumentException.class, () -> LendingPolicy.validateItem(
+                "Folding chairs", "Six chairs for a small event.", "Equipment", "Good",
+                "Pickup", "Kampar", "7", "0", null, null, "unknown_sample"));
+    }
 }

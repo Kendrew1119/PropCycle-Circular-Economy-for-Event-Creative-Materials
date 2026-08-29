@@ -12,6 +12,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.google.firebase.Timestamp;
 import com.propcycle.app.data.activity.ActivityLogRepository;
+import com.propcycle.app.data.media.DemoImagePolicy;
 import com.propcycle.app.data.lending.FirebaseLendingImageRepository;
 import com.propcycle.app.data.lending.FirestoreLendingRepository;
 import com.propcycle.app.data.lending.LendingImagePolicy;
@@ -23,6 +24,7 @@ import com.propcycle.app.ui.common.OneTimeEvent;
 
 import java.io.File;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicLong;
 
 /** Create or owner-edit one lending item with an optional protected image. */
 public final class LendResourceViewModel extends AndroidViewModel {
@@ -67,13 +69,16 @@ public final class LendResourceViewModel extends AndroidViewModel {
             FirestoreLendingRepository.Subscription.NONE;
     private FirebaseLendingImageRepository.UploadHandle uploadHandle;
     private CompletableFuture<ScannerImageProcessor.ProcessedImage> imageFuture;
+    private final AtomicLong imageGeneration = new AtomicLong();
     private ScannerImageProcessor.ProcessedImage selectedImage;
     private String itemId = "";
     private String existingImageUrl;
+    private String existingDemoImageKey = "";
+    private String selectedDemoImageKey = "";
     private Timestamp expectedUpdatedAt;
     private boolean editMode;
     private boolean ownerConfirmed;
-    private boolean removeExistingImage;
+    private boolean imageChoiceChanged;
     private boolean initialItemSent;
     private boolean cleared;
 
@@ -95,8 +100,9 @@ public final class LendResourceViewModel extends AndroidViewModel {
         return selectedImage == null ? null : selectedImage.getFile();
     }
     @Nullable public String getExistingImageUrl() {
-        return removeExistingImage ? null : existingImageUrl;
+        return imageChoiceChanged ? null : existingImageUrl;
     }
+    @NonNull public String getSelectedDemoImageKey() { return selectedDemoImageKey; }
 
     public void start(@Nullable String requestedItemId) {
         String cleanId = requestedItemId == null ? "" : requestedItemId.trim();
@@ -104,9 +110,11 @@ public final class LendResourceViewModel extends AndroidViewModel {
         editMode = !cleanId.isEmpty();
         itemId = editMode ? cleanId : LendingImagePolicy.newItemId();
         existingImageUrl = null;
+        existingDemoImageKey = "";
+        selectedDemoImageKey = "";
         expectedUpdatedAt = null;
         ownerConfirmed = !editMode;
-        removeExistingImage = false;
+        imageChoiceChanged = false;
         initialItemSent = false;
         if (!editMode) {
             state.setValue(new State(false, false, true, 0,
@@ -127,6 +135,8 @@ public final class LendResourceViewModel extends AndroidViewModel {
                         }
                         ownerConfirmed = true;
                         existingImageUrl = item.getImageUrl();
+                        existingDemoImageKey = DemoImagePolicy.normalize(item.getDemoImageKey());
+                        selectedDemoImageKey = existingDemoImageKey;
                         if (!initialItemSent) {
                             initialItemSent = true;
                             expectedUpdatedAt = item.getUpdatedAt();
@@ -157,6 +167,7 @@ public final class LendResourceViewModel extends AndroidViewModel {
         if (isBusy()) {
             return;
         }
+        long generation = imageGeneration.incrementAndGet();
         deleteSelectedImage();
         if (imageFuture != null) {
             imageFuture.cancel(true);
@@ -166,7 +177,7 @@ public final class LendResourceViewModel extends AndroidViewModel {
         imageFuture.whenComplete((image, error) ->
                 ContextCompat.getMainExecutor(getApplication()).execute(() -> {
                     imageFuture = null;
-                    if (cleared) {
+                    if (cleared || generation != imageGeneration.get()) {
                         ScannerImageProcessor.deleteQuietly(image);
                         return;
                     }
@@ -176,7 +187,8 @@ public final class LendResourceViewModel extends AndroidViewModel {
                         return;
                     }
                     selectedImage = image;
-                    removeExistingImage = false;
+                    selectedDemoImageKey = "";
+                    imageChoiceChanged = true;
                     state.setValue(new State(false, false, true, 0,
                             "Photo ready. It uploads only when you save."));
                 }));
@@ -200,6 +212,7 @@ public final class LendResourceViewModel extends AndroidViewModel {
 
     private void processImageFuture(
             @NonNull CompletableFuture<ScannerImageProcessor.ProcessedImage> future) {
+        long generation = imageGeneration.incrementAndGet();
         deleteSelectedImage();
         if (imageFuture != null) {
             imageFuture.cancel(true);
@@ -209,7 +222,7 @@ public final class LendResourceViewModel extends AndroidViewModel {
         imageFuture.whenComplete((image, error) ->
                 ContextCompat.getMainExecutor(getApplication()).execute(() -> {
                     imageFuture = null;
-                    if (cleared) {
+                    if (cleared || generation != imageGeneration.get()) {
                         ScannerImageProcessor.deleteQuietly(image);
                         return;
                     }
@@ -219,7 +232,8 @@ public final class LendResourceViewModel extends AndroidViewModel {
                         return;
                     }
                     selectedImage = image;
-                    removeExistingImage = false;
+                    selectedDemoImageKey = "";
+                    imageChoiceChanged = true;
                     state.setValue(new State(false, false, true, 0,
                             "Photo ready. It uploads only when you save."));
                 }));
@@ -229,12 +243,41 @@ public final class LendResourceViewModel extends AndroidViewModel {
         if (isBusy()) {
             return;
         }
+        if (imageFuture != null) {
+            imageGeneration.incrementAndGet();
+            imageFuture.cancel(true);
+            imageFuture = null;
+        }
         deleteSelectedImage();
-        removeExistingImage = existingImageUrl != null;
+        selectedDemoImageKey = "";
+        imageChoiceChanged = true;
         state.setValue(new State(false, false, true, 0,
-                removeExistingImage
-                        ? "The current photo will be removed after you save."
-                        : "Photo selection cleared."));
+                editMode && (existingImageUrl != null
+                        || DemoImagePolicy.isSelected(existingDemoImageKey))
+                        ? "The current image will be removed after you save."
+                        : "Image selection cleared."));
+    }
+
+    public void selectDemoImage(@Nullable String demoImageKey) {
+        if (isBusy()) {
+            return;
+        }
+        String normalized = DemoImagePolicy.normalize(demoImageKey);
+        if (!DemoImagePolicy.isSelected(normalized)) {
+            state.setValue(new State(false, false, true, 0,
+                    "Choose a valid built-in demo image."));
+            return;
+        }
+        if (imageFuture != null) {
+            imageGeneration.incrementAndGet();
+            imageFuture.cancel(true);
+            imageFuture = null;
+        }
+        deleteSelectedImage();
+        selectedDemoImageKey = normalized;
+        imageChoiceChanged = true;
+        state.setValue(new State(false, false, true, 0,
+                "Built-in demo image selected. No cloud photo upload is needed."));
     }
 
     public void submit(
@@ -255,7 +298,7 @@ public final class LendResourceViewModel extends AndroidViewModel {
         try {
             input = LendingPolicy.validateItem(
                     title, description, category, condition, pickupMethod,
-                    area, maxDays, deposit, latitude, longitude);
+                    area, maxDays, deposit, latitude, longitude, selectedDemoImageKey);
         } catch (IllegalArgumentException error) {
             state.setValue(new State(false, false, true, 0, error.getMessage()));
             return;
@@ -267,7 +310,8 @@ public final class LendResourceViewModel extends AndroidViewModel {
         }
         File image = getSelectedImageFile();
         if (image == null) {
-            save(input, getExistingImageUrl(), null);
+            String finalImageUrl = imageChoiceChanged ? null : existingImageUrl;
+            save(input, finalImageUrl, null);
             return;
         }
         state.setValue(new State(false, true, true, 0, "Uploading photo... 0%"));
@@ -312,6 +356,10 @@ public final class LendResourceViewModel extends AndroidViewModel {
             if (oldUrl != null && !oldUrl.equals(imageUrl)) {
                 imageRepository.deleteOwned(itemId, oldUrl, quietCompletion());
             }
+            existingImageUrl = imageUrl;
+            existingDemoImageKey = input.getDemoImageKey();
+            selectedDemoImageKey = existingDemoImageKey;
+            imageChoiceChanged = false;
             deleteSelectedImage();
             activityLog.record(
                     editMode
@@ -366,6 +414,7 @@ public final class LendResourceViewModel extends AndroidViewModel {
             uploadHandle.cancel();
         }
         if (imageFuture != null) {
+            imageGeneration.incrementAndGet();
             imageFuture.cancel(true);
         }
         deleteSelectedImage();

@@ -41,6 +41,7 @@ import com.propcycle.app.data.marketplace.MarketplaceImageLoader;
 import com.propcycle.app.data.marketplace.MarketplaceListing;
 import com.propcycle.app.data.marketplace.MarketplaceListingValidator;
 import com.propcycle.app.databinding.FragmentCreateListingBinding;
+import com.propcycle.app.ui.common.DemoImageCatalog;
 import com.propcycle.app.ui.common.ScreenNavigation;
 import com.propcycle.app.ui.scanner.ScanPrefillPolicy;
 import com.propcycle.app.data.scanner.ScanAnalysis;
@@ -72,6 +73,7 @@ public final class CreateListingFragment extends Fragment {
     private long cameraGeneration;
     private String displayedLocalPath;
     private String displayedRemoteUrl;
+    private String displayedDemoKey;
     private OnBackPressedCallback backPressedCallback;
 
     private final ActivityResultLauncher<String> cameraPermissionLauncher =
@@ -308,14 +310,40 @@ public final class CreateListingFragment extends Fragment {
         new MaterialAlertDialogBuilder(anchor.getContext())
                 .setTitle("Add photo")
                 .setItems(
-                        new CharSequence[]{"Camera", "Choose photo"},
+                        new CharSequence[]{
+                                "Choose built-in demo image",
+                                "Camera",
+                                "Choose device photo"
+                        },
                         (dialog, selected) -> {
                             if (selected == 0) {
+                                showDemoImageChoice();
+                            } else if (selected == 1) {
                                 onCameraAction();
                             } else {
                                 openPhotoPicker();
                             }
                         })
+                .show();
+    }
+
+    private void showDemoImageChoice() {
+        new MaterialAlertDialogBuilder(requireContext())
+                .setTitle("Built-in demo images")
+                .setItems(DemoImageCatalog.labels(), (dialog, index) -> {
+                    String key = DemoImageCatalog.keyAt(index);
+                    if (key == null) {
+                        return;
+                    }
+                    stopCamera();
+                    cancelImageLoad();
+                    displayedLocalPath = null;
+                    displayedRemoteUrl = null;
+                    displayedDemoKey = null;
+                    viewModel.selectDemoImage(key);
+                    updateImagePreview();
+                })
+                .setNegativeButton("Cancel", null)
                 .show();
     }
 
@@ -595,7 +623,10 @@ public final class CreateListingFragment extends Fragment {
             binding.createListingMediaNote.setText(editMode
                     ? "The new photo replaces the current photo only after Save changes."
                     : "The photo uploads securely only after Publish.");
-        } else if (editMode && viewModel.getExistingImageUrl() != null) {
+        } else if (DemoImageCatalog.drawableFor(viewModel.getSelectedDemoImageKey()) != 0) {
+            binding.createListingMediaNote.setText(
+                    "This sample image is included in the app and needs no cloud photo upload.");
+        } else if (editMode && viewModel.getPreviewImageUrl() != null) {
             binding.createListingMediaNote.setText(
                     "The current photo stays unless you choose a replacement.");
         } else {
@@ -625,6 +656,9 @@ public final class CreateListingFragment extends Fragment {
             if (!path.equals(displayedLocalPath)) {
                 displayedLocalPath = path;
                 displayedRemoteUrl = null;
+                displayedDemoKey = null;
+                binding.listingPhotoPreview.setScaleType(
+                        android.widget.ImageView.ScaleType.CENTER_CROP);
                 binding.listingPhotoPreview.setImageURI(Uri.fromFile(selected));
             }
             binding.listingPhotoPreview.setVisibility(View.VISIBLE);
@@ -633,9 +667,30 @@ public final class CreateListingFragment extends Fragment {
             return;
         }
         displayedLocalPath = null;
+        String demoImageKey = viewModel.getSelectedDemoImageKey();
+        int demoDrawable = DemoImageCatalog.drawableFor(demoImageKey);
+        if (demoDrawable != 0) {
+            cancelImageLoad();
+            displayedRemoteUrl = null;
+            if (!demoImageKey.equals(displayedDemoKey)) {
+                displayedDemoKey = demoImageKey;
+                binding.listingPhotoPreview.setScaleType(
+                        android.widget.ImageView.ScaleType.FIT_CENTER);
+                binding.listingPhotoPreview.setImageResource(demoDrawable);
+                String label = DemoImageCatalog.labelFor(demoImageKey);
+                binding.listingPhotoPreview.setContentDescription(
+                        "Built-in demo image: " + (label == null ? "sample item" : label));
+            }
+            binding.listingPhotoPreview.setVisibility(View.VISIBLE);
+            binding.listingPhotoPlaceholder.setVisibility(View.GONE);
+            binding.photoClearAction.setVisibility(View.VISIBLE);
+            return;
+        }
+        displayedDemoKey = null;
         binding.photoClearAction.setVisibility(View.GONE);
-        String existingUrl = viewModel.getExistingImageUrl();
+        String existingUrl = viewModel.getPreviewImageUrl();
         if (existingUrl != null && !existingUrl.trim().isEmpty()) {
+            binding.photoClearAction.setVisibility(View.VISIBLE);
             loadExistingImage(existingUrl);
         } else {
             showImagePlaceholder("Add one clear item photo\n(optional)");
@@ -651,6 +706,9 @@ public final class CreateListingFragment extends Fragment {
         }
         cancelImageLoad();
         displayedRemoteUrl = gsUrl;
+        displayedDemoKey = null;
+        binding.listingPhotoPreview.setScaleType(
+                android.widget.ImageView.ScaleType.CENTER_CROP);
         binding.listingPhotoPreview.setImageDrawable(null);
         binding.listingPhotoPreview.setVisibility(View.GONE);
         binding.listingPhotoPlaceholder.setText("Loading current photo...");
@@ -661,6 +719,8 @@ public final class CreateListingFragment extends Fragment {
             public void onLoaded(@NonNull android.graphics.Bitmap bitmap) {
                 if (binding == null || viewModel == null
                         || viewModel.hasSelectedImage()
+                        || DemoImageCatalog.drawableFor(
+                        viewModel.getSelectedDemoImageKey()) != 0
                         || !gsUrl.equals(displayedRemoteUrl)) {
                     return;
                 }

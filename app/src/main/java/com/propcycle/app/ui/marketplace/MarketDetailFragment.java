@@ -18,6 +18,7 @@ import com.propcycle.app.data.marketplace.MarketplaceImageLoader;
 import com.propcycle.app.data.marketplace.MarketplaceListingStatusPolicy;
 import com.propcycle.app.data.marketplace.MarketplaceListingValidator;
 import com.propcycle.app.databinding.FragmentMarketDetailBinding;
+import com.propcycle.app.ui.common.DemoImageCatalog;
 import com.propcycle.app.ui.common.ScreenNavigation;
 
 import java.util.Locale;
@@ -35,6 +36,7 @@ public final class MarketDetailFragment extends Fragment {
     private boolean currentOwner;
     private boolean ownerActionBusy;
     private String displayedImageUrl;
+    private String displayedDemoImageKey;
 
     @Nullable
     @Override
@@ -148,7 +150,7 @@ public final class MarketDetailFragment extends Fragment {
         currentListing = listing;
         currentOwner = state.isOwner();
         binding.listingTitle.setText(valueOrFallback(listing.getTitle(), "Untitled item"));
-        displayListingImage(listing.getImageUrl());
+        displayListingImage(listing.getImageUrl(), listing.getDemoImageKey());
         binding.listingDescription.setText(
                 valueOrFallback(listing.getDescription(), "No description provided."));
         binding.listingCategory.setText(
@@ -216,10 +218,24 @@ public final class MarketDetailFragment extends Fragment {
                         : "Withdraw this marketplace listing");
     }
 
-    private void displayListingImage(@Nullable String gsUrl) {
+    private void displayListingImage(
+            @Nullable String gsUrl,
+            @Nullable String demoImageKey) {
         if (gsUrl == null || gsUrl.trim().isEmpty()) {
             cancelImageLoad();
             displayedImageUrl = null;
+            int demoDrawable = DemoImageCatalog.drawableFor(demoImageKey);
+            if (demoDrawable != 0) {
+                displayedDemoImageKey = demoImageKey;
+                binding.listingImage.setScaleType(
+                        android.widget.ImageView.ScaleType.FIT_CENTER);
+                binding.listingImage.setImageResource(demoDrawable);
+                binding.listingImage.setVisibility(View.VISIBLE);
+                binding.listingImageProgress.setVisibility(View.GONE);
+                binding.listingImagePlaceholder.setVisibility(View.GONE);
+                return;
+            }
+            displayedDemoImageKey = null;
             binding.listingImage.setImageDrawable(null);
             binding.listingImage.setVisibility(View.GONE);
             binding.listingImageProgress.setVisibility(View.GONE);
@@ -233,6 +249,8 @@ public final class MarketDetailFragment extends Fragment {
         }
         cancelImageLoad();
         displayedImageUrl = gsUrl;
+        displayedDemoImageKey = null;
+        binding.listingImage.setScaleType(android.widget.ImageView.ScaleType.CENTER_CROP);
         binding.listingImage.setImageDrawable(null);
         binding.listingImage.setVisibility(View.GONE);
         binding.listingImagePlaceholder.setText("Loading item photo...");

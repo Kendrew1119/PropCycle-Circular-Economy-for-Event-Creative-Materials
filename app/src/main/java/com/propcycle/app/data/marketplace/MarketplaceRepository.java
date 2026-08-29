@@ -87,7 +87,8 @@ public interface MarketplaceRepository {
             @NonNull NewMarketplaceListing listing,
             @Nullable Timestamp expectedUpdatedAt,
             @Nullable String expectedImageUrl,
-            @Nullable String replacementImageUrl,
+            @Nullable String expectedDemoImageKey,
+            @Nullable String finalImageUrl,
             @NonNull MutationCallback callback);
 
     void setListingStatus(

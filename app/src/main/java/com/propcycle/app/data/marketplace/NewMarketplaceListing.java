@@ -12,6 +12,7 @@ public final class NewMarketplaceListing {
     private final String fulfilmentMethod;
     private final long priceMinor;
     private final String exchangeTerms;
+    private final String demoImageKey;
 
     public NewMarketplaceListing(
             String title,
@@ -23,6 +24,21 @@ public final class NewMarketplaceListing {
             String fulfilmentMethod,
             long priceMinor,
             String exchangeTerms) {
+        this(title, titleNormalized, description, category, condition, transactionIntent,
+                fulfilmentMethod, priceMinor, exchangeTerms, "");
+    }
+
+    public NewMarketplaceListing(
+            String title,
+            String titleNormalized,
+            String description,
+            String category,
+            String condition,
+            String transactionIntent,
+            String fulfilmentMethod,
+            long priceMinor,
+            String exchangeTerms,
+            String demoImageKey) {
         this.title = title;
         this.titleNormalized = titleNormalized;
         this.description = description;
@@ -32,6 +48,7 @@ public final class NewMarketplaceListing {
         this.fulfilmentMethod = fulfilmentMethod;
         this.priceMinor = priceMinor;
         this.exchangeTerms = exchangeTerms;
+        this.demoImageKey = demoImageKey;
     }
 
     public String getTitle() {
@@ -68,5 +85,9 @@ public final class NewMarketplaceListing {
 
     public String getExchangeTerms() {
         return exchangeTerms;
+    }
+
+    public String getDemoImageKey() {
+        return demoImageKey;
     }
 }

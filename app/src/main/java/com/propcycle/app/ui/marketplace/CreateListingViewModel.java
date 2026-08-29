@@ -12,6 +12,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.google.firebase.Timestamp;
 import com.propcycle.app.data.activity.ActivityLogRepository;
+import com.propcycle.app.data.media.DemoImagePolicy;
 import com.propcycle.app.data.marketplace.FirebaseMarketplaceImageRepository;
 import com.propcycle.app.data.marketplace.FirestoreMarketplaceRepository;
 import com.propcycle.app.data.marketplace.MarketplaceImagePolicy;
@@ -56,11 +57,14 @@ public final class CreateListingViewModel extends AndroidViewModel {
     private Mode mode = Mode.CREATE;
     private String listingId = "";
     private String existingImageUrl;
+    private String existingDemoImageKey = "";
+    private String selectedDemoImageKey = "";
     private Timestamp expectedUpdatedAt;
     private boolean initialFormSent;
     private boolean ownerConfirmed;
     private boolean started;
     private boolean cleared;
+    private boolean imageChoiceChanged;
 
     public CreateListingViewModel(@NonNull Application application) {
         super(application);
@@ -99,6 +103,16 @@ public final class CreateListingViewModel extends AndroidViewModel {
         return existingImageUrl;
     }
 
+    @Nullable
+    public String getPreviewImageUrl() {
+        return imageChoiceChanged ? null : existingImageUrl;
+    }
+
+    @NonNull
+    public String getSelectedDemoImageKey() {
+        return selectedDemoImageKey;
+    }
+
     public void start(@Nullable String requestedListingId) {
         String resolvedId = requestedListingId == null ? "" : requestedListingId.trim();
         if (resolvedId.isEmpty()) {
@@ -110,6 +124,9 @@ public final class CreateListingViewModel extends AndroidViewModel {
             mode = Mode.CREATE;
             listingId = "";
             existingImageUrl = null;
+            existingDemoImageKey = "";
+            selectedDemoImageKey = "";
+            imageChoiceChanged = false;
             expectedUpdatedAt = null;
             ownerConfirmed = true;
             initialFormSent = false;
@@ -125,6 +142,9 @@ public final class CreateListingViewModel extends AndroidViewModel {
         mode = Mode.EDIT;
         listingId = resolvedId;
         existingImageUrl = null;
+        existingDemoImageKey = "";
+        selectedDemoImageKey = "";
+        imageChoiceChanged = false;
         expectedUpdatedAt = null;
         ownerConfirmed = false;
         initialFormSent = false;
@@ -194,6 +214,8 @@ public final class CreateListingViewModel extends AndroidViewModel {
             initialFormSent = true;
             expectedUpdatedAt = listing.getUpdatedAt();
             existingImageUrl = listing.getImageUrl();
+            existingDemoImageKey = DemoImagePolicy.normalize(listing.getDemoImageKey());
+            selectedDemoImageKey = existingDemoImageKey;
             initialForm.setValue(listing);
         } else if (expectedUpdatedAt != null
                 && listing.getUpdatedAt() != null
@@ -278,6 +300,31 @@ public final class CreateListingViewModel extends AndroidViewModel {
         state.setValue(State.ready(mode, message, false));
     }
 
+    public void selectDemoImage(@Nullable String demoImageKey) {
+        State current = state.getValue();
+        if (current != null && current.isBusy()) {
+            return;
+        }
+        String normalized = DemoImagePolicy.normalize(demoImageKey);
+        if (!DemoImagePolicy.isSelected(normalized)) {
+            state.setValue(State.error(
+                    mode, State.Kind.ERROR, "Choose a valid built-in demo image.", true, false));
+            return;
+        }
+        imageGeneration.incrementAndGet();
+        if (imageFuture != null) {
+            imageFuture.cancel(true);
+            imageFuture = null;
+        }
+        deleteSelectedImage();
+        selectedDemoImageKey = normalized;
+        imageChoiceChanged = true;
+        state.setValue(State.ready(
+                mode,
+                "Built-in demo image selected. No cloud photo upload is needed.",
+                false));
+    }
+
     public void discardSelectedImage() {
         State current = state.getValue();
         if (current != null && current.isBusy()) {
@@ -289,11 +336,14 @@ public final class CreateListingViewModel extends AndroidViewModel {
             imageFuture = null;
         }
         deleteSelectedImage();
+        selectedDemoImageKey = "";
+        imageChoiceChanged = true;
         state.setValue(State.ready(
                 mode,
-                existingImageUrl == null
-                        ? "Photo selection cleared. A photo is optional."
-                        : "New photo cleared. The current listing photo will stay.",
+                mode == Mode.EDIT && (existingImageUrl != null
+                        || DemoImagePolicy.isSelected(existingDemoImageKey))
+                        ? "Image cleared. Save the listing to remove its current image."
+                        : "Image selection cleared. An image is optional.",
                 false));
     }
 
@@ -327,6 +377,8 @@ public final class CreateListingViewModel extends AndroidViewModel {
                         return;
                     }
                     selectedImage = image;
+                    selectedDemoImageKey = "";
+                    imageChoiceChanged = true;
                     state.setValue(State.ready(
                             mode,
                             "Photo ready. It will upload only when you save the listing.",
@@ -357,7 +409,8 @@ public final class CreateListingViewModel extends AndroidViewModel {
                         fulfilmentMethod,
                         price,
                         exchangeTerms,
-                        description);
+                        description,
+                        selectedDemoImageKey);
         if (!validation.isValid()) {
             state.setValue(State.error(
                     mode,
@@ -480,9 +533,11 @@ public final class CreateListingViewModel extends AndroidViewModel {
                             deleteSelectedImage();
                             state.setValue(State.success(
                                     Mode.CREATE,
-                                    uploadedImageUrl == null
-                                            ? "Listing published."
-                                            : "Listing and photo published."));
+                                    uploadedImageUrl != null
+                                            ? "Listing and photo published."
+                                            : DemoImagePolicy.isSelected(listing.getDemoImageKey())
+                                            ? "Listing published with a built-in demo image."
+                                            : "Listing published."));
                             activityLog.record(
                                     ActivityLogRepository.TYPE_MARKETPLACE_LISTED,
                                     "Marketplace listing published",
@@ -505,12 +560,17 @@ public final class CreateListingViewModel extends AndroidViewModel {
             return;
         }
 
+        final String finalImageUrl = !imageChoiceChanged && uploadedImageUrl == null
+                ? existingImageUrl
+                : uploadedImageUrl;
+
         repository.updateListing(
                 targetListingId,
                 listing,
                 expectedUpdatedAt,
                 existingImageUrl,
-                uploadedImageUrl,
+                existingDemoImageKey,
+                finalImageUrl,
                 new MarketplaceRepository.MutationCallback() {
                     @Override
                     public void onUpdated() {
@@ -518,10 +578,11 @@ public final class CreateListingViewModel extends AndroidViewModel {
                             return;
                         }
                         String oldImageUrl = existingImageUrl;
-                        if (uploadedImageUrl != null) {
-                            existingImageUrl = uploadedImageUrl;
-                            deleteSelectedImage();
-                        }
+                        existingImageUrl = finalImageUrl;
+                        existingDemoImageKey = listing.getDemoImageKey();
+                        selectedDemoImageKey = existingDemoImageKey;
+                        imageChoiceChanged = false;
+                        deleteSelectedImage();
                         activityLog.record(
                                 ActivityLogRepository.TYPE_MARKETPLACE_UPDATED,
                                 "Marketplace listing updated",
@@ -529,7 +590,7 @@ public final class CreateListingViewModel extends AndroidViewModel {
                                 ActivityLogRepository.DESTINATION_MARKETPLACE,
                                 targetListingId);
                         cleanupOldImageThenComplete(
-                                targetListingId, oldImageUrl, uploadedImageUrl);
+                                targetListingId, oldImageUrl, finalImageUrl);
                     }
 
                     @Override
@@ -548,8 +609,7 @@ public final class CreateListingViewModel extends AndroidViewModel {
             @NonNull String targetListingId,
             @Nullable String oldImageUrl,
             @Nullable String newImageUrl) {
-        if (oldImageUrl == null || newImageUrl == null
-                || Objects.equals(oldImageUrl, newImageUrl)) {
+        if (oldImageUrl == null || Objects.equals(oldImageUrl, newImageUrl)) {
             finishEditSuccess("Listing changes saved.");
             return;
         }

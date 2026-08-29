@@ -21,6 +21,7 @@ public final class LendingItem {
     private Double latitude;
     private Double longitude;
     private String imageUrl;
+    private String demoImageKey;
     private String status;
     private Timestamp createdAt;
     private Timestamp updatedAt;
@@ -57,6 +58,8 @@ public final class LendingItem {
     public void setLongitude(@Nullable Double longitude) { this.longitude = longitude; }
     @Nullable public String getImageUrl() { return imageUrl; }
     public void setImageUrl(@Nullable String imageUrl) { this.imageUrl = imageUrl; }
+    @Nullable public String getDemoImageKey() { return demoImageKey; }
+    public void setDemoImageKey(@Nullable String demoImageKey) { this.demoImageKey = demoImageKey; }
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
     @Nullable public Timestamp getCreatedAt() { return createdAt; }

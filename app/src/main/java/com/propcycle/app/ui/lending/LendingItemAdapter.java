@@ -15,6 +15,7 @@ import com.propcycle.app.R;
 import com.propcycle.app.data.lending.LendingItem;
 import com.propcycle.app.data.lending.LendingPolicy;
 import com.propcycle.app.data.marketplace.MarketplaceImageLoader;
+import com.propcycle.app.ui.common.DemoImageCatalog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -128,8 +129,14 @@ public final class LendingItemAdapter
             image.setImageResource(R.drawable.ic_bottom_nav_lend_out);
             String url = item.getImageUrl();
             if (url == null || url.trim().isEmpty()) {
+                int demoDrawable = DemoImageCatalog.drawableFor(item.getDemoImageKey());
+                if (demoDrawable != 0) {
+                    image.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                    image.setImageResource(demoDrawable);
+                }
                 return;
             }
+            image.setScaleType(ImageView.ScaleType.CENTER_CROP);
             boundUrl = url;
             imageHandle = imageLoader.load(url, new MarketplaceImageLoader.Callback() {
                 @Override
