@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
@@ -119,7 +120,6 @@ public final class AiResultFragment extends Fragment {
     @NonNull
     private static View[] getRevealStages(@NonNull FragmentAiResultBinding currentBinding) {
         return new View[]{
-                currentBinding.helloBubble,
                 currentBinding.identificationBubble,
                 currentBinding.resultDisclaimer,
                 currentBinding.nextStepSection,
@@ -206,6 +206,7 @@ public final class AiResultFragment extends Fragment {
         }
         DialogAiResultDetailsBinding detailsBinding =
                 DialogAiResultDetailsBinding.inflate(getLayoutInflater());
+        detailsBinding.detailsTitleValue.setText(currentAnalysis.getItemName());
         detailsBinding.detailsMaterialValue.setText(currentAnalysis.getMaterial());
         detailsBinding.detailsCategoryValue.setText(currentAnalysis.getCategory().getDisplayName());
         detailsBinding.detailsRecyclableValue.setText(currentAnalysis.isRecyclable()
@@ -220,11 +221,17 @@ public final class AiResultFragment extends Fragment {
         detailsBinding.detailsSafetyValue.setText(currentAnalysis.getSafetyNote());
         detailsBinding.detailsDisclaimerValue.setText(ScanAnalysis.MALAYSIA_DISCLAIMER);
 
-        new MaterialAlertDialogBuilder(requireContext())
-                .setTitle(currentAnalysis.getItemName())
+        AlertDialog detailsDialog = new MaterialAlertDialogBuilder(requireContext())
                 .setView(detailsBinding.getRoot())
-                .setPositiveButton(R.string.close, null)
-                .show();
+                .create();
+        detailsBinding.detailsCloseIcon.setOnClickListener(ignored -> detailsDialog.dismiss());
+        detailsBinding.detailsCloseAction.setOnClickListener(ignored -> detailsDialog.dismiss());
+        detailsDialog.setOnShowListener(ignored -> {
+            if (detailsDialog.getWindow() != null) {
+                detailsDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            }
+        });
+        detailsDialog.show();
     }
 
     @NonNull

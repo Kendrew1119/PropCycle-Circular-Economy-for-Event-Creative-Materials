@@ -58,6 +58,7 @@
     <dimen name="elevation_subtle">2dp</dimen>
     <dimen name="ai_result_section_spacing">12dp</dimen>
     <dimen name="ai_result_action_min_height">52dp</dimen>
+    <dimen name="ai_result_compact_action_width">260dp</dimen>
     <dimen name="ai_result_warning_corner">18dp</dimen>
     <dimen name="ai_result_bubble_cue_corner">6dp</dimen>
     <dimen name="home_feature_card_min_height">226dp</dimen>

@@ -49,11 +49,11 @@
     <color name="pc_welcome_card_border">#DCE4DA</color>
 
     <!-- AI Result screen surfaces. -->
-    <color name="pc_ai_result_background">@color/pc_welcome_background</color>
-    <color name="pc_ai_result_card_surface">@color/pc_welcome_card_surface</color>
-    <color name="pc_ai_result_card_border">@color/pc_welcome_card_border</color>
-    <color name="pc_ai_result_warning_surface">#FCF3E7</color>
-    <color name="pc_ai_result_warning_border">#E6C69E</color>
+    <color name="pc_ai_result_background">@color/pc_brand_warm_cream</color>
+    <color name="pc_ai_result_card_surface">@color/pc_brand_surface</color>
+    <color name="pc_ai_result_card_border">@color/pc_brand_outline</color>
+    <color name="pc_ai_result_warning_surface">#FFF2C8</color>
+    <color name="pc_ai_result_warning_border">@color/pc_brand_accent_yellow</color>
 
     <!-- Compatibility names retained for proposal layouts while they migrate. -->
     <color name="pc_surface_mid">@color/pc_surface_container</color>
