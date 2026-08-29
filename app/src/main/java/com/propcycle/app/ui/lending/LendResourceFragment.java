@@ -298,7 +298,9 @@ public final class LendResourceFragment extends Fragment {
                 ? "Save changes" : "Publish lending item");
         binding.lendingFormProgress.setVisibility(
                 state.isLoading() || state.isBusy() ? View.VISIBLE : View.GONE);
-        binding.lendingFormStatus.setText(state.getMessage() == null ? "" : state.getMessage());
+        String statusMessage = state.getMessage() == null ? "" : state.getMessage();
+        binding.lendingFormStatus.setText(statusMessage);
+        binding.lendingFormStatus.setVisibility(statusMessage.isEmpty() ? View.GONE : View.VISIBLE);
         boolean enabled = state.isFormAvailable() && !state.isBusy();
         setEnabled(enabled);
         showImagePreview();
