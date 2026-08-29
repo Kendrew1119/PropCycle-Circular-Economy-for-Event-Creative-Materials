@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">PropCycle</string>
+    <string name="welcome_mascot_description">PropCycle recycling mascot</string>
+    <string name="welcome_subtitle">Give materials a second life.</string>
+    <string name="welcome_continue">Get started</string>
+    <string name="welcome_continue_description">Continue to sign in</string>
+    <string name="welcome_hero_illustration_description">A friendly recycling box with reusable paper, cardboard, a bottle, and recycling doodles.</string>
     <string name="lending_chat_deferred">Lending chat will be connected with the lending backend in a later phase.</string>
     <string name="menu">Open navigation menu</string>
     <string name="back">Go back</string>

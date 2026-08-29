@@ -3,6 +3,6 @@
     <solid android:color="@color/pc_brand_surface" />
     <stroke
         android:width="@dimen/stroke_medium"
-        android:color="@color/pc_brand_deep_blue" />
-    <corners android:radius="38dp" />
+        android:color="@color/pc_brand_primary_blue" />
+    <corners android:radius="24dp" />
 </shape>
