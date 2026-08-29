@@ -2,7 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/pc_background"
+    android:background="@color/pc_brand_warm_cream"
     android:clipToPadding="false"
     android:fillViewport="true">
 
@@ -10,147 +10,204 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingStart="@dimen/screen_horizontal"
-        android:paddingTop="@dimen/space_md"
-        android:paddingEnd="@dimen/screen_horizontal"
-        android:paddingBottom="@dimen/space_xl">
+        android:paddingStart="20dp"
+        android:paddingTop="16dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="30dp">
 
-
-        <TextView
-            android:id="@+id/profile_avatar_initial"
-            android:layout_width="104dp"
-            android:layout_height="104dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/space_sm"
-            android:background="@drawable/bg_circle_gray"
-            android:contentDescription="User profile picture"
-            android:gravity="center"
-            android:text="U"
-            android:textColor="@color/pc_ink"
-            android:textSize="36sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/profile_name"
-            style="@style/TextAppearance.PropCycle.Title"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:gravity="center"
-            android:text="User Name" />
+            android:layout_height="216dp"
+            android:background="@drawable/bg_profile_header"
+            android:padding="20dp">
 
-        <TextView
-            android:id="@+id/profile_email"
-            style="@style/TextAppearance.PropCycle.Caption"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:gravity="center"
-            android:textColor="@color/pc_text_secondary" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/fredoka_semibold"
+                android:text="MY PROFILE"
+                android:textColor="@color/pc_brand_soft_blue"
+                android:textSize="12sp" />
+
+            <ImageView
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:layout_gravity="end|top"
+                android:contentDescription="@null"
+                android:src="@drawable/ic_profile_doodles" />
+
+            <TextView
+                android:id="@+id/profile_avatar_initial"
+                android:layout_width="82dp"
+                android:layout_height="82dp"
+                android:layout_gravity="start|bottom"
+                android:background="@drawable/bg_profile_avatar"
+                android:contentDescription="User profile picture"
+                android:fontFamily="@font/fredoka_semibold"
+                android:gravity="center"
+                android:text="U"
+                android:textColor="@color/pc_brand_deep_blue"
+                android:textSize="32sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|start"
+                android:layout_marginStart="96dp"
+                android:layout_marginEnd="4dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/profile_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/fredoka_semibold"
+                    android:maxLines="1"
+                    android:text="User Name"
+                    android:textColor="@color/pc_white"
+                    android:textSize="23sp" />
+
+                <TextView
+                    android:id="@+id/profile_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="@color/pc_brand_soft_blue"
+                    android:textSize="14sp" />
+            </LinearLayout>
+        </FrameLayout>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/profile_edit_action"
             style="@style/Widget.Material3.Button.TextButton"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/touch_target"
+            android:layout_height="48dp"
             android:layout_gravity="center_horizontal"
-            android:text="Edit display name" />
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_profile_edit"
+            android:paddingStart="18dp"
+            android:paddingEnd="18dp"
+            android:text="Edit display name"
+            android:textColor="@color/pc_brand_deep_blue" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="112dp"
-            android:layout_marginTop="@dimen/space_lg"
-            android:background="@drawable/bg_card_gray"
-            android:gravity="center_vertical"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:background="@drawable/bg_profile_summary"
             android:orientation="vertical"
-            android:paddingStart="@dimen/space_lg"
-            android:paddingEnd="@dimen/space_lg">
+            android:padding="18dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/fredoka_semibold"
+                android:text="YOUR ACTIVITY"
+                android:textColor="@color/pc_brand_deep_blue"
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/profile_activity_summary"
-                style="@style/TextAppearance.PropCycle.Body"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:fontFamily="@font/fredoka_semibold"
                 android:text="No recorded activity yet"
-                android:textStyle="bold" />
+                android:textColor="@color/pc_brand_text_primary"
+                android:textSize="19sp" />
 
             <TextView
                 android:id="@+id/profile_member_summary"
-                style="@style/TextAppearance.PropCycle.Caption"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/space_sm"
-                android:text="PropCycle member" />
+                android:layout_marginTop="4dp"
+                android:text="PropCycle member"
+                android:textColor="@color/pc_brand_deep_blue"
+                android:textSize="14sp" />
         </LinearLayout>
 
         <TextView
-            style="@style/TextAppearance.PropCycle.Title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/space_lg"
-            android:text="My Listings" />
+            android:layout_marginTop="26dp"
+            android:fontFamily="@font/fredoka_semibold"
+            android:text="MY LISTINGS"
+            android:textColor="@color/pc_brand_deep_blue"
+            android:textSize="13sp" />
 
         <LinearLayout
             android:id="@+id/item_card"
             android:layout_width="match_parent"
-            android:layout_height="118dp"
-            android:layout_marginTop="12dp"
-            android:background="@drawable/bg_card_gray"
+            android:layout_height="116dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_profile_listing"
             android:clickable="true"
             android:contentDescription="Open my active marketplace listing"
             android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:padding="@dimen/space_md">
+            android:padding="16dp">
 
-            <TextView
-                android:layout_width="82dp"
-                android:layout_height="82dp"
-                android:background="@drawable/bg_card_light"
-                android:gravity="center"
-                android:text="ITEM"
-                android:textColor="@color/pc_text_secondary"
-                android:textStyle="bold" />
+            <ImageView
+                android:layout_width="78dp"
+                android:layout_height="78dp"
+                android:background="@drawable/bg_profile_listing_icon"
+                android:contentDescription="@null"
+                android:padding="17dp"
+                android:src="@drawable/ic_material_box"
+                android:tint="@color/pc_brand_deep_blue" />
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/space_md"
+                android:layout_marginStart="14dp"
                 android:layout_weight="1"
                 android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/profile_listing_title"
-                    style="@style/TextAppearance.PropCycle.Body"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/fredoka_semibold"
+                    android:maxLines="2"
                     android:text="No active marketplace listings"
-                    android:textStyle="bold" />
+                    android:textColor="@color/pc_brand_text_primary"
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/profile_listing_meta"
-                    style="@style/TextAppearance.PropCycle.Caption"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/space_sm"
-                    android:text="Tap to create one" />
+                    android:layout_marginTop="4dp"
+                    android:maxLines="2"
+                    android:text="Tap to create one"
+                    android:textColor="@color/pc_brand_text_secondary"
+                    android:textSize="14sp" />
             </LinearLayout>
 
             <TextView
-                android:layout_width="@dimen/touch_target"
-                android:layout_height="@dimen/touch_target"
+                android:layout_width="36dp"
+                android:layout_height="48dp"
                 android:gravity="center"
                 android:text="›"
-                android:textColor="@color/pc_ink"
-                android:textSize="28sp" />
+                android:textColor="@color/pc_brand_deep_blue"
+                android:textSize="30sp" />
         </LinearLayout>
 
         <Button
             android:id="@+id/logout_action"
-            style="@style/Widget.PropCycle.Button.Dark"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/space_xl"
-            android:text="@string/profile_logout" />
+            android:layout_height="52dp"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/bg_profile_logout"
+            android:text="@string/profile_logout"
+            android:textColor="@color/pc_brand_accent_red"
+            android:textSize="16sp"
+            android:textStyle="bold" />
     </LinearLayout>
 </ScrollView>

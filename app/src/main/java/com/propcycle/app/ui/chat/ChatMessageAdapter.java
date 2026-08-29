@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.propcycle.app.R;
@@ -47,7 +48,13 @@ final class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.M
         holder.message.setText(message.getText());
         holder.time.setText(timeLabel(message));
         holder.bubble.setBackgroundResource(
-                mine ? R.drawable.bg_card_gray : R.drawable.bg_outline);
+                mine ? R.drawable.bg_conversation_mine : R.drawable.bg_conversation_other);
+        holder.message.setTextColor(ContextCompat.getColor(
+                holder.itemView.getContext(),
+                mine ? R.color.pc_white : R.color.pc_brand_text_primary));
+        holder.time.setTextColor(ContextCompat.getColor(
+                holder.itemView.getContext(),
+                mine ? R.color.pc_brand_soft_blue : R.color.pc_brand_text_secondary));
         FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) holder.bubble.getLayoutParams();
         params.gravity = mine ? Gravity.END : Gravity.START;
         holder.bubble.setLayoutParams(params);

@@ -1,47 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/space_sm"
-    app:cardBackgroundColor="@color/pc_surface"
-    app:cardCornerRadius="20dp"
-    app:strokeColor="@color/pc_border"
+    android:layout_marginBottom="12dp"
+    app:cardBackgroundColor="@android:color/transparent"
+    app:cardCornerRadius="22dp"
+    app:cardElevation="0dp"
+    app:strokeColor="@color/pc_brand_outline"
     app:strokeWidth="1dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/bg_notifications_request_card"
         android:orientation="vertical"
-        android:padding="@dimen/space_md">
+        android:padding="16dp">
 
         <TextView
             android:id="@+id/request_item_title"
-            style="@style/TextAppearance.PropCycle.Title"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:fontFamily="@font/fredoka_semibold"
+            android:maxLines="2"
+            android:textColor="@color/pc_brand_text_primary"
+            android:textSize="20sp"
+            tools:text="Blue canopy for event booth" />
 
         <TextView
             android:id="@+id/request_role_and_dates"
-            style="@style/TextAppearance.PropCycle.Caption"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/space_xs"
-            android:textColor="@color/pc_text_secondary" />
+            android:layout_marginTop="5dp"
+            android:lineSpacingMultiplier="1.08"
+            android:maxLines="2"
+            android:textColor="@color/pc_brand_text_secondary"
+            android:textSize="14sp"
+            tools:text="You are the owner  •  06 Sep to 08 Sep" />
 
         <TextView
             android:id="@+id/request_state"
-            style="@style/TextAppearance.PropCycle.Body"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/space_sm"
-            android:textColor="@color/pc_primary"
-            android:textStyle="bold" />
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_notifications_state"
+            android:fontFamily="@font/fredoka_semibold"
+            android:paddingStart="12dp"
+            android:paddingTop="6dp"
+            android:paddingEnd="12dp"
+            android:paddingBottom="6dp"
+            android:textColor="@color/pc_brand_deep_blue"
+            android:textSize="13sp"
+            tools:text="Awaiting your approval" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/space_sm"
+            android:layout_marginTop="14dp"
             android:gravity="end"
             android:orientation="horizontal">
 
@@ -49,16 +66,23 @@
                 android:id="@+id/request_secondary_action"
                 style="@style/Widget.Material3.Button.TextButton"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Decline" />
+                android:layout_height="48dp"
+                android:minWidth="0dp"
+                android:textColor="@color/pc_brand_deep_blue"
+                app:strokeColor="@color/pc_brand_outline"
+                app:strokeWidth="1dp"
+                tools:text="Reject" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/request_primary_action"
                 style="@style/Widget.PropCycle.Button.Dark"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/space_sm"
-                android:text="Approve" />
+                android:layout_height="48dp"
+                android:layout_marginStart="8dp"
+                android:minWidth="0dp"
+                android:textColor="@color/pc_white"
+                app:backgroundTint="@color/pc_brand_primary_blue"
+                tools:text="Approve" />
         </LinearLayout>
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

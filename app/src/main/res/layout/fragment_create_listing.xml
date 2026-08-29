@@ -1,50 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/pc_welcome_background"
+    android:background="@color/pc_brand_warm_cream"
     android:clipToPadding="false"
     android:fillViewport="true"
-    android:paddingStart="@dimen/screen_horizontal"
-    android:paddingTop="@dimen/screen_vertical"
-    android:paddingEnd="@dimen/screen_horizontal"
-    android:paddingBottom="@dimen/screen_vertical">
+    android:paddingStart="20dp"
+    android:paddingTop="14dp"
+    android:paddingEnd="20dp"
+    android:paddingBottom="28dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
         android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
+            android:gravity="top"
             android:orientation="horizontal">
 
             <ImageButton
                 android:id="@+id/menu_button"
                 style="@style/Widget.PropCycle.IconButton"
-                android:background="@color/pc_transparent"
+                android:layout_marginTop="4dp"
+                android:background="@drawable/bg_create_listing_secondary_action"
                 android:contentDescription="Open navigation menu"
-                android:src="@drawable/ic_settings" />
+                android:src="@drawable/ic_settings"
+                android:tint="@color/pc_brand_deep_blue" />
 
-            <TextView
-                android:id="@+id/create_listing_heading"
-                style="@style/TextAppearance.PropCycle.Heading"
+            <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
+                android:layout_marginStart="10dp"
                 android:layout_weight="1"
-                android:text="Complete your\nlisting"
-                android:textSize="31sp" />
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/create_listing_heading"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/fredoka_semibold"
+                    android:lineSpacingExtra="-2dp"
+                    android:text="Complete your&#10;listing"
+                    android:textColor="@color/pc_brand_deep_blue"
+                    android:textSize="32sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="Give useful materials their next event."
+                    android:textColor="@color/pc_brand_text_secondary"
+                    android:textSize="14sp" />
+            </LinearLayout>
 
             <ImageView
-                android:layout_width="@dimen/touch_target"
-                android:layout_height="@dimen/touch_target"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:layout_marginTop="4dp"
                 android:contentDescription="@null"
                 android:importantForAccessibility="no"
-                android:padding="@dimen/space_sm"
+                android:padding="6dp"
                 android:scaleType="centerInside"
                 android:src="@drawable/ic_listing_burst" />
         </LinearLayout>
@@ -53,20 +72,18 @@
             android:id="@+id/create_listing_form"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/space_md"
-            android:orientation="vertical"
-            android:paddingStart="@dimen/space_xs"
-            android:paddingEnd="@dimen/space_xs">
+            android:layout_marginTop="18dp"
+            android:orientation="vertical">
 
             <FrameLayout
                 android:id="@+id/listing_photo_container"
-                android:layout_width="@dimen/create_listing_photo_width"
-                android:layout_height="@dimen/create_listing_photo_height"
-                android:layout_gravity="center_horizontal"
-                android:background="@drawable/bg_create_listing_photo"
+                android:layout_width="match_parent"
+                android:layout_height="226dp"
+                android:background="@drawable/bg_create_listing_hero"
                 android:clipToOutline="true"
-                android:elevation="@dimen/elevation_subtle"
-                android:outlineProvider="background">
+                android:elevation="2dp"
+                android:outlineProvider="background"
+                android:padding="8dp">
 
                 <ImageView
                     android:id="@+id/listing_photo_preview"
@@ -80,264 +97,360 @@
                     android:id="@+id/listing_photo_placeholder"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:background="@drawable/bg_create_listing_upload_placeholder"
                     android:contentDescription="Marketplace item photo placeholder"
-                    android:gravity="center"
-                    android:padding="@dimen/space_md"
-                    android:text="Add one clear item photo\n(optional)"
-                    android:textAlignment="center"
-                    android:textColor="@color/pc_text_secondary"
-                    android:textSize="16sp" />
+                    android:fontFamily="@font/fredoka_semibold"
+                    android:gravity="bottom|start"
+                    android:padding="18dp"
+                    android:text="Add a photo&#10;(optional)"
+                    android:textColor="@color/pc_brand_deep_blue"
+                    android:textSize="19sp" />
 
                 <ProgressBar
                     android:id="@+id/listing_photo_progress"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="42dp"
+                    android:layout_height="42dp"
                     android:layout_gravity="center"
                     android:indeterminate="true"
+                    android:indeterminateTint="@color/pc_brand_primary_blue"
                     android:visibility="gone" />
 
                 <ImageButton
                     android:id="@+id/photo_add_action"
-                    style="@style/Widget.PropCycle.IconButton"
+                    android:layout_width="52dp"
+                    android:layout_height="52dp"
                     android:layout_gravity="bottom|end"
-                    android:layout_marginEnd="@dimen/ai_result_section_spacing"
-                    android:layout_marginBottom="@dimen/ai_result_section_spacing"
+                    android:layout_marginEnd="14dp"
+                    android:layout_marginBottom="14dp"
+                    android:background="@drawable/bg_create_listing_photo_action"
                     android:contentDescription="Add or change item photo"
-                    android:elevation="@dimen/elevation_subtle"
-                    android:src="@drawable/ic_add" />
+                    android:elevation="4dp"
+                    android:padding="14dp"
+                    android:src="@drawable/ic_add"
+                    android:tint="@color/pc_brand_surface" />
             </FrameLayout>
 
             <TextView
                 android:id="@+id/photo_clear_action"
-                style="@style/TextAppearance.PropCycle.Caption"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/touch_target"
+                android:layout_height="44dp"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/space_xs"
+                android:layout_marginTop="4dp"
                 android:clickable="true"
                 android:contentDescription="Clear the newly selected marketplace photo"
                 android:focusable="true"
+                android:fontFamily="@font/fredoka_semibold"
                 android:gravity="center"
                 android:paddingStart="18dp"
                 android:paddingEnd="18dp"
                 android:text="Clear new photo"
-                android:textColor="@color/pc_text_secondary"
-                android:textStyle="bold"
+                android:textColor="@color/pc_brand_deep_blue"
+                android:textSize="14sp"
                 android:visibility="gone" />
 
             <TextView
-                style="@style/TextAppearance.PropCycle.Caption"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/space_lg"
+                android:layout_marginTop="18dp"
+                android:fontFamily="@font/fredoka_semibold"
                 android:labelFor="@id/listing_title_input"
-                android:text="Item name"
-                android:textColor="@color/pc_text_primary"
-                android:textStyle="bold" />
+                android:text="Item title  ✦"
+                android:textColor="@color/pc_brand_deep_blue"
+                android:textSize="18sp" />
 
             <EditText
                 android:id="@+id/listing_title_input"
-                style="@style/Widget.PropCycle.CreateListing.Field"
-                android:layout_marginTop="0dp"
-                android:hint="Enter item name"
+                style="@style/Widget.PropCycle.Field"
+                android:layout_marginTop="6dp"
+                android:background="@drawable/bg_create_listing_input"
+                android:fontFamily="sans-serif"
+                android:gravity="center_vertical"
+                android:hint="e.g. Blue event fabric bundle"
                 android:importantForAutofill="no"
                 android:inputType="textCapSentences"
                 android:maxLength="100"
-                android:maxLines="1" />
+                android:maxLines="1"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:textColor="@color/pc_brand_text_primary"
+                android:textColorHint="@color/pc_brand_text_secondary" />
 
-            <TextView
-                style="@style/TextAppearance.PropCycle.Caption"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/space_md"
-                android:labelFor="@id/listing_category_input"
-                android:text="Category"
-                android:textColor="@color/pc_text_primary"
-                android:textStyle="bold" />
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal">
 
-            <AutoCompleteTextView
-                android:id="@+id/listing_category_input"
-                style="@style/Widget.PropCycle.CreateListing.Field"
-                android:layout_marginTop="0dp"
-                android:hint="Select category"
-                android:importantForAutofill="no"
-                android:inputType="none"
-                android:maxLines="1" />
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="6dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
-            <TextView
-                style="@style/TextAppearance.PropCycle.Caption"
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/fredoka_semibold"
+                        android:labelFor="@id/listing_category_input"
+                        android:text="Category  ◌"
+                        android:textColor="@color/pc_brand_deep_blue"
+                        android:textSize="16sp" />
+
+                    <AutoCompleteTextView
+                        android:id="@+id/listing_category_input"
+                        style="@style/Widget.PropCycle.Field"
+                        android:layout_marginTop="6dp"
+                        android:background="@drawable/bg_create_listing_input"
+                        android:ellipsize="end"
+                        android:fontFamily="sans-serif"
+                        android:gravity="center_vertical"
+                        android:hint="Category"
+                        android:importantForAutofill="no"
+                        android:inputType="none"
+                        android:maxLines="1"
+                        android:paddingStart="14dp"
+                        android:paddingEnd="12dp"
+                        android:textColor="@color/pc_brand_text_primary"
+                        android:textColorHint="@color/pc_brand_text_secondary" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/fredoka_semibold"
+                        android:labelFor="@id/listing_condition_input"
+                        android:text="Condition  ✦"
+                        android:textColor="@color/pc_brand_deep_blue"
+                        android:textSize="16sp" />
+
+                    <AutoCompleteTextView
+                        android:id="@+id/listing_condition_input"
+                        style="@style/Widget.PropCycle.Field"
+                        android:layout_marginTop="6dp"
+                        android:background="@drawable/bg_create_listing_input"
+                        android:ellipsize="end"
+                        android:fontFamily="sans-serif"
+                        android:gravity="center_vertical"
+                        android:hint="Condition"
+                        android:importantForAutofill="no"
+                        android:inputType="none"
+                        android:maxLines="1"
+                        android:paddingStart="14dp"
+                        android:paddingEnd="12dp"
+                        android:textColor="@color/pc_brand_text_primary"
+                        android:textColorHint="@color/pc_brand_text_secondary" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/space_md"
-                android:labelFor="@id/listing_condition_input"
-                android:text="Condition"
-                android:textColor="@color/pc_text_primary"
-                android:textStyle="bold" />
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal">
 
-            <AutoCompleteTextView
-                android:id="@+id/listing_condition_input"
-                style="@style/Widget.PropCycle.CreateListing.Field"
-                android:layout_marginTop="0dp"
-                android:hint="Select condition"
-                android:importantForAutofill="no"
-                android:inputType="none"
-                android:maxLines="1" />
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="6dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
-            <TextView
-                style="@style/TextAppearance.PropCycle.Caption"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/space_md"
-                android:labelFor="@id/listing_transaction_input"
-                android:text="Offer type"
-                android:textColor="@color/pc_text_primary"
-                android:textStyle="bold" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/fredoka_semibold"
+                        android:labelFor="@id/listing_transaction_input"
+                        android:text="Offer type  ♡"
+                        android:textColor="@color/pc_brand_deep_blue"
+                        android:textSize="16sp" />
 
-            <AutoCompleteTextView
-                android:id="@+id/listing_transaction_input"
-                style="@style/Widget.PropCycle.CreateListing.Field"
-                android:layout_marginTop="0dp"
-                android:hint="Select sale, donation, or exchange"
-                android:importantForAutofill="no"
-                android:inputType="none"
-                android:maxLines="1" />
+                    <AutoCompleteTextView
+                        android:id="@+id/listing_transaction_input"
+                        style="@style/Widget.PropCycle.Field"
+                        android:layout_marginTop="6dp"
+                        android:background="@drawable/bg_create_listing_input"
+                        android:ellipsize="end"
+                        android:fontFamily="sans-serif"
+                        android:gravity="center_vertical"
+                        android:hint="Donation"
+                        android:importantForAutofill="no"
+                        android:inputType="none"
+                        android:maxLines="1"
+                        android:paddingStart="14dp"
+                        android:paddingEnd="12dp"
+                        android:textColor="@color/pc_brand_text_primary"
+                        android:textColorHint="@color/pc_brand_text_secondary" />
+                </LinearLayout>
 
-            <TextView
-                style="@style/TextAppearance.PropCycle.Caption"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/space_md"
-                android:labelFor="@id/listing_fulfilment_input"
-                android:text="Pickup"
-                android:textColor="@color/pc_text_primary"
-                android:textStyle="bold" />
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
-            <AutoCompleteTextView
-                android:id="@+id/listing_fulfilment_input"
-                style="@style/Widget.PropCycle.CreateListing.Field"
-                android:layout_marginTop="0dp"
-                android:hint="Select pickup or meet-up"
-                android:importantForAutofill="no"
-                android:inputType="none"
-                android:maxLines="1" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/fredoka_semibold"
+                        android:labelFor="@id/listing_fulfilment_input"
+                        android:text="Hand-over  ↗"
+                        android:textColor="@color/pc_brand_deep_blue"
+                        android:textSize="16sp" />
+
+                    <AutoCompleteTextView
+                        android:id="@+id/listing_fulfilment_input"
+                        style="@style/Widget.PropCycle.Field"
+                        android:layout_marginTop="6dp"
+                        android:background="@drawable/bg_create_listing_input"
+                        android:ellipsize="end"
+                        android:fontFamily="sans-serif"
+                        android:gravity="center_vertical"
+                        android:hint="Pickup"
+                        android:importantForAutofill="no"
+                        android:inputType="none"
+                        android:maxLines="1"
+                        android:paddingStart="14dp"
+                        android:paddingEnd="12dp"
+                        android:textColor="@color/pc_brand_text_primary"
+                        android:textColorHint="@color/pc_brand_text_secondary" />
+                </LinearLayout>
+            </LinearLayout>
 
             <EditText
                 android:id="@+id/listing_price_input"
-                style="@style/Widget.PropCycle.CreateListing.Field"
-                android:layout_marginTop="10dp"
+                style="@style/Widget.PropCycle.Field"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/bg_create_listing_input"
                 android:digits="0123456789."
+                android:fontFamily="sans-serif"
+                android:gravity="center_vertical"
                 android:hint="Price (RM)"
                 android:importantForAutofill="no"
                 android:inputType="numberDecimal"
                 android:maxLines="1"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:textColor="@color/pc_brand_text_primary"
+                android:textColorHint="@color/pc_brand_text_secondary"
                 android:visibility="gone" />
 
             <EditText
                 android:id="@+id/listing_exchange_terms_input"
-                style="@style/Widget.PropCycle.CreateListing.Description"
-                android:layout_height="82dp"
-                android:layout_marginTop="10dp"
+                style="@style/Widget.PropCycle.Field"
+                android:layout_height="98dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/bg_create_listing_description"
+                android:fontFamily="sans-serif"
                 android:gravity="top|start"
                 android:hint="What would you accept in exchange?"
                 android:importantForAutofill="no"
                 android:inputType="textCapSentences|textMultiLine"
                 android:maxLength="500"
                 android:maxLines="4"
-                android:paddingTop="16dp"
+                android:padding="16dp"
+                android:textColor="@color/pc_brand_text_primary"
+                android:textColorHint="@color/pc_brand_text_secondary"
                 android:visibility="gone" />
 
             <TextView
-                style="@style/TextAppearance.PropCycle.Caption"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/space_md"
+                android:layout_marginTop="18dp"
+                android:fontFamily="@font/fredoka_semibold"
                 android:labelFor="@id/listing_description_input"
-                android:text="Description"
-                android:textColor="@color/pc_text_primary"
-                android:textStyle="bold" />
+                android:text="Description  〰"
+                android:textColor="@color/pc_brand_deep_blue"
+                android:textSize="18sp" />
 
             <EditText
                 android:id="@+id/listing_description_input"
-                style="@style/Widget.PropCycle.CreateListing.Description"
-                android:layout_marginTop="@dimen/space_xs"
-                android:hint="Describe your item"
+                style="@style/Widget.PropCycle.Field"
+                android:layout_height="128dp"
+                android:layout_marginTop="6dp"
+                android:background="@drawable/bg_create_listing_description"
+                android:fontFamily="sans-serif"
+                android:gravity="top|start"
+                android:hint="Describe your item, its size, quantity, and any details that will help others."
                 android:importantForAutofill="no"
                 android:inputType="textCapSentences|textMultiLine"
                 android:maxLength="1000"
-                android:maxLines="5" />
+                android:maxLines="5"
+                android:padding="16dp"
+                android:textColor="@color/pc_brand_text_primary"
+                android:textColorHint="@color/pc_brand_text_secondary" />
 
             <TextView
                 android:id="@+id/create_listing_media_note"
-                style="@style/TextAppearance.PropCycle.Caption"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/space_md"
+                android:layout_marginTop="14dp"
+                android:background="@drawable/bg_create_listing_note"
                 android:lineSpacingExtra="2dp"
+                android:padding="14dp"
                 android:text="One photo is securely uploaded only when you publish."
-                android:textColor="@color/pc_text_secondary" />
+                android:textColor="@color/pc_brand_deep_blue"
+                android:textSize="13sp" />
         </LinearLayout>
 
         <TextView
             android:id="@+id/create_listing_status"
-            style="@style/TextAppearance.PropCycle.Caption"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:gravity="center"
             android:textColor="@color/pc_error"
+            android:textSize="14sp"
             android:visibility="gone" />
 
         <ProgressBar
             android:id="@+id/create_listing_progress"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_marginTop="10dp"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="12dp"
             android:indeterminate="true"
+            android:indeterminateTint="@color/pc_brand_primary_blue"
             android:visibility="gone" />
 
         <com.google.android.material.progressindicator.LinearProgressIndicator
             android:id="@+id/create_listing_upload_progress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="10dp"
             android:max="100"
-            android:visibility="gone" />
+            android:visibility="gone"
+            app:indicatorColor="@color/pc_brand_primary_blue"
+            app:trackColor="@color/pc_brand_soft_blue" />
 
         <LinearLayout
             android:id="@+id/create_listing_action_row"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/space_md"
-            android:gravity="center_vertical"
+            android:layout_marginTop="20dp"
             android:orientation="horizontal">
-
-            <ImageView
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                android:contentDescription="@null"
-                android:importantForAccessibility="no"
-                android:padding="@dimen/space_sm"
-                android:scaleType="centerInside"
-                android:src="@drawable/ic_listing_megaphone" />
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_weight="1" />
 
             <TextView
                 android:id="@+id/primary_action"
-                style="@style/TextAppearance.PropCycle.Caption"
-                android:layout_width="92dp"
-                android:layout_height="@dimen/touch_target"
-                android:background="@drawable/bg_pill_dark"
+                android:layout_width="match_parent"
+                android:layout_height="58dp"
+                android:background="@drawable/bg_create_listing_primary_action"
                 android:clickable="true"
                 android:contentDescription="Publish marketplace listing"
                 android:focusable="true"
+                android:fontFamily="@font/fredoka_semibold"
                 android:gravity="center"
                 android:text="Publish"
-                android:textColor="@color/pc_on_primary"
-                android:textStyle="bold" />
+                android:textColor="@color/pc_brand_surface"
+                android:textSize="20sp" />
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

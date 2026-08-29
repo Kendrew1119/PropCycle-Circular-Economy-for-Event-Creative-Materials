@@ -5,6 +5,8 @@
     <solid android:color="@color/pc_brand_surface" />
     <stroke
         android:width="2dp"
-        android:color="@color/pc_brand_primary_blue" />
-    <corners android:radius="18dp" />
+        android:color="@color/pc_brand_primary_blue"
+        android:dashGap="7dp"
+        android:dashWidth="9dp" />
+    <corners android:radius="22dp" />
 </shape>
