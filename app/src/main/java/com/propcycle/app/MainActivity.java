@@ -2,6 +2,7 @@ package com.propcycle.app;
 
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.IdRes;
@@ -33,12 +34,42 @@ public final class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         View root = findViewById(R.id.app_root);
+        View appContent = findViewById(R.id.app_content);
+        BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
+        View statusBarBackground = findViewById(R.id.status_bar_background);
+        View systemNavigationBackground = findViewById(R.id.system_navigation_background);
         ViewCompat.setOnApplyWindowInsetsListener(root, (view, windowInsets) -> {
-            Insets bars = windowInsets.getInsets(
+            Insets systemBars = windowInsets.getInsets(
                     WindowInsetsCompat.Type.systemBars()
-                            | WindowInsetsCompat.Type.displayCutout()
-                            | WindowInsetsCompat.Type.ime());
-            view.setPadding(bars.left, bars.top, bars.right, bars.bottom);
+                            | WindowInsetsCompat.Type.displayCutout());
+            Insets ime = windowInsets.getInsets(WindowInsetsCompat.Type.ime());
+            int safeBottomInset = Math.max(systemBars.bottom, ime.bottom);
+            boolean navigationVisible = bottomNavigation.getVisibility() == View.VISIBLE;
+            appContent.setPadding(
+                    systemBars.left,
+                    systemBars.top,
+                    systemBars.right,
+                    navigationVisible ? 0 : safeBottomInset);
+
+            ViewGroup.MarginLayoutParams bottomNavigationLayoutParams =
+                    (ViewGroup.MarginLayoutParams) bottomNavigation.getLayoutParams();
+            int bottomNavigationMargin = navigationVisible ? safeBottomInset : 0;
+            if (bottomNavigationLayoutParams.bottomMargin != bottomNavigationMargin) {
+                bottomNavigationLayoutParams.bottomMargin = bottomNavigationMargin;
+                bottomNavigation.setLayoutParams(bottomNavigationLayoutParams);
+            }
+
+            ViewGroup.LayoutParams statusBarLayoutParams = statusBarBackground.getLayoutParams();
+            if (statusBarLayoutParams.height != systemBars.top) {
+                statusBarLayoutParams.height = systemBars.top;
+                statusBarBackground.setLayoutParams(statusBarLayoutParams);
+            }
+            ViewGroup.LayoutParams navigationLayoutParams =
+                    systemNavigationBackground.getLayoutParams();
+            if (navigationLayoutParams.height != systemBars.bottom) {
+                navigationLayoutParams.height = systemBars.bottom;
+                systemNavigationBackground.setLayoutParams(navigationLayoutParams);
+            }
             return windowInsets;
         });
         bindNavigationChrome();
@@ -74,6 +105,7 @@ public final class MainActivity extends AppCompatActivity {
     }
 
     private void bindNavigationChrome() {
+        View root = findViewById(R.id.app_root);
         View appHeader = findViewById(R.id.app_header);
         TextView appHeaderTitle = findViewById(R.id.app_header_title);
         BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
@@ -103,6 +135,7 @@ public final class MainActivity extends AppCompatActivity {
             boolean showAppChrome = isAppDestination(destination.getId());
             appHeader.setVisibility(showAppChrome ? View.VISIBLE : View.GONE);
             bottomNavigation.setVisibility(showAppChrome ? View.VISIBLE : View.GONE);
+            ViewCompat.requestApplyInsets(root);
             boolean hideHeaderTitle = destination.getId() == R.id.recentActivitiesFragment
                     || destination.getId() == R.id.scannerFragment;
             appHeaderTitle.setText(hideHeaderTitle ? "" : destination.getLabel());

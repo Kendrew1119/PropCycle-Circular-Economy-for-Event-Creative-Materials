@@ -11,7 +11,8 @@
     <dimen name="touch_target">48dp</dimen>
     <dimen name="app_header_height">52dp</dimen>
     <dimen name="bottom_navigation_height">64dp</dimen>
-    <dimen name="bottom_navigation_icon_size">20dp</dimen>
+    <dimen name="bottom_navigation_icon_size">22dp</dimen>
+    <dimen name="bottom_navigation_corner_radius">22dp</dimen>
     <dimen name="home_screen_horizontal">18dp</dimen>
     <dimen name="home_content_vertical">16dp</dimen>
     <dimen name="home_greeting_min_height">174dp</dimen>
