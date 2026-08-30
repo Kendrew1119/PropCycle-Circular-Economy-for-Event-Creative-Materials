@@ -58,14 +58,15 @@
             </LinearLayout>
 
             <ImageView
-                android:layout_width="42dp"
-                android:layout_height="42dp"
+                android:layout_width="38dp"
+                android:layout_height="38dp"
                 android:layout_marginTop="4dp"
                 android:contentDescription="@null"
                 android:importantForAccessibility="no"
-                android:padding="6dp"
+                android:padding="7dp"
                 android:scaleType="centerInside"
                 android:src="@drawable/ic_listing_burst" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -102,7 +103,7 @@
                     android:fontFamily="@font/fredoka_semibold"
                     android:gravity="bottom|start"
                     android:padding="18dp"
-                    android:text="Add a photo&#10;(optional)"
+                    android:text="Add one clear item photo&#10;(optional)"
                     android:textColor="@color/pc_brand_deep_blue"
                     android:textSize="19sp" />
 
@@ -154,7 +155,7 @@
                 android:layout_marginTop="18dp"
                 android:fontFamily="@font/fredoka_semibold"
                 android:labelFor="@id/listing_title_input"
-                android:text="Item title  ✦"
+                android:text="Item title"
                 android:textColor="@color/pc_brand_deep_blue"
                 android:textSize="18sp" />
 
@@ -193,7 +194,7 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/fredoka_semibold"
                         android:labelFor="@id/listing_category_input"
-                        android:text="Category  ◌"
+                        android:text="Category"
                         android:textColor="@color/pc_brand_deep_blue"
                         android:textSize="16sp" />
 
@@ -227,7 +228,7 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/fredoka_semibold"
                         android:labelFor="@id/listing_condition_input"
-                        android:text="Condition  ✦"
+                        android:text="Condition"
                         android:textColor="@color/pc_brand_deep_blue"
                         android:textSize="16sp" />
 
@@ -268,7 +269,7 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/fredoka_semibold"
                         android:labelFor="@id/listing_transaction_input"
-                        android:text="Offer type  ♡"
+                        android:text="Offer type"
                         android:textColor="@color/pc_brand_deep_blue"
                         android:textSize="16sp" />
 
@@ -302,7 +303,7 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/fredoka_semibold"
                         android:labelFor="@id/listing_fulfilment_input"
-                        android:text="Hand-over  ↗"
+                        android:text="Hand-over"
                         android:textColor="@color/pc_brand_deep_blue"
                         android:textSize="16sp" />
 
@@ -367,7 +368,7 @@
                 android:layout_marginTop="18dp"
                 android:fontFamily="@font/fredoka_semibold"
                 android:labelFor="@id/listing_description_input"
-                android:text="Description  〰"
+                android:text="Description"
                 android:textColor="@color/pc_brand_deep_blue"
                 android:textSize="18sp" />
 

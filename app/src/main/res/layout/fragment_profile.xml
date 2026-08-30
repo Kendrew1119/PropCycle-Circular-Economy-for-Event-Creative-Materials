@@ -18,44 +18,47 @@
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="216dp"
+            android:layout_height="168dp"
             android:background="@drawable/bg_profile_header"
-            android:padding="20dp">
+            android:padding="16dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/fredoka_semibold"
                 android:text="MY PROFILE"
-                android:textColor="@color/pc_brand_soft_blue"
+                android:textColor="@color/pc_brand_deep_blue"
                 android:textSize="12sp" />
 
             <ImageView
-                android:layout_width="96dp"
-                android:layout_height="96dp"
+                android:layout_width="100dp"
+                android:layout_height="108dp"
                 android:layout_gravity="end|top"
+                android:layout_marginTop="2dp"
                 android:contentDescription="@null"
-                android:src="@drawable/ic_profile_doodles" />
+                android:src="@drawable/pc_sticker_profile_boxes" />
 
             <TextView
                 android:id="@+id/profile_avatar_initial"
-                android:layout_width="82dp"
-                android:layout_height="82dp"
-                android:layout_gravity="start|bottom"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_gravity="start|top"
+                android:layout_marginTop="46dp"
                 android:background="@drawable/bg_profile_avatar"
                 android:contentDescription="User profile picture"
                 android:fontFamily="@font/fredoka_semibold"
                 android:gravity="center"
                 android:text="U"
                 android:textColor="@color/pc_brand_deep_blue"
-                android:textSize="32sp" />
+                android:textSize="25sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom|start"
-                android:layout_marginStart="96dp"
-                android:layout_marginEnd="4dp"
+                android:layout_gravity="start|top"
+                android:layout_marginStart="78dp"
+                android:layout_marginTop="51dp"
+                android:layout_marginEnd="96dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -66,8 +69,8 @@
                     android:fontFamily="@font/fredoka_semibold"
                     android:maxLines="1"
                     android:text="User Name"
-                    android:textColor="@color/pc_white"
-                    android:textSize="23sp" />
+                    android:textColor="@color/pc_brand_deep_blue"
+                    android:textSize="21sp" />
 
                 <TextView
                     android:id="@+id/profile_email"
@@ -76,8 +79,12 @@
                     android:layout_marginTop="3dp"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    android:textColor="@color/pc_brand_soft_blue"
-                    android:textSize="14sp" />
+                    android:textColor="@color/pc_brand_text_secondary"
+                    android:textSize="14sp"
+                    android:autoSizeTextType="uniform"
+                    android:autoSizeMinTextSize="10sp"
+                    android:autoSizeMaxTextSize="14sp"
+                    android:autoSizeStepGranularity="1sp" />
             </LinearLayout>
         </FrameLayout>
 

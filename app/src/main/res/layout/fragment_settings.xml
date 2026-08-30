@@ -44,11 +44,11 @@
             </LinearLayout>
 
             <ImageView
-                android:layout_width="94dp"
-                android:layout_height="94dp"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
                 android:layout_gravity="end|bottom"
                 android:contentDescription="@null"
-                android:src="@drawable/ic_settings_doodles" />
+                android:src="@drawable/ic_eco_bulb" />
         </FrameLayout>
 
         <TextView

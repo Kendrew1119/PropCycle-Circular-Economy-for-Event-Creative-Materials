@@ -9,10 +9,10 @@
     </item>
 
     <item
-        android:left="8dp"
-        android:top="8dp"
-        android:right="8dp"
-        android:bottom="8dp">
+        android:left="50dp"
+        android:top="12dp"
+        android:right="50dp"
+        android:bottom="72dp">
         <bitmap
             android:antialias="true"
             android:gravity="fill"

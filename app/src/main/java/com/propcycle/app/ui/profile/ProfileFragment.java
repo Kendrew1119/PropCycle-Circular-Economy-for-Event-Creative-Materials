@@ -122,7 +122,7 @@ public final class ProfileFragment extends Fragment {
         long created = metadata == null ? 0L : metadata.getCreationTimestamp();
         binding.profileMemberSummary.setText(created <= 0L
                 ? "PropCycle member"
-                : "Member since " + new SimpleDateFormat("MMMM yyyy", Locale.getDefault())
+                : "Member since " + new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH)
                         .format(new Date(created)));
     }
 

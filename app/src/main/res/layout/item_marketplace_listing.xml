@@ -4,30 +4,29 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/listing_card"
     android:layout_width="match_parent"
-    android:layout_height="216dp"
+    android:layout_height="202dp"
     android:layout_margin="6dp"
     android:clickable="true"
     android:focusable="true"
     android:foreground="?attr/selectableItemBackground"
     app:cardBackgroundColor="@color/pc_brand_surface"
-    app:cardCornerRadius="24dp"
+    app:cardCornerRadius="18dp"
     app:cardElevation="0dp"
-    app:strokeColor="@color/pc_brand_primary_blue"
-    app:strokeWidth="2dp">
+    app:strokeColor="@color/pc_brand_outline"
+    app:strokeWidth="1dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="10dp">
+        android:padding="8dp">
 
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginBottom="9dp"
-            android:layout_weight="1"
+            android:layout_height="104dp"
+            android:layout_marginBottom="8dp"
             app:cardBackgroundColor="@color/pc_brand_soft_blue"
-            app:cardCornerRadius="16dp"
+            app:cardCornerRadius="14dp"
             app:cardElevation="0dp">
 
             <FrameLayout
@@ -43,16 +42,20 @@
                     android:scaleType="centerCrop"
                     android:visibility="gone" />
 
-                <TextView
-                    android:id="@+id/listing_image_placeholder"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:contentDescription="Marketplace item image placeholder"
-                    android:fontFamily="@font/fredoka_semibold"
-                    android:gravity="center"
-                    android:text="ITEM"
-                    android:textColor="@color/pc_brand_deep_blue"
-                    android:textSize="14sp" />
+        <TextView
+            android:id="@+id/listing_image_placeholder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="Marketplace item image placeholder"
+            android:drawableTop="@drawable/ic_marketplace_placeholder_box"
+            android:drawablePadding="6dp"
+            android:fontFamily="@font/fredoka_semibold"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:paddingTop="4dp"
+            android:text="ITEM"
+            android:textColor="@color/pc_brand_deep_blue"
+            android:textSize="14sp" />
 
                 <ProgressBar
                     android:id="@+id/listing_image_progress"
@@ -73,14 +76,14 @@
             android:fontFamily="@font/fredoka_semibold"
             android:maxLines="2"
             android:textColor="@color/pc_brand_text_primary"
-            android:textSize="18sp"
+            android:textSize="16sp"
             tools:text="Reusable event banner" />
 
         <TextView
             android:id="@+id/listing_meta"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="4dp"
             android:background="@drawable/bg_marketplace_meta"
             android:ellipsize="end"
             android:maxLines="1"
@@ -89,7 +92,7 @@
             android:paddingEnd="8dp"
             android:paddingBottom="3dp"
             android:textColor="@color/pc_brand_deep_blue"
-            android:textSize="12sp"
+            android:textSize="11sp"
             tools:text="Exchange | Decoration" />
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

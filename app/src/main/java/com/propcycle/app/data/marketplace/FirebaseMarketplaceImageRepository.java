@@ -152,7 +152,7 @@ public final class FirebaseMarketplaceImageRepository {
             callback.onProgress(percent);
         });
         task.addOnSuccessListener(snapshot -> callback.onUploaded(gsUrl));
-        task.addOnFailureListener(error -> callback.onError(mapError(error)));
+        task.addOnFailureListener(error -> callback.onError(mapUploadError(error)));
         return task::cancel;
     }
 
@@ -265,6 +265,19 @@ public final class FirebaseMarketplaceImageRepository {
         return new RepositoryError(
                 ErrorType.UNKNOWN,
                 "The marketplace photo request failed. Please try again.");
+    }
+
+    @NonNull
+    private static RepositoryError mapUploadError(@NonNull Exception error) {
+        if (error instanceof StorageException storageError
+                && storageError.getErrorCode() == StorageException.ERROR_OBJECT_NOT_FOUND) {
+            return new RepositoryError(
+                    ErrorType.CONFIGURATION_REQUIRED,
+                    "Firebase Storage could not find the configured bucket. Enable the default "
+                            + "Storage bucket, then replace app/google-services.json with the "
+                            + "latest file for this Firebase project.");
+        }
+        return mapError(error);
     }
 
     @NonNull

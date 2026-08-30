@@ -13,7 +13,7 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.propcycle.app.R;
 import com.propcycle.app.data.marketplace.MarketplaceListing;
@@ -23,7 +23,7 @@ import com.propcycle.app.ui.common.ScreenNavigation;
 import com.propcycle.app.ui.common.ResourceCreationFlow;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
-/** Live, authenticated marketplace browser using the proposal's masonry visual language. */
+/** Live, authenticated marketplace browser with an even two-column listing grid. */
 public final class MarketplaceFragment extends Fragment {
 
     private FragmentMarketplaceBinding binding;
@@ -49,11 +49,7 @@ public final class MarketplaceFragment extends Fragment {
 
         imageLoader = new MarketplaceImageLoader(requireContext());
         adapter = new MarketplaceAdapter(imageLoader, this::openListing);
-        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(
-                2,
-                StaggeredGridLayoutManager.VERTICAL);
-        layoutManager.setGapStrategy(
-                StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS);
+        GridLayoutManager layoutManager = new GridLayoutManager(requireContext(), 2);
         binding.marketplaceList.setLayoutManager(layoutManager);
         binding.marketplaceList.setAdapter(adapter);
 

@@ -45,7 +45,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="120dp"
-            android:layout_marginEnd="72dp"
+            android:layout_marginEnd="56dp"
             android:orientation="vertical">
 
             <TextView
@@ -71,11 +71,13 @@
         </LinearLayout>
 
         <ImageView
-            android:layout_width="64dp"
-            android:layout_height="64dp"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
             android:layout_gravity="end|center_vertical"
+            android:layout_marginEnd="16dp"
             android:contentDescription="@null"
-            android:src="@drawable/ic_conversation_doodles" />
+            android:src="@drawable/ic_send"
+            app:tint="@color/pc_brand_primary_blue" />
     </FrameLayout>
 
     <TextView

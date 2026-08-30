@@ -40,12 +40,12 @@
                 android:textSize="21sp" />
 
             <ImageView
-                android:layout_width="62dp"
-                android:layout_height="62dp"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
                 android:layout_gravity="end|center_vertical"
                 android:contentDescription="@null"
                 android:importantForAccessibility="no"
-                android:src="@drawable/ic_market_detail_doodles" />
+                android:src="@drawable/ic_material_box" />
         </FrameLayout>
 
         <ProgressBar

@@ -5,12 +5,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.propcycle.app.R;
 import com.propcycle.app.data.marketplace.MarketplaceListing;
 import com.propcycle.app.data.marketplace.MarketplaceImageLoader;
 import com.propcycle.app.data.marketplace.MarketplaceListingValidator;
@@ -22,8 +20,6 @@ import java.util.Objects;
 /** Two-column proposal-style marketplace cards backed by immutable snapshot lists. */
 public final class MarketplaceAdapter
         extends ListAdapter<MarketplaceListing, MarketplaceAdapter.ListingViewHolder> {
-
-    private static final int[] HEIGHTS_DP = {216, 154, 148, 218, 182, 174};
 
     public interface OnListingClickListener {
         void onListingClick(@NonNull MarketplaceListing listing);
@@ -120,22 +116,6 @@ public final class MarketplaceAdapter
             binding.getRoot().setContentDescription("Open marketplace listing " + title);
             binding.getRoot().setOnClickListener(ignored -> listener.onListingClick(listing));
 
-            int cardColor = position % 2 == 0 ? R.color.pc_surface_mid : R.color.pc_surface;
-            binding.listingCard.setCardBackgroundColor(
-                    ContextCompat.getColor(binding.getRoot().getContext(), cardColor));
-
-            ViewGroup.LayoutParams params = binding.getRoot().getLayoutParams();
-            int height = Math.round(
-                    HEIGHTS_DP[position % HEIGHTS_DP.length]
-                            * binding.getRoot().getResources().getDisplayMetrics().density);
-            if (params == null) {
-                params = new RecyclerView.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT,
-                        height);
-            } else {
-                params.height = height;
-            }
-            binding.getRoot().setLayoutParams(params);
         }
 
         private void bindImage(String imageUrl, String demoImageKey) {

@@ -44,7 +44,6 @@ public final class ConversationFragment extends Fragment {
 
         adapter = new ChatMessageAdapter();
         LinearLayoutManager layoutManager = new LinearLayoutManager(requireContext());
-        layoutManager.setStackFromEnd(true);
         binding.messageList.setLayoutManager(layoutManager);
         binding.messageList.setAdapter(adapter);
 

@@ -84,13 +84,12 @@ public final class MessagesFragment extends Fragment {
         adapter.submitList(state.getThreads());
         boolean hasThreads = !state.getThreads().isEmpty();
         binding.loadingIndicator.setVisibility(state.isLoading() ? View.VISIBLE : View.GONE);
-        binding.emptyText.setVisibility(
-                !state.isLoading()
-                                && !hasThreads
-                                && state.getErrorMessage() == null
-                                && !state.isConfigurationRequired()
-                        ? View.VISIBLE
-                        : View.GONE);
+        boolean showEmptyState = !state.isLoading()
+                && !hasThreads
+                && state.getErrorMessage() == null
+                && !state.isConfigurationRequired();
+        binding.emptyStateContainer.setVisibility(showEmptyState ? View.VISIBLE : View.GONE);
+        binding.emptyText.setVisibility(showEmptyState ? View.VISIBLE : View.GONE);
         binding.conversationList.setVisibility(hasThreads ? View.VISIBLE : View.GONE);
 
         String status = state.getErrorMessage();
