@@ -3,11 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="10dp"
+    android:layout_marginBottom="8dp"
     android:clickable="true"
     android:focusable="true"
     app:cardBackgroundColor="@color/lending_map_item_surface"
-    app:cardCornerRadius="18dp"
+    app:cardCornerRadius="16dp"
     app:cardElevation="1dp"
     app:rippleColor="@color/pc_brand_soft_blue"
     app:strokeColor="@color/lending_map_item_stroke"
@@ -16,14 +16,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:minHeight="106dp"
+        android:minHeight="98dp"
         android:orientation="horizontal"
-        android:padding="10dp">
+        android:padding="12dp">
         <com.google.android.material.card.MaterialCardView
-            android:layout_width="82dp"
-            android:layout_height="82dp"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
             app:cardBackgroundColor="@color/pc_brand_soft_blue"
-            app:cardCornerRadius="14dp"
+            app:cardCornerRadius="12dp"
             app:cardElevation="0dp"
             app:strokeWidth="0dp">
             <ImageView
@@ -53,7 +53,7 @@
                 android:id="@+id/lending_item_meta"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="3dp"
                 android:ellipsize="end"
                 android:maxLines="2"
                 android:textColor="@color/pc_brand_text_secondary"
@@ -62,18 +62,18 @@
                 android:id="@+id/lending_item_distance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
+                android:layout_marginTop="5dp"
                 android:background="@drawable/bg_lending_map_meta_chip"
-                android:paddingStart="9dp"
-                android:paddingTop="3dp"
-                android:paddingEnd="9dp"
-                android:paddingBottom="3dp"
+                android:paddingStart="8dp"
+                android:paddingTop="2dp"
+                android:paddingEnd="8dp"
+                android:paddingBottom="2dp"
                 android:textColor="@color/pc_brand_deep_blue"
                 android:textSize="11sp" />
         </LinearLayout>
         <ImageView
-            android:layout_width="22dp"
-            android:layout_height="22dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:layout_marginStart="6dp"
             android:contentDescription="@string/lending_map_open_item_description"
             android:src="@drawable/ic_lending_map_chevron_right" />

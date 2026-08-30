@@ -3,6 +3,6 @@
     <solid android:color="@color/pc_brand_surface" />
     <stroke
         android:width="@dimen/stroke_thin"
-        android:color="@color/pc_brand_outline" />
+        android:color="@color/pc_home_search_border" />
     <corners android:radius="@dimen/home_pill_corner" />
 </shape>

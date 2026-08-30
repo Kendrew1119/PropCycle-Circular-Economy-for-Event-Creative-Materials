@@ -13,6 +13,14 @@
     <color name="pc_brand_text_primary">#1B1B1B</color>
     <color name="pc_brand_text_secondary">#686868</color>
     <color name="pc_brand_outline">#D7D3C8</color>
+    <color name="pc_home_card_border">#E3DED2</color>
+    <color name="pc_home_search_border">#C9D7EF</color>
+    <color name="pc_home_action_recycle_surface">#F7FBF5</color>
+    <color name="pc_home_action_listing_surface">#FFFBEE</color>
+    <color name="pc_home_action_lend_surface">#F4F8FF</color>
+    <color name="pc_lending_map_near_me_surface">#E4F1E5</color>
+    <color name="pc_lending_map_neutral_border">#E5E1D8</color>
+    <color name="pc_lending_map_soft_border">#C9D7EF</color>
     <color name="pc_scanner_notice_surface">#FFF2C8</color>
     <!-- Core light eco palette. -->
     <color name="pc_primary">#1F5C42</color>
@@ -50,8 +58,12 @@
 
     <!-- AI Result screen surfaces. -->
     <color name="pc_ai_result_background">@color/pc_brand_warm_cream</color>
-    <color name="pc_ai_result_card_surface">@color/pc_brand_surface</color>
-    <color name="pc_ai_result_card_border">@color/pc_brand_outline</color>
+    <color name="pc_ai_result_card_surface">#FFFDFC</color>
+    <color name="pc_ai_result_card_border">#E3DED2</color>
+    <color name="pc_ai_result_page_warning_surface">#FFF4CC</color>
+    <color name="pc_ai_result_page_warning_border">#E7C84A</color>
+    <color name="pc_ai_result_info_surface">#EAF1FF</color>
+    <color name="pc_ai_result_info_border">#BFD1F5</color>
     <color name="pc_ai_result_warning_surface">#FFF2C8</color>
     <color name="pc_ai_result_warning_border">@color/pc_brand_accent_yellow</color>
 

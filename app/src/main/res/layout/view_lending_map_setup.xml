@@ -5,16 +5,19 @@
     android:background="@drawable/bg_lending_map_setup"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:padding="16dp">
+    android:paddingStart="14dp"
+    android:paddingTop="12dp"
+    android:paddingEnd="12dp"
+    android:paddingBottom="12dp">
     <ImageView
-        android:layout_width="36dp"
-        android:layout_height="36dp"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:contentDescription="@string/lending_map_status_description"
         android:src="@drawable/ic_recycle_info" />
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="14dp"
+        android:layout_marginStart="10dp"
         android:layout_weight="1"
         android:orientation="vertical">
         <TextView
@@ -28,15 +31,15 @@
             android:id="@+id/lending_map_setup_body"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="3dp"
+            android:layout_marginTop="2dp"
             android:text="@string/lending_map_setup_body"
             android:textColor="@color/pc_brand_text_secondary"
             android:textSize="13sp" />
     </LinearLayout>
     <ImageView
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="8dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="6dp"
         android:importantForAccessibility="no"
         android:src="@drawable/ic_recycle_location_doodle" />
 </LinearLayout>

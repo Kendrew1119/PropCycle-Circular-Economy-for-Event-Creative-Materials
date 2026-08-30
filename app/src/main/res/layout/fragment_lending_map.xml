@@ -6,7 +6,7 @@
     android:background="@color/pc_brand_warm_cream"
     android:orientation="vertical"
     android:paddingStart="16dp"
-    android:paddingTop="14dp"
+    android:paddingTop="16dp"
     android:paddingEnd="16dp"
     android:paddingBottom="8dp">
 
@@ -20,7 +20,7 @@
             android:fontFamily="@font/fredoka_semibold"
             android:text="@string/lending_map_title"
             android:textColor="@color/pc_brand_deep_blue"
-            android:textSize="28sp"
+            android:textSize="26sp"
             app:layout_constraintEnd_toStartOf="@id/lending_map_title_doodle"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -28,7 +28,8 @@
             android:id="@+id/lending_map_page_subtitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="3dp"
+            android:layout_marginTop="4dp"
+            android:lineSpacingMultiplier="1.08"
             android:text="@string/lending_map_subtitle"
             android:textColor="@color/pc_brand_text_secondary"
             android:textSize="14sp"
@@ -37,8 +38,8 @@
             app:layout_constraintTop_toBottomOf="@id/lending_map_page_title" />
         <ImageView
             android:id="@+id/lending_map_title_doodle"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:contentDescription="@string/lending_map_title_doodle_description"
             android:src="@drawable/ic_recycle_location_doodle"
             app:layout_constraintBottom_toBottomOf="@id/lending_map_page_subtitle"
@@ -50,7 +51,7 @@
         android:id="@+id/lending_map_search_input"
         android:layout_width="match_parent"
         android:layout_height="52dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="12dp"
         android:background="@drawable/bg_lending_map_search"
         android:drawableStart="@drawable/ic_lending_map_search"
         android:drawablePadding="10dp"
@@ -66,30 +67,32 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="10dp"
         android:orientation="horizontal">
         <com.google.android.material.button.MaterialButton
             android:id="@+id/lending_map_location_action"
             android:layout_width="0dp"
             android:layout_height="48dp"
-            android:layout_weight="0.36"
+            android:layout_weight="0.34"
             android:minWidth="0dp"
             android:paddingTop="0dp"
             android:paddingBottom="0dp"
             android:text="@string/lending_map_near_me"
             android:textAllCaps="false"
             android:textColor="@color/pc_primary"
-            app:backgroundTint="@color/pc_primary_container"
+            android:textSize="14sp"
+            app:backgroundTint="@color/pc_lending_map_near_me_surface"
             app:cornerRadius="24dp"
             app:icon="@drawable/ic_lending_map_near_me"
             app:iconGravity="textStart"
+            app:iconPadding="8dp"
             app:iconSize="20dp"
             app:iconTint="@color/pc_primary" />
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="48dp"
-            android:layout_marginStart="10dp"
-            android:layout_weight="0.64"
+            android:layout_marginStart="8dp"
+            android:layout_weight="0.66"
             android:background="@drawable/bg_lending_map_segment"
             android:orientation="horizontal"
             android:padding="1dp">
@@ -103,6 +106,7 @@
                 android:gravity="center"
                 android:text="@string/lending_map_map"
                 android:textColor="@color/pc_on_primary"
+                android:textSize="14sp"
                 android:textStyle="bold" />
             <TextView
                 android:id="@+id/lending_map_list_action"
@@ -118,6 +122,7 @@
                 android:gravity="center"
                 android:text="@string/lending_map_list"
                 android:textColor="@color/pc_brand_deep_blue"
+                android:textSize="14sp"
                 android:textStyle="bold" />
         </LinearLayout>
     </LinearLayout>
@@ -130,26 +135,28 @@
         android:gravity="start|center_vertical"
         android:drawableEnd="@drawable/ic_lending_map_chevron_down"
         android:drawablePadding="8dp"
+        android:paddingStart="14dp"
         android:paddingTop="0dp"
+        android:paddingEnd="14dp"
         android:paddingBottom="0dp"
         android:text="@string/lending_category_filter_all"
         android:textAllCaps="false"
         android:textColor="@color/pc_brand_deep_blue"
-        android:textStyle="bold"
+        android:textSize="14sp"
         app:backgroundTint="@color/pc_brand_surface"
-        app:cornerRadius="18dp"
+        app:cornerRadius="16dp"
         app:icon="@drawable/ic_lending_map_category"
         app:iconGravity="textStart"
-        app:iconSize="20dp"
+        app:iconSize="18dp"
         app:iconTint="@color/pc_brand_deep_blue"
-        app:strokeColor="@color/pc_brand_primary_blue"
+        app:strokeColor="@color/pc_lending_map_soft_border"
         app:strokeWidth="1dp" />
 
     <FrameLayout
         android:id="@+id/lending_map_container"
         android:layout_width="match_parent"
         android:layout_height="190dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="12dp"
         android:background="@drawable/bg_lending_map_container"
         android:clipToOutline="true"
         android:elevation="2dp" />
@@ -163,8 +170,12 @@
         android:drawableStart="@drawable/ic_recycle_info"
         android:drawablePadding="10dp"
         android:gravity="center_vertical"
-        android:minHeight="58dp"
-        android:padding="12dp"
+        android:minHeight="52dp"
+        android:paddingStart="12dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="12dp"
+        android:paddingBottom="8dp"
+        android:lineSpacingExtra="2dp"
         android:textColor="@color/pc_brand_deep_blue"
         android:textSize="13sp" />
 
@@ -172,7 +183,7 @@
         android:id="@+id/lending_map_list"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="8dp"
         android:layout_weight="1"
         android:clipToPadding="false"
         android:paddingBottom="8dp" />

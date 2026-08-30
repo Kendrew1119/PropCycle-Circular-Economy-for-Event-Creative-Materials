@@ -15,7 +15,7 @@
             android:id="@+id/app_header"
             android:layout_width="0dp"
             android:layout_height="@dimen/app_header_height"
-            android:background="@color/pc_brand_primary_blue"
+            android:background="@color/pc_brand_deep_blue"
             android:elevation="3dp"
             android:paddingStart="@dimen/space_md"
             android:paddingEnd="@dimen/space_xs"
@@ -102,8 +102,8 @@
             app:itemHorizontalTranslationEnabled="false"
             app:itemIconSize="@dimen/bottom_navigation_icon_size"
             app:itemIconTint="@color/bottom_navigation_item_tint"
-            app:itemPaddingTop="8dp"
-            app:itemPaddingBottom="3dp"
+            app:itemPaddingTop="6dp"
+            app:itemPaddingBottom="5dp"
             app:itemTextAppearanceActive="@style/TextAppearance.PropCycle.BottomNavigation.Active"
             app:itemTextAppearanceInactive="@style/TextAppearance.PropCycle.BottomNavigation"
             app:itemTextColor="@color/bottom_navigation_item_tint"
@@ -121,7 +121,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_gravity="top"
-        android:background="@color/pc_brand_primary_blue"
+        android:background="@color/pc_brand_deep_blue"
         android:importantForAccessibility="no" />
 
     <View
