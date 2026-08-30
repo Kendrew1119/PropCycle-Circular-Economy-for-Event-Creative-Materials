@@ -117,6 +117,30 @@
     <string name="lending_category_other">Other</string>
     <string name="lending_category_filter_all">Category: All</string>
     <string name="lending_category_filter_format">Category: %1$s</string>
+    <string name="lending_map_title">Available items nearby</string>
+    <string name="lending_map_subtitle">Search community items first. Locations are approximate; confirm the meeting point in chat.</string>
+    <string name="lending_map_title_doodle_description">Map location illustration</string>
+    <string name="lending_map_search_hint">Search title, area or category</string>
+    <string name="lending_map_near_me">Near me</string>
+    <string name="lending_map_map">Map</string>
+    <string name="lending_map_list">List</string>
+    <string name="lending_map_open_list_description">Open the lending list with the current filters</string>
+    <string name="lending_map_status_description">Lending map status</string>
+    <string name="lending_map_setup_required">Map setup is required to show locations.</string>
+    <string name="lending_map_play_services_unavailable">Google Play services is unavailable.</string>
+    <string name="lending_map_setup_body">The lending list below still works.</string>
+    <string name="lending_map_unmapped_note">Some listings don’t have a location attached.</string>
+    <string name="lending_map_all_mapped_note">Approximate locations are shown on the map.</string>
+    <string name="lending_map_item_photo_description">Lending item photo</string>
+    <string name="lending_map_open_item_description">Open lending item details</string>
+    <plurals name="lending_map_available_count">
+        <item quantity="one">%d available item</item>
+        <item quantity="other">%d available items</item>
+    </plurals>
+    <plurals name="lending_map_mapped_count">
+        <item quantity="one">%d mapped</item>
+        <item quantity="other">%d mapped</item>
+    </plurals>
     <string name="ai_result_view_details">View details</string>
     <string name="ai_result_initial_status">Scan an item to see an AI result.</string>
     <string name="ai_result_disclaimer">This percentage is an uncalibrated model estimate, not a guarantee. Review the item, material and local recycling rules before acting.</string>

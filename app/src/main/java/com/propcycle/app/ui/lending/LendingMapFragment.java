@@ -89,16 +89,20 @@ public final class LendingMapFragment extends Fragment {
         ScreenNavigation.bindChrome(this, view);
         viewModel = new ViewModelProvider(this).get(LendingMapViewModel.class);
         imageLoader = new MarketplaceImageLoader(requireContext());
-        adapter = new LendingItemAdapter(imageLoader, item -> {
-            selectedId = item.getId();
-            adapter.setSelectedId(selectedId);
-            Marker marker = markers.get(selectedId);
-            if (marker != null && googleMap != null) {
-                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 13f));
-                marker.showInfoWindow();
-            }
-            openDetail(item);
-        });
+        adapter = new LendingItemAdapter(
+                imageLoader,
+                R.layout.item_lending_map_item,
+                item -> {
+                    selectedId = item.getId();
+                    adapter.setSelectedId(selectedId);
+                    Marker marker = markers.get(selectedId);
+                    if (marker != null && googleMap != null) {
+                        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                                marker.getPosition(), 13f));
+                        marker.showInfoWindow();
+                    }
+                    openDetail(item);
+                });
         binding.lendingMapList.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.lendingMapList.setAdapter(adapter);
         locationClient = LocationServices.getFusedLocationProviderClient(requireContext());
@@ -185,12 +189,14 @@ public final class LendingMapFragment extends Fragment {
 
     private void initialiseMap(@Nullable Bundle savedInstanceState) {
         if (!MapsEnvironment.hasApiKey() || !MapsEnvironment.hasGooglePlayServices(requireContext())) {
-            TextView setup = new TextView(requireContext());
-            setup.setGravity(android.view.Gravity.CENTER);
-            setup.setPadding(dp(20), dp(20), dp(20), dp(20));
-            setup.setText(!MapsEnvironment.hasApiKey()
-                    ? "Map setup is required. The lending list still works."
-                    : "Google Play services are unavailable. The lending list still works.");
+            View setup = LayoutInflater.from(requireContext()).inflate(
+                    R.layout.view_lending_map_setup,
+                    binding.lendingMapContainer,
+                    false);
+            TextView title = setup.findViewById(R.id.lending_map_setup_title);
+            title.setText(!MapsEnvironment.hasApiKey()
+                    ? R.string.lending_map_setup_required
+                    : R.string.lending_map_play_services_unavailable);
             binding.lendingMapContainer.addView(setup);
             return;
         }
@@ -235,10 +241,25 @@ public final class LendingMapFragment extends Fragment {
         adapter.setSelectedId(selectedId);
         String message = state.getMessage();
         if (message == null) {
-            long mapped = currentItems.stream().filter(LendingItem::hasApproximateLocation).count();
-            message = state.isLoading()
-                    ? "Loading lending items..."
-                    : currentItems.size() + " item(s), " + mapped + " shown on the map.";
+            int mapped = (int) currentItems.stream()
+                    .filter(LendingItem::hasApproximateLocation)
+                    .count();
+            if (state.isLoading()) {
+                message = "Loading lending items...";
+            } else {
+                String availableCount = getResources().getQuantityString(
+                        R.plurals.lending_map_available_count,
+                        currentItems.size(),
+                        currentItems.size());
+                String mappedCount = getResources().getQuantityString(
+                        R.plurals.lending_map_mapped_count,
+                        mapped,
+                        mapped);
+                String note = getString(mapped < currentItems.size()
+                        ? R.string.lending_map_unmapped_note
+                        : R.string.lending_map_all_mapped_note);
+                message = availableCount + "   |   " + mappedCount + "\n" + note;
+            }
         }
         binding.lendingMapStatus.setText(message);
         binding.lendingMapLocationAction.setEnabled(!state.isLoading());

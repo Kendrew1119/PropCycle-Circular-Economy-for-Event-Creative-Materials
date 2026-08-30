@@ -31,6 +31,7 @@ public final class LendingItemAdapter
 
     private final Listener listener;
     private final MarketplaceImageLoader imageLoader;
+    private final int itemLayoutResource;
     private final List<LendingItem> items = new ArrayList<>();
     @Nullable private Double userLatitude;
     @Nullable private Double userLongitude;
@@ -39,7 +40,15 @@ public final class LendingItemAdapter
     public LendingItemAdapter(
             @NonNull MarketplaceImageLoader imageLoader,
             @NonNull Listener listener) {
+        this(imageLoader, R.layout.item_lending_item, listener);
+    }
+
+    public LendingItemAdapter(
+            @NonNull MarketplaceImageLoader imageLoader,
+            int itemLayoutResource,
+            @NonNull Listener listener) {
         this.imageLoader = imageLoader;
+        this.itemLayoutResource = itemLayoutResource;
         this.listener = listener;
     }
 
@@ -63,7 +72,7 @@ public final class LendingItemAdapter
     @Override
     public ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_lending_item, parent, false);
+                .inflate(itemLayoutResource, parent, false);
         return new ItemViewHolder(view);
     }
 
@@ -123,6 +132,7 @@ public final class LendingItemAdapter
                         : "No deposit stated");
             }
             boolean selected = selectedId != null && selectedId.equals(item.getId());
+            itemView.setSelected(selected);
             itemView.setAlpha(selected ? 1f : 0.94f);
             itemView.setContentDescription("Open lending item " + item.getTitle());
             itemView.setOnClickListener(ignored -> listener.onItemClick(item));
