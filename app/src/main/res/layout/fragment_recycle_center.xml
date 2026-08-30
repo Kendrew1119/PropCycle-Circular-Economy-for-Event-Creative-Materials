@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/pc_brand_warm_cream"
     android:clipToPadding="false"
     android:fillViewport="true">
 
@@ -10,149 +11,249 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingStart="@dimen/screen_horizontal"
-        android:paddingTop="@dimen/screen_vertical"
-        android:paddingEnd="@dimen/screen_horizontal"
-        android:paddingBottom="@dimen/space_xl">
+        android:paddingStart="18dp"
+        android:paddingTop="10dp"
+        android:paddingEnd="18dp"
+        android:paddingBottom="24dp">
 
-        <ImageButton
+        <View
             android:id="@+id/menu_button"
-            style="@style/Widget.PropCycle.IconButton"
-            android:background="@color/pc_transparent"
-            android:contentDescription="@string/menu"
-            android:src="@drawable/ic_settings" />
-
-        <TextView
-            style="@style/TextAppearance.PropCycle.Heading"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/space_xs"
-            android:text="@string/recycle_center_title" />
-
-        <TextView
-            style="@style/TextAppearance.PropCycle.Caption"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/space_xs"
-            android:text="@string/recycle_center_subtitle"
-            android:textColor="@color/pc_ink" />
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/area_input_layout"
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/space_lg"
-            android:hint="@string/recycle_area_hint"
-            app:boxBackgroundColor="@color/pc_surface"
-            app:boxCornerRadiusBottomEnd="18dp"
-            app:boxCornerRadiusBottomStart="18dp"
-            app:boxCornerRadiusTopEnd="18dp"
-            app:boxCornerRadiusTopStart="18dp"
-            app:startIconDrawable="@drawable/ic_search">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/area_input"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:imeOptions="actionSearch"
-                android:inputType="textCapWords"
-                android:maxLength="80"
-                android:maxLines="1" />
-        </com.google.android.material.textfield.TextInputLayout>
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="gone" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/space_sm"
+            android:layout_height="56dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/search_area_action"
-                style="@style/Widget.PropCycle.Button.Dark"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/recycle_search_area" />
+            <ImageView
+                android:layout_width="52dp"
+                android:layout_height="52dp"
+                android:contentDescription="@null"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_recycle_location_doodle" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/use_location_action"
-                style="@style/Widget.PropCycle.Button.Light"
+            <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/space_sm"
+                android:layout_marginStart="10dp"
                 android:layout_weight="1"
-                android:text="@string/recycle_use_location"
-                app:icon="@drawable/ic_location"
-                app:iconGravity="textStart"
-                app:iconTint="@color/pc_icon" />
+                android:text="@string/recycle_center_subtitle"
+                android:textColor="@color/pc_brand_text_secondary"
+                android:textSize="16sp" />
         </LinearLayout>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/external_map_search_action"
-            style="@style/Widget.Material3.Button.TextButton"
-            android:layout_width="wrap_content"
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:text="@string/recycle_external_map_action"
-            app:icon="@drawable/ic_location"
-            app:iconTint="@color/pc_icon" />
+            android:layout_marginTop="8dp"
+            app:cardBackgroundColor="@color/pc_brand_surface"
+            app:cardCornerRadius="24dp"
+            app:cardElevation="2dp"
+            app:strokeColor="@color/pc_brand_outline"
+            app:strokeWidth="1dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="14dp">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/area_input_layout"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/recycle_area_hint"
+                    app:boxBackgroundColor="@color/pc_brand_surface"
+                    app:boxCornerRadiusBottomEnd="22dp"
+                    app:boxCornerRadiusBottomStart="22dp"
+                    app:boxCornerRadiusTopEnd="22dp"
+                    app:boxCornerRadiusTopStart="22dp"
+                    app:boxStrokeColor="@color/pc_brand_primary_blue"
+                    app:boxStrokeWidth="2dp"
+                    app:boxStrokeWidthFocused="2dp"
+                    app:hintTextColor="@color/pc_brand_text_secondary"
+                    app:startIconDrawable="@drawable/ic_marketplace_search"
+                    app:startIconTint="@color/pc_brand_deep_blue">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/area_input"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:imeOptions="actionSearch"
+                        android:inputType="textCapWords"
+                        android:maxLength="80"
+                        android:maxLines="1"
+                        android:textColor="@color/pc_brand_text_primary"
+                        android:textColorHint="@color/pc_brand_text_secondary"
+                        android:textSize="15sp" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/search_area_action"
+                        android:layout_width="0dp"
+                        android:layout_height="52dp"
+                        android:layout_marginEnd="4dp"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/fredoka_semibold"
+                        android:text="@string/recycle_search_area"
+                        android:textAllCaps="false"
+                        android:textColor="@color/pc_brand_surface"
+                        android:paddingStart="4dp"
+                        android:paddingEnd="4dp"
+                        android:textSize="13sp"
+                        app:backgroundTint="@color/pc_brand_primary_blue"
+                        app:cornerRadius="22dp"
+                        app:icon="@drawable/ic_search"
+                        app:iconPadding="5dp"
+                        app:iconSize="20dp"
+                        app:iconTint="@color/pc_brand_surface" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/use_location_action"
+                        android:layout_width="0dp"
+                        android:layout_height="52dp"
+                        android:layout_marginStart="4dp"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/fredoka_semibold"
+                        android:text="@string/recycle_use_location"
+                        android:textAllCaps="false"
+                        android:textColor="@color/pc_brand_deep_blue"
+                        android:paddingStart="4dp"
+                        android:paddingEnd="4dp"
+                        android:textSize="13sp"
+                        app:backgroundTint="@color/pc_primary_container"
+                        app:cornerRadius="22dp"
+                        app:icon="@drawable/ic_location"
+                        app:iconPadding="5dp"
+                        app:iconSize="20dp"
+                        app:iconTint="@color/pc_brand_deep_blue" />
+                </LinearLayout>
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:layout_marginTop="6dp">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_gravity="top"
+                        android:background="@color/pc_brand_outline" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/external_map_search_action"
+                        style="@style/Widget.Material3.Button.TextButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:fontFamily="@font/fredoka_semibold"
+                        android:gravity="start|center_vertical"
+                        android:paddingStart="6dp"
+                        android:paddingEnd="42dp"
+                        android:text="@string/recycle_external_map_action"
+                        android:textAllCaps="false"
+                        android:textColor="@color/pc_brand_deep_blue"
+                        android:textSize="15sp"
+                        app:icon="@drawable/ic_location"
+                        app:iconGravity="start"
+                        app:iconPadding="10dp"
+                        app:iconTint="@color/pc_brand_deep_blue" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:layout_gravity="end|center_vertical"
+                        android:layout_marginEnd="10dp"
+                        android:contentDescription="@null"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/ic_ai_result_chevron"
+                        app:tint="@color/pc_brand_deep_blue" />
+                </FrameLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/status_card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/space_md"
-            app:cardBackgroundColor="@color/pc_surface_container"
-            app:cardCornerRadius="18dp"
+            android:layout_marginTop="12dp"
+            app:cardBackgroundColor="@color/pc_brand_soft_blue"
+            app:cardCornerRadius="20dp"
             app:cardElevation="0dp"
-            app:strokeColor="@color/pc_primary_container"
+            app:strokeColor="@color/pc_brand_sky_blue"
             app:strokeWidth="1dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
+                android:minHeight="68dp"
                 android:orientation="horizontal"
-                android:padding="@dimen/space_md">
+                android:padding="14dp">
 
-                <ProgressBar
-                    android:id="@+id/search_progress"
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
-                    android:contentDescription="@string/recycle_searching"
-                    android:visibility="gone" />
+                <FrameLayout
+                    android:layout_width="32dp"
+                    android:layout_height="32dp">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:layout_gravity="center"
+                        android:contentDescription="@null"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/ic_recycle_info"
+                        app:tint="@color/pc_brand_deep_blue" />
+
+                    <ProgressBar
+                        android:id="@+id/search_progress"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="center"
+                        android:contentDescription="@string/recycle_searching"
+                        android:indeterminateTint="@color/pc_brand_primary_blue"
+                        android:visibility="gone" />
+                </FrameLayout>
 
                 <TextView
                     android:id="@+id/status_text"
-                    style="@style/TextAppearance.PropCycle.Caption"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/space_sm"
+                    android:layout_marginStart="12dp"
                     android:layout_weight="1"
+                    android:lineSpacingExtra="2dp"
                     android:text="@string/recycle_initial_status"
-                    android:textColor="@color/pc_ink" />
+                    android:textColor="@color/pc_brand_text_primary"
+                    android:textSize="14sp" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/retry_action"
                     style="@style/Widget.Material3.Button.TextButton"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="48dp"
                     android:text="@string/recycle_retry"
+                    android:textAllCaps="false"
+                    android:textColor="@color/pc_brand_deep_blue"
                     android:visibility="gone" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:layout_marginTop="@dimen/space_md"
-            app:cardBackgroundColor="@color/pc_surface_container"
-            app:cardCornerRadius="28dp"
+            android:layout_height="210dp"
+            android:layout_marginTop="12dp"
+            app:cardBackgroundColor="@color/pc_brand_soft_blue"
+            app:cardCornerRadius="24dp"
             app:cardElevation="2dp"
-            app:strokeColor="@color/pc_primary_container"
-            app:strokeWidth="1dp">
+            app:strokeWidth="0dp">
 
             <FrameLayout
                 android:id="@+id/map_container"
@@ -162,14 +263,18 @@
 
                 <TextView
                     android:id="@+id/map_placeholder"
-                    style="@style/TextAppearance.PropCycle.Body"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:drawableTopCompat="@drawable/ic_location"
+                    android:background="@color/pc_brand_soft_blue"
+                    android:drawablePadding="10dp"
                     android:gravity="center"
-                    android:padding="@dimen/space_lg"
+                    android:lineSpacingExtra="2dp"
+                    android:padding="20dp"
                     android:text="@string/recycle_map_loading"
-                    android:textAlignment="center" />
+                    android:textAlignment="center"
+                    android:textColor="@color/pc_brand_text_secondary"
+                    android:textSize="14sp"
+                    app:drawableTopCompat="@drawable/ic_recycle_location_doodle" />
             </FrameLayout>
         </com.google.android.material.card.MaterialCardView>
 
@@ -177,79 +282,154 @@
             android:id="@+id/selected_center_card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/space_md"
+            android:layout_marginTop="12dp"
             android:visibility="gone"
-            app:cardBackgroundColor="@color/pc_accent_container"
+            app:cardBackgroundColor="@color/pc_brand_surface"
             app:cardCornerRadius="20dp"
-            app:cardElevation="0dp">
+            app:cardElevation="1dp"
+            app:strokeColor="@color/pc_brand_primary_blue"
+            app:strokeWidth="1dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="@dimen/space_md">
+                android:padding="14dp">
 
-                <TextView
-                    android:id="@+id/selected_center_name"
-                    style="@style/TextAppearance.PropCycle.Body"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textStyle="bold" />
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/selected_center_address"
-                    style="@style/TextAppearance.PropCycle.Caption"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/space_xs" />
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:background="@drawable/bg_recycle_selected_icon"
+                        android:contentDescription="@null"
+                        android:importantForAccessibility="no"
+                        android:padding="12dp"
+                        android:src="@drawable/ic_welcome_recycle"
+                        app:tint="@color/pc_brand_surface" />
 
-                <TextView
-                    android:id="@+id/selected_center_meta"
-                    style="@style/TextAppearance.PropCycle.Caption"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/space_xs"
-                    android:textColor="@color/pc_on_accent_container" />
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/selected_center_name"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/fredoka_semibold"
+                            android:textColor="@color/pc_brand_deep_blue"
+                            android:textSize="17sp" />
+
+                        <TextView
+                            android:id="@+id/selected_center_address"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:maxLines="2"
+                            android:textColor="@color/pc_brand_text_secondary"
+                            android:textSize="13sp" />
+
+                        <TextView
+                            android:id="@+id/selected_center_meta"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="7dp"
+                            android:background="@drawable/bg_recycle_distance_chip"
+                            android:paddingStart="9dp"
+                            android:paddingTop="4dp"
+                            android:paddingEnd="9dp"
+                            android:paddingBottom="4dp"
+                            android:textColor="@color/pc_brand_deep_blue"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+                </LinearLayout>
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/open_maps_action"
-                    style="@style/Widget.PropCycle.Button.Dark"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/space_sm"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="@font/fredoka_semibold"
                     android:text="@string/recycle_open_maps"
+                    android:textAllCaps="false"
+                    android:textColor="@color/pc_brand_deep_blue"
+                    android:textSize="15sp"
+                    app:backgroundTint="@color/pc_brand_surface"
+                    app:cornerRadius="18dp"
                     app:icon="@drawable/ic_location"
-                    app:iconTint="@color/pc_on_primary" />
+                    app:iconTint="@color/pc_brand_deep_blue"
+                    app:strokeColor="@color/pc_brand_primary_blue"
+                    app:strokeWidth="2dp" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
         <TextView
-            style="@style/TextAppearance.PropCycle.Caption"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/space_md"
-            android:background="@drawable/bg_card_light"
-            android:padding="@dimen/space_md"
-            android:text="@string/recycle_acceptance_notice"
-            android:textColor="@color/pc_text_primary" />
-
-        <TextView
             android:id="@+id/nearby_heading"
-            style="@style/TextAppearance.PropCycle.Title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/space_lg"
+            android:layout_marginTop="18dp"
+            android:drawablePadding="8dp"
+            android:fontFamily="@font/fredoka_semibold"
+            android:gravity="center_vertical"
             android:text="@string/recycle_nearby_heading"
-            android:textSize="20sp" />
+            android:textColor="@color/pc_brand_deep_blue"
+            android:textSize="21sp"
+            app:drawableStartCompat="@drawable/ic_welcome_recycle"
+            app:drawableTint="@color/pc_brand_primary_blue" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/center_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/space_sm"
+            android:layout_marginTop="8dp"
             android:clipToPadding="false"
             android:nestedScrollingEnabled="false"
             android:overScrollMode="never"
-            android:paddingBottom="@dimen/space_md" />
+            android:paddingBottom="4dp" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            app:cardBackgroundColor="@color/pc_scanner_notice_surface"
+            app:cardCornerRadius="18dp"
+            app:cardElevation="0dp"
+            app:strokeColor="@color/pc_brand_accent_yellow"
+            app:strokeWidth="1dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:minHeight="64dp"
+                android:orientation="horizontal"
+                android:padding="14dp">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:contentDescription="@null"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_recycle_info"
+                    app:tint="@color/pc_brand_accent_yellow" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_weight="1"
+                    android:lineSpacingExtra="2dp"
+                    android:text="@string/recycle_acceptance_notice"
+                    android:textColor="@color/pc_brand_text_primary"
+                    android:textSize="14sp" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

@@ -4,77 +4,99 @@
     android:id="@+id/center_card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/space_sm"
+    android:layout_marginBottom="8dp"
     android:clickable="true"
     android:focusable="true"
     android:foreground="?attr/selectableItemBackground"
-    app:cardBackgroundColor="@color/pc_surface"
-    app:cardCornerRadius="20dp"
-    app:cardElevation="0dp"
-    app:strokeColor="@color/pc_primary_container"
+    app:cardBackgroundColor="@color/pc_brand_surface"
+    app:cardCornerRadius="18dp"
+    app:cardElevation="1dp"
+    app:rippleColor="@color/pc_brand_soft_blue"
+    app:strokeColor="@color/pc_brand_sky_blue"
     app:strokeWidth="1dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
+        android:minHeight="86dp"
         android:orientation="horizontal"
-        android:padding="@dimen/space_md">
+        android:padding="12dp">
 
         <TextView
             android:id="@+id/marker_number"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:background="@drawable/bg_circle_gray"
+            android:background="@drawable/bg_recycle_marker_number"
+            android:fontFamily="@font/fredoka_semibold"
             android:gravity="center"
-            android:textColor="@color/pc_on_primary_container"
-            android:textStyle="bold" />
+            android:textColor="@color/pc_brand_surface"
+            android:textSize="16sp" />
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/space_md"
+            android:layout_marginStart="12dp"
             android:layout_weight="1"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/center_name"
-                style="@style/TextAppearance.PropCycle.Body"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/fredoka_semibold"
                 android:maxLines="2"
-                android:textStyle="bold" />
+                android:textColor="@color/pc_brand_deep_blue"
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/center_address"
-                style="@style/TextAppearance.PropCycle.Caption"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
                 android:ellipsize="end"
-                android:maxLines="2" />
+                android:maxLines="2"
+                android:textColor="@color/pc_brand_text_secondary"
+                android:textSize="13sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/space_xs"
+                android:layout_marginTop="6dp"
+                android:gravity="center_vertical"
                 android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/center_distance"
-                    style="@style/TextAppearance.PropCycle.Caption"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textColor="@color/pc_primary" />
+                    android:background="@drawable/bg_recycle_distance_chip"
+                    android:maxLines="1"
+                    android:paddingStart="8dp"
+                    android:paddingTop="3dp"
+                    android:paddingEnd="8dp"
+                    android:paddingBottom="3dp"
+                    android:textColor="@color/pc_brand_deep_blue"
+                    android:textSize="12sp" />
 
                 <TextView
                     android:id="@+id/center_rating"
-                    style="@style/TextAppearance.PropCycle.Caption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/pc_accent" />
+                    android:layout_marginStart="9dp"
+                    android:maxLines="1"
+                    android:textColor="@color/pc_brand_accent_yellow"
+                    android:textSize="13sp" />
             </LinearLayout>
         </LinearLayout>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_marginStart="6dp"
+            android:contentDescription="@null"
+            android:importantForAccessibility="no"
+            android:src="@drawable/ic_ai_result_chevron"
+            app:tint="@color/pc_brand_deep_blue" />
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>
