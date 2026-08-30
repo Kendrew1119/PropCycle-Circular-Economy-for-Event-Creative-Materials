@@ -23,7 +23,7 @@
             android:contentDescription="@string/back"
             android:padding="13dp"
             android:src="@drawable/ic_back"
-            android:tint="@color/pc_brand_deep_blue" />
+            app:tint="@color/pc_brand_deep_blue" />
 
         <TextView
             android:id="@+id/thread_avatar"
