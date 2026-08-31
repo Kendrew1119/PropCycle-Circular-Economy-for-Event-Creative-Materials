@@ -53,7 +53,7 @@ Only the Firebase project owner should do this section.
    `propcycle-e5f14` and the Android package is `com.propcycle.app`.
 3. Compare any rule edits made in Firebase Console with `firestore.rules` and
    `storage.rules`. A CLI deployment replaces the console rules.
-4. Run the local preflight again. Confirm all 67 Java tests and all 24 Rules
+4. Run the local preflight again. Confirm all 80 Java tests and all 25 Rules
    tests pass before continuing.
 5. Sign in to Firebase CLI with the authorised project-owner account. Never use
    a service-account JSON file on a shared student computer.
@@ -121,6 +121,13 @@ devices. Record the Android version and device model.
   unauthorised request is rejected.
 - Borrower starts a chat. Both users exchange text and no third account can read
   the thread.
+- Borrower taps the seller avatar in Marketplace Detail and the other-member
+  avatar in Conversation. Confirm both open the correct public profile without
+  exposing email, edit/logout controls, or device-local activity.
+- Borrower saves a 1–5-star Marketplace seller rating, updates it once, and
+  confirms the aggregate appears on Marketplace Detail and the seller's public
+  profile. Confirm Owner cannot rate their own listing and a third account
+  cannot overwrite Borrower's rating.
 
 ### AI scanner
 
