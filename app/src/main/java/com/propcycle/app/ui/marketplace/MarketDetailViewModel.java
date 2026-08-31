@@ -11,16 +11,23 @@ import androidx.lifecycle.MutableLiveData;
 import com.propcycle.app.data.chat.ChatRepository;
 import com.propcycle.app.data.activity.ActivityLogRepository;
 import com.propcycle.app.data.marketplace.FirestoreMarketplaceRepository;
+import com.propcycle.app.data.marketplace.FirestoreMarketplaceRatingRepository;
 import com.propcycle.app.data.marketplace.MarketplaceListing;
 import com.propcycle.app.data.marketplace.MarketplaceListingStatusPolicy;
+import com.propcycle.app.data.marketplace.MarketplaceRatingPolicy;
 import com.propcycle.app.data.marketplace.MarketplaceRepository;
+import com.propcycle.app.data.marketplace.MarketplaceSellerRating;
 import com.propcycle.app.core.firebase.FirebaseEnvironment;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.Collections;
+import java.util.List;
 
 /** Owns the live detail document plus owner edit/withdraw/relist actions. */
 public final class MarketDetailViewModel extends AndroidViewModel {
 
     private final MarketplaceRepository repository;
+    private final FirestoreMarketplaceRatingRepository ratingRepository;
     private final ActivityLogRepository activityLog;
     private final MutableLiveData<State> state = new MutableLiveData<>(State.loading());
     private final MutableLiveData<String> chatNotice = new MutableLiveData<>();
@@ -29,14 +36,24 @@ public final class MarketDetailViewModel extends AndroidViewModel {
     private final MutableLiveData<Event<String>> openedThread = new MutableLiveData<>();
     private final MutableLiveData<String> sellerName =
             new MutableLiveData<>("Community member");
+    private final MutableLiveData<RatingState> ratingState =
+            new MutableLiveData<>(RatingState.empty());
     private MarketplaceRepository.Subscription subscription;
+    private FirestoreMarketplaceRatingRepository.Subscription ratingSubscription =
+            FirestoreMarketplaceRatingRepository.Subscription.NONE;
     private String loadedListingId;
     private boolean openingChat;
     private String loadedSellerId = "";
+    private String loadedRatingsSellerId = "";
+    private List<MarketplaceSellerRating> sellerRatings = Collections.emptyList();
+    private boolean ratingFromCache;
+    private boolean ratingSaving;
+    private String ratingMessage = "";
 
     public MarketDetailViewModel(@NonNull Application application) {
         super(application);
         repository = new FirestoreMarketplaceRepository(application);
+        ratingRepository = new FirestoreMarketplaceRatingRepository(application);
         activityLog = new ActivityLogRepository(application);
     }
 
@@ -65,6 +82,11 @@ public final class MarketDetailViewModel extends AndroidViewModel {
         return sellerName;
     }
 
+    @NonNull
+    public LiveData<RatingState> getRatingState() {
+        return ratingState;
+    }
+
     public void load(@Nullable String listingId) {
         String resolvedId = listingId == null ? "" : listingId.trim();
         if (resolvedId.equals(loadedListingId)) {
@@ -72,6 +94,12 @@ public final class MarketDetailViewModel extends AndroidViewModel {
         }
         loadedListingId = resolvedId;
         closeSubscription();
+        closeRatingSubscription();
+        loadedSellerId = "";
+        loadedRatingsSellerId = "";
+        sellerRatings = Collections.emptyList();
+        ratingMessage = "";
+        publishRatingState();
 
         if (resolvedId.isEmpty()) {
             state.setValue(State.error(
@@ -100,6 +128,7 @@ public final class MarketDetailViewModel extends AndroidViewModel {
                         boolean owner = currentUserId != null
                                 && currentUserId.equals(listing.getOwnerId());
                         loadSellerName(listing.getOwnerId());
+                        observeSellerRatings(listing.getOwnerId());
                         state.setValue(State.content(listing, owner, fromCache));
                     }
 
@@ -131,6 +160,105 @@ public final class MarketDetailViewModel extends AndroidViewModel {
                         sellerName.setValue(displayName.trim());
                     }
                 });
+    }
+
+    private void observeSellerRatings(@Nullable String ownerId) {
+        String cleanId = ownerId == null ? "" : ownerId.trim();
+        if (cleanId.isEmpty()) {
+            return;
+        }
+        if (cleanId.equals(loadedRatingsSellerId)) {
+            return;
+        }
+        closeRatingSubscription();
+        loadedRatingsSellerId = cleanId;
+        sellerRatings = Collections.emptyList();
+        ratingFromCache = false;
+        publishRatingState();
+        ratingSubscription = ratingRepository.observeRatings(
+                cleanId,
+                new FirestoreMarketplaceRatingRepository.RatingsCallback() {
+                    @Override
+                    public void onData(
+                            @NonNull List<MarketplaceSellerRating> ratings,
+                            boolean fromCache) {
+                        if (!cleanId.equals(loadedSellerId)) {
+                            return;
+                        }
+                        sellerRatings = ratings;
+                        ratingFromCache = fromCache;
+                        publishRatingState();
+                    }
+
+                    @Override
+                    public void onError(@NonNull Exception error) {
+                        if (cleanId.equals(loadedSellerId)) {
+                            ratingMessage = error.getMessage() == null
+                                    ? "Marketplace ratings are unavailable."
+                                    : error.getMessage();
+                            publishRatingState();
+                        }
+                    }
+                });
+    }
+
+    public void saveSellerRating(int score) {
+        State current = state.getValue();
+        MarketplaceListing listing = current == null ? null : current.getListing();
+        if (ratingSaving || listing == null || current.isOwner()
+                || listing.getId() == null || listing.getOwnerId() == null) {
+            return;
+        }
+        if (!MarketplaceListingStatusPolicy.AVAILABLE.equals(listing.getStatus())) {
+            ratingMessage = "Only an available listing can be used to rate its seller.";
+            publishRatingState();
+            return;
+        }
+        try {
+            MarketplaceRatingPolicy.requireScore(score);
+        } catch (IllegalArgumentException error) {
+            ratingMessage = error.getMessage();
+            publishRatingState();
+            return;
+        }
+        ratingSaving = true;
+        ratingMessage = "Saving your marketplace rating...";
+        publishRatingState();
+        ratingRepository.saveRating(listing.getOwnerId(), listing.getId(), score)
+                .addOnSuccessListener(ignored -> {
+                    ratingSaving = false;
+                    ratingMessage = "Your marketplace rating was saved.";
+                    publishRatingState();
+                })
+                .addOnFailureListener(error -> {
+                    ratingSaving = false;
+                    ratingMessage = error.getMessage() == null
+                            ? "The marketplace rating could not be saved."
+                            : error.getMessage();
+                    publishRatingState();
+                });
+    }
+
+    private void publishRatingState() {
+        MarketplaceRatingPolicy.Summary summary =
+                MarketplaceRatingPolicy.summarize(sellerRatings);
+        int myScore = 0;
+        String currentUid = ratingRepository.currentUserId();
+        if (currentUid != null) {
+            for (MarketplaceSellerRating rating : sellerRatings) {
+                if (currentUid.equals(rating.getRaterUid()) && rating.getScore() != null) {
+                    myScore = rating.getScore().intValue();
+                    break;
+                }
+            }
+        }
+        ratingState.setValue(new RatingState(
+                summary.getAverage(),
+                summary.getCount(),
+                myScore,
+                ratingSaving,
+                ratingFromCache,
+                ratingMessage));
     }
 
     public void requestStatusChange(@NonNull String targetStatus) {
@@ -239,6 +367,7 @@ public final class MarketDetailViewModel extends AndroidViewModel {
     @Override
     protected void onCleared() {
         closeSubscription();
+        closeRatingSubscription();
         super.onCleared();
     }
 
@@ -246,6 +375,59 @@ public final class MarketDetailViewModel extends AndroidViewModel {
         if (subscription != null) {
             subscription.close();
             subscription = null;
+        }
+    }
+
+    private void closeRatingSubscription() {
+        ratingSubscription.remove();
+        ratingSubscription = FirestoreMarketplaceRatingRepository.Subscription.NONE;
+    }
+
+    public static final class RatingState {
+        private final double average;
+        private final int count;
+        private final int myScore;
+        private final boolean saving;
+        private final boolean fromCache;
+        private final String message;
+
+        private RatingState(
+                double average,
+                int count,
+                int myScore,
+                boolean saving,
+                boolean fromCache,
+                @NonNull String message) {
+            this.average = average;
+            this.count = count;
+            this.myScore = myScore;
+            this.saving = saving;
+            this.fromCache = fromCache;
+            this.message = message;
+        }
+
+        private static RatingState empty() {
+            return new RatingState(0d, 0, 0, false, false, "");
+        }
+
+        public double getAverage() { return average; }
+        public int getCount() { return count; }
+        public int getMyScore() { return myScore; }
+        public boolean isSaving() { return saving; }
+        public boolean isFromCache() { return fromCache; }
+        @NonNull public String getMessage() { return message; }
+
+        @NonNull
+        public String summaryText() {
+            if (count == 0) {
+                return "No marketplace ratings yet";
+            }
+            return String.format(
+                    java.util.Locale.ROOT,
+                    "%.1f / 5 from %d %s",
+                    average,
+                    count,
+                    count == 1 ? "rating" : "ratings");
         }
     }
 

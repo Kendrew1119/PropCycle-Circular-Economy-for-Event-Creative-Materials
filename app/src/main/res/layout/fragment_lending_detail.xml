@@ -147,12 +147,16 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/lending_owner_card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="20dp"
             android:background="@drawable/bg_market_detail_seller"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
             android:gravity="center_vertical"
             android:minHeight="92dp"
             android:orientation="horizontal"
@@ -162,11 +166,14 @@
             android:paddingBottom="12dp">
 
             <TextView
+                android:id="@+id/lending_owner_avatar"
                 android:layout_width="54dp"
                 android:layout_height="54dp"
                 android:background="@drawable/bg_market_detail_avatar"
+                android:clickable="true"
                 android:contentDescription="Lending owner"
                 android:fontFamily="@font/fredoka_semibold"
+                android:focusable="true"
                 android:gravity="center"
                 android:text="L"
                 android:textColor="@color/pc_brand_deep_blue"
@@ -180,6 +187,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/lending_owner_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/fredoka_semibold"

@@ -98,6 +98,22 @@ function threadData() {
   };
 }
 
+function marketplaceRatingData(
+  recipientUid = OWNER_UID,
+  raterUid = CONTACT_UID,
+  contextListingId = LISTING_ID,
+  score = 5,
+) {
+  return {
+    raterUid,
+    recipientUid,
+    contextListingId,
+    score,
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
+  };
+}
+
 function lendingItemData(ownerId = OWNER_UID) {
   return {
     ownerId,
@@ -254,6 +270,53 @@ test("an authenticated user can directly read a public display profile but canno
   const contactDatabase = signedIn(CONTACT_UID);
   await assertSucceeds(getDoc(doc(contactDatabase, "users", OWNER_UID)));
   await assertFails(getDocs(collection(contactDatabase, "users")));
+});
+
+test("marketplace seller ratings are bounded, authentic, editable, and non-deletable", async () => {
+  await seedBaseData();
+  const contactDatabase = signedIn(CONTACT_UID);
+  const ownerDatabase = signedIn(OWNER_UID);
+  const outsiderDatabase = signedIn(OUTSIDER_UID);
+  const contactRating = doc(
+    contactDatabase,
+    "users",
+    OWNER_UID,
+    "marketplaceRatings",
+    CONTACT_UID,
+  );
+
+  await assertSucceeds(setDoc(contactRating, marketplaceRatingData()));
+  await assertSucceeds(updateDoc(contactRating, {
+    score: 4,
+    updatedAt: serverTimestamp(),
+  }));
+  await assertFails(deleteDoc(contactRating));
+
+  await assertFails(setDoc(
+    doc(ownerDatabase, "users", OWNER_UID, "marketplaceRatings", OWNER_UID),
+    marketplaceRatingData(OWNER_UID, OWNER_UID),
+  ));
+  await assertFails(setDoc(
+    doc(outsiderDatabase, "users", OWNER_UID, "marketplaceRatings", CONTACT_UID),
+    marketplaceRatingData(),
+  ));
+  await assertFails(setDoc(
+    doc(outsiderDatabase, "users", OWNER_UID, "marketplaceRatings", OUTSIDER_UID),
+    marketplaceRatingData(OWNER_UID, OUTSIDER_UID, LISTING_ID, 6),
+  ));
+
+  const boundedRatings = query(
+    collection(contactDatabase, "users", OWNER_UID, "marketplaceRatings"),
+    limit(100),
+  );
+  const snapshot = await assertSucceeds(getDocs(boundedRatings));
+  assert.equal(snapshot.size, 1);
+  await assertFails(getDocs(collection(
+    contactDatabase,
+    "users",
+    OWNER_UID,
+    "marketplaceRatings",
+  )));
 });
 
 test("a valid listing write succeeds while a forged owner fails", async () => {
