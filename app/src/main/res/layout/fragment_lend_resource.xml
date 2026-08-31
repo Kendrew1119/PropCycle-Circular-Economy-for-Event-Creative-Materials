@@ -42,7 +42,7 @@
                     android:id="@+id/lend_form_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-medium"
+                    android:fontFamily="@font/fredoka_semibold"
                     android:text="Lend Resource"
                     android:textColor="@color/pc_brand_deep_blue"
                     android:textSize="28sp"

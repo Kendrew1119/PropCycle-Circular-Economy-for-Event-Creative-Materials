@@ -84,7 +84,7 @@ public final class LendingListFragment extends Fragment {
         });
         binding.createLendingAction.setOnClickListener(ignored ->
                 ResourceCreationFlow.show(this, ResourceCreationFlow.TARGET_LENDING));
-        binding.openLendingMapAction.setOnClickListener(ignored -> {
+        binding.lendingListMapAction.setOnClickListener(ignored -> {
             Bundle mapArguments = new Bundle();
             mapArguments.putString("initialQuery", viewModel.getQuery());
             mapArguments.putString("initialCategory", viewModel.getCategory());

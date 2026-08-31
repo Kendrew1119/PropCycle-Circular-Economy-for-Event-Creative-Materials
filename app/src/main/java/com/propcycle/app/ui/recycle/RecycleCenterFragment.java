@@ -88,7 +88,7 @@ public final class RecycleCenterFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         ScreenNavigation.bindChrome(this, view);
         viewModel = new ViewModelProvider(this).get(RecycleCenterViewModel.class);
-        adapter = new RecyclingCenterAdapter(center -> selectCenter(center, true));
+        adapter = new RecyclingCenterAdapter(this::selectCenterFromList);
         binding.centerList.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.centerList.setAdapter(adapter);
 
@@ -278,6 +278,26 @@ public final class RecycleCenterFragment extends Fragment {
                 marker.showInfoWindow();
             }
         }
+    }
+
+    private void selectCenterFromList(@NonNull RecyclingCenter center) {
+        selectCenter(center, true);
+        binding.mapContainer.post(this::scrollMapIntoView);
+    }
+
+    private void scrollMapIntoView() {
+        if (binding == null) {
+            return;
+        }
+        int[] scrollPosition = new int[2];
+        int[] mapPosition = new int[2];
+        binding.getRoot().getLocationInWindow(scrollPosition);
+        binding.mapContainer.getLocationInWindow(mapPosition);
+        int targetY = binding.getRoot().getScrollY()
+                + mapPosition[1]
+                - scrollPosition[1]
+                - dp(12);
+        binding.getRoot().smoothScrollTo(0, Math.max(0, targetY));
     }
 
     private void renderMarkers(@NonNull List<RecyclingCenter> centers) {

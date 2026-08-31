@@ -40,12 +40,13 @@
         </LinearLayout>
 
         <ImageView
-            android:layout_width="88dp"
-            android:layout_height="72dp"
+            android:layout_width="92dp"
+            android:layout_height="76dp"
             android:layout_gravity="end|center_vertical"
+            android:layout_marginEnd="4dp"
             android:contentDescription="@null"
             android:importantForAccessibility="no"
-            android:src="@drawable/ic_lending_header_doodle" />
+            android:src="@drawable/lend_out_share_icon" />
     </FrameLayout>
 
     <FrameLayout
@@ -80,6 +81,47 @@
             android:textColorHint="@color/pc_brand_text_secondary"
             android:textSize="16sp" />
     </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/bg_lending_map_segment"
+        android:orientation="horizontal"
+        android:padding="1dp">
+
+        <TextView
+            android:id="@+id/lending_list_map_action"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/bg_lending_list_segment_map"
+            android:clickable="true"
+            android:contentDescription="@string/lending_list_open_map_description"
+            android:drawableStart="@drawable/ic_lending_map_map"
+            android:drawablePadding="7dp"
+            android:drawableTint="@color/pc_brand_deep_blue"
+            android:focusable="true"
+            android:gravity="center"
+            android:text="@string/lending_map_map"
+            android:textColor="@color/pc_brand_deep_blue"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/bg_lending_list_segment_selected"
+            android:drawableStart="@drawable/ic_lending_map_list"
+            android:drawablePadding="7dp"
+            android:drawableTint="@color/pc_on_primary"
+            android:gravity="center"
+            android:text="@string/lending_map_list"
+            android:textColor="@color/pc_on_primary"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+    </LinearLayout>
 
     <HorizontalScrollView
         android:layout_width="match_parent"
@@ -244,18 +286,6 @@
             android:layout_weight="1"
             android:textColor="@color/pc_brand_text_secondary"
             android:textSize="13sp" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/open_lending_map_action"
-            style="@style/Widget.Material3.Button.TextButton"
-            android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:fontFamily="@font/fredoka_semibold"
-            android:minWidth="72dp"
-            android:text="Map"
-            android:textAllCaps="false"
-            android:textColor="@color/pc_brand_deep_blue"
-            android:textSize="14sp" />
     </LinearLayout>
 
     <FrameLayout

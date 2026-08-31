@@ -24,8 +24,9 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="56dp"
+            android:layout_height="wrap_content"
             android:gravity="center_vertical"
+            android:minHeight="72dp"
             android:orientation="horizontal">
 
             <ImageView
@@ -35,14 +36,31 @@
                 android:importantForAccessibility="no"
                 android:src="@drawable/ic_recycle_location_doodle" />
 
-            <TextView
+            <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_weight="1"
-                android:text="@string/recycle_center_subtitle"
-                android:textColor="@color/pc_brand_text_secondary"
-                android:textSize="16sp" />
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/fredoka_semibold"
+                    android:includeFontPadding="false"
+                    android:maxLines="1"
+                    android:text="@string/recycle_center_title"
+                    android:textColor="@color/pc_brand_deep_blue"
+                    android:textSize="30sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="@string/recycle_center_subtitle"
+                    android:textColor="@color/pc_brand_text_secondary"
+                    android:textSize="16sp" />
+            </LinearLayout>
         </LinearLayout>
 
         <com.google.android.material.card.MaterialCardView
@@ -59,7 +77,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="14dp">
+                android:paddingStart="14dp"
+                android:paddingTop="8dp"
+                android:paddingEnd="14dp"
+                android:paddingBottom="8dp">
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/area_input_layout"
@@ -94,14 +115,16 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="52dp"
-                    android:layout_marginTop="10dp"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="8dp"
                     android:orientation="horizontal">
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/search_area_action"
                         android:layout_width="0dp"
-                        android:layout_height="52dp"
+                        android:layout_height="48dp"
                         android:layout_marginEnd="4dp"
                         android:layout_weight="1"
                         android:fontFamily="@font/fredoka_semibold"
@@ -110,18 +133,18 @@
                         android:textColor="@color/pc_brand_surface"
                         android:paddingStart="4dp"
                         android:paddingEnd="4dp"
-                        android:textSize="13sp"
+                        android:textSize="12sp"
                         app:backgroundTint="@color/pc_brand_primary_blue"
-                        app:cornerRadius="22dp"
+                        app:cornerRadius="18dp"
                         app:icon="@drawable/ic_search"
-                        app:iconPadding="5dp"
-                        app:iconSize="20dp"
+                        app:iconPadding="4dp"
+                        app:iconSize="18dp"
                         app:iconTint="@color/pc_brand_surface" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/use_location_action"
                         android:layout_width="0dp"
-                        android:layout_height="52dp"
+                        android:layout_height="48dp"
                         android:layout_marginStart="4dp"
                         android:layout_weight="1"
                         android:fontFamily="@font/fredoka_semibold"
@@ -130,19 +153,19 @@
                         android:textColor="@color/pc_brand_deep_blue"
                         android:paddingStart="4dp"
                         android:paddingEnd="4dp"
-                        android:textSize="13sp"
+                        android:textSize="12sp"
                         app:backgroundTint="@color/pc_primary_container"
-                        app:cornerRadius="22dp"
+                        app:cornerRadius="18dp"
                         app:icon="@drawable/ic_location"
-                        app:iconPadding="5dp"
-                        app:iconSize="20dp"
+                        app:iconPadding="4dp"
+                        app:iconSize="18dp"
                         app:iconTint="@color/pc_brand_deep_blue" />
                 </LinearLayout>
 
                 <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="52dp"
-                    android:layout_marginTop="6dp">
+                    android:layout_height="48dp"
+                    android:layout_marginTop="2dp">
 
                     <View
                         android:layout_width="match_parent"
@@ -196,17 +219,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
-                android:minHeight="68dp"
+                android:minHeight="56dp"
                 android:orientation="horizontal"
-                android:padding="14dp">
+                android:paddingStart="12dp"
+                android:paddingTop="8dp"
+                android:paddingEnd="12dp"
+                android:paddingBottom="8dp">
 
                 <FrameLayout
-                    android:layout_width="32dp"
-                    android:layout_height="32dp">
+                    android:layout_width="28dp"
+                    android:layout_height="28dp">
 
                     <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
                         android:layout_gravity="center"
                         android:contentDescription="@null"
                         android:importantForAccessibility="no"
@@ -215,8 +241,8 @@
 
                     <ProgressBar
                         android:id="@+id/search_progress"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
                         android:layout_gravity="center"
                         android:contentDescription="@string/recycle_searching"
                         android:indeterminateTint="@color/pc_brand_primary_blue"
@@ -227,12 +253,12 @@
                     android:id="@+id/status_text"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="12dp"
+                    android:layout_marginStart="8dp"
                     android:layout_weight="1"
                     android:lineSpacingExtra="2dp"
                     android:text="@string/recycle_initial_status"
                     android:textColor="@color/pc_brand_text_primary"
-                    android:textSize="14sp" />
+                    android:textSize="13sp" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/retry_action"

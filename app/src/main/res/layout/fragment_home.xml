@@ -41,7 +41,7 @@
                             android:id="@+id/home_greeting"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:fontFamily="sans-serif"
+                            android:fontFamily="@font/fredoka_semibold"
                             android:maxLines="2"
                             android:text="Hey there,"
                             android:textColor="@color/pc_on_primary"
@@ -119,6 +119,7 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:fontFamily="@font/fredoka_semibold"
                             android:text="@string/home_overview_title"
                             android:textColor="@color/pc_on_primary"
                             android:textSize="@dimen/home_overview_title_size"
@@ -225,12 +226,13 @@
                             android:contentDescription="@null"
                             android:importantForAccessibility="no"
                             android:scaleType="fitCenter"
-                            android:src="@drawable/home_action_recycle" />
+                            android:src="@drawable/home_action_recycle_icon" />
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
+                            android:fontFamily="@font/fredoka_semibold"
                             android:gravity="center"
                             android:importantForAccessibility="no"
                             android:maxLines="2"
@@ -297,12 +299,13 @@
                             android:contentDescription="@null"
                             android:importantForAccessibility="no"
                             android:scaleType="fitCenter"
-                            android:src="@drawable/home_action_listing_tag" />
+                            android:src="@drawable/home_action_listing_icon" />
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
+                            android:fontFamily="@font/fredoka_semibold"
                             android:gravity="center"
                             android:importantForAccessibility="no"
                             android:maxLines="2"
@@ -368,12 +371,13 @@
                             android:contentDescription="@null"
                             android:importantForAccessibility="no"
                             android:scaleType="fitCenter"
-                            android:src="@drawable/home_action_lend" />
+                            android:src="@drawable/home_action_lend_icon" />
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
+                            android:fontFamily="@font/fredoka_semibold"
                             android:gravity="center"
                             android:importantForAccessibility="no"
                             android:maxLines="2"
@@ -452,6 +456,7 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:fontFamily="@font/fredoka_semibold"
                             android:text="@string/home_scanner_title"
                             android:textColor="@color/pc_on_primary"
                             android:textSize="@dimen/home_scanner_title_size"
@@ -488,6 +493,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="18dp"
+                    android:fontFamily="@font/fredoka_semibold"
                     android:text="@string/home_impact_title"
                     android:textColor="@color/pc_brand_deep_blue"
                     android:textSize="@dimen/home_section_title_size"
@@ -535,6 +541,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="3dp"
+                                android:fontFamily="@font/fredoka_semibold"
                                 android:text="@string/home_impact_empty_value"
                                 android:textColor="@color/pc_brand_eco_green"
                                 android:textSize="@dimen/home_impact_value_size"
@@ -543,6 +550,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:fontFamily="@font/fredoka_semibold"
                                 android:text="@string/home_impact_shared"
                                 android:textColor="@color/pc_brand_text_primary"
                                 android:textSize="@dimen/home_impact_label_size"
@@ -577,6 +585,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="3dp"
+                                android:fontFamily="@font/fredoka_semibold"
                                 android:text="@string/home_impact_empty_value"
                                 android:textColor="@color/pc_brand_deep_blue"
                                 android:textSize="@dimen/home_impact_value_size"
@@ -585,6 +594,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:fontFamily="@font/fredoka_semibold"
                                 android:text="@string/home_impact_lent"
                                 android:textColor="@color/pc_brand_text_primary"
                                 android:textSize="@dimen/home_impact_label_size"
@@ -619,6 +629,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="3dp"
+                                android:fontFamily="@font/fredoka_semibold"
                                 android:text="@string/home_impact_empty_value"
                                 android:textColor="@color/pc_brand_deep_blue"
                                 android:textSize="@dimen/home_impact_value_size"
@@ -627,6 +638,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:fontFamily="@font/fredoka_semibold"
                                 android:text="@string/home_impact_scanned"
                                 android:textColor="@color/pc_brand_text_primary"
                                 android:textSize="@dimen/home_impact_label_size"
@@ -656,6 +668,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="18dp"
+                    android:fontFamily="@font/fredoka_semibold"
                     android:text="@string/home_recent_title"
                     android:textColor="@color/pc_brand_deep_blue"
                     android:textSize="@dimen/home_section_title_size"
@@ -699,6 +712,7 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:fontFamily="@font/fredoka_semibold"
                             android:maxLines="1"
                             android:text="@string/home_recent_preview_title"
                             android:textColor="@color/pc_brand_text_primary"

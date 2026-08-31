@@ -124,6 +124,7 @@
     <string name="lending_map_near_me">Near me</string>
     <string name="lending_map_map">Map</string>
     <string name="lending_map_list">List</string>
+    <string name="lending_list_open_map_description">Open the lending map with the current filters</string>
     <string name="lending_map_open_list_description">Open the lending list with the current filters</string>
     <string name="lending_map_status_description">Lending map status</string>
     <string name="lending_map_setup_required">Map setup is required to show locations.</string>

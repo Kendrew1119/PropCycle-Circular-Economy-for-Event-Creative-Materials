@@ -33,7 +33,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:fontFamily="sans-serif-medium"
+                android:fontFamily="@font/fredoka_semibold"
                 android:textColor="@color/pc_brand_deep_blue"
                 android:textSize="28sp"
                 android:textStyle="bold" />
@@ -85,7 +85,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-medium"
+                    android:fontFamily="@font/fredoka_semibold"
                     android:text="@string/ai_result_details_material_label"
                     android:textColor="@color/pc_brand_primary_blue"
                     android:textSize="16sp"
@@ -143,7 +143,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-medium"
+                    android:fontFamily="@font/fredoka_semibold"
                     android:text="@string/ai_result_details_category_label"
                     android:textColor="@color/pc_brand_primary_blue"
                     android:textSize="16sp"
@@ -200,7 +200,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-medium"
+                    android:fontFamily="@font/fredoka_semibold"
                     android:text="@string/ai_result_details_recyclable_label"
                     android:textColor="@color/pc_brand_primary_blue"
                     android:textSize="16sp"
@@ -256,7 +256,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-medium"
+                    android:fontFamily="@font/fredoka_semibold"
                     android:text="@string/ai_result_details_model_estimate_label"
                     android:textColor="@color/pc_brand_primary_blue"
                     android:textSize="16sp"
@@ -313,7 +313,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-medium"
+                    android:fontFamily="@font/fredoka_semibold"
                     android:text="@string/ai_result_details_guidance_label"
                     android:textColor="@color/pc_brand_primary_blue"
                     android:textSize="17sp"
@@ -371,7 +371,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-medium"
+                    android:fontFamily="@font/fredoka_semibold"
                     android:text="@string/ai_result_details_environment_label"
                     android:textColor="@color/pc_brand_primary_blue"
                     android:textSize="16sp"
@@ -423,7 +423,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-medium"
+                    android:fontFamily="@font/fredoka_semibold"
                     android:text="@string/ai_result_details_safety_label"
                     android:textColor="@color/pc_brand_primary_blue"
                     android:textSize="16sp"
@@ -453,7 +453,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="sans-serif-medium"
+                android:fontFamily="@font/fredoka_semibold"
                 android:text="@string/ai_result_details_disclaimer_label"
                 android:textColor="@color/pc_brand_deep_blue"
                 android:textSize="15sp"

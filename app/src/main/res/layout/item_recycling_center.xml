@@ -85,7 +85,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="9dp"
                     android:maxLines="1"
-                    android:textColor="@color/pc_brand_accent_yellow"
+                    android:textColor="@color/pc_rating_gold"
                     android:textSize="13sp" />
             </LinearLayout>
         </LinearLayout>
