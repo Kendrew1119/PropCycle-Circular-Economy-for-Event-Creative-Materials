@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.propcycle.app.R;
 import com.propcycle.app.core.firebase.FirebaseEnvironment;
-import com.propcycle.app.data.chat.ChatThread;
 import com.propcycle.app.databinding.FragmentConversationBinding;
 import com.propcycle.app.ui.common.ScreenNavigation;
 
@@ -25,7 +24,6 @@ public final class ConversationFragment extends Fragment {
     private ConversationViewModel viewModel;
     private ChatMessageAdapter adapter;
     private String threadId = "";
-    private String otherUserId = "";
 
     @Nullable
     @Override
@@ -60,7 +58,6 @@ public final class ConversationFragment extends Fragment {
 
         binding.primaryAction.setOnClickListener(
                 ignored -> viewModel.sendMessage(binding.messageComposer.getText().toString()));
-        binding.threadAvatar.setOnClickListener(ignored -> openOtherUserProfile());
         binding.messageComposer.setOnEditorActionListener((field, actionId, event) -> {
             if (actionId != EditorInfo.IME_ACTION_SEND) {
                 return false;
@@ -99,21 +96,14 @@ public final class ConversationFragment extends Fragment {
             return;
         }
         if (state.getThread() != null) {
-            ChatThread thread = state.getThread();
             String title = state.getThread().getContextTitle();
             binding.contextTitle.setText(title);
             String trimmed = title.trim();
             binding.threadAvatar.setText(
                     trimmed.isEmpty() ? "P" : trimmed.substring(0, 1).toUpperCase());
-            otherUserId = viewModel.currentUserId().equals(thread.getOwnerUid())
-                    ? thread.getContactUid() : thread.getOwnerUid();
-            binding.threadAvatar.setEnabled(!otherUserId.isEmpty());
-            binding.threadAvatar.setContentDescription("Open the other member's profile");
         } else {
-            otherUserId = "";
             binding.contextTitle.setText("Conversation");
             binding.threadAvatar.setText("P");
-            binding.threadAvatar.setEnabled(false);
         }
         binding.contextCaption.setText(
                 state.getThread() != null
@@ -148,14 +138,5 @@ public final class ConversationFragment extends Fragment {
         binding.messageComposer.setEnabled(canSend);
         binding.primaryAction.setEnabled(canSend);
         binding.primaryAction.setAlpha(canSend ? 1f : 0.45f);
-    }
-
-    private void openOtherUserProfile() {
-        if (otherUserId.isEmpty()) {
-            return;
-        }
-        Bundle arguments = new Bundle();
-        arguments.putString("userId", otherUserId);
-        ScreenNavigation.navigateAuthenticated(this, R.id.profileFragment, arguments);
     }
 }

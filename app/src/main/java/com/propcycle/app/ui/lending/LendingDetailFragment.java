@@ -39,7 +39,6 @@ public final class LendingDetailFragment extends Fragment {
     private MarketplaceImageLoader imageLoader;
     private MarketplaceImageLoader.LoadHandle imageHandle;
     private String itemId = "";
-    private String ownerUserId = "";
     private String displayedImageUrl;
 
     @Nullable
@@ -77,8 +76,6 @@ public final class LendingDetailFragment extends Fragment {
             ScreenNavigation.navigateAuthenticated(this, R.id.lendResourceFragment, edit);
         });
         binding.toggleLendingStatusAction.setOnClickListener(ignored -> confirmStatusChange());
-        binding.lendingOwnerCard.setOnClickListener(ignored -> openOwnerProfile());
-        binding.lendingOwnerAvatar.setOnClickListener(ignored -> openOwnerProfile());
     }
 
     @Override
@@ -178,7 +175,6 @@ public final class LendingDetailFragment extends Fragment {
                 state.isLoading() || state.isBusy() ? View.VISIBLE : View.GONE);
         binding.lendingDetailStatus.setText(state.getMessage() == null ? "" : state.getMessage());
         if (item == null) {
-            ownerUserId = "";
             binding.requestLendingAction.setEnabled(false);
             binding.chatAction.setEnabled(false);
             return;
@@ -201,8 +197,6 @@ public final class LendingDetailFragment extends Fragment {
                                 deposit / 100d)
                         : "No deposit stated"));
         binding.lendingDetailTrust.setText(ratingText(state.getRatings()));
-        ownerUserId = item.getOwnerId();
-        binding.lendingOwnerAvatar.setContentDescription("Open lending owner's profile");
         boolean owner = item.getOwnerId().equals(viewModel.currentUserId());
         boolean available = "available".equals(item.getStatus());
         binding.lendingOwnerActions.setVisibility(owner ? View.VISIBLE : View.GONE);
@@ -214,15 +208,6 @@ public final class LendingDetailFragment extends Fragment {
         binding.toggleLendingStatusAction.setEnabled(!state.isBusy());
         binding.toggleLendingStatusAction.setText(available ? "Withdraw" : "Relist");
         updateImage(item.getImageUrl(), item.getDemoImageKey());
-    }
-
-    private void openOwnerProfile() {
-        if (ownerUserId.isEmpty()) {
-            return;
-        }
-        Bundle arguments = new Bundle();
-        arguments.putString("userId", ownerUserId);
-        ScreenNavigation.navigateAuthenticated(this, R.id.profileFragment, arguments);
     }
 
     private void updateImage(@Nullable String url, @Nullable String demoImageKey) {

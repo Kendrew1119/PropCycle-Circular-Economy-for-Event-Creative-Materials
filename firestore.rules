@@ -125,33 +125,6 @@ service cloud.firestore {
       return get(/databases/$(database)/documents/marketplaceListings/$(listingId)).data;
     }
 
-    function validMarketplaceSellerRating(recipientUid, raterUid) {
-      let data = request.resource.data;
-      let source = listing(data.contextListingId);
-      return data.keys().hasAll([
-            'raterUid', 'recipientUid', 'contextListingId', 'score',
-            'createdAt', 'updatedAt'
-          ])
-          && data.keys().hasOnly([
-            'raterUid', 'recipientUid', 'contextListingId', 'score',
-            'createdAt', 'updatedAt'
-          ])
-          && safeSegment(recipientUid)
-          && safeSegment(raterUid)
-          && safeSegment(data.contextListingId)
-          && data.raterUid == raterUid
-          && data.raterUid == currentUid()
-          && data.recipientUid == recipientUid
-          && data.raterUid != data.recipientUid
-          && data.score is int
-          && data.score >= 1
-          && data.score <= 5
-          && source.ownerId == recipientUid
-          && source.status == 'available'
-          && data.createdAt is timestamp
-          && data.updatedAt is timestamp;
-    }
-
     function lendingItem(itemId) {
       return get(/databases/$(database)/documents/lendingItems/$(itemId)).data;
     }
@@ -421,27 +394,6 @@ service cloud.firestore {
           && request.resource.data.diff(resource.data).affectedKeys()
               .hasOnly(['displayName', 'updatedAt']);
       allow delete: if false;
-
-      match /marketplaceRatings/{raterUid} {
-        allow get: if signedIn();
-        allow list: if signedIn()
-            && request.query.limit != null
-            && request.query.limit <= 100;
-        allow create: if signedIn()
-            && validMarketplaceSellerRating(uid, raterUid)
-            && request.resource.data.createdAt == request.time
-            && request.resource.data.updatedAt == request.time;
-        allow update: if signedIn()
-            && validMarketplaceSellerRating(uid, raterUid)
-            && request.resource.data.raterUid == resource.data.raterUid
-            && request.resource.data.recipientUid == resource.data.recipientUid
-            && request.resource.data.contextListingId == resource.data.contextListingId
-            && request.resource.data.createdAt == resource.data.createdAt
-            && request.resource.data.updatedAt == request.time
-            && request.resource.data.diff(resource.data).affectedKeys()
-                .hasOnly(['score', 'updatedAt']);
-        allow delete: if false;
-      }
     }
 
     match /marketplaceListings/{listingId} {

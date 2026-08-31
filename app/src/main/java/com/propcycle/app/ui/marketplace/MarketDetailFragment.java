@@ -4,9 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.RatingBar;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -38,7 +35,6 @@ public final class MarketDetailFragment extends Fragment {
     private MarketplaceListing currentListing;
     private boolean currentOwner;
     private boolean ownerActionBusy;
-    private MarketDetailViewModel.RatingState currentRatingState;
     private String displayedImageUrl;
     private String displayedDemoImageKey;
 
@@ -62,7 +58,6 @@ public final class MarketDetailFragment extends Fragment {
         viewModel.getState().observe(getViewLifecycleOwner(), this::render);
         viewModel.getOwnerActionState().observe(
                 getViewLifecycleOwner(), this::renderOwnerAction);
-        viewModel.getRatingState().observe(getViewLifecycleOwner(), this::renderRating);
         viewModel.getSellerName().observe(getViewLifecycleOwner(), name -> {
             if (binding == null || name == null || name.trim().isEmpty()) {
                 return;
@@ -92,63 +87,11 @@ public final class MarketDetailFragment extends Fragment {
         });
 
         binding.chatAction.setOnClickListener(ignored -> viewModel.requestChat());
-        binding.sellerCard.setOnClickListener(ignored -> openSellerProfile());
-        binding.sellerAvatar.setOnClickListener(ignored -> openSellerProfile());
-        binding.rateSellerAction.setOnClickListener(ignored -> showRatingDialog());
         binding.editListingAction.setOnClickListener(ignored -> openEditor());
         binding.listingStatusAction.setOnClickListener(ignored -> confirmStatusChange());
 
         Bundle arguments = getArguments();
         viewModel.load(arguments == null ? "" : arguments.getString(ARG_LISTING_ID, ""));
-    }
-
-    private void openSellerProfile() {
-        if (currentListing == null || currentListing.getOwnerId() == null) {
-            return;
-        }
-        Bundle arguments = new Bundle();
-        arguments.putString("userId", currentListing.getOwnerId());
-        ScreenNavigation.navigateAuthenticated(this, R.id.profileFragment, arguments);
-    }
-
-    private void showRatingDialog() {
-        if (currentListing == null || currentOwner || currentRatingState == null
-                || currentRatingState.isSaving()) {
-            return;
-        }
-        LinearLayout content = new LinearLayout(requireContext());
-        content.setOrientation(LinearLayout.VERTICAL);
-        int padding = Math.round(24f * getResources().getDisplayMetrics().density);
-        content.setPadding(padding, padding / 2, padding, 0);
-
-        TextView guidance = new TextView(requireContext());
-        guidance.setText("Rate your marketplace experience with this seller.");
-        guidance.setTextColor(ContextCompat.getColor(
-                requireContext(), R.color.pc_brand_text_secondary));
-        guidance.setTextSize(14f);
-        content.addView(guidance);
-
-        RatingBar rating = new RatingBar(
-                requireContext(), null, android.R.attr.ratingBarStyle);
-        rating.setNumStars(5);
-        rating.setStepSize(1f);
-        rating.setRating(currentRatingState.getMyScore() > 0
-                ? currentRatingState.getMyScore() : 5f);
-        LinearLayout.LayoutParams ratingParams = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
-        ratingParams.topMargin = padding / 2;
-        rating.setLayoutParams(ratingParams);
-        content.addView(rating);
-
-        new MaterialAlertDialogBuilder(requireContext())
-                .setTitle(currentRatingState.getMyScore() > 0
-                        ? "Update seller rating" : "Rate seller")
-                .setView(content)
-                .setNegativeButton("Cancel", null)
-                .setPositiveButton("Save", (dialog, which) ->
-                        viewModel.saveSellerRating(Math.max(1, Math.round(rating.getRating()))))
-                .show();
     }
 
     private void openEditor() {
@@ -225,9 +168,6 @@ public final class MarketDetailFragment extends Fragment {
         binding.sellerSummary.setText(state.isOwner()
                 ? "You own this listing"
                 : "Marketplace seller");
-        boolean canRate = !state.isOwner()
-                && MarketplaceListingStatusPolicy.AVAILABLE.equals(listing.getStatus());
-        binding.rateSellerAction.setVisibility(canRate ? View.VISIBLE : View.GONE);
         binding.marketDetailCacheStatus.setVisibility(
                 state.isFromCache() ? View.VISIBLE : View.GONE);
 
@@ -239,28 +179,6 @@ public final class MarketDetailFragment extends Fragment {
         binding.chatAction.setEnabled(contactAllowed);
         binding.ownerActionsCard.setVisibility(ownerControls ? View.VISIBLE : View.GONE);
         updateOwnerControls();
-    }
-
-    private void renderRating(@NonNull MarketDetailViewModel.RatingState state) {
-        currentRatingState = state;
-        if (binding == null) {
-            return;
-        }
-        binding.sellerRatingBar.setRating((float) state.getAverage());
-        String summary = state.summaryText();
-        if (state.isFromCache() && state.getCount() > 0) {
-            summary += " • offline copy";
-        }
-        binding.sellerRatingSummary.setText(summary);
-        binding.sellerRatingRow.setContentDescription(
-                "Marketplace seller rating: " + state.summaryText());
-        binding.rateSellerAction.setText(
-                state.getMyScore() > 0 ? "Update rating" : "Rate seller");
-        binding.rateSellerAction.setEnabled(!state.isSaving());
-        binding.rateSellerAction.setAlpha(state.isSaving() ? 0.55f : 1f);
-        boolean showMessage = !state.getMessage().isEmpty();
-        binding.sellerRatingStatus.setVisibility(showMessage ? View.VISIBLE : View.GONE);
-        binding.sellerRatingStatus.setText(state.getMessage());
     }
 
     private void renderOwnerAction(
