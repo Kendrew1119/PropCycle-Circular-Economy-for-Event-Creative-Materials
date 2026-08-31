@@ -52,8 +52,7 @@ final class ChatThreadAdapter extends RecyclerView.Adapter<ChatThreadAdapter.Thr
                 : "No messages yet - start the conversation");
         holder.avatar.setText(initial(thread.getContextTitle()));
         holder.time.setText(relativeTime(thread));
-        holder.itemView.setBackgroundResource(
-                position % 2 == 0 ? R.drawable.bg_card_gray : R.drawable.bg_card_light);
+        holder.itemView.setBackgroundResource(R.drawable.bg_messages_thread);
         holder.itemView.setContentDescription(
                 "Open conversation about " + thread.getContextTitle());
         holder.itemView.setOnClickListener(ignored -> listener.onThreadClick(thread));

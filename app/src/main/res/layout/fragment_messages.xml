@@ -61,6 +61,15 @@
 
     </FrameLayout>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="6dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/bg_messages_header_divider"
+        android:contentDescription="@null"
+        android:importantForAccessibility="no" />
+
     <TextView
         android:id="@+id/status_text"
         android:layout_width="match_parent"

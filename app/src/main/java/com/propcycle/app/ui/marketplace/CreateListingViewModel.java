@@ -232,7 +232,9 @@ public final class CreateListingViewModel extends AndroidViewModel {
             return;
         }
         State current = state.getValue();
-        if (current == null || !current.isBusy()) {
+        if (current == null
+                || current.getKind() == State.Kind.LOADING_FORM
+                || !current.isBusy()) {
             state.setValue(State.ready(
                     Mode.EDIT,
                     readyMessage(fromCache),

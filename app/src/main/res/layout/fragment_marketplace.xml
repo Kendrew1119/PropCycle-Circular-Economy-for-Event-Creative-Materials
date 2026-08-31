@@ -12,13 +12,13 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="100dp">
+        android:layout_height="104dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginEnd="112dp"
+            android:layout_marginEnd="120dp"
             android:orientation="vertical">
 
             <TextView
@@ -39,8 +39,8 @@
         </LinearLayout>
 
         <ImageView
-            android:layout_width="112dp"
-            android:layout_height="92dp"
+            android:layout_width="132dp"
+            android:layout_height="102dp"
             android:layout_gravity="end|center_vertical"
             android:contentDescription="@null"
             android:importantForAccessibility="no"
@@ -81,7 +81,7 @@
 
     <HorizontalScrollView
         android:layout_width="match_parent"
-        android:layout_height="54dp"
+        android:layout_height="46dp"
         android:layout_marginTop="10dp"
         android:clipToPadding="false"
         android:scrollbars="none">
@@ -95,80 +95,80 @@
             <TextView
                 android:id="@+id/filter_all_action"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/touch_target"
-                android:background="@drawable/bg_pill_dark"
+                android:layout_height="40dp"
+                android:background="@drawable/bg_marketplace_filter_selected"
                 android:clickable="true"
                 android:focusable="true"
                 android:fontFamily="@font/fredoka_semibold"
                 android:gravity="center"
-                android:minWidth="66dp"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
+                android:minWidth="54dp"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
                 android:text="All"
                 android:textColor="@color/pc_white"
-                android:textSize="16sp" />
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/filter_decoration_action"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/touch_target"
-                android:layout_marginStart="8dp"
-                android:background="@drawable/bg_pill"
+                android:layout_height="40dp"
+                android:layout_marginStart="6dp"
+                android:background="@drawable/bg_marketplace_filter"
                 android:clickable="true"
                 android:focusable="true"
                 android:fontFamily="@font/fredoka_semibold"
                 android:gravity="center"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
                 android:text="Decoration"
-                android:textSize="16sp" />
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/filter_fabric_action"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/touch_target"
-                android:layout_marginStart="8dp"
-                android:background="@drawable/bg_pill"
+                android:layout_height="40dp"
+                android:layout_marginStart="6dp"
+                android:background="@drawable/bg_marketplace_filter"
                 android:clickable="true"
                 android:focusable="true"
                 android:fontFamily="@font/fredoka_semibold"
                 android:gravity="center"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
                 android:text="Fabric"
-                android:textSize="16sp" />
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/filter_wood_action"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/touch_target"
-                android:layout_marginStart="8dp"
-                android:background="@drawable/bg_pill"
+                android:layout_height="40dp"
+                android:layout_marginStart="6dp"
+                android:background="@drawable/bg_marketplace_filter"
                 android:clickable="true"
                 android:focusable="true"
                 android:fontFamily="@font/fredoka_semibold"
                 android:gravity="center"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
                 android:text="Wood"
-                android:textSize="16sp" />
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/filter_more_action"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/touch_target"
-                android:layout_marginStart="8dp"
-                android:background="@drawable/bg_pill"
+                android:layout_height="40dp"
+                android:layout_marginStart="6dp"
+                android:background="@drawable/bg_marketplace_filter"
                 android:clickable="true"
                 android:contentDescription="Choose another marketplace category"
                 android:focusable="true"
                 android:fontFamily="@font/fredoka_semibold"
                 android:gravity="center"
-                android:minWidth="74dp"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
+                android:minWidth="60dp"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
                 android:text="More"
-                android:textSize="16sp" />
+                android:textSize="14sp" />
         </LinearLayout>
     </HorizontalScrollView>
 

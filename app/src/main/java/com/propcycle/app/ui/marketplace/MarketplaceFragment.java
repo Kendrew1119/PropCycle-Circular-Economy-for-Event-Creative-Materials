@@ -132,10 +132,12 @@ public final class MarketplaceFragment extends Fragment {
     }
 
     private void updateFilter(@NonNull TextView view, boolean selected) {
-        view.setBackgroundResource(selected ? R.drawable.bg_pill_dark : R.drawable.bg_pill);
+        view.setBackgroundResource(selected
+                ? R.drawable.bg_marketplace_filter_selected
+                : R.drawable.bg_marketplace_filter);
         view.setTextColor(ContextCompat.getColor(
                 requireContext(),
-                selected ? R.color.pc_white : R.color.pc_ink));
+                selected ? R.color.pc_white : R.color.pc_brand_deep_blue));
         view.setSelected(selected);
     }
 

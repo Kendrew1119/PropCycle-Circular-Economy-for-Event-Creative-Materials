@@ -207,15 +207,21 @@
                 android:textSize="30sp" />
         </LinearLayout>
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/logout_action"
             android:layout_width="match_parent"
             android:layout_height="52dp"
             android:layout_marginTop="30dp"
-            android:background="@drawable/bg_profile_logout"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
             android:text="@string/profile_logout"
+            android:textAllCaps="false"
             android:textColor="@color/pc_brand_accent_red"
             android:textSize="16sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            app:backgroundTint="@color/pc_brand_surface"
+            app:cornerRadius="24dp"
+            app:strokeColor="@color/pc_brand_accent_red"
+            app:strokeWidth="2dp" />
     </LinearLayout>
 </ScrollView>
