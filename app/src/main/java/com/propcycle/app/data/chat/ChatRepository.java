@@ -414,7 +414,11 @@ public final class ChatRepository {
     }
 
     private static long timestampMillis(@Nullable Timestamp timestamp) {
-        return timestamp == null ? 0L : timestamp.toDate().getTime();
+        // A Firestore Timestamp is a UTC instant. Epoch milliseconds stay timezone-neutral;
+        // the UI applies the phone's local timezone exactly once when formatting it.
+        return timestamp == null
+                ? 0L
+                : timestamp.getSeconds() * 1000L + timestamp.getNanoseconds() / 1_000_000L;
     }
 
     @NonNull

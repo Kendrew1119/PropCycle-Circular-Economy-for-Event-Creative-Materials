@@ -25,7 +25,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/fredoka_semibold"
-                android:text="Lending updates"
+                android:text="Notifications"
                 android:textColor="@color/pc_brand_deep_blue"
                 android:textSize="30sp" />
 
@@ -33,7 +33,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:text="Requests and returns, in one place."
+                android:text="Important Marketplace and lending updates."
                 android:textColor="@color/pc_brand_text_secondary"
                 android:textSize="15sp" />
         </LinearLayout>
@@ -51,15 +51,73 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Manage lending requests and returns here. Phone push notifications are not enabled."
+        android:text="Chat messages stay in Messages to keep this screen focused. Phone push notifications are not enabled."
         android:textColor="@color/pc_brand_text_secondary"
+        android:textSize="13sp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:fontFamily="@font/fredoka_semibold"
+        android:text="MARKETPLACE STATUS"
+        android:textColor="@color/pc_brand_deep_blue"
+        android:textSize="13sp" />
+
+    <TextView
+        android:id="@+id/marketplace_update_status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/bg_notifications_status"
+        android:fontFamily="@font/fredoka_semibold"
+        android:padding="12dp"
+        android:textColor="@color/pc_brand_deep_blue"
+        android:textSize="14sp"
+        tools:text="1 recent sold listing update" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:layout_marginTop="8dp">
+
+        <TextView
+            android:id="@+id/marketplace_update_empty"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_notifications_empty"
+            android:gravity="center"
+            android:padding="18dp"
+            android:text="No sold listing updates from your conversations."
+            android:textColor="@color/pc_brand_text_secondary"
+            android:textSize="14sp"
+            android:visibility="gone" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/marketplace_update_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:orientation="horizontal"
+            android:scrollbars="horizontal"
+            tools:itemCount="2"
+            tools:listitem="@layout/item_marketplace_status_notice" />
+    </FrameLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/fredoka_semibold"
+        android:text="LENDING STATUS"
+        android:textColor="@color/pc_brand_deep_blue"
         android:textSize="13sp" />
 
     <TextView
         android:id="@+id/lending_request_status"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="8dp"
         android:background="@drawable/bg_notifications_status"
         android:fontFamily="@font/fredoka_semibold"
         android:padding="12dp"

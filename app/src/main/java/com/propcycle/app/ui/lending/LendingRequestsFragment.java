@@ -17,8 +17,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.propcycle.app.R;
 import com.propcycle.app.data.lending.LendingRequest;
+import com.propcycle.app.data.marketplace.MarketplaceStatusNotice;
 import com.propcycle.app.databinding.FragmentNotificationsBinding;
 import com.propcycle.app.ui.common.ScreenNavigation;
+import com.propcycle.app.ui.marketplace.MarketplaceStatusNoticeAdapter;
 
 /** Existing Notifications surface used as a real in-app lending request inbox. */
 public final class LendingRequestsFragment extends Fragment {
@@ -26,6 +28,7 @@ public final class LendingRequestsFragment extends Fragment {
     private FragmentNotificationsBinding binding;
     private LendingRequestsViewModel viewModel;
     private LendingRequestAdapter adapter;
+    private MarketplaceStatusNoticeAdapter marketplaceAdapter;
 
     @Nullable
     @Override
@@ -48,9 +51,15 @@ public final class LendingRequestsFragment extends Fragment {
             return;
         }
         adapter = new LendingRequestAdapter(uid, this::confirmAction);
+        marketplaceAdapter = new MarketplaceStatusNoticeAdapter(this::openMarketplaceNotice);
+        binding.marketplaceUpdateList.setLayoutManager(new LinearLayoutManager(
+                requireContext(), LinearLayoutManager.HORIZONTAL, false));
+        binding.marketplaceUpdateList.setAdapter(marketplaceAdapter);
         binding.lendingRequestList.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.lendingRequestList.setAdapter(adapter);
         viewModel.getState().observe(getViewLifecycleOwner(), this::render);
+        viewModel.getMarketplaceNoticeState().observe(
+                getViewLifecycleOwner(), this::renderMarketplaceNotices);
     }
 
     @Override
@@ -73,6 +82,7 @@ public final class LendingRequestsFragment extends Fragment {
     public void onDestroyView() {
         if (binding != null) {
             binding.lendingRequestList.setAdapter(null);
+            binding.marketplaceUpdateList.setAdapter(null);
         }
         binding = null;
         super.onDestroyView();
@@ -143,5 +153,32 @@ public final class LendingRequestsFragment extends Fragment {
         binding.lendingRequestStatus.setText(state.getMessage() == null
                 ? state.getRequests().size() + " lending update(s)"
                 : state.getMessage());
+    }
+
+    private void renderMarketplaceNotices(
+            @NonNull LendingRequestsViewModel.MarketplaceNoticeState state) {
+        if (binding == null || marketplaceAdapter == null) {
+            return;
+        }
+        marketplaceAdapter.submitList(state.getNotices());
+        boolean hasNotices = !state.getNotices().isEmpty();
+        binding.marketplaceUpdateList.setVisibility(hasNotices ? View.VISIBLE : View.GONE);
+        binding.marketplaceUpdateEmpty.setVisibility(
+                !state.isLoading() && !hasNotices ? View.VISIBLE : View.GONE);
+        String message = state.getMessage();
+        if (state.isLoading()) {
+            message = "Loading Marketplace status updates...";
+        } else if (message == null) {
+            message = hasNotices
+                    ? state.getNotices().size() + " recent sold listing update(s)"
+                    : "No sold listing updates from your conversations.";
+        }
+        binding.marketplaceUpdateStatus.setText(message);
+    }
+
+    private void openMarketplaceNotice(@NonNull MarketplaceStatusNotice notice) {
+        Bundle arguments = new Bundle();
+        arguments.putString("listingId", notice.getListingId());
+        ScreenNavigation.navigateAuthenticated(this, R.id.marketDetailFragment, arguments);
     }
 }

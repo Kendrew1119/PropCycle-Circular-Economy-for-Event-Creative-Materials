@@ -36,7 +36,7 @@ The technology change does not reduce product scope.
 The three core modules remain:
 
 1. **AI Smart Scanner** - camera/gallery input, structured material result, Malaysian recycling/upcycling guidance, editable review, local cache/history, and handoff to Recycle, Marketplace, or Lend.
-2. **Material Marketplace** - browse, search/filter, listing details, create/edit, sale/donation/exchange intent, pickup/meeting arrangements, status handling, seller chat, public seller profiles, and one editable 1–5-star seller rating per reviewer.
+2. **Material Marketplace** - browse, search/filter, listing details, create/edit, sale/donation/exchange intent, pickup/meeting arrangements, seller-only final “Mark as sold,” seller chat, public seller profiles, and one editable 1–5-star seller rating per reviewer.
 3. **P2P Equipment Lending** - map and list discovery, availability, date request, owner approval, pickup/return, rating/trust, and direct owner chat.
 
 Supporting capabilities also remain: Welcome, Login, Register, Home Dashboard, Recycling Centres, Recent Activities, Notifications, Messages, Conversation, Profile, Settings, and the prose-required scan-history/booking/return/rating flows.
@@ -95,6 +95,9 @@ The original screen pass used deterministic mock content and local navigation so
 - Register, sign in, cached-session restore, and logout use Firebase Authentication.
 - Registration creates a minimal Firestore public profile containing a display name and server timestamps; email remains in Firebase Authentication.
 - Marketplace create, browse/search, and detail use `marketplaceListings` snapshot data. This Phase 2A baseline was text-only; Phase 2C.2 now adds the optional image field and secure Storage object.
+- An owner can withdraw/relist temporarily or confirm a final `available → sold` transition. Sold listings leave public browse immediately, cannot be edited or relisted, reject new conversations, and retain every existing chat.
+- Notifications deliberately excludes individual chat messages. It shows lending lifecycle work plus up to three recent sold-listing updates derived from the user's existing Marketplace conversations; phone push delivery remains deferred.
+- Chat documents use Firestore server timestamps as UTC instants. Conversation and Messages UI convert epoch milliseconds exactly once using the phone's current timezone, locale, and 12/24-hour setting, including local midnight and “Yesterday” handling.
 - Tapping a seller/lender/conversation avatar opens the same Profile destination in public mode. Public profiles show only the display name, member date, Marketplace rating summary, and available listing; private email and device-local activity remain owner-only.
 - Marketplace seller ratings are stored below the rated user's public profile. One signed-in reviewer can create or update one 1–5-star rating, and Firestore Rules validate the reviewer, seller, score, and seller-owned listing context.
 - Starting a seller chat creates one deterministic listing-linked `chatThreads` document. Messages are immutable, participant-only Firestore documents and the thread preview is updated in the same atomic batch.

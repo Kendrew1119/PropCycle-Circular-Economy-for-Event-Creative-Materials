@@ -52,7 +52,7 @@ public final class SettingsFragment extends Fragment {
         binding.pushNotificationSetting.setOnClickListener(ignored ->
                 new MaterialAlertDialogBuilder(requireContext())
                         .setTitle("In-app updates only")
-                        .setMessage("Borrowing requests and updates are available inside Notifications. Phone push delivery is not configured yet, so this switch stays off.")
+                        .setMessage("Important Marketplace sold and lending status updates are available inside Notifications. Chat stays in Messages. Phone push delivery is not configured yet, so this switch stays off.")
                         .setPositiveButton("Open Notifications", (dialog, which) ->
                                 ScreenNavigation.navigateAuthenticated(
                                         this, R.id.notificationsFragment, null))

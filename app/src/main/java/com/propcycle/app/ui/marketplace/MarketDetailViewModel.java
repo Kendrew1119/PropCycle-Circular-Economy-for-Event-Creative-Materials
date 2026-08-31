@@ -274,10 +274,15 @@ public final class MarketDetailViewModel extends AndroidViewModel {
         }
 
         MarketplaceListing listing = current.getListing();
-        boolean allowed = MarketplaceListingStatusPolicy.AVAILABLE.equals(targetStatus)
-                ? MarketplaceListingStatusPolicy.canRelist(true, listing.getStatus())
-                : MarketplaceListingStatusPolicy.WITHDRAWN.equals(targetStatus)
-                        && MarketplaceListingStatusPolicy.canWithdraw(true, listing.getStatus());
+        boolean allowed = switch (targetStatus) {
+            case MarketplaceListingStatusPolicy.AVAILABLE ->
+                    MarketplaceListingStatusPolicy.canRelist(true, listing.getStatus());
+            case MarketplaceListingStatusPolicy.WITHDRAWN ->
+                    MarketplaceListingStatusPolicy.canWithdraw(true, listing.getStatus());
+            case MarketplaceListingStatusPolicy.SOLD ->
+                    MarketplaceListingStatusPolicy.canMarkSold(true, listing.getStatus());
+            default -> false;
+        };
         if (!allowed) {
             ownerActionState.setValue(OwnerActionState.error(
                     "The listing changed. Review its latest status and try again."));
@@ -289,10 +294,12 @@ public final class MarketDetailViewModel extends AndroidViewModel {
             return;
         }
 
-        ownerActionState.setValue(OwnerActionState.loading(
-                MarketplaceListingStatusPolicy.WITHDRAWN.equals(targetStatus)
-                        ? "Withdrawing listing..."
-                        : "Relisting item..."));
+        String workingMessage = switch (targetStatus) {
+            case MarketplaceListingStatusPolicy.WITHDRAWN -> "Withdrawing listing...";
+            case MarketplaceListingStatusPolicy.SOLD -> "Marking listing as sold...";
+            default -> "Relisting item...";
+        };
+        ownerActionState.setValue(OwnerActionState.loading(workingMessage));
         repository.setListingStatus(
                 listing.getId(),
                 targetStatus,
@@ -300,17 +307,23 @@ public final class MarketDetailViewModel extends AndroidViewModel {
                 new MarketplaceRepository.MutationCallback() {
                     @Override
                     public void onUpdated() {
+                        boolean sold = MarketplaceListingStatusPolicy.SOLD.equals(targetStatus);
+                        boolean withdrawn = MarketplaceListingStatusPolicy.WITHDRAWN.equals(
+                                targetStatus);
                         activityLog.record(
                                 ActivityLogRepository.TYPE_MARKETPLACE_STATUS,
-                                MarketplaceListingStatusPolicy.WITHDRAWN.equals(targetStatus)
-                                        ? "Marketplace listing withdrawn"
-                                        : "Marketplace listing relisted",
+                                sold
+                                        ? "Marketplace listing sold"
+                                        : withdrawn
+                                                ? "Marketplace listing withdrawn"
+                                                : "Marketplace listing relisted",
                                 listing.getTitle() == null
                                         ? "Marketplace item" : listing.getTitle(),
                                 ActivityLogRepository.DESTINATION_MARKETPLACE,
                                 listing.getId());
-                        ownerActionState.setValue(OwnerActionState.success(
-                                MarketplaceListingStatusPolicy.WITHDRAWN.equals(targetStatus)
+                        ownerActionState.setValue(OwnerActionState.success(sold
+                                ? "Listing marked as sold. It is removed from public browse; existing chats are kept."
+                                : withdrawn
                                         ? "Listing withdrawn. It is hidden from public browse."
                                         : "Listing relisted. People can find it again."));
                     }

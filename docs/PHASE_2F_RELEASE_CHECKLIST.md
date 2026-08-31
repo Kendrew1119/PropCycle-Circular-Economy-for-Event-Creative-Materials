@@ -53,7 +53,7 @@ Only the Firebase project owner should do this section.
    `propcycle-e5f14` and the Android package is `com.propcycle.app`.
 3. Compare any rule edits made in Firebase Console with `firestore.rules` and
    `storage.rules`. A CLI deployment replaces the console rules.
-4. Run the local preflight again. Confirm all 80 Java tests and all 25 Rules
+4. Run the local preflight again. Confirm all 84 Java tests and all 26 Rules
    tests pass before continuing.
 5. Sign in to Firebase CLI with the authorised project-owner account. Never use
    a service-account JSON file on a shared student computer.
@@ -117,10 +117,20 @@ devices. Record the Android version and device model.
 - Borrower cannot edit, withdraw, relist, or replace Owner's image.
 - Owner edits, withdraws, and relists the listing. Borrower sees each expected
   public-state change.
+- Owner confirms Mark as sold. Confirm the listing immediately leaves public
+  browse, cannot be edited/relisted, and cannot create a new conversation.
+  Confirm existing participants retain their chat history and see one sold
+  status card in Notifications, while an unrelated account cannot read it.
 - Owner creates/replaces one image. Borrower sees it while signed in; an
   unauthorised request is rejected.
 - Borrower starts a chat. Both users exchange text and no third account can read
   the thread.
+- Send messages around local midnight and confirm Conversation and Messages use
+  the phone's timezone and 12/24-hour preference. A thread with no messages must
+  not show a fake timestamp.
+- Confirm individual chat messages do not fill Notifications; they remain in
+  Messages. Notifications contains only Marketplace sold and lending lifecycle
+  status information.
 - Borrower taps the seller avatar in Marketplace Detail and the other-member
   avatar in Conversation. Confirm both open the correct public profile without
   exposing email, edit/logout controls, or device-local activity.

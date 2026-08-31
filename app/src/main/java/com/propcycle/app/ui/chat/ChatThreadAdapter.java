@@ -1,6 +1,5 @@
 package com.propcycle.app.ui.chat;
 
-import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,9 +10,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.propcycle.app.R;
 import com.propcycle.app.data.chat.ChatThread;
+import com.propcycle.app.ui.common.LocalTimestampFormatter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 /** Proposal-faithful rows backed by real thread snapshots. */
 final class ChatThreadAdapter extends RecyclerView.Adapter<ChatThreadAdapter.ThreadViewHolder> {
@@ -51,7 +53,7 @@ final class ChatThreadAdapter extends RecyclerView.Adapter<ChatThreadAdapter.Thr
                 ? thread.getLastMessageText()
                 : "No messages yet - start the conversation");
         holder.avatar.setText(initial(thread.getContextTitle()));
-        holder.time.setText(relativeTime(thread));
+        holder.time.setText(timeLabel(holder.itemView, thread));
         holder.itemView.setBackgroundResource(R.drawable.bg_messages_thread);
         holder.itemView.setContentDescription(
                 "Open conversation about " + thread.getContextTitle());
@@ -70,18 +72,20 @@ final class ChatThreadAdapter extends RecyclerView.Adapter<ChatThreadAdapter.Thr
     }
 
     @NonNull
-    private static CharSequence relativeTime(@NonNull ChatThread thread) {
-        long time = thread.getLastMessageAtMillis() > 0L
-                ? thread.getLastMessageAtMillis()
-                : thread.getUpdatedAtMillis();
+    private static CharSequence timeLabel(@NonNull View itemView, @NonNull ChatThread thread) {
+        if (!thread.hasMessages()) {
+            return "";
+        }
+        long time = thread.getLastMessageAtMillis();
         if (time <= 0L) {
             return thread.hasMessages() ? "Sending..." : "";
         }
-        return DateUtils.getRelativeTimeSpanString(
+        return LocalTimestampFormatter.compactLabel(
                 time,
                 System.currentTimeMillis(),
-                DateUtils.MINUTE_IN_MILLIS,
-                DateUtils.FORMAT_ABBREV_RELATIVE);
+                TimeZone.getDefault(),
+                Locale.getDefault(),
+                android.text.format.DateFormat.is24HourFormat(itemView.getContext()));
     }
 
     static final class ThreadViewHolder extends RecyclerView.ViewHolder {

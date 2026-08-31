@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="280dp"
+    android:layout_height="match_parent"
+    android:layout_marginEnd="12dp"
+    app:cardBackgroundColor="@color/pc_brand_surface"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="0dp"
+    app:strokeColor="@color/pc_brand_outline"
+    app:strokeWidth="1dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:foreground="?attr/selectableItemBackground"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:padding="15dp">
+
+        <TextView
+            android:id="@+id/marketplace_notice_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:fontFamily="@font/fredoka_semibold"
+            android:maxLines="1"
+            android:textColor="@color/pc_brand_text_primary"
+            android:textSize="17sp"
+            tools:text="Reusable Event Backdrop" />
+
+        <TextView
+            android:id="@+id/marketplace_notice_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textColor="@color/pc_brand_text_secondary"
+            android:textSize="13sp"
+            tools:text="Seller marked this listing as sold." />
+
+        <TextView
+            android:id="@+id/marketplace_notice_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="7dp"
+            android:background="@drawable/bg_notifications_state"
+            android:fontFamily="@font/fredoka_semibold"
+            android:paddingStart="9dp"
+            android:paddingTop="3dp"
+            android:paddingEnd="9dp"
+            android:paddingBottom="3dp"
+            android:textColor="@color/pc_brand_deep_blue"
+            android:textSize="12sp"
+            tools:text="Sold • 10:30 PM" />
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

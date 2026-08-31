@@ -479,6 +479,59 @@ test("listing owner can withdraw and relist while public visibility follows stat
   assert.equal(visibleSnapshot.size, 1);
 });
 
+test("sold is owner-only and terminal while existing chat participants keep access", async () => {
+  await seedBaseData({includeThread: true});
+  const ownerDatabase = signedIn(OWNER_UID);
+  const contactDatabase = signedIn(CONTACT_UID);
+  const outsiderDatabase = signedIn(OUTSIDER_UID);
+  const ownerListing = doc(ownerDatabase, "marketplaceListings", LISTING_ID);
+
+  await assertFails(updateDoc(
+    doc(contactDatabase, "marketplaceListings", LISTING_ID),
+    {status: "sold", updatedAt: serverTimestamp()},
+  ));
+  await assertSucceeds(updateDoc(ownerListing, {
+    status: "sold",
+    updatedAt: serverTimestamp(),
+  }));
+
+  const publicQuery = query(
+    collection(contactDatabase, "marketplaceListings"),
+    where("status", "==", "available"),
+    orderBy("createdAt", "desc"),
+    limit(50),
+  );
+  assert.equal((await assertSucceeds(getDocs(publicQuery))).size, 0);
+  await assertSucceeds(getDoc(doc(
+    contactDatabase,
+    "marketplaceListings",
+    LISTING_ID,
+  )));
+  await assertSucceeds(getDoc(doc(contactDatabase, "chatThreads", THREAD_ID)));
+  await assertFails(getDoc(doc(
+    outsiderDatabase,
+    "marketplaceListings",
+    LISTING_ID,
+  )));
+
+  const lateThreadId =
+    `marketplace_${LISTING_ID}_${OWNER_UID}_${OUTSIDER_UID}`;
+  await assertFails(setDoc(doc(outsiderDatabase, "chatThreads", lateThreadId), {
+    ...threadData(),
+    contactUid: OUTSIDER_UID,
+    participantIds: [OWNER_UID, OUTSIDER_UID],
+  }));
+  await assertFails(updateDoc(ownerListing, {
+    status: "available",
+    updatedAt: serverTimestamp(),
+  }));
+  await assertFails(updateDoc(ownerListing, {
+    title: "Edited after sale",
+    titleNormalized: "edited after sale",
+    updatedAt: serverTimestamp(),
+  }));
+});
+
 test("listing updates validate image ownership, unknown fields, and status", async () => {
   await seedBaseData();
   const ownerDatabase = signedIn(OWNER_UID);

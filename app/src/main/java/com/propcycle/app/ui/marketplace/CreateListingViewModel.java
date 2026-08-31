@@ -203,7 +203,9 @@ public final class CreateListingViewModel extends AndroidViewModel {
             state.setValue(State.error(
                     Mode.EDIT,
                     State.Kind.ERROR,
-                    "This listing has an unsupported status and cannot be edited.",
+                    MarketplaceListingStatusPolicy.SOLD.equals(listing.getStatus())
+                            ? "A sold listing is final and cannot be edited or relisted."
+                            : "This listing status cannot be edited.",
                     false,
                     fromCache));
             return;

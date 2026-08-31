@@ -116,7 +116,7 @@ service cloud.firestore {
               request.resource.data.ownerId,
               listingId)
           && validOptionalDemoImage(request.resource.data)
-          && request.resource.data.status in ['available', 'withdrawn']
+          && request.resource.data.status in ['available', 'withdrawn', 'sold']
           && request.resource.data.createdAt is timestamp
           && request.resource.data.updatedAt is timestamp;
     }
@@ -362,6 +362,38 @@ service cloud.firestore {
       return signedIn() && currentUid() in thread.participantIds;
     }
 
+    function marketplaceThreadId(listingId, ownerUid, contactUid) {
+      return 'marketplace_' + listingId + '_' + ownerUid + '_' + contactUid;
+    }
+
+    function hasMarketplaceConversation(listingId, ownerUid) {
+      return signedIn()
+          && currentUid() != ownerUid
+          && exists(/databases/$(database)/documents/chatThreads/$(marketplaceThreadId(
+              listingId, ownerUid, currentUid())));
+    }
+
+    function validMarketplaceListingUpdate() {
+      let changed = request.resource.data.diff(resource.data).affectedKeys();
+      let oldStatus = resource.data.status;
+      let nextStatus = request.resource.data.status;
+      return (
+            oldStatus in ['available', 'withdrawn']
+            && nextStatus == oldStatus
+            && changed.hasOnly([
+              'title', 'titleNormalized', 'description', 'category', 'condition',
+              'transactionIntent', 'fulfilmentMethod', 'priceMinor',
+              'exchangeTerms', 'imageUrl', 'demoImageKey', 'updatedAt'
+            ])
+          ) || (
+            changed.hasOnly(['status', 'updatedAt'])
+            && (
+              (oldStatus == 'available' && nextStatus in ['withdrawn', 'sold'])
+              || (oldStatus == 'withdrawn' && nextStatus == 'available')
+            )
+          );
+    }
+
     function validThreadMessageUpdate(threadId) {
       let data = request.resource.data;
       let message = getAfter(
@@ -447,7 +479,8 @@ service cloud.firestore {
     match /marketplaceListings/{listingId} {
       allow get: if signedIn()
           && (resource.data.status == 'available'
-              || resource.data.ownerId == currentUid());
+              || resource.data.ownerId == currentUid()
+              || hasMarketplaceConversation(listingId, resource.data.ownerId));
       allow list: if signedIn()
           && request.query.limit != null
           && request.query.limit <= 50
@@ -464,11 +497,7 @@ service cloud.firestore {
           && request.resource.data.ownerId == resource.data.ownerId
           && request.resource.data.createdAt == resource.data.createdAt
           && request.resource.data.updatedAt == request.time
-          && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
-            'title', 'titleNormalized', 'description', 'category', 'condition',
-            'transactionIntent', 'fulfilmentMethod', 'priceMinor',
-            'exchangeTerms', 'imageUrl', 'demoImageKey', 'status', 'updatedAt'
-          ])
+          && validMarketplaceListingUpdate()
           && validListing(listingId);
       allow delete: if false;
     }

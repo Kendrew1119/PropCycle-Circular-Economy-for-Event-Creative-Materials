@@ -26,15 +26,15 @@
 | AI Result | Review identification and next action | Shows uncertainty and safety guidance. Recycle/List/Lend availability follows the reviewed action policy. Result and temporary image can prefill the next form. |
 | Create Listing | Review, create, or edit a marketplace offer | Shared form. All categories plus Sale/Donation/Exchange are reachable. Sale price and exchange terms appear only when needed. Photo remains optional. |
 | Marketplace | Discover material listings | Real-time available listings, local search/category filter, all categories reachable, and a visible List an item action. |
-| Marketplace Detail | Decide whether to contact or manage | Loads the listing and seller profile name, shows transaction terms and real aggregate rating, opens the public seller profile or participant chat, accepts one editable 1–5-star rating per non-owner reviewer, and exposes edit/withdraw/relist only to the owner. |
+| Marketplace Detail | Decide whether to contact or manage | Loads the listing and seller profile name, shows transaction terms and real aggregate rating, opens the public seller profile or participant chat, accepts one editable 1–5-star rating per non-owner reviewer, and exposes edit/withdraw/relist plus a confirmed owner-only final Mark as sold action. Sold leaves browse while existing chats remain. |
 | Recycle Center | Find a recycling drop-off point | Google Maps plus Places Text Search, maximum ten results, manual-area fallback, approximate distance, marker/list sync, and external geo handoff. |
 | Lend Resource | Review, create, or edit an equipment offer | Shared form with optional photo and rounded approximate point; requires public area, max days, pickup method, and optional deposit. |
 | Lending List | Find an available item first | Real item search and category filter. Switching to Map preserves the same query/category. The create action offers AI-first or manual entry. |
 | Lending Map | See where matching items are approximately located | Uses only Firestore lending items. “Near me” requests foreground location and sorts matching items; it does not search for places. Switching back to List preserves state. |
 | Lending Detail | Review availability and request dates | Owner can edit/withdraw/relist. Non-owner chooses bounded dates, sends a request, and can open lending chat. Ratings shown are real. |
-| Notifications | Handle lending lifecycle updates | Functions as the in-app request centre for approve/reject/cancel/start/return/rate. It does not pretend OS push delivery exists. |
-| Messages | Find conversations | Real-time participant-only marketplace and lending threads. |
-| Conversation | Chat with the other participant | Participant-only real-time text, validation, loading/offline/error handling, and avatar navigation to the other member's public profile; no unsupported attachment/read-receipt claims. |
+| Notifications | Handle important lifecycle updates | Functions as the in-app lending request centre for approve/reject/cancel/start/return/rate and shows recent sold Marketplace listings only when the member already has that listing's conversation. Individual chat messages remain in Messages; OS push is not claimed. |
+| Messages | Find conversations | Real-time participant-only Marketplace and lending threads. Empty threads show no fake message timestamp; real message timestamps use the phone's local timezone. |
+| Conversation | Chat with the other participant | Participant-only real-time text, Firestore UTC server timestamps converted once to the phone's local timezone/clock format, validation, loading/offline/error handling, and avatar navigation to the other member's public profile; no unsupported attachment/read-receipt claims. |
 | Profile | Inspect an account | The same destination has a private self view and safe public-member view. Email, edit/logout, and device-local activity remain self-only; public view shows display name, member date, Marketplace rating summary, and first available listing. Reward points and achievement badges are intentionally absent. |
 | Settings | Manage real app/device behavior | Account opens Profile; location opens Android permission settings; local history can be cleared. Dark theme and phone push stay visibly unavailable instead of using fake switches. |
 
@@ -46,6 +46,7 @@
 - Lending discovery shows available items before location. Location improves sorting only.
 - Transaction intent, fulfilment, lending dates, deposits, ratings, ownership, and status are validated again before storage.
 - Chat is opened only from a valid available marketplace or lending item and only participants can read it.
+- Marketplace `sold` is an owner-only terminal state from `available`; it removes the listing from browse, blocks edit/relist/new chat, preserves existing participant chat, and exposes sold status only to the owner or an existing listing-chat contact.
 - Marketplace ratings are 1–5, cannot be self-authored, remain one document per reviewer/seller, and must reference an available listing owned by the rated seller.
 - Every authenticated top-level/supporting screen redirects to Login if the session is missing.
 - Temporary scan images remain in app-private cache, transfer only to an explicitly selected review form, and are deleted after consumption or abandonment.

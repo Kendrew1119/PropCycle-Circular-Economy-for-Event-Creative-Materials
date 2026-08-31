@@ -33,6 +33,7 @@ public final class FirestoreMarketplaceRepository implements MarketplaceReposito
     public static final String COLLECTION = "marketplaceListings";
     public static final String STATUS_AVAILABLE = MarketplaceListingStatusPolicy.AVAILABLE;
     public static final String STATUS_WITHDRAWN = MarketplaceListingStatusPolicy.WITHDRAWN;
+    public static final String STATUS_SOLD = MarketplaceListingStatusPolicy.SOLD;
     private static final int BROWSE_LIMIT = 50;
 
     private static final Subscription NO_OP_SUBSCRIPTION = () -> {
@@ -282,6 +283,8 @@ public final class FirestoreMarketplaceRepository implements MarketplaceReposito
                     boolean validTransition =
                             (STATUS_AVAILABLE.equals(currentStatus)
                                     && STATUS_WITHDRAWN.equals(targetStatus))
+                            || (STATUS_AVAILABLE.equals(currentStatus)
+                                    && STATUS_SOLD.equals(targetStatus))
                             || (STATUS_WITHDRAWN.equals(currentStatus)
                                     && STATUS_AVAILABLE.equals(targetStatus));
                     if (!validTransition) {

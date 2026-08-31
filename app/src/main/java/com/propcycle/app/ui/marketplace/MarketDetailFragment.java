@@ -97,6 +97,7 @@ public final class MarketDetailFragment extends Fragment {
         binding.rateSellerAction.setOnClickListener(ignored -> showRatingDialog());
         binding.editListingAction.setOnClickListener(ignored -> openEditor());
         binding.listingStatusAction.setOnClickListener(ignored -> confirmStatusChange());
+        binding.markSoldAction.setOnClickListener(ignored -> confirmMarkSold());
 
         Bundle arguments = getArguments();
         viewModel.load(arguments == null ? "" : arguments.getString(ARG_LISTING_ID, ""));
@@ -183,6 +184,21 @@ public final class MarketDetailFragment extends Fragment {
                 .setNegativeButton("Cancel", null)
                 .setPositiveButton(withdraw ? "Withdraw" : "Relist",
                         (dialog, which) -> viewModel.requestStatusChange(target))
+                .show();
+    }
+
+    private void confirmMarkSold() {
+        if (!currentOwner || currentListing == null || ownerActionBusy
+                || !MarketplaceListingStatusPolicy.canMarkSold(
+                        true, currentListing.getStatus())) {
+            return;
+        }
+        new MaterialAlertDialogBuilder(requireContext())
+                .setTitle("Mark this listing as sold?")
+                .setMessage("This is a final action. The item will disappear from Marketplace and no new buyers can start a chat. Existing conversations will remain available.")
+                .setNegativeButton("Cancel", null)
+                .setPositiveButton("Mark as sold", (dialog, which) ->
+                        viewModel.requestStatusChange(MarketplaceListingStatusPolicy.SOLD))
                 .show();
     }
 
@@ -283,14 +299,20 @@ public final class MarketDetailFragment extends Fragment {
         if (binding == null || currentListing == null || !currentOwner) {
             return;
         }
-        boolean supported = MarketplaceListingStatusPolicy.isSupportedStatus(
-                currentListing.getStatus());
-        binding.editListingAction.setEnabled(supported && !ownerActionBusy);
-        binding.listingStatusAction.setEnabled(supported && !ownerActionBusy);
+        boolean editable = MarketplaceListingStatusPolicy.canEdit(
+                true, currentListing.getStatus());
+        boolean canMarkSold = MarketplaceListingStatusPolicy.canMarkSold(
+                true, currentListing.getStatus());
+        binding.editListingAction.setEnabled(editable && !ownerActionBusy);
+        binding.listingStatusAction.setEnabled(editable && !ownerActionBusy);
+        binding.markSoldAction.setVisibility(canMarkSold ? View.VISIBLE : View.GONE);
+        binding.markSoldAction.setEnabled(canMarkSold && !ownerActionBusy);
         binding.editListingAction.setAlpha(
                 binding.editListingAction.isEnabled() ? 1f : 0.55f);
         binding.listingStatusAction.setAlpha(
                 binding.listingStatusAction.isEnabled() ? 1f : 0.55f);
+        binding.markSoldAction.setAlpha(
+                binding.markSoldAction.isEnabled() ? 1f : 0.55f);
         binding.listingStatusAction.setText(
                 MarketplaceListingStatusPolicy.ownerStatusActionLabel(
                         currentListing.getStatus()));

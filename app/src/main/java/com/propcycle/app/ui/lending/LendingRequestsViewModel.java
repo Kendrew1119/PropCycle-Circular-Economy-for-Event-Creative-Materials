@@ -12,12 +12,37 @@ import com.google.android.gms.tasks.Task;
 import com.propcycle.app.data.activity.ActivityLogRepository;
 import com.propcycle.app.data.lending.FirestoreLendingRepository;
 import com.propcycle.app.data.lending.LendingRequest;
+import com.propcycle.app.data.marketplace.MarketplaceStatusNotice;
+import com.propcycle.app.data.marketplace.MarketplaceStatusNoticeRepository;
 
 import java.util.Collections;
 import java.util.List;
 
 /** In-app request inbox and lifecycle action state. */
 public final class LendingRequestsViewModel extends AndroidViewModel {
+
+    public static final class MarketplaceNoticeState {
+        private final boolean loading;
+        private final boolean fromCache;
+        private final String message;
+        private final List<MarketplaceStatusNotice> notices;
+
+        private MarketplaceNoticeState(
+                boolean loading,
+                boolean fromCache,
+                @Nullable String message,
+                @NonNull List<MarketplaceStatusNotice> notices) {
+            this.loading = loading;
+            this.fromCache = fromCache;
+            this.message = message;
+            this.notices = notices;
+        }
+
+        public boolean isLoading() { return loading; }
+        public boolean isFromCache() { return fromCache; }
+        @Nullable public String getMessage() { return message; }
+        @NonNull public List<MarketplaceStatusNotice> getNotices() { return notices; }
+    }
 
     public static final class State {
         private final boolean loading;
@@ -48,10 +73,16 @@ public final class LendingRequestsViewModel extends AndroidViewModel {
 
     private final FirestoreLendingRepository repository;
     private final ActivityLogRepository activityLog;
+    private final MarketplaceStatusNoticeRepository marketplaceNoticeRepository;
     private final MutableLiveData<State> state = new MutableLiveData<>(new State(
             true, false, null, null, Collections.emptyList()));
     private FirestoreLendingRepository.Subscription subscription =
             FirestoreLendingRepository.Subscription.NONE;
+    private MarketplaceStatusNoticeRepository.Subscription marketplaceNoticeSubscription =
+            MarketplaceStatusNoticeRepository.Subscription.NONE;
+    private final MutableLiveData<MarketplaceNoticeState> marketplaceNoticeState =
+            new MutableLiveData<>(new MarketplaceNoticeState(
+                    true, false, null, Collections.emptyList()));
     private List<LendingRequest> requests = Collections.emptyList();
     private boolean fromCache;
 
@@ -59,9 +90,13 @@ public final class LendingRequestsViewModel extends AndroidViewModel {
         super(application);
         repository = new FirestoreLendingRepository(application);
         activityLog = new ActivityLogRepository(application);
+        marketplaceNoticeRepository = new MarketplaceStatusNoticeRepository(application);
     }
 
     @NonNull public LiveData<State> getState() { return state; }
+    @NonNull public LiveData<MarketplaceNoticeState> getMarketplaceNoticeState() {
+        return marketplaceNoticeState;
+    }
     @Nullable public String currentUserId() { return repository.currentUserId(); }
 
     public void start() {
@@ -84,6 +119,30 @@ public final class LendingRequestsViewModel extends AndroidViewModel {
                                 LendingListViewModel.safeMessage(
                                         error, "Lending updates could not be loaded."),
                                 null, requests));
+                    }
+                });
+        marketplaceNoticeState.setValue(new MarketplaceNoticeState(
+                true, false, null, Collections.emptyList()));
+        marketplaceNoticeSubscription = marketplaceNoticeRepository.observe(
+                new MarketplaceStatusNoticeRepository.Callback() {
+                    @Override
+                    public void onData(
+                            @NonNull List<MarketplaceStatusNotice> notices,
+                            boolean cached) {
+                        marketplaceNoticeState.setValue(new MarketplaceNoticeState(
+                                false,
+                                cached,
+                                cached ? "Offline - Marketplace status may be outdated." : null,
+                                notices));
+                    }
+
+                    @Override
+                    public void onError(@NonNull Exception error) {
+                        marketplaceNoticeState.setValue(new MarketplaceNoticeState(
+                                false,
+                                false,
+                                "Marketplace status updates could not be loaded.",
+                                Collections.emptyList()));
                     }
                 });
     }
@@ -160,6 +219,8 @@ public final class LendingRequestsViewModel extends AndroidViewModel {
     public void stop() {
         subscription.remove();
         subscription = FirestoreLendingRepository.Subscription.NONE;
+        marketplaceNoticeSubscription.remove();
+        marketplaceNoticeSubscription = MarketplaceStatusNoticeRepository.Subscription.NONE;
     }
 
     @Override protected void onCleared() { stop(); }

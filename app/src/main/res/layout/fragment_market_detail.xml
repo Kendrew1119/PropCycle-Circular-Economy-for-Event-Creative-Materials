@@ -358,7 +358,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="Keep the details current or pause the listing when it is no longer available."
+                    android:text="Keep the details current, pause the listing, or mark it sold when the exchange is complete."
                     android:textColor="@color/pc_brand_text_secondary"
                     android:textSize="14sp" />
 
@@ -399,6 +399,21 @@
                         android:textColor="@color/pc_brand_surface"
                         android:textSize="16sp" />
                 </LinearLayout>
+
+                <TextView
+                    android:id="@+id/mark_sold_action"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/bg_market_detail_primary_action"
+                    android:clickable="true"
+                    android:contentDescription="Permanently mark this marketplace listing as sold"
+                    android:focusable="true"
+                    android:fontFamily="@font/fredoka_semibold"
+                    android:gravity="center"
+                    android:text="Mark as sold"
+                    android:textColor="@color/pc_brand_surface"
+                    android:textSize="16sp" />
 
                 <ProgressBar
                     android:id="@+id/owner_action_progress"
