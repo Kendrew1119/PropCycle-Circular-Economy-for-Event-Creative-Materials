@@ -92,7 +92,7 @@ public final class RecyclingCenterPolicy {
     @NonNull
     public static String formatDistance(@Nullable Double distanceKm) {
         if (distanceKm == null || !Double.isFinite(distanceKm) || distanceKm < 0d) {
-            return "Distance unavailable";
+            return "Use location to estimate distance";
         }
         if (distanceKm < 1d) {
             return String.format(Locale.getDefault(), "Approx. %.0f m", distanceKm * 1_000d);

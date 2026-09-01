@@ -64,12 +64,31 @@ public final class RecyclingCenterPolicyTest {
     }
 
     @Test
+    public void prepareResults_withMeasurementOrigin_addsDistanceToAreaResults() {
+        GeoPoint userLocation = new GeoPoint(3.1390d, 101.6869d);
+        List<RecyclingCenter> areaResults = List.of(
+                center("pj", 3.1073d, 101.6067d, 4.4d));
+
+        List<RecyclingCenter> result = RecyclingCenterPolicy.prepareResults(
+                areaResults,
+                userLocation);
+
+        assertEquals(1, result.size());
+        assertTrue(result.get(0).getDistanceKm() > 5d);
+        assertTrue(result.get(0).getDistanceKm() < 15d);
+        assertTrue(RecyclingCenterPolicy.formatDistance(result.get(0).getDistanceKm())
+                .startsWith("Approx."));
+    }
+
+    @Test
     public void invalidRatingAndDistance_areNotDisplayedAsFacts() {
         RecyclingCenter center = center("id", 3d, 101d, 8d);
 
         assertNull(center.getRating());
         assertEquals("No rating", RecyclingCenterPolicy.formatRating(center.getRating()));
-        assertEquals("Distance unavailable", RecyclingCenterPolicy.formatDistance(null));
+        assertEquals(
+                "Use location to estimate distance",
+                RecyclingCenterPolicy.formatDistance(null));
     }
 
     private static RecyclingCenter center(

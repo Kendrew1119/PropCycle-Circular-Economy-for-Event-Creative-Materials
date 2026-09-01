@@ -54,7 +54,10 @@ public final class RecycleCenterViewModel extends AndroidViewModel {
         return inAppSearchAvailable;
     }
 
-    public void searchArea(@NonNull String area) {
+    @SuppressLint("MissingPermission")
+    public void searchArea(
+            @NonNull String area,
+            boolean useApprovedLocationForDistance) {
         if (!inAppSearchAvailable) {
             return;
         }
@@ -65,11 +68,36 @@ public final class RecycleCenterViewModel extends AndroidViewModel {
                     "You appear to be offline. Connect to the internet, then try again."));
             return;
         }
+        if (!useApprovedLocationForDistance) {
+            startAreaSearch(generation, area, null);
+            return;
+        }
         state.setValue(RecycleCenterUiState.message(
-                RecycleCenterUiState.Kind.SEARCHING,
-                "Searching recycling centres near " + area + "…"));
-        repository.search(area, null, callbackFor(
-                generation, null, "Recycling centres searched near " + area.trim()));
+                RecycleCenterUiState.Kind.LOCATING,
+                "Getting your approximate location to estimate distances…"));
+        CancellationTokenSource cancellation = new CancellationTokenSource();
+        locationCancellation = cancellation;
+        locationClient.getCurrentLocation(
+                        Priority.PRIORITY_BALANCED_POWER_ACCURACY,
+                        cancellation.getToken())
+                .addOnSuccessListener(location -> {
+                    if (!isCurrent(generation)
+                            || cancellation.getToken().isCancellationRequested()) {
+                        return;
+                    }
+                    locationCancellation = null;
+                    GeoPoint origin = location == null
+                            ? null
+                            : new GeoPoint(location.getLatitude(), location.getLongitude());
+                    startAreaSearch(generation, area, origin);
+                })
+                .addOnFailureListener(error -> {
+                    if (isCurrent(generation)
+                            && !cancellation.getToken().isCancellationRequested()) {
+                        locationCancellation = null;
+                        startAreaSearch(generation, area, null);
+                    }
+                });
     }
 
     @SuppressLint("MissingPermission")
@@ -106,12 +134,14 @@ public final class RecycleCenterViewModel extends AndroidViewModel {
                     state.setValue(RecycleCenterUiState.message(
                             RecycleCenterUiState.Kind.SEARCHING,
                             "Searching within about 25 km of your location…"));
-                    repository.search(null, point, callbackFor(
+                    locationCancellation = null;
+                    repository.searchNearby(point, callbackFor(
                             generation, point, "Recycling centres searched near current area"));
                 })
                 .addOnFailureListener(error -> {
                     if (isCurrent(generation)
                             && !cancellation.getToken().isCancellationRequested()) {
+                        locationCancellation = null;
                         state.setValue(RecycleCenterUiState.message(
                                 RecycleCenterUiState.Kind.ERROR,
                                 "Your current location is unavailable. Search by city or area instead."));
@@ -167,6 +197,25 @@ public final class RecycleCenterViewModel extends AndroidViewModel {
             locationCancellation = null;
         }
         return operationGeneration;
+    }
+
+    private void startAreaSearch(
+            int generation,
+            @NonNull String area,
+            GeoPoint distanceOrigin) {
+        if (!isCurrent(generation)) {
+            return;
+        }
+        state.setValue(RecycleCenterUiState.message(
+                RecycleCenterUiState.Kind.SEARCHING,
+                distanceOrigin == null
+                        ? "Searching recycling centres near " + area
+                                + "… Use location to estimate distances."
+                        : "Searching recycling centres near " + area + "…"));
+        repository.searchArea(area, distanceOrigin, callbackFor(
+                generation,
+                distanceOrigin,
+                "Recycling centres searched near " + area.trim()));
     }
 
     @NonNull

@@ -182,7 +182,7 @@ public final class RecycleCenterFragment extends Fragment {
             openExternalSearch(RecyclingCenterPolicy.buildManualQuery(area));
             return;
         }
-        viewModel.searchArea(area);
+        viewModel.searchArea(area, hasLocationPermission());
     }
 
     private void requestLocationSearch() {

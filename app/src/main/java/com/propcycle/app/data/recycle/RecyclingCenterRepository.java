@@ -50,17 +50,32 @@ public final class RecyclingCenterRepository {
         placesClient = Places.createClient(applicationContext);
     }
 
-    public void search(
-            @Nullable String area,
+    public void searchArea(
+            @NonNull String area,
+            @Nullable GeoPoint distanceOrigin,
+            @NonNull Callback callback) {
+        search(
+                RecyclingCenterPolicy.buildManualQuery(area),
+                null,
+                distanceOrigin,
+                callback);
+    }
+
+    public void searchNearby(
+            @NonNull GeoPoint origin,
+            @NonNull Callback callback) {
+        search("recycling centre", origin, origin, callback);
+    }
+
+    private void search(
+            @NonNull String query,
             @Nullable GeoPoint locationBias,
+            @Nullable GeoPoint distanceOrigin,
             @NonNull Callback callback) {
         cancel();
         CancellationTokenSource cancellation = new CancellationTokenSource();
         activeSearch = cancellation;
 
-        String query = locationBias == null
-                ? RecyclingCenterPolicy.buildManualQuery(area)
-                : "recycling centre";
         SearchByTextRequest.Builder builder = SearchByTextRequest.builder(query, PLACE_FIELDS)
                 .setMaxResultCount(RecyclingCenterPolicy.MAX_RESULTS)
                 .setRegionCode("MY")
@@ -82,7 +97,7 @@ public final class RecyclingCenterRepository {
                     }
                     callback.onSuccess(RecyclingCenterPolicy.prepareResults(
                             toCenters(response.getPlaces()),
-                            locationBias));
+                            distanceOrigin));
                 })
                 .addOnFailureListener(error -> {
                     if (!cancellation.getToken().isCancellationRequested()) {
