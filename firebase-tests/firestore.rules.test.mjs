@@ -479,6 +479,23 @@ test("listing owner can withdraw and relist while public visibility follows stat
   assert.equal(visibleSnapshot.size, 1);
 });
 
+test("a user can choose only an allowlisted built-in avatar", async () => {
+  await seedBaseData();
+  const ownerDatabase = signedIn(OWNER_UID);
+  await assertSucceeds(updateDoc(doc(ownerDatabase, "users", OWNER_UID), {
+    avatarKey: "leaf",
+    updatedAt: serverTimestamp(),
+  }));
+  await assertFails(updateDoc(doc(ownerDatabase, "users", OWNER_UID), {
+    avatarKey: "https://example.test/private-photo.jpg",
+    updatedAt: serverTimestamp(),
+  }));
+  await assertFails(updateDoc(doc(signedIn(CONTACT_UID), "users", OWNER_UID), {
+    avatarKey: "recycle",
+    updatedAt: serverTimestamp(),
+  }));
+});
+
 test("sold is owner-only and terminal while existing chat participants keep access", async () => {
   await seedBaseData({includeThread: true});
   const ownerDatabase = signedIn(OWNER_UID);

@@ -25,6 +25,7 @@ import com.propcycle.app.data.marketplace.MarketplaceListing;
 import com.propcycle.app.data.marketplace.MarketplaceRatingPolicy;
 import com.propcycle.app.data.marketplace.MarketplaceRepository;
 import com.propcycle.app.data.marketplace.MarketplaceSellerRating;
+import com.propcycle.app.data.profile.ProfileAvatarPolicy;
 import com.propcycle.app.ui.common.OneTimeEvent;
 
 import java.util.ArrayList;
@@ -84,7 +85,8 @@ public final class ProfileViewModel extends AndroidViewModel {
             return;
         }
         String name = value == null ? "" : value.trim();
-        profileUpdate.setValue(new OneTimeEvent<>(ProfileUpdate.working()));
+        profileUpdate.setValue(new OneTimeEvent<>(
+                ProfileUpdate.working("Updating display name...")));
         UserProfileChangeRequest request = new UserProfileChangeRequest.Builder()
                 .setDisplayName(name)
                 .build();
@@ -99,6 +101,35 @@ public final class ProfileViewModel extends AndroidViewModel {
                         new OneTimeEvent<>(ProfileUpdate.error(
                                 error.getMessage() == null
                                         ? "The display name could not be updated."
+                                        : error.getMessage()))));
+    }
+
+    public void updateAvatar(@Nullable String value) {
+        if (!ProfileAvatarPolicy.isValid(value)) {
+            profileUpdate.setValue(new OneTimeEvent<>(
+                    ProfileUpdate.error("Choose one of the available avatars.")));
+            return;
+        }
+        FirebaseAuth auth = FirebaseEnvironment.auth(getApplication());
+        FirebaseFirestore firestore = FirebaseEnvironment.firestore(getApplication());
+        FirebaseUser user = auth == null ? null : auth.getCurrentUser();
+        if (user == null || firestore == null || !user.getUid().equals(targetUserId)) {
+            profileUpdate.setValue(new OneTimeEvent<>(
+                    ProfileUpdate.error("Sign in to change your avatar.")));
+            return;
+        }
+        String avatarKey = ProfileAvatarPolicy.normalized(value);
+        profileUpdate.setValue(new OneTimeEvent<>(
+                ProfileUpdate.working("Updating avatar...")));
+        firestore.collection("users").document(user.getUid()).update(
+                        "avatarKey", avatarKey,
+                        "updatedAt", FieldValue.serverTimestamp())
+                .addOnSuccessListener(ignored -> profileUpdate.setValue(
+                        new OneTimeEvent<>(ProfileUpdate.avatarSuccess())))
+                .addOnFailureListener(error -> profileUpdate.setValue(
+                        new OneTimeEvent<>(ProfileUpdate.error(
+                                error.getMessage() == null
+                                        ? "The avatar could not be updated."
                                         : error.getMessage()))));
     }
 
@@ -132,6 +163,7 @@ public final class ProfileViewModel extends AndroidViewModel {
                     cleanName(name),
                     currentUser.getEmail(),
                     createdAt,
+                    ProfileAvatarPolicy.DEFAULT,
                     true));
         }
         loadPublicProfile(generation, ownProfile);
@@ -185,6 +217,8 @@ public final class ProfileViewModel extends AndroidViewModel {
                     }
                     Timestamp createdAt = snapshot.getTimestamp("createdAt");
                     String displayName = cleanName(snapshot.getString("displayName"));
+                    String avatarKey = ProfileAvatarPolicy.normalized(
+                            snapshot.getString("avatarKey"));
                     ProfileState current = profileState.getValue();
                     String email = ownProfile && current != null ? current.getEmail() : null;
                     long createdMillis = createdAt == null
@@ -195,6 +229,7 @@ public final class ProfileViewModel extends AndroidViewModel {
                             displayName,
                             email,
                             createdMillis,
+                            avatarKey,
                             ownProfile));
                 })
                 .addOnFailureListener(error -> {
@@ -263,12 +298,16 @@ public final class ProfileViewModel extends AndroidViewModel {
             this.message = message;
         }
 
-        private static ProfileUpdate working() {
-            return new ProfileUpdate(true, false, "Updating display name...");
+        private static ProfileUpdate working(@NonNull String message) {
+            return new ProfileUpdate(true, false, message);
         }
 
         private static ProfileUpdate success(@NonNull String name) {
             return new ProfileUpdate(false, true, "Display name updated to " + name + ".");
+        }
+
+        private static ProfileUpdate avatarSuccess() {
+            return new ProfileUpdate(false, true, "Avatar updated.");
         }
 
         private static ProfileUpdate error(@NonNull String message) {
@@ -286,6 +325,7 @@ public final class ProfileViewModel extends AndroidViewModel {
         private final String displayName;
         private final String email;
         private final long createdAtMillis;
+        private final String avatarKey;
         private final boolean ownProfile;
         private final String errorMessage;
 
@@ -295,6 +335,7 @@ public final class ProfileViewModel extends AndroidViewModel {
                 @NonNull String displayName,
                 @Nullable String email,
                 long createdAtMillis,
+                @NonNull String avatarKey,
                 boolean ownProfile,
                 @NonNull String errorMessage) {
             this.loading = loading;
@@ -302,12 +343,15 @@ public final class ProfileViewModel extends AndroidViewModel {
             this.displayName = displayName;
             this.email = email;
             this.createdAtMillis = createdAtMillis;
+            this.avatarKey = ProfileAvatarPolicy.normalized(avatarKey);
             this.ownProfile = ownProfile;
             this.errorMessage = errorMessage;
         }
 
         private static ProfileState loading() {
-            return new ProfileState(true, "", "PropCycle Member", null, 0L, false, "");
+            return new ProfileState(
+                    true, "", "PropCycle Member", null, 0L,
+                    ProfileAvatarPolicy.DEFAULT, false, "");
         }
 
         private static ProfileState content(
@@ -315,13 +359,17 @@ public final class ProfileViewModel extends AndroidViewModel {
                 @NonNull String displayName,
                 @Nullable String email,
                 long createdAtMillis,
+                @NonNull String avatarKey,
                 boolean ownProfile) {
             return new ProfileState(
-                    false, userId, displayName, email, createdAtMillis, ownProfile, "");
+                    false, userId, displayName, email, createdAtMillis,
+                    avatarKey, ownProfile, "");
         }
 
         private static ProfileState error(@NonNull String message) {
-            return new ProfileState(false, "", "Profile unavailable", null, 0L, false, message);
+            return new ProfileState(
+                    false, "", "Profile unavailable", null, 0L,
+                    ProfileAvatarPolicy.DEFAULT, false, message);
         }
 
         public boolean isLoading() { return loading; }
@@ -329,6 +377,7 @@ public final class ProfileViewModel extends AndroidViewModel {
         @NonNull public String getDisplayName() { return displayName; }
         @Nullable public String getEmail() { return email; }
         public long getCreatedAtMillis() { return createdAtMillis; }
+        @NonNull public String getAvatarKey() { return avatarKey; }
         public boolean isOwnProfile() { return ownProfile; }
         @NonNull public String getErrorMessage() { return errorMessage; }
     }

@@ -38,12 +38,24 @@ public final class MessagesFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ScreenNavigation.bindChrome(this, view);
-        adapter = new ChatThreadAdapter(this::openThread);
+        adapter = new ChatThreadAdapter(new ChatThreadAdapter.Listener() {
+            @Override
+            public void onThreadClick(@NonNull ChatThread thread) {
+                openThread(thread);
+            }
+
+            @Override
+            public void onProfileClick(@NonNull String userId) {
+                openProfile(userId);
+            }
+        });
         binding.conversationList.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.conversationList.setAdapter(adapter);
 
         viewModel = new ViewModelProvider(this).get(MessagesViewModel.class);
         viewModel.getState().observe(getViewLifecycleOwner(), this::render);
+        viewModel.getPublicProfiles().observe(
+                getViewLifecycleOwner(), adapter::submitProfiles);
     }
 
     @Override
@@ -77,11 +89,17 @@ public final class MessagesFragment extends Fragment {
                 this, R.id.conversationFragment, arguments);
     }
 
+    private void openProfile(@NonNull String userId) {
+        Bundle arguments = new Bundle();
+        arguments.putString("userId", userId);
+        ScreenNavigation.navigateAuthenticated(this, R.id.profileFragment, arguments);
+    }
+
     private void render(@NonNull MessagesUiState state) {
         if (binding == null) {
             return;
         }
-        adapter.submitList(state.getThreads());
+        adapter.submitList(state.getThreads(), viewModel.currentUserId());
         boolean hasThreads = !state.getThreads().isEmpty();
         binding.loadingIndicator.setVisibility(state.isLoading() ? View.VISIBLE : View.GONE);
         boolean showEmptyState = !state.isLoading()

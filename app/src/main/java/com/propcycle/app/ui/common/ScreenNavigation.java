@@ -70,6 +70,37 @@ public final class ScreenNavigation {
         return true;
     }
 
+    /** Always resolves the header avatar to the signed-in user's own profile. */
+    public static boolean navigateOwnProfile(
+            @NonNull Context context,
+            @NonNull NavController controller) {
+        FirebaseAuth auth = FirebaseEnvironment.auth(context);
+        if (auth == null || auth.getCurrentUser() == null) {
+            navigateClearingBackStack(controller, R.id.loginFragment);
+            return false;
+        }
+        String currentUserId = auth.getCurrentUser().getUid();
+        NavDestination current = controller.getCurrentDestination();
+        Bundle currentArguments = controller.getCurrentBackStackEntry() == null
+                ? null
+                : controller.getCurrentBackStackEntry().getArguments();
+        String displayedUserId = currentArguments == null
+                ? ""
+                : currentArguments.getString("userId", "");
+        if (current != null
+                && current.getId() == R.id.profileFragment
+                && (displayedUserId.isEmpty() || currentUserId.equals(displayedUserId))) {
+            return true;
+        }
+        if (current != null && current.getId() == R.id.profileFragment) {
+            controller.popBackStack();
+        }
+        Bundle arguments = new Bundle();
+        arguments.putString("userId", currentUserId);
+        controller.navigate(R.id.profileFragment, arguments);
+        return true;
+    }
+
     public static void navigateClearingBackStack(
             @NonNull Fragment fragment,
             @IdRes int destination) {

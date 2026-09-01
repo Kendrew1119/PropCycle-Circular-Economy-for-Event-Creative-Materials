@@ -89,18 +89,39 @@
             </LinearLayout>
         </FrameLayout>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/profile_edit_action"
-            style="@style/Widget.Material3.Button.TextButton"
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="48dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="10dp"
-            android:background="@drawable/bg_profile_edit"
-            android:paddingStart="18dp"
-            android:paddingEnd="18dp"
-            android:text="Edit display name"
-            android:textColor="@color/pc_brand_deep_blue" />
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/profile_avatar_action"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:background="@drawable/bg_profile_edit"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp"
+                android:text="Choose avatar"
+                android:textAllCaps="false"
+                android:textColor="@color/pc_brand_deep_blue" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/profile_edit_action"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/bg_profile_edit"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp"
+                android:text="Edit name"
+                android:textAllCaps="false"
+                android:textColor="@color/pc_brand_deep_blue" />
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"

@@ -26,9 +26,13 @@ service cloud.firestore {
             'displayName', 'createdAt', 'updatedAt'
           ])
           && request.resource.data.keys().hasOnly([
-            'displayName', 'createdAt', 'updatedAt'
+            'displayName', 'avatarKey', 'createdAt', 'updatedAt'
           ])
           && boundedString(request.resource.data.displayName, 1, 80)
+          && (!request.resource.data.keys().hasAny(['avatarKey'])
+              || request.resource.data.avatarKey in [
+                'default', 'leaf', 'recycle', 'heart', 'package', 'sparkle'
+              ])
           && request.resource.data.createdAt is timestamp
           && request.resource.data.updatedAt is timestamp;
     }
@@ -451,7 +455,7 @@ service cloud.firestore {
           && request.resource.data.createdAt == resource.data.createdAt
           && request.resource.data.updatedAt == request.time
           && request.resource.data.diff(resource.data).affectedKeys()
-              .hasOnly(['displayName', 'updatedAt']);
+              .hasOnly(['displayName', 'avatarKey', 'updatedAt']);
       allow delete: if false;
 
       match /marketplaceRatings/{raterUid} {

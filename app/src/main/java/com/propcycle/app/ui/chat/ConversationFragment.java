@@ -14,8 +14,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.propcycle.app.R;
 import com.propcycle.app.core.firebase.FirebaseEnvironment;
+import com.propcycle.app.data.chat.ChatParticipantPolicy;
 import com.propcycle.app.data.chat.ChatThread;
+import com.propcycle.app.data.profile.ProfileAvatarPolicy;
+import com.propcycle.app.data.profile.PublicProfile;
 import com.propcycle.app.databinding.FragmentConversationBinding;
+import com.propcycle.app.ui.common.ProfileAvatarRenderer;
 import com.propcycle.app.ui.common.ScreenNavigation;
 
 /** Participant-only, bounded real-time text conversation. */
@@ -26,6 +30,7 @@ public final class ConversationFragment extends Fragment {
     private ChatMessageAdapter adapter;
     private String threadId = "";
     private String otherUserId = "";
+    private PublicProfile otherProfile;
 
     @Nullable
     @Override
@@ -51,6 +56,10 @@ public final class ConversationFragment extends Fragment {
 
         viewModel = new ViewModelProvider(this).get(ConversationViewModel.class);
         viewModel.getState().observe(getViewLifecycleOwner(), this::render);
+        viewModel.getOtherProfile().observe(getViewLifecycleOwner(), profile -> {
+            otherProfile = profile;
+            renderConversationAvatar();
+        });
         viewModel.getSendSucceeded().observe(getViewLifecycleOwner(), event -> {
             Boolean sent = event == null ? null : event.consume();
             if (Boolean.TRUE.equals(sent) && binding != null) {
@@ -90,6 +99,7 @@ public final class ConversationFragment extends Fragment {
     @Override
     public void onDestroyView() {
         binding.messageList.setAdapter(null);
+        otherProfile = null;
         binding = null;
         super.onDestroyView();
     }
@@ -102,18 +112,19 @@ public final class ConversationFragment extends Fragment {
             ChatThread thread = state.getThread();
             String title = state.getThread().getContextTitle();
             binding.contextTitle.setText(title);
-            String trimmed = title.trim();
-            binding.threadAvatar.setText(
-                    trimmed.isEmpty() ? "P" : trimmed.substring(0, 1).toUpperCase());
-            otherUserId = viewModel.currentUserId().equals(thread.getOwnerUid())
-                    ? thread.getContactUid() : thread.getOwnerUid();
+            otherUserId = ChatParticipantPolicy.otherUserId(
+                    thread, viewModel.currentUserId());
             binding.threadAvatar.setEnabled(!otherUserId.isEmpty());
-            binding.threadAvatar.setContentDescription("Open the other member's profile");
+            renderConversationAvatar();
         } else {
             otherUserId = "";
             binding.contextTitle.setText("Conversation");
-            binding.threadAvatar.setText("P");
+            ProfileAvatarRenderer.render(
+                    binding.threadAvatar,
+                    ProfileAvatarPolicy.DEFAULT,
+                    "PropCycle Member");
             binding.threadAvatar.setEnabled(false);
+            binding.threadAvatar.setContentDescription(null);
         }
         binding.contextCaption.setText(
                 state.getThread() != null
@@ -148,6 +159,20 @@ public final class ConversationFragment extends Fragment {
         binding.messageComposer.setEnabled(canSend);
         binding.primaryAction.setEnabled(canSend);
         binding.primaryAction.setAlpha(canSend ? 1f : 0.45f);
+    }
+
+    private void renderConversationAvatar() {
+        if (binding == null || otherUserId.isEmpty()) {
+            return;
+        }
+        boolean matchingProfile = otherProfile != null
+                && otherUserId.equals(otherProfile.getUserId());
+        String displayName = matchingProfile
+                ? otherProfile.getDisplayName() : "PropCycle Member";
+        String avatarKey = matchingProfile
+                ? otherProfile.getAvatarKey() : ProfileAvatarPolicy.DEFAULT;
+        ProfileAvatarRenderer.render(binding.threadAvatar, avatarKey, displayName);
+        binding.threadAvatar.setContentDescription("Open " + displayName + "'s profile");
     }
 
     private void openOtherUserProfile() {

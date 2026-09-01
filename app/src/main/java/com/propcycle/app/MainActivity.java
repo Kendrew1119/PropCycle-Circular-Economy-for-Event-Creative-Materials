@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.ImageButton;
 
 import androidx.annotation.IdRes;
 import androidx.annotation.Nullable;
@@ -19,13 +20,19 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.propcycle.app.core.firebase.FirebaseEnvironment;
+import com.propcycle.app.data.profile.ProfileAvatarPolicy;
 import com.propcycle.app.ui.common.ScreenNavigation;
+import com.propcycle.app.ui.common.ProfileAvatarRenderer;
 
 /** Hosts the proposal UI, restores an authenticated session, and supports debug visual QA. */
 public final class MainActivity extends AppCompatActivity {
 
     public static final String EXTRA_SCREEN = "screen";
+    @Nullable private ListenerRegistration headerProfileRegistration;
+    private String headerProfileUserId = "";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -117,8 +124,7 @@ public final class MainActivity extends AppCompatActivity {
                 ignored -> ScreenNavigation.navigateTopLevel(
                         this, controller, R.id.notificationsFragment));
         findViewById(R.id.app_header_profile).setOnClickListener(
-                ignored -> ScreenNavigation.navigateTopLevel(
-                        this, controller, R.id.profileFragment));
+                ignored -> ScreenNavigation.navigateOwnProfile(this, controller));
         bottomNavigation.setOnItemSelectedListener(item -> {
             @IdRes int destination = destinationForBottomNavigationItem(item.getItemId());
             if (destination == View.NO_ID) {
@@ -131,6 +137,7 @@ public final class MainActivity extends AppCompatActivity {
             return true;
         });
         controller.addOnDestinationChangedListener((ignored, destination, arguments) -> {
+            refreshHeaderAvatar();
             @IdRes int itemId = bottomNavigationItemForDestination(destination.getId());
             boolean showAppChrome = isAppDestination(destination.getId());
             appHeader.setVisibility(showAppChrome ? View.VISIBLE : View.GONE);
@@ -143,6 +150,51 @@ public final class MainActivity extends AppCompatActivity {
                 bottomNavigation.getMenu().findItem(itemId).setChecked(true);
             }
         });
+    }
+
+    private void refreshHeaderAvatar() {
+        ImageButton avatar = findViewById(R.id.app_header_profile);
+        FirebaseAuth auth = FirebaseEnvironment.auth(this);
+        String userId = auth == null || auth.getCurrentUser() == null
+                ? "" : auth.getCurrentUser().getUid();
+        if (userId.equals(headerProfileUserId)) {
+            return;
+        }
+        if (headerProfileRegistration != null) {
+            headerProfileRegistration.remove();
+            headerProfileRegistration = null;
+        }
+        headerProfileUserId = userId;
+        ProfileAvatarRenderer.render(avatar, ProfileAvatarPolicy.DEFAULT);
+        avatar.setContentDescription("Open your profile");
+        if (userId.isEmpty()) {
+            return;
+        }
+        FirebaseFirestore firestore = FirebaseEnvironment.firestore(this);
+        if (firestore == null) {
+            return;
+        }
+        headerProfileRegistration = firestore.collection("users").document(userId)
+                .addSnapshotListener((snapshot, error) -> {
+                    if (!userId.equals(headerProfileUserId)
+                            || error != null
+                            || snapshot == null
+                            || !snapshot.exists()) {
+                        return;
+                    }
+                    ProfileAvatarRenderer.render(
+                            avatar,
+                            ProfileAvatarPolicy.normalized(snapshot.getString("avatarKey")));
+                });
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (headerProfileRegistration != null) {
+            headerProfileRegistration.remove();
+            headerProfileRegistration = null;
+        }
+        super.onDestroy();
     }
 
     private NavController navController() {

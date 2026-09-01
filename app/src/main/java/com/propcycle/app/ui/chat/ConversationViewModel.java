@@ -12,6 +12,10 @@ import com.propcycle.app.data.chat.ChatMessage;
 import com.propcycle.app.data.chat.ChatRepository;
 import com.propcycle.app.data.chat.ChatThread;
 import com.propcycle.app.data.chat.ChatValidator;
+import com.propcycle.app.data.chat.ChatParticipantPolicy;
+import com.propcycle.app.data.profile.ProfileAvatarPolicy;
+import com.propcycle.app.data.profile.PublicProfile;
+import com.propcycle.app.data.profile.PublicProfileRepository;
 
 import java.util.Collections;
 import java.util.List;
@@ -21,9 +25,11 @@ import java.util.UUID;
 public final class ConversationViewModel extends AndroidViewModel {
 
     private final ChatRepository repository;
+    private final PublicProfileRepository profileRepository;
     private final MutableLiveData<ConversationUiState> state =
             new MutableLiveData<>(ConversationUiState.loading());
     private final MutableLiveData<UiEvent<Boolean>> sendSucceeded = new MutableLiveData<>();
+    private final MutableLiveData<PublicProfile> otherProfile = new MutableLiveData<>();
 
     private ChatRepository.Subscription threadSubscription = ChatRepository.Subscription.NONE;
     private ChatRepository.Subscription messageSubscription = ChatRepository.Subscription.NONE;
@@ -44,6 +50,7 @@ public final class ConversationViewModel extends AndroidViewModel {
     public ConversationViewModel(@NonNull Application application) {
         super(application);
         repository = new ChatRepository(application);
+        profileRepository = new PublicProfileRepository(application);
     }
 
     @NonNull
@@ -54,6 +61,11 @@ public final class ConversationViewModel extends AndroidViewModel {
     @NonNull
     public LiveData<UiEvent<Boolean>> getSendSucceeded() {
         return sendSucceeded;
+    }
+
+    @NonNull
+    public LiveData<PublicProfile> getOtherProfile() {
+        return otherProfile;
     }
 
     @NonNull
@@ -102,6 +114,7 @@ public final class ConversationViewModel extends AndroidViewModel {
         messagesError = null;
         actionError = null;
         thread = null;
+        otherProfile.setValue(null);
         messages = Collections.emptyList();
         state.setValue(ConversationUiState.loading());
         int generation = ++listenerGeneration;
@@ -119,6 +132,7 @@ public final class ConversationViewModel extends AndroidViewModel {
                         threadFromCache = fromCache;
                         threadError = null;
                         publish(isSending());
+                        loadOtherProfile(generation, value);
                     }
 
                     @Override
@@ -151,6 +165,28 @@ public final class ConversationViewModel extends AndroidViewModel {
                             messagesError = ChatUiError.message(error);
                             publish(isSending());
                         }
+                    }
+                });
+    }
+
+    private void loadOtherProfile(int generation, @NonNull ChatThread value) {
+        String userId = ChatParticipantPolicy.otherUserId(value, currentUserId());
+        if (userId.isEmpty()) {
+            otherProfile.setValue(null);
+            return;
+        }
+        profileRepository.get(userId)
+                .addOnSuccessListener(profile -> {
+                    if (generation == listenerGeneration) {
+                        otherProfile.setValue(profile);
+                    }
+                })
+                .addOnFailureListener(error -> {
+                    if (generation == listenerGeneration) {
+                        otherProfile.setValue(new PublicProfile(
+                                userId,
+                                "PropCycle Member",
+                                ProfileAvatarPolicy.DEFAULT));
                     }
                 });
     }

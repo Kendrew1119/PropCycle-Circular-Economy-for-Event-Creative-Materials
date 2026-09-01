@@ -9,31 +9,47 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.propcycle.app.R;
+import com.propcycle.app.data.chat.ChatParticipantPolicy;
 import com.propcycle.app.data.chat.ChatThread;
+import com.propcycle.app.data.profile.ProfileAvatarPolicy;
+import com.propcycle.app.data.profile.PublicProfile;
 import com.propcycle.app.ui.common.LocalTimestampFormatter;
+import com.propcycle.app.ui.common.ProfileAvatarRenderer;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.TimeZone;
 
 /** Proposal-faithful rows backed by real thread snapshots. */
 final class ChatThreadAdapter extends RecyclerView.Adapter<ChatThreadAdapter.ThreadViewHolder> {
 
-    interface OnThreadClickListener {
+    interface Listener {
         void onThreadClick(@NonNull ChatThread thread);
+
+        void onProfileClick(@NonNull String userId);
     }
 
-    private final OnThreadClickListener listener;
+    private final Listener listener;
     private final List<ChatThread> items = new ArrayList<>();
+    private Map<String, PublicProfile> profiles = Collections.emptyMap();
+    private String currentUserId = "";
 
-    ChatThreadAdapter(@NonNull OnThreadClickListener listener) {
+    ChatThreadAdapter(@NonNull Listener listener) {
         this.listener = listener;
     }
 
-    void submitList(@NonNull List<ChatThread> threads) {
+    void submitList(@NonNull List<ChatThread> threads, @NonNull String currentUserId) {
         items.clear();
         items.addAll(threads);
+        this.currentUserId = currentUserId;
+        notifyDataSetChanged();
+    }
+
+    void submitProfiles(@NonNull Map<String, PublicProfile> profiles) {
+        this.profiles = profiles;
         notifyDataSetChanged();
     }
 
@@ -52,7 +68,21 @@ final class ChatThreadAdapter extends RecyclerView.Adapter<ChatThreadAdapter.Thr
         holder.preview.setText(thread.hasMessages()
                 ? thread.getLastMessageText()
                 : "No messages yet - start the conversation");
-        holder.avatar.setText(initial(thread.getContextTitle()));
+        String otherUserId = ChatParticipantPolicy.otherUserId(thread, currentUserId);
+        PublicProfile profile = profiles.get(otherUserId);
+        String displayName = profile == null ? "PropCycle Member" : profile.getDisplayName();
+        String avatarKey = profile == null
+                ? ProfileAvatarPolicy.DEFAULT : profile.getAvatarKey();
+        ProfileAvatarRenderer.render(holder.avatar, avatarKey, displayName);
+        boolean canOpenProfile = !otherUserId.isEmpty();
+        holder.avatar.setClickable(canOpenProfile);
+        holder.avatar.setFocusable(canOpenProfile);
+        holder.avatar.setEnabled(canOpenProfile);
+        holder.avatar.setContentDescription(
+                canOpenProfile ? "Open " + displayName + "'s profile" : null);
+        holder.avatar.setOnClickListener(canOpenProfile
+                ? ignored -> listener.onProfileClick(otherUserId)
+                : null);
         holder.time.setText(timeLabel(holder.itemView, thread));
         holder.itemView.setBackgroundResource(R.drawable.bg_messages_thread);
         holder.itemView.setContentDescription(
@@ -63,12 +93,6 @@ final class ChatThreadAdapter extends RecyclerView.Adapter<ChatThreadAdapter.Thr
     @Override
     public int getItemCount() {
         return items.size();
-    }
-
-    @NonNull
-    private static String initial(@NonNull String title) {
-        String trimmed = title.trim();
-        return trimmed.isEmpty() ? "P" : trimmed.substring(0, 1).toUpperCase();
     }
 
     @NonNull

@@ -18,7 +18,9 @@ import com.propcycle.app.R;
 import com.propcycle.app.core.firebase.FirebaseEnvironment;
 import com.propcycle.app.data.activity.ActivityRecord;
 import com.propcycle.app.data.marketplace.MarketplaceListing;
+import com.propcycle.app.data.profile.ProfileAvatarPolicy;
 import com.propcycle.app.databinding.FragmentProfileBinding;
+import com.propcycle.app.ui.common.ProfileAvatarRenderer;
 import com.propcycle.app.ui.common.ResourceCreationFlow;
 import com.propcycle.app.ui.common.ScreenNavigation;
 
@@ -36,6 +38,7 @@ public final class ProfileFragment extends Fragment {
     private MarketplaceListing firstListing;
     private List<ActivityRecord> activityRecords = Collections.emptyList();
     private String requestedUserId = "";
+    private String currentAvatarKey = ProfileAvatarPolicy.DEFAULT;
     private boolean ownProfile;
 
     @Nullable
@@ -77,14 +80,38 @@ public final class ProfileFragment extends Fragment {
                 return;
             }
             binding.profileEditAction.setEnabled(!result.isWorking());
+            binding.profileAvatarAction.setEnabled(!result.isWorking());
+            binding.profileAvatarInitial.setEnabled(!result.isWorking() && ownProfile);
             if (result.isSuccess()) {
                 viewModel.start(requestedUserId);
             }
             Toast.makeText(requireContext(), result.getMessage(), Toast.LENGTH_LONG).show();
         });
         binding.profileEditAction.setOnClickListener(ignored -> showEditName());
+        binding.profileAvatarAction.setOnClickListener(ignored -> showAvatarChooser());
+        binding.profileAvatarInitial.setOnClickListener(ignored -> showAvatarChooser());
         binding.itemCard.setOnClickListener(ignored -> openListingOrCreate());
         binding.logoutAction.setOnClickListener(ignored -> signOut());
+    }
+
+    private void showAvatarChooser() {
+        if (!ownProfile) {
+            return;
+        }
+        List<String> keys = ProfileAvatarPolicy.keys();
+        List<String> labels = ProfileAvatarPolicy.labels();
+        int selected = Math.max(0, keys.indexOf(currentAvatarKey));
+        new MaterialAlertDialogBuilder(requireContext())
+                .setTitle("Choose your avatar")
+                .setSingleChoiceItems(
+                        labels.toArray(new String[0]),
+                        selected,
+                        (dialog, which) -> {
+                            viewModel.updateAvatar(keys.get(which));
+                            dialog.dismiss();
+                        })
+                .setNegativeButton("Cancel", null)
+                .show();
     }
 
     private void showEditName() {
@@ -127,18 +154,28 @@ public final class ProfileFragment extends Fragment {
         binding.profileActivityLabel.setText(ownProfile ? "YOUR ACTIVITY" : "PROFILE");
         binding.profileListingsLabel.setText(ownProfile ? "MY LISTINGS" : "ACTIVE LISTING");
         binding.profileEditAction.setVisibility(ownProfile ? View.VISIBLE : View.GONE);
+        binding.profileAvatarAction.setVisibility(ownProfile ? View.VISIBLE : View.GONE);
         binding.logoutAction.setVisibility(ownProfile ? View.VISIBLE : View.GONE);
+        binding.profileAvatarInitial.setClickable(ownProfile && !state.isLoading());
+        binding.profileAvatarInitial.setFocusable(ownProfile && !state.isLoading());
+        binding.profileAvatarInitial.setContentDescription(ownProfile
+                ? "Choose your profile avatar"
+                : "User profile avatar");
 
         if (state.isLoading()) {
             binding.profileName.setText("Loading profile...");
-            binding.profileAvatarInitial.setText("P");
+            currentAvatarKey = ProfileAvatarPolicy.DEFAULT;
+            ProfileAvatarRenderer.render(
+                    binding.profileAvatarInitial, currentAvatarKey, "PropCycle Member");
             binding.profileEmail.setText("Please wait");
             binding.profileMemberSummary.setText("Loading member details");
             return;
         }
         if (!state.getErrorMessage().isEmpty()) {
             binding.profileName.setText("Profile unavailable");
-            binding.profileAvatarInitial.setText("P");
+            currentAvatarKey = ProfileAvatarPolicy.DEFAULT;
+            ProfileAvatarRenderer.render(
+                    binding.profileAvatarInitial, currentAvatarKey, "PropCycle Member");
             binding.profileEmail.setText(state.getErrorMessage());
             binding.profileMemberSummary.setText("Member details unavailable");
             binding.itemCard.setEnabled(false);
@@ -147,8 +184,8 @@ public final class ProfileFragment extends Fragment {
 
         String name = state.getDisplayName();
         binding.profileName.setText(name);
-        binding.profileAvatarInitial.setText(
-                name.substring(0, 1).toUpperCase(Locale.ROOT));
+        currentAvatarKey = state.getAvatarKey();
+        ProfileAvatarRenderer.render(binding.profileAvatarInitial, currentAvatarKey, name);
         binding.profileEmail.setText(ownProfile
                 ? state.getEmail() == null ? "Email unavailable" : state.getEmail()
                 : "Public PropCycle profile");
