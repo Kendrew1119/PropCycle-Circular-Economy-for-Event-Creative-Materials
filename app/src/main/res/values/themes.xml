@@ -29,4 +29,8 @@
         <item name="android:windowActionModeOverlay">true</item>
         <item name="android:windowNoTitle">true</item>
     </style>
+
+    <style name="Theme.PropCycle.Splash" parent="Theme.PropCycle">
+        <item name="android:windowBackground">@drawable/bg_splash_screen</item>
+    </style>
 </resources>

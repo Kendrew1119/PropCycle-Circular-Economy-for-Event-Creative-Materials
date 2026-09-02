@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -16,6 +18,7 @@ import com.propcycle.app.data.activity.ActivityLogRepository;
 import com.propcycle.app.data.activity.ActivityRecord;
 import com.propcycle.app.databinding.FragmentRecentActivitiesBinding;
 import com.propcycle.app.ui.common.ScreenNavigation;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.Collections;
 import java.util.List;
@@ -25,6 +28,7 @@ public final class RecentActivitiesFragment extends Fragment {
 
     private FragmentRecentActivitiesBinding binding;
     private RecentActivityAdapter adapter;
+    private RecentActivitiesViewModel viewModel;
 
     @Nullable
     @Override
@@ -46,14 +50,30 @@ public final class RecentActivitiesFragment extends Fragment {
         adapter = new RecentActivityAdapter(this::open);
         binding.recentActivityList.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.recentActivityList.setAdapter(adapter);
-        RecentActivitiesViewModel viewModel =
-                new ViewModelProvider(this).get(RecentActivitiesViewModel.class);
+        viewModel = new ViewModelProvider(this).get(RecentActivitiesViewModel.class);
         viewModel.getActivities().observe(getViewLifecycleOwner(), this::render);
+        binding.recentActivityClearAction.setOnClickListener(ignored -> confirmClearActivities());
+    }
+
+    private void confirmClearActivities() {
+        AlertDialog dialog = new MaterialAlertDialogBuilder(requireContext())
+                .setTitle(R.string.recent_activity_clear_title)
+                .setMessage(R.string.recent_activity_clear_message)
+                .setNegativeButton(R.string.recent_activity_clear_cancel, null)
+                .setPositiveButton(R.string.recent_activity_clear_confirm,
+                        (ignored, which) -> viewModel.clearActivities())
+                .create();
+        dialog.setOnShowListener(ignored -> dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                .setTextColor(ContextCompat.getColor(
+                        requireContext(), R.color.pc_brand_accent_red)));
+        dialog.show();
     }
 
     private void render(@Nullable List<ActivityRecord> value) {
         List<ActivityRecord> activities = value == null ? Collections.emptyList() : value;
         adapter.submit(activities);
+        binding.recentActivityClearAction.setEnabled(!activities.isEmpty());
+        binding.recentActivityClearAction.setAlpha(activities.isEmpty() ? 0.4f : 1f);
         binding.recentActivityStatus.setVisibility(
                 activities.isEmpty() ? View.VISIBLE : View.GONE);
     }
@@ -88,6 +108,7 @@ public final class RecentActivitiesFragment extends Fragment {
     @Override
     public void onDestroyView() {
         binding.recentActivityList.setAdapter(null);
+        viewModel = null;
         binding = null;
         super.onDestroyView();
     }

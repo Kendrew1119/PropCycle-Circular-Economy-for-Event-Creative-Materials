@@ -145,6 +145,9 @@ public final class ScreenNavigation {
                 || destination == R.id.lendingDetailFragment
                 || destination == R.id.notificationsFragment
                 || destination == R.id.settingsFragment
+                || destination == R.id.helpFaqFragment
+                || destination == R.id.privacyDataFragment
+                || destination == R.id.aboutPropcycleFragment
                 || destination == R.id.profileFragment;
     }
 

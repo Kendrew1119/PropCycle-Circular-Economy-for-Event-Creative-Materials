@@ -13,6 +13,8 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.NavOptions;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.propcycle.app.R;
@@ -47,8 +49,14 @@ public final class LoginFragment extends Fragment {
                 .get(LoginViewModel.class);
 
         binding.closeButton.setOnClickListener(ignored -> {
-            if (!NavHostFragment.findNavController(this).popBackStack()) {
-                ScreenNavigation.navigateClearingBackStack(this, R.id.welcomeFragment);
+            NavController controller = NavHostFragment.findNavController(this);
+            if (!controller.popBackStack()) {
+                NavOptions options = new NavOptions.Builder()
+                        .setEnterAnim(R.anim.login_transition_hold)
+                        .setExitAnim(R.anim.login_slide_out_down)
+                        .setPopUpTo(R.id.nav_graph, true)
+                        .build();
+                controller.navigate(R.id.welcomeFragment, null, options);
             }
         });
         binding.primaryAction.setOnClickListener(ignored -> submit());

@@ -198,22 +198,24 @@
                         android:textColor="@color/pc_brand_deep_blue"
                         android:textSize="16sp" />
 
-                    <AutoCompleteTextView
-                        android:id="@+id/listing_category_input"
-                        style="@style/Widget.PropCycle.Field"
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.PropCycle.DropdownField"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
-                        android:background="@drawable/bg_create_listing_input"
-                        android:ellipsize="end"
-                        android:fontFamily="sans-serif"
-                        android:gravity="center_vertical"
-                        android:hint="Category"
-                        android:importantForAutofill="no"
-                        android:inputType="none"
-                        android:maxLines="1"
-                        android:paddingStart="14dp"
-                        android:paddingEnd="12dp"
-                        android:textColor="@color/pc_brand_text_primary"
-                        android:textColorHint="@color/pc_brand_text_secondary" />
+                        app:boxBackgroundColor="@color/pc_brand_surface"
+                        app:boxBackgroundMode="outline"
+                        app:boxStrokeColor="@color/pc_brand_primary_blue"
+                        app:boxStrokeWidth="2dp"
+                        app:boxStrokeWidthFocused="2dp"
+                        app:hintEnabled="false">
+
+                        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                            android:id="@+id/listing_category_input"
+                            style="@style/Widget.PropCycle.DropdownInput"
+                            android:hint="Category"
+                            android:importantForAutofill="no" />
+                    </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
 
                 <LinearLayout
@@ -232,22 +234,24 @@
                         android:textColor="@color/pc_brand_deep_blue"
                         android:textSize="16sp" />
 
-                    <AutoCompleteTextView
-                        android:id="@+id/listing_condition_input"
-                        style="@style/Widget.PropCycle.Field"
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.PropCycle.DropdownField"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
-                        android:background="@drawable/bg_create_listing_input"
-                        android:ellipsize="end"
-                        android:fontFamily="sans-serif"
-                        android:gravity="center_vertical"
-                        android:hint="Condition"
-                        android:importantForAutofill="no"
-                        android:inputType="none"
-                        android:maxLines="1"
-                        android:paddingStart="14dp"
-                        android:paddingEnd="12dp"
-                        android:textColor="@color/pc_brand_text_primary"
-                        android:textColorHint="@color/pc_brand_text_secondary" />
+                        app:boxBackgroundColor="@color/pc_brand_surface"
+                        app:boxBackgroundMode="outline"
+                        app:boxStrokeColor="@color/pc_brand_primary_blue"
+                        app:boxStrokeWidth="2dp"
+                        app:boxStrokeWidthFocused="2dp"
+                        app:hintEnabled="false">
+
+                        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                            android:id="@+id/listing_condition_input"
+                            style="@style/Widget.PropCycle.DropdownInput"
+                            android:hint="Condition"
+                            android:importantForAutofill="no" />
+                    </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
             </LinearLayout>
 
@@ -273,22 +277,24 @@
                         android:textColor="@color/pc_brand_deep_blue"
                         android:textSize="16sp" />
 
-                    <AutoCompleteTextView
-                        android:id="@+id/listing_transaction_input"
-                        style="@style/Widget.PropCycle.Field"
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.PropCycle.DropdownField"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
-                        android:background="@drawable/bg_create_listing_input"
-                        android:ellipsize="end"
-                        android:fontFamily="sans-serif"
-                        android:gravity="center_vertical"
-                        android:hint="Donation"
-                        android:importantForAutofill="no"
-                        android:inputType="none"
-                        android:maxLines="1"
-                        android:paddingStart="14dp"
-                        android:paddingEnd="12dp"
-                        android:textColor="@color/pc_brand_text_primary"
-                        android:textColorHint="@color/pc_brand_text_secondary" />
+                        app:boxBackgroundColor="@color/pc_brand_surface"
+                        app:boxBackgroundMode="outline"
+                        app:boxStrokeColor="@color/pc_brand_primary_blue"
+                        app:boxStrokeWidth="2dp"
+                        app:boxStrokeWidthFocused="2dp"
+                        app:hintEnabled="false">
+
+                        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                            android:id="@+id/listing_transaction_input"
+                            style="@style/Widget.PropCycle.DropdownInput"
+                            android:hint="Donation"
+                            android:importantForAutofill="no" />
+                    </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
 
                 <LinearLayout
@@ -307,22 +313,24 @@
                         android:textColor="@color/pc_brand_deep_blue"
                         android:textSize="16sp" />
 
-                    <AutoCompleteTextView
-                        android:id="@+id/listing_fulfilment_input"
-                        style="@style/Widget.PropCycle.Field"
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.PropCycle.DropdownField"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
-                        android:background="@drawable/bg_create_listing_input"
-                        android:ellipsize="end"
-                        android:fontFamily="sans-serif"
-                        android:gravity="center_vertical"
-                        android:hint="Pickup"
-                        android:importantForAutofill="no"
-                        android:inputType="none"
-                        android:maxLines="1"
-                        android:paddingStart="14dp"
-                        android:paddingEnd="12dp"
-                        android:textColor="@color/pc_brand_text_primary"
-                        android:textColorHint="@color/pc_brand_text_secondary" />
+                        app:boxBackgroundColor="@color/pc_brand_surface"
+                        app:boxBackgroundMode="outline"
+                        app:boxStrokeColor="@color/pc_brand_primary_blue"
+                        app:boxStrokeWidth="2dp"
+                        app:boxStrokeWidthFocused="2dp"
+                        app:hintEnabled="false">
+
+                        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                            android:id="@+id/listing_fulfilment_input"
+                            style="@style/Widget.PropCycle.DropdownInput"
+                            android:hint="Pickup"
+                            android:importantForAutofill="no" />
+                    </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
             </LinearLayout>
 

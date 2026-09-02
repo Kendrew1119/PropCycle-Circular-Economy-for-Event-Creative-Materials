@@ -1,33 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="TextAppearance.PropCycle.Display" parent="TextAppearance.Material3.DisplaySmall">
-        <item name="android:fontFamily">cursive</item>
+        <item name="android:fontFamily">@font/fredoka_semibold</item>
         <item name="android:textColor">@color/pc_text_primary</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">34sp</item>
     </style>
 
     <style name="TextAppearance.PropCycle.Heading" parent="TextAppearance.Material3.HeadlineMedium">
-        <item name="android:fontFamily">cursive</item>
+        <item name="android:fontFamily">@font/fredoka_semibold</item>
         <item name="android:textColor">@color/pc_text_primary</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">28sp</item>
     </style>
 
     <style name="TextAppearance.PropCycle.Title" parent="TextAppearance.Material3.TitleLarge">
+        <item name="android:fontFamily">@font/fredoka_semibold</item>
         <item name="android:textColor">@color/pc_text_primary</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">22sp</item>
     </style>
 
     <style name="TextAppearance.PropCycle.Body" parent="TextAppearance.Material3.BodyLarge">
+        <item name="android:fontFamily">sans-serif</item>
         <item name="android:textColor">@color/pc_text_primary</item>
         <item name="android:textSize">16sp</item>
     </style>
 
     <style name="TextAppearance.PropCycle.Caption" parent="TextAppearance.Material3.BodySmall">
+        <item name="android:fontFamily">sans-serif</item>
         <item name="android:textColor">@color/pc_text_secondary</item>
         <item name="android:textSize">13sp</item>
+    </style>
+
+    <style name="TextAppearance.PropCycle.SettingsInfoTitle" parent="TextAppearance.Material3.TitleMedium">
+        <item name="android:fontFamily">@font/fredoka_semibold</item>
+        <item name="android:textColor">@color/pc_brand_deep_blue</item>
+        <item name="android:textSize">17sp</item>
+    </style>
+
+    <style name="TextAppearance.PropCycle.SettingsInfoBody" parent="TextAppearance.Material3.BodyMedium">
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textColor">@color/pc_brand_text_primary</item>
+        <item name="android:textSize">14sp</item>
     </style>
 
     <style name="TextAppearance.PropCycle.BottomNavigation" parent="TextAppearance.Material3.LabelSmall">
@@ -74,6 +89,40 @@
         <item name="android:paddingEnd">20dp</item>
         <item name="android:textColor">@color/pc_text_primary</item>
         <item name="android:textColorHint">@color/pc_text_secondary</item>
+        <item name="android:textSize">15sp</item>
+    </style>
+
+    <style name="Widget.PropCycle.DropdownField" parent="Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+        <item name="boxBackgroundMode">outline</item>
+        <item name="boxBackgroundColor">@color/pc_brand_surface</item>
+        <item name="boxCornerRadiusBottomEnd">14dp</item>
+        <item name="boxCornerRadiusBottomStart">14dp</item>
+        <item name="boxCornerRadiusTopEnd">14dp</item>
+        <item name="boxCornerRadiusTopStart">14dp</item>
+        <item name="boxStrokeColor">@color/pc_brand_primary_blue</item>
+        <item name="boxStrokeWidth">2dp</item>
+        <item name="boxStrokeWidthFocused">2dp</item>
+        <item name="endIconDrawable">@drawable/ic_lending_map_chevron_down</item>
+        <item name="endIconTint">@color/pc_brand_deep_blue</item>
+        <item name="hintTextColor">@color/pc_brand_text_secondary</item>
+    </style>
+
+    <style name="Widget.PropCycle.DropdownInput" parent="">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:minHeight">56dp</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:dropDownVerticalOffset">4dp</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:inputType">none</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:paddingStart">14dp</item>
+        <item name="android:paddingEnd">8dp</item>
+        <item name="android:popupBackground">@drawable/bg_propcycle_dropdown_popup</item>
+        <item name="android:textColor">@color/pc_brand_deep_blue</item>
+        <item name="android:textColorHint">@color/pc_brand_text_secondary</item>
         <item name="android:textSize">15sp</item>
     </style>
 

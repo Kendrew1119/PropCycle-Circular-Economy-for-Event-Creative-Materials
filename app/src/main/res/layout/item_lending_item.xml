@@ -71,6 +71,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="7dp"
                 android:background="@drawable/bg_marketplace_meta"
+                android:fontFamily="@font/fredoka_semibold"
                 android:paddingStart="8dp"
                 android:paddingTop="3dp"
                 android:paddingEnd="8dp"

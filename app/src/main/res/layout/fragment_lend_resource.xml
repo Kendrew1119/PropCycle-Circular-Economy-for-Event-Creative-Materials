@@ -182,62 +182,52 @@
             android:orientation="horizontal">
 
             <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                style="@style/Widget.PropCycle.DropdownField"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:hint="Category"
                 app:boxBackgroundColor="@color/pc_brand_surface"
-                app:boxCornerRadiusBottomEnd="14dp"
-                app:boxCornerRadiusBottomStart="14dp"
-                app:boxCornerRadiusTopEnd="14dp"
-                app:boxCornerRadiusTopStart="14dp"
-                app:boxStrokeColor="@color/lend_field_stroke"
-                app:boxStrokeWidth="1dp"
-                app:boxStrokeWidthFocused="2dp"
-                app:endIconTint="@color/pc_brand_deep_blue"
-                app:hintTextColor="@color/pc_brand_text_secondary">
+                app:boxBackgroundMode="outline"
+                app:boxStrokeColor="@color/pc_brand_primary_blue"
+                app:boxStrokeWidth="2dp"
+                app:boxStrokeWidthFocused="2dp">
 
                 <com.google.android.material.textfield.MaterialAutoCompleteTextView
                     android:id="@+id/lending_category_input"
+                    style="@style/Widget.PropCycle.DropdownInput"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
                     android:inputType="none"
                     android:maxLines="1"
                     android:minHeight="56dp"
-                    android:textColor="@color/pc_brand_text_primary"
-                    android:textSize="14sp" />
+                    android:textColor="@color/pc_brand_text_primary" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                style="@style/Widget.PropCycle.DropdownField"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_weight="1"
                 android:hint="Condition"
                 app:boxBackgroundColor="@color/pc_brand_surface"
-                app:boxCornerRadiusBottomEnd="14dp"
-                app:boxCornerRadiusBottomStart="14dp"
-                app:boxCornerRadiusTopEnd="14dp"
-                app:boxCornerRadiusTopStart="14dp"
-                app:boxStrokeColor="@color/lend_field_stroke"
-                app:boxStrokeWidth="1dp"
-                app:boxStrokeWidthFocused="2dp"
-                app:endIconTint="@color/pc_brand_deep_blue"
-                app:hintTextColor="@color/pc_brand_text_secondary">
+                app:boxBackgroundMode="outline"
+                app:boxStrokeColor="@color/pc_brand_primary_blue"
+                app:boxStrokeWidth="2dp"
+                app:boxStrokeWidthFocused="2dp">
 
                 <com.google.android.material.textfield.MaterialAutoCompleteTextView
                     android:id="@+id/lending_condition_input"
+                    style="@style/Widget.PropCycle.DropdownInput"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
                     android:inputType="none"
                     android:maxLines="1"
                     android:minHeight="56dp"
-                    android:textColor="@color/pc_brand_text_primary"
-                    android:textSize="14sp" />
+                    android:textColor="@color/pc_brand_text_primary" />
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 
@@ -307,34 +297,29 @@
         </LinearLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            style="@style/Widget.PropCycle.DropdownField"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:hint="Pickup method"
             app:boxBackgroundColor="@color/pc_brand_surface"
-            app:boxCornerRadiusBottomEnd="14dp"
-            app:boxCornerRadiusBottomStart="14dp"
-            app:boxCornerRadiusTopEnd="14dp"
-            app:boxCornerRadiusTopStart="14dp"
-            app:boxStrokeColor="@color/lend_field_stroke"
-            app:boxStrokeWidth="1dp"
+            app:boxBackgroundMode="outline"
+            app:boxStrokeColor="@color/pc_brand_primary_blue"
+            app:boxStrokeWidth="2dp"
             app:boxStrokeWidthFocused="2dp"
-            app:endIconTint="@color/pc_brand_deep_blue"
-            app:hintTextColor="@color/pc_brand_text_secondary"
             app:startIconDrawable="@drawable/ic_location"
             app:startIconTint="@color/pc_brand_deep_blue">
 
             <com.google.android.material.textfield.MaterialAutoCompleteTextView
                 android:id="@+id/lending_pickup_input"
+                style="@style/Widget.PropCycle.DropdownInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:inputType="none"
                 android:maxLines="1"
                 android:minHeight="56dp"
-                android:textColor="@color/pc_brand_text_primary"
-                android:textSize="15sp" />
+                android:textColor="@color/pc_brand_text_primary" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout

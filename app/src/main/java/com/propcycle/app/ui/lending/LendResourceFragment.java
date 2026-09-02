@@ -205,8 +205,13 @@ public final class LendResourceFragment extends Fragment {
     private void setDropdown(
             @NonNull android.widget.AutoCompleteTextView input,
             @NonNull String[] choices) {
-        input.setAdapter(new ArrayAdapter<>(
-                requireContext(), android.R.layout.simple_dropdown_item_1line, choices));
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                requireContext(),
+                R.layout.item_propcycle_dropdown_option,
+                R.id.dropdown_option_text,
+                choices);
+        adapter.setDropDownViewResource(R.layout.item_propcycle_dropdown_option);
+        input.setAdapter(adapter);
         input.setOnClickListener(ignored -> input.showDropDown());
     }
 

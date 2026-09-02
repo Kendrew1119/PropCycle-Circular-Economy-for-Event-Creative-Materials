@@ -44,6 +44,7 @@
             android:id="@+id/activity_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/fredoka_semibold"
             android:maxLines="2"
             android:textColor="@color/pc_brand_text_primary"
             android:textSize="16sp"

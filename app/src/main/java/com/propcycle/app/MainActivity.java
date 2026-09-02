@@ -117,9 +117,14 @@ public final class MainActivity extends AppCompatActivity {
         TextView appHeaderTitle = findViewById(R.id.app_header_title);
         BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
         NavController controller = navController();
-        findViewById(R.id.app_header_settings).setOnClickListener(
-                ignored -> ScreenNavigation.navigateTopLevel(
-                        this, controller, R.id.settingsFragment));
+        findViewById(R.id.app_header_settings).setOnClickListener(ignored -> {
+            NavDestination current = controller.getCurrentDestination();
+            @IdRes int destination = current != null
+                    && current.getId() == R.id.settingsFragment
+                    ? R.id.homeFragment
+                    : R.id.settingsFragment;
+            ScreenNavigation.navigateTopLevel(this, controller, destination);
+        });
         findViewById(R.id.app_header_notifications).setOnClickListener(
                 ignored -> ScreenNavigation.navigateTopLevel(
                         this, controller, R.id.notificationsFragment));

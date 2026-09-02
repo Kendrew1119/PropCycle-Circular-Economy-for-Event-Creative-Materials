@@ -64,6 +64,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:background="@drawable/bg_lending_map_meta_chip"
+                android:fontFamily="@font/fredoka_semibold"
                 android:paddingStart="8dp"
                 android:paddingTop="2dp"
                 android:paddingEnd="8dp"

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.PropCycle.Splash" parent="Theme.PropCycle">
+        <item name="android:windowBackground">@drawable/bg_splash_screen</item>
+        <item name="android:windowSplashScreenBackground">@color/pc_brand_surface</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
+        <item name="android:windowSplashScreenIconBackgroundColor">@android:color/transparent</item>
+        <item name="android:windowSplashScreenBrandingImage">@drawable/welcome_wordmark</item>
+    </style>
+</resources>

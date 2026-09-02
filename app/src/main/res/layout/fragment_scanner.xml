@@ -260,41 +260,11 @@
 
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:background="@drawable/bg_scanner_disclosure"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingStart="13dp"
-                android:paddingTop="12dp"
-                android:paddingEnd="13dp"
-                android:paddingBottom="12dp">
-
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:contentDescription="@null"
-                    android:importantForAccessibility="no"
-                    android:src="@drawable/ic_scanner_notice_bulb" />
-
-                <TextView
-                    android:id="@+id/scanner_disclosure"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="11dp"
-                    android:layout_weight="1"
-                    android:lineSpacingExtra="2dp"
-                    android:text="@string/scanner_disclosure"
-                    android:textColor="@color/pc_brand_text_primary"
-                    android:textSize="13sp" />
-            </LinearLayout>
-
             <CheckBox
                 android:id="@+id/scanner_disclosure_checkbox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:minHeight="@dimen/touch_target"
                 android:buttonTint="@color/pc_brand_primary_blue"
                 android:paddingTop="4dp"

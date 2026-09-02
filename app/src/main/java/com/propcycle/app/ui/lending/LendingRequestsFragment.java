@@ -147,12 +147,13 @@ public final class LendingRequestsFragment extends Fragment {
         adapter.submitList(state.getRequests(), state.getBusyRequestId());
         binding.lendingRequestProgress.setVisibility(
                 state.isLoading() ? View.VISIBLE : View.GONE);
-        binding.lendingRequestEmpty.setVisibility(
-                !state.isLoading() && state.getRequests().isEmpty()
-                        ? View.VISIBLE : View.GONE);
-        binding.lendingRequestStatus.setText(state.getMessage() == null
-                ? state.getRequests().size() + " lending update(s)"
-                : state.getMessage());
+        String message = state.getMessage();
+        if (message == null) {
+            message = !state.isLoading() && state.getRequests().isEmpty()
+                    ? "No lending updates yet."
+                    : state.getRequests().size() + " lending update(s)";
+        }
+        binding.lendingRequestStatus.setText(message);
     }
 
     private void renderMarketplaceNotices(
@@ -163,8 +164,6 @@ public final class LendingRequestsFragment extends Fragment {
         marketplaceAdapter.submitList(state.getNotices());
         boolean hasNotices = !state.getNotices().isEmpty();
         binding.marketplaceUpdateList.setVisibility(hasNotices ? View.VISIBLE : View.GONE);
-        binding.marketplaceUpdateEmpty.setVisibility(
-                !state.isLoading() && !hasNotices ? View.VISIBLE : View.GONE);
         String message = state.getMessage();
         if (state.isLoading()) {
             message = "Loading Marketplace status updates...";

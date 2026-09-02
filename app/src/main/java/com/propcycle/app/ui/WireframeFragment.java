@@ -9,6 +9,7 @@ import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavOptions;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.propcycle.app.R;
@@ -39,8 +40,16 @@ public final class WireframeFragment extends Fragment {
         ScreenNavigation.bindChrome(this, view);
         View primary = view.findViewById(R.id.primary_action);
         if (primary != null) {
-            primary.setOnClickListener(ignored ->
-                    NavHostFragment.findNavController(this).navigate(R.id.loginFragment));
+            primary.setOnClickListener(ignored -> {
+                NavOptions options = new NavOptions.Builder()
+                        .setEnterAnim(R.anim.login_slide_in_up)
+                        .setExitAnim(R.anim.login_transition_hold)
+                        .setPopEnterAnim(R.anim.login_transition_hold)
+                        .setPopExitAnim(R.anim.login_slide_out_down)
+                        .build();
+                NavHostFragment.findNavController(this)
+                        .navigate(R.id.loginFragment, null, options);
+            });
         }
     }
 }

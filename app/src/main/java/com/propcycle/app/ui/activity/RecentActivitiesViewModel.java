@@ -13,15 +13,21 @@ import java.util.List;
 
 public final class RecentActivitiesViewModel extends AndroidViewModel {
 
+    private final ActivityLogRepository repository;
     private final LiveData<List<ActivityRecord>> activities;
 
     public RecentActivitiesViewModel(@NonNull Application application) {
         super(application);
-        activities = new ActivityLogRepository(application).observeCurrentUser();
+        repository = new ActivityLogRepository(application);
+        activities = repository.observeCurrentUser();
     }
 
     @NonNull
     public LiveData<List<ActivityRecord>> getActivities() {
         return activities;
+    }
+
+    public void clearActivities() {
+        repository.clearCurrentUser();
     }
 }

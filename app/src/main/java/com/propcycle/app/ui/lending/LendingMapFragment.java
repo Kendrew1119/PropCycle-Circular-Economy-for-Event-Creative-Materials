@@ -262,7 +262,6 @@ public final class LendingMapFragment extends Fragment {
             }
         }
         binding.lendingMapStatus.setText(message);
-        binding.lendingMapLocationAction.setEnabled(!state.isLoading());
         renderMarkers();
     }
 

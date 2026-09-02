@@ -153,11 +153,7 @@
                     android:layout_height="@dimen/home_search_height"
                     android:layout_marginTop="14dp"
                     android:background="@drawable/bg_home_search"
-                    android:clickable="true"
-                    android:contentDescription="Search marketplace or lending items"
                     android:elevation="2dp"
-                    android:focusable="true"
-                    android:foreground="?attr/selectableItemBackground"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
                     android:outlineProvider="background"
@@ -172,16 +168,23 @@
                         android:src="@drawable/ic_search"
                         app:tint="@color/pc_brand_deep_blue" />
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatEditText
+                        android:id="@+id/home_search_input"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_marginStart="12dp"
                         android:layout_weight="1"
+                        android:background="@android:color/transparent"
                         android:ellipsize="end"
                         android:gravity="center_vertical"
+                        android:hint="@string/home_search_hint"
+                        android:imeOptions="actionSearch"
+                        android:inputType="text"
                         android:maxLines="1"
-                        android:text="@string/home_search_hint"
-                        android:textColor="@color/pc_brand_text_secondary"
+                        android:padding="0dp"
+                        android:singleLine="true"
+                        android:textColor="@color/pc_brand_text_primary"
+                        android:textColorHint="@color/pc_brand_text_secondary"
                         android:textSize="@dimen/home_search_text_size" />
 
                     <ImageView
@@ -193,6 +196,88 @@
                         android:src="@drawable/scan_frame"
                         app:tint="@color/pc_brand_deep_blue" />
                 </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/home_search_results"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/bg_home_search_results"
+                    android:elevation="2dp"
+                    android:orientation="vertical"
+                    android:outlineProvider="background"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:visibility="gone">
+
+                    <LinearLayout
+                        android:id="@+id/home_search_actions_section"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/fredoka_semibold"
+                            android:paddingStart="12dp"
+                            android:paddingTop="2dp"
+                            android:paddingEnd="12dp"
+                            android:paddingBottom="4dp"
+                            android:text="@string/home_search_actions_title"
+                            android:textColor="@color/pc_brand_deep_blue"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                        <LinearLayout
+                            android:id="@+id/home_search_actions_list"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/home_search_resources_section"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/fredoka_semibold"
+                            android:paddingStart="12dp"
+                            android:paddingTop="6dp"
+                            android:paddingEnd="12dp"
+                            android:paddingBottom="4dp"
+                            android:text="@string/home_search_resources_title"
+                            android:textColor="@color/pc_brand_deep_blue"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                        <LinearLayout
+                            android:id="@+id/home_search_resources_list"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/home_search_status"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:paddingStart="14dp"
+                        android:paddingTop="10dp"
+                        android:paddingEnd="14dp"
+                        android:paddingBottom="10dp"
+                        android:textColor="@color/pc_brand_text_secondary"
+                        android:textSize="13sp"
+                        android:visibility="gone" />
+                </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -661,7 +746,8 @@
                         android:maxLines="2"
                         android:text="@string/home_impact_empty_message"
                         android:textColor="@color/pc_brand_text_secondary"
-                        android:textSize="11sp" />
+                        android:textSize="11sp"
+                        android:visibility="gone" />
                 </LinearLayout>
 
                 <TextView

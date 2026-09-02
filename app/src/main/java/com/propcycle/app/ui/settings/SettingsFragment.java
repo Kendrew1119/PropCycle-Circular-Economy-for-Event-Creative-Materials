@@ -16,6 +16,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.propcycle.app.BuildConfig;
 import com.propcycle.app.R;
 import com.propcycle.app.data.activity.ActivityLogRepository;
 import com.propcycle.app.databinding.FragmentSettingsBinding;
@@ -61,7 +62,17 @@ public final class SettingsFragment extends Fragment {
         binding.locationSetting.setOnClickListener(ignored -> showLocationExplanation());
         binding.accountDetailsAction.setOnClickListener(ignored ->
                 ScreenNavigation.navigateAuthenticated(this, R.id.profileFragment, null));
+        binding.clearRecentSearchAction.setOnClickListener(ignored -> showRecentSearchStatus());
         binding.clearHistoryAction.setOnClickListener(ignored -> confirmClearHistory());
+        binding.helpFaqAction.setOnClickListener(ignored ->
+                ScreenNavigation.navigateAuthenticated(this, R.id.helpFaqFragment, null));
+        binding.privacyDataAction.setOnClickListener(ignored ->
+                ScreenNavigation.navigateAuthenticated(this, R.id.privacyDataFragment, null));
+        binding.aboutPropcycleAction.setOnClickListener(ignored ->
+                ScreenNavigation.navigateAuthenticated(this, R.id.aboutPropcycleFragment, null));
+        binding.appVersionValue.setText(getString(
+                R.string.settings_app_version_format,
+                BuildConfig.VERSION_NAME));
         updateLocationStatus();
     }
 
@@ -107,6 +118,14 @@ public final class SettingsFragment extends Fragment {
                 .setPositiveButton("Clear", (dialog, which) ->
                         new ActivityLogRepository(requireContext()).clearCurrentUser())
                 .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    private void showRecentSearchStatus() {
+        new MaterialAlertDialogBuilder(requireContext())
+                .setTitle(R.string.settings_clear_recent_search_dialog_title)
+                .setMessage(R.string.settings_clear_recent_search_dialog_message)
+                .setPositiveButton(android.R.string.ok, null)
                 .show();
     }
 

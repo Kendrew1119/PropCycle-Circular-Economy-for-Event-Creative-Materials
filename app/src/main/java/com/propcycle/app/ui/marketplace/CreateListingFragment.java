@@ -251,10 +251,13 @@ public final class CreateListingFragment extends Fragment {
     private void setDropdown(
             @NonNull android.widget.AutoCompleteTextView input,
             @NonNull String[] options) {
-        input.setAdapter(new ArrayAdapter<>(
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 requireContext(),
-                android.R.layout.simple_dropdown_item_1line,
-                options));
+                R.layout.item_propcycle_dropdown_option,
+                R.id.dropdown_option_text,
+                options);
+        adapter.setDropDownViewResource(R.layout.item_propcycle_dropdown_option);
+        input.setAdapter(adapter);
         input.setOnClickListener(ignored -> input.showDropDown());
     }
 

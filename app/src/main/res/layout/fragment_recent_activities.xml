@@ -98,12 +98,20 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="14dp"
                 android:layout_weight="1"
-                android:fontFamily="sans-serif"
+                android:fontFamily="@font/fredoka_semibold"
                 android:maxLines="2"
                 android:text="@string/home_recent_title"
                 android:textColor="@color/pc_brand_deep_blue"
                 android:textSize="27sp"
                 android:textStyle="bold" />
+
+            <ImageButton
+                android:id="@+id/recent_activity_clear_action"
+                style="@style/Widget.PropCycle.IconButton"
+                android:contentDescription="@string/recent_activity_clear_description"
+                android:padding="13dp"
+                android:src="@drawable/ic_lend_delete"
+                app:tint="@color/pc_brand_accent_red" />
         </LinearLayout>
 
         <TextView

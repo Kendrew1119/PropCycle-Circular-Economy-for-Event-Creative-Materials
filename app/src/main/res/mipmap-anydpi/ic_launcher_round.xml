@@ -1,19 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="48dp"
-    android:height="48dp"
-    android:viewportWidth="108"
-    android:viewportHeight="108">
-    <path
-        android:fillColor="@color/pc_ink"
-        android:pathData="M54,4 A50,50 0,1 0,54,104 A50,50 0,1 0,54,4" />
-    <path
-        android:fillColor="@android:color/transparent"
-        android:pathData="M54,27 A27,27 0,0 1,81,54 M77,72 A27,27 0,0 1,31,72 M27,54 A27,27 0,0 1,44,29"
-        android:strokeColor="@color/pc_white"
-        android:strokeLineCap="round"
-        android:strokeWidth="8" />
-    <path android:fillColor="@color/pc_white" android:pathData="M77,43 L91,54 L76,62 Z" />
-    <path android:fillColor="@color/pc_white" android:pathData="M42,78 L26,82 L29,65 Z" />
-    <path android:fillColor="@color/pc_white" android:pathData="M36,34 L47,20 L53,37 Z" />
-</vector>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="@color/pc_brand_warm_cream" />
+        </shape>
+    </item>
+    <item
+        android:width="42dp"
+        android:height="42dp"
+        android:gravity="center">
+        <bitmap
+            android:antialias="true"
+            android:dither="true"
+            android:filter="true"
+            android:gravity="fill"
+            android:src="@drawable/propcycle_logo_mascot" />
+    </item>
+    <item
+        android:width="29dp"
+        android:height="29dp"
+        android:gravity="center">
+        <shape android:shape="oval">
+            <solid android:color="@android:color/transparent" />
+            <stroke
+                android:width="1dp"
+                android:color="@color/pc_brand_deep_blue" />
+        </shape>
+    </item>
+</layer-list>

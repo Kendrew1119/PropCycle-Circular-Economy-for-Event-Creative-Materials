@@ -354,18 +354,10 @@
                     android:textColor="@color/pc_brand_deep_blue"
                     android:textSize="21sp" />
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="Keep the details current, pause the listing, or mark it sold when the exchange is complete."
-                    android:textColor="@color/pc_brand_text_secondary"
-                    android:textSize="14sp" />
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="10dp"
                     android:orientation="horizontal">
 
                     <TextView
