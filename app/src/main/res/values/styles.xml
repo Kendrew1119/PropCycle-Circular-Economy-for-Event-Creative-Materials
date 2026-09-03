@@ -256,9 +256,6 @@
         <item name="colorSurface">@color/pc_brand_surface</item>
         <item name="colorOnSurface">@color/pc_brand_text_primary</item>
         <item name="colorOutline">@color/pc_brand_outline</item>
-        <item name="materialAlertDialogTitleTextStyle">@style/TextAppearance.PropCycle.DialogTitle</item>
-        <item name="buttonBarPositiveButtonStyle">@style/Widget.PropCycle.MaterialCalendar.ActionButton</item>
-        <item name="buttonBarNegativeButtonStyle">@style/Widget.PropCycle.MaterialCalendar.ActionButton</item>
         <item name="shapeAppearanceOverlay">@style/ShapeAppearance.PropCycle.Dialog</item>
     </style>
 

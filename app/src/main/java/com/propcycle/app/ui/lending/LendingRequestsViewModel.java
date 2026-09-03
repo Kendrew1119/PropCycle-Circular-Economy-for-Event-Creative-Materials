@@ -175,6 +175,7 @@ public final class LendingRequestsViewModel extends AndroidViewModel {
         }
         state.setValue(new State(false, fromCache, "Saving lending update...",
                 request.getId(), requests));
+        android.widget.Toast.makeText(getApplication(), "Processing " + action, android.widget.Toast.LENGTH_SHORT).show();
         task.addOnSuccessListener(ignored -> {
                     activityLog.record(
                             ActivityLogRepository.TYPE_LENDING_STATUS,
@@ -185,12 +186,16 @@ public final class LendingRequestsViewModel extends AndroidViewModel {
                             request.getId());
                     state.setValue(new State(
                             false, fromCache, "Lending update saved.", null, requests));
+                    android.widget.Toast.makeText(getApplication(), "Success", android.widget.Toast.LENGTH_SHORT).show();
                 })
-                .addOnFailureListener(error -> state.setValue(new State(
+                .addOnFailureListener(error -> {
+                    android.widget.Toast.makeText(getApplication(), "Failed: " + error.getMessage(), android.widget.Toast.LENGTH_LONG).show();
+                    state.setValue(new State(
                         false, fromCache,
                         LendingListViewModel.safeMessage(
                                 error, "The lending update could not be saved."),
-                        null, requests)));
+                        null, requests));
+                });
     }
 
     public void rate(@NonNull LendingRequest request, int score, @Nullable String comment) {

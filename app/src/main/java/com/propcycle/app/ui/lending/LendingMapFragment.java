@@ -147,7 +147,7 @@ public final class LendingMapFragment extends Fragment {
                 break;
             }
         }
-        new MaterialAlertDialogBuilder(requireContext(), R.style.ThemeOverlay_PropCycle_MaterialAlertDialog)
+        new MaterialAlertDialogBuilder(requireContext())
                 .setTitle("Filter lending items")
                 .setSingleChoiceItems(labels, selected, (dialog, which) -> {
                     viewModel.setCategory(values[which]);
