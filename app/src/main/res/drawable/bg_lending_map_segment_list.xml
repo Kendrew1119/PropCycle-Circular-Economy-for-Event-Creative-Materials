@@ -1,19 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<inset xmlns:android="http://schemas.android.com/apk/res/android"
-    android:insetTop="6dp"
-    android:insetBottom="6dp">
-    <selector>
-        <item android:state_pressed="true">
-            <shape android:shape="rectangle">
-                <solid android:color="@color/pc_brand_soft_blue" />
-                <corners android:topRightRadius="17dp" android:bottomRightRadius="17dp" />
-            </shape>
-        </item>
-        <item>
-            <shape android:shape="rectangle">
-                <solid android:color="@color/pc_transparent" />
-                <corners android:topRightRadius="17dp" android:bottomRightRadius="17dp" />
-            </shape>
-        </item>
-    </selector>
-</inset>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="true">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/pc_brand_soft_blue" />
+            <corners android:topRightRadius="13dp" android:bottomRightRadius="13dp" />
+        </shape>
+    </item>
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/pc_transparent" />
+            <corners android:topRightRadius="13dp" android:bottomRightRadius="13dp" />
+        </shape>
+    </item>
+</selector>

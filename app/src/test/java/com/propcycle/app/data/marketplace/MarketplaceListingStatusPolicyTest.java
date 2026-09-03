@@ -63,4 +63,22 @@ public final class MarketplaceListingStatusPolicyTest {
         assertFalse(MarketplaceListingStatusPolicy.canMarkSold(true, "completed"));
         assertFalse(MarketplaceListingStatusPolicy.canContactSeller(false, "completed"));
     }
+
+    @Test
+    public void completionLabels_varyByTransactionIntent() {
+        assertTrue(MarketplaceListingStatusPolicy.canComplete(true, "available"));
+        assertFalse(MarketplaceListingStatusPolicy.canComplete(false, "available"));
+
+        assertEquals("Mark as Sold", MarketplaceListingStatusPolicy.completionActionLabel("sale"));
+        assertEquals("Mark as Given Away", MarketplaceListingStatusPolicy.completionActionLabel("donation"));
+        assertEquals("Mark as Exchanged", MarketplaceListingStatusPolicy.completionActionLabel("exchange"));
+
+        assertEquals("Sold", MarketplaceListingStatusPolicy.completedDisplayLabel("sale"));
+        assertEquals("Given Away", MarketplaceListingStatusPolicy.completedDisplayLabel("donation"));
+        assertEquals("Exchanged", MarketplaceListingStatusPolicy.completedDisplayLabel("exchange"));
+
+        assertEquals("Mark this item as sold?", MarketplaceListingStatusPolicy.completionConfirmationTitle("sale"));
+        assertEquals("Mark this item as given away?", MarketplaceListingStatusPolicy.completionConfirmationTitle("donation"));
+        assertEquals("Mark this item as exchanged?", MarketplaceListingStatusPolicy.completionConfirmationTitle("exchange"));
+    }
 }

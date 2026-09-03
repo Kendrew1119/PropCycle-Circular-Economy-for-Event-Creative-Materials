@@ -9,11 +9,14 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.FirebaseAuth;
 import com.propcycle.app.R;
 import com.propcycle.app.core.firebase.FirebaseEnvironment;
 import com.propcycle.app.data.activity.ActivityRecord;
@@ -91,6 +94,8 @@ public final class ProfileFragment extends Fragment {
         binding.profileAvatarAction.setOnClickListener(ignored -> showAvatarChooser());
         binding.profileAvatarInitial.setOnClickListener(ignored -> showAvatarChooser());
         binding.itemCard.setOnClickListener(ignored -> openListingOrCreate());
+        binding.changePasswordAction.setOnClickListener(ignored -> showChangePasswordDialog());
+        binding.deleteAccountAction.setOnClickListener(ignored -> showDeleteAccountDialog());
         binding.logoutAction.setOnClickListener(ignored -> signOut());
     }
 
@@ -101,7 +106,8 @@ public final class ProfileFragment extends Fragment {
         List<String> keys = ProfileAvatarPolicy.keys();
         List<String> labels = ProfileAvatarPolicy.labels();
         int selected = Math.max(0, keys.indexOf(currentAvatarKey));
-        new MaterialAlertDialogBuilder(requireContext())
+        new MaterialAlertDialogBuilder(requireContext(), R.style.ThemeOverlay_PropCycle_MaterialAlertDialog)
+                .setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_dialog_themed))
                 .setTitle("Choose your avatar")
                 .setSingleChoiceItems(
                         labels.toArray(new String[0]),
@@ -119,7 +125,8 @@ public final class ProfileFragment extends Fragment {
         input.setSingleLine(true);
         input.setText(binding.profileName.getText());
         input.setSelection(input.length());
-        new MaterialAlertDialogBuilder(requireContext())
+        new MaterialAlertDialogBuilder(requireContext(), R.style.ThemeOverlay_PropCycle_MaterialAlertDialog)
+                .setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_dialog_themed))
                 .setTitle("Edit display name")
                 .setMessage("This public name is shown on your marketplace and lending activity.")
                 .setView(input)
@@ -127,6 +134,136 @@ public final class ProfileFragment extends Fragment {
                         viewModel.updateDisplayName(input.getText().toString()))
                 .setNegativeButton("Cancel", null)
                 .show();
+    }
+
+    private void showChangePasswordDialog() {
+        if (!ownProfile) {
+            return;
+        }
+        if (!viewModel.isEmailPasswordProvider()) {
+            Toast.makeText(requireContext(), R.string.profile_change_password_not_email, Toast.LENGTH_LONG).show();
+            return;
+        }
+        View dialogView = LayoutInflater.from(requireContext())
+                .inflate(R.layout.dialog_change_password, null);
+        TextInputEditText currentPasswordInput = dialogView.findViewById(R.id.current_password_input);
+        TextInputEditText newPasswordInput = dialogView.findViewById(R.id.new_password_input);
+        TextInputEditText confirmPasswordInput = dialogView.findViewById(R.id.confirm_password_input);
+
+        AlertDialog dialog = new MaterialAlertDialogBuilder(requireContext(), R.style.ThemeOverlay_PropCycle_MaterialAlertDialog)
+                .setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_dialog_themed))
+                .setTitle(R.string.profile_change_password_title)
+                .setView(dialogView)
+                .setPositiveButton("Update", null)
+                .setNegativeButton("Cancel", null)
+                .create();
+
+        dialog.setOnShowListener(d -> {
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+                String current = currentPasswordInput.getText() == null
+                        ? "" : currentPasswordInput.getText().toString().trim();
+                String newPass = newPasswordInput.getText() == null
+                        ? "" : newPasswordInput.getText().toString().trim();
+                String confirm = confirmPasswordInput.getText() == null
+                        ? "" : confirmPasswordInput.getText().toString().trim();
+
+                if (current.isEmpty() || newPass.isEmpty() || confirm.isEmpty()) {
+                    Toast.makeText(requireContext(), R.string.profile_change_password_fill_all, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (newPass.length() < 6) {
+                    Toast.makeText(requireContext(), R.string.profile_change_password_short, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (newPass.equals(current)) {
+                    Toast.makeText(requireContext(), R.string.profile_change_password_same, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (!newPass.equals(confirm)) {
+                    Toast.makeText(requireContext(), R.string.profile_change_password_mismatch, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+                Toast.makeText(requireContext(), R.string.profile_change_password_saving, Toast.LENGTH_SHORT).show();
+
+                viewModel.changePassword(current, newPass, new ProfileViewModel.PasswordChangeCallback() {
+                    @Override
+                    public void onSuccess() {
+                        if (!isAdded()) return;
+                        dialog.dismiss();
+                        Toast.makeText(requireContext(), R.string.profile_change_password_success, Toast.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    public void onError(@NonNull String message) {
+                        if (!isAdded()) return;
+                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
+                        Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show();
+                    }
+                });
+            });
+        });
+
+        dialog.show();
+    }
+
+    private void showDeleteAccountDialog() {
+        if (!ownProfile) {
+            return;
+        }
+        View dialogView = LayoutInflater.from(requireContext())
+                .inflate(R.layout.dialog_delete_account, null);
+        View passwordLayout = dialogView.findViewById(R.id.delete_account_password_layout);
+        TextInputEditText passwordInput = dialogView.findViewById(R.id.delete_password_input);
+
+        boolean isEmailPassword = viewModel.isEmailPasswordProvider();
+        passwordLayout.setVisibility(isEmailPassword ? View.VISIBLE : View.GONE);
+
+        AlertDialog dialog = new MaterialAlertDialogBuilder(requireContext(), R.style.ThemeOverlay_PropCycle_MaterialAlertDialog)
+                .setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_dialog_themed))
+                .setTitle(R.string.profile_delete_account_title)
+                .setView(dialogView)
+                .setPositiveButton(R.string.profile_delete_account_confirm, null)
+                .setNegativeButton("Cancel", null)
+                .create();
+
+        dialog.setOnShowListener(d -> {
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                    .setTextColor(ContextCompat.getColor(requireContext(), R.color.pc_brand_accent_red));
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+                String password = passwordInput.getText() == null
+                        ? "" : passwordInput.getText().toString().trim();
+                if (isEmailPassword && password.isEmpty()) {
+                    Toast.makeText(requireContext(), R.string.profile_delete_account_password, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setEnabled(false);
+                Toast.makeText(requireContext(), R.string.profile_delete_account_deleting, Toast.LENGTH_SHORT).show();
+
+                viewModel.deleteAccount(password, new ProfileViewModel.AccountDeleteCallback() {
+                    @Override
+                    public void onSuccess() {
+                        if (!isAdded()) return;
+                        dialog.dismiss();
+                        Toast.makeText(requireContext(), R.string.profile_delete_account_success, Toast.LENGTH_LONG).show();
+                        ScreenNavigation.navigateClearingBackStack(ProfileFragment.this, R.id.loginFragment);
+                    }
+
+                    @Override
+                    public void onError(@NonNull String message) {
+                        if (!isAdded()) return;
+                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
+                        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setEnabled(true);
+                        Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show();
+                    }
+                });
+            });
+        });
+
+        dialog.show();
     }
 
     @Override
@@ -155,6 +292,9 @@ public final class ProfileFragment extends Fragment {
         binding.profileListingsLabel.setText(ownProfile ? "MY LISTINGS" : "ACTIVE LISTING");
         binding.profileEditAction.setVisibility(ownProfile ? View.VISIBLE : View.GONE);
         binding.profileAvatarAction.setVisibility(ownProfile ? View.VISIBLE : View.GONE);
+        binding.profileAccountSectionLabel.setVisibility(ownProfile ? View.VISIBLE : View.GONE);
+        binding.changePasswordAction.setVisibility(ownProfile ? View.VISIBLE : View.GONE);
+        binding.deleteAccountAction.setVisibility(ownProfile ? View.VISIBLE : View.GONE);
         binding.logoutAction.setVisibility(ownProfile ? View.VISIBLE : View.GONE);
         binding.profileAvatarInitial.setClickable(ownProfile && !state.isLoading());
         binding.profileAvatarInitial.setFocusable(ownProfile && !state.isLoading());

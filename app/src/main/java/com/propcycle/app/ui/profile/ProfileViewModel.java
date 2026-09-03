@@ -8,8 +8,11 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserInfo;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -131,6 +134,100 @@ public final class ProfileViewModel extends AndroidViewModel {
                                 error.getMessage() == null
                                         ? "The avatar could not be updated."
                                         : error.getMessage()))));
+    }
+
+    public interface PasswordChangeCallback {
+        void onSuccess();
+        void onError(@NonNull String message);
+    }
+
+    public interface AccountDeleteCallback {
+        void onSuccess();
+        void onError(@NonNull String message);
+    }
+
+    public boolean isEmailPasswordProvider() {
+        FirebaseAuth auth = FirebaseEnvironment.auth(getApplication());
+        FirebaseUser user = auth == null ? null : auth.getCurrentUser();
+        if (user == null) {
+            return false;
+        }
+        for (UserInfo info : user.getProviderData()) {
+            if (EmailAuthProvider.PROVIDER_ID.equals(info.getProviderId())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void changePassword(
+            @NonNull String currentPassword,
+            @NonNull String newPassword,
+            @NonNull PasswordChangeCallback callback) {
+        FirebaseAuth auth = FirebaseEnvironment.auth(getApplication());
+        FirebaseUser user = auth == null ? null : auth.getCurrentUser();
+        if (user == null || !isEmailPasswordProvider()) {
+            callback.onError("Password change is only available for email/password accounts.");
+            return;
+        }
+        String email = user.getEmail();
+        if (email == null || email.trim().isEmpty()) {
+            callback.onError("Account email is unavailable.");
+            return;
+        }
+        AuthCredential credential = EmailAuthProvider.getCredential(email, currentPassword);
+        user.reauthenticate(credential)
+                .addOnSuccessListener(ignored -> user.updatePassword(newPassword)
+                        .addOnSuccessListener(aVoid -> callback.onSuccess())
+                        .addOnFailureListener(error -> callback.onError(
+                                error.getMessage() != null
+                                        ? error.getMessage()
+                                        : "Unable to update password. Please try again.")))
+                .addOnFailureListener(error -> callback.onError("Current password is incorrect."));
+    }
+
+    public void deleteAccount(
+            @Nullable String currentPassword,
+            @NonNull AccountDeleteCallback callback) {
+        FirebaseAuth auth = FirebaseEnvironment.auth(getApplication());
+        FirebaseUser user = auth == null ? null : auth.getCurrentUser();
+        if (user == null) {
+            callback.onError("No authenticated user found.");
+            return;
+        }
+        if (isEmailPasswordProvider()) {
+            if (currentPassword == null || currentPassword.trim().isEmpty()) {
+                callback.onError("Enter your current password.");
+                return;
+            }
+            String email = user.getEmail();
+            if (email == null || email.trim().isEmpty()) {
+                callback.onError("Account email is unavailable.");
+                return;
+            }
+            AuthCredential credential = EmailAuthProvider.getCredential(email, currentPassword);
+            user.reauthenticate(credential)
+                    .addOnSuccessListener(ignored -> performAccountDeletion(auth, user, callback))
+                    .addOnFailureListener(error -> callback.onError("Password is incorrect. Account was not deleted."));
+        } else {
+            performAccountDeletion(auth, user, callback);
+        }
+    }
+
+    private void performAccountDeletion(
+            @NonNull FirebaseAuth auth,
+            @NonNull FirebaseUser user,
+            @NonNull AccountDeleteCallback callback) {
+        new ActivityLogRepository(getApplication()).clearCurrentUser();
+        user.delete()
+                .addOnSuccessListener(aVoid -> {
+                    auth.signOut();
+                    callback.onSuccess();
+                })
+                .addOnFailureListener(error -> callback.onError(
+                        error.getMessage() != null
+                                ? error.getMessage()
+                                : "Unable to delete account. Please re-authenticate and try again."));
     }
 
     public void start(@Nullable String requestedUserId) {

@@ -260,21 +260,65 @@
                 android:textSize="30sp" />
         </LinearLayout>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/logout_action"
+        <TextView
+            android:id="@+id/profile_account_section_label"
             android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:layout_marginTop="30dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="26dp"
+            android:fontFamily="@font/fredoka_semibold"
+            android:text="@string/profile_account_section"
+            android:textColor="@color/pc_brand_deep_blue"
+            android:textSize="13sp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/change_password_action"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
             android:insetTop="0dp"
             android:insetBottom="0dp"
-            android:text="@string/profile_logout"
+            android:text="@string/profile_change_password"
+            android:textAllCaps="false"
+            android:textColor="@color/pc_brand_deep_blue"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            app:backgroundTint="@color/pc_brand_surface"
+            app:cornerRadius="24dp"
+            app:strokeColor="@color/pc_brand_primary_blue"
+            app:strokeWidth="1.5dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/delete_account_action"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:text="@string/profile_delete_account"
             android:textAllCaps="false"
             android:textColor="@color/pc_brand_accent_red"
-            android:textSize="16sp"
+            android:textSize="15sp"
             android:textStyle="bold"
             app:backgroundTint="@color/pc_brand_surface"
             app:cornerRadius="24dp"
             app:strokeColor="@color/pc_brand_accent_red"
-            app:strokeWidth="2dp" />
+            app:strokeWidth="1.5dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/logout_action"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:text="@string/profile_logout"
+            android:textAllCaps="false"
+            android:textColor="@color/pc_brand_text_secondary"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            app:backgroundTint="@color/pc_brand_surface"
+            app:cornerRadius="24dp"
+            app:strokeColor="@color/pc_brand_outline"
+            app:strokeWidth="1.5dp" />
     </LinearLayout>
 </ScrollView>

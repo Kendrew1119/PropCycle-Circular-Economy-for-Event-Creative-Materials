@@ -399,11 +399,11 @@
                     android:layout_marginTop="10dp"
                     android:background="@drawable/bg_market_detail_primary_action"
                     android:clickable="true"
-                    android:contentDescription="Permanently mark this marketplace listing as sold"
+                    android:contentDescription="Permanently complete this marketplace listing"
                     android:focusable="true"
                     android:fontFamily="@font/fredoka_semibold"
                     android:gravity="center"
-                    android:text="Mark as sold"
+                    android:text="@string/marketplace_completion_sold"
                     android:textColor="@color/pc_brand_surface"
                     android:textSize="16sp" />
 

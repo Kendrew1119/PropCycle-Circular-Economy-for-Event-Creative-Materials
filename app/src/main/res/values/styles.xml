@@ -245,11 +245,25 @@
         <item name="android:textColor">@color/pc_brand_primary_blue</item>
     </style>
 
+    <style name="TextAppearance.PropCycle.DialogTitle" parent="TextAppearance.Material3.TitleLarge">
+        <item name="android:fontFamily">@font/fredoka_semibold</item>
+        <item name="android:textColor">@color/pc_brand_deep_blue</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+
     <style name="ThemeOverlay.PropCycle.MaterialAlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
         <item name="colorPrimary">@color/pc_brand_primary_blue</item>
         <item name="colorSurface">@color/pc_brand_surface</item>
         <item name="colorOnSurface">@color/pc_brand_text_primary</item>
+        <item name="colorOutline">@color/pc_brand_outline</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/TextAppearance.PropCycle.DialogTitle</item>
         <item name="buttonBarPositiveButtonStyle">@style/Widget.PropCycle.MaterialCalendar.ActionButton</item>
         <item name="buttonBarNegativeButtonStyle">@style/Widget.PropCycle.MaterialCalendar.ActionButton</item>
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.PropCycle.Dialog</item>
+    </style>
+
+    <style name="ShapeAppearance.PropCycle.Dialog" parent="">
+        <item name="cornerSize">24dp</item>
+        <item name="cornerFamily">rounded</item>
     </style>
 </resources>

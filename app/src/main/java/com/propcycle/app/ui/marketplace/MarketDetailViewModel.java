@@ -310,22 +310,35 @@ public final class MarketDetailViewModel extends AndroidViewModel {
                         boolean sold = MarketplaceListingStatusPolicy.SOLD.equals(targetStatus);
                         boolean withdrawn = MarketplaceListingStatusPolicy.WITHDRAWN.equals(
                                 targetStatus);
+                        String actionDesc;
+                        String successMessage;
+                        if (sold) {
+                            String intent = listing.getTransactionIntent();
+                            if ("donation".equalsIgnoreCase(intent)) {
+                                actionDesc = "Marketplace listing given away";
+                                successMessage = "Listing marked as given away. It is removed from public browse; existing chats are kept.";
+                            } else if ("exchange".equalsIgnoreCase(intent)) {
+                                actionDesc = "Marketplace listing exchanged";
+                                successMessage = "Listing marked as exchanged. It is removed from public browse; existing chats are kept.";
+                            } else {
+                                actionDesc = "Marketplace listing sold";
+                                successMessage = "Listing marked as sold. It is removed from public browse; existing chats are kept.";
+                            }
+                        } else if (withdrawn) {
+                            actionDesc = "Marketplace listing withdrawn";
+                            successMessage = "Listing withdrawn. It is hidden from public browse.";
+                        } else {
+                            actionDesc = "Marketplace listing relisted";
+                            successMessage = "Listing relisted. People can find it again.";
+                        }
                         activityLog.record(
                                 ActivityLogRepository.TYPE_MARKETPLACE_STATUS,
-                                sold
-                                        ? "Marketplace listing sold"
-                                        : withdrawn
-                                                ? "Marketplace listing withdrawn"
-                                                : "Marketplace listing relisted",
+                                actionDesc,
                                 listing.getTitle() == null
                                         ? "Marketplace item" : listing.getTitle(),
                                 ActivityLogRepository.DESTINATION_MARKETPLACE,
                                 listing.getId());
-                        ownerActionState.setValue(OwnerActionState.success(sold
-                                ? "Listing marked as sold. It is removed from public browse; existing chats are kept."
-                                : withdrawn
-                                        ? "Listing withdrawn. It is hidden from public browse."
-                                        : "Listing relisted. People can find it again."));
+                        ownerActionState.setValue(OwnerActionState.success(successMessage));
                     }
 
                     @Override

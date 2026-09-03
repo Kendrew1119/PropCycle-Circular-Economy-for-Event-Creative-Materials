@@ -142,7 +142,8 @@ public final class MarketDetailFragment extends Fragment {
         rating.setLayoutParams(ratingParams);
         content.addView(rating);
 
-        new MaterialAlertDialogBuilder(requireContext())
+        new MaterialAlertDialogBuilder(requireContext(), R.style.ThemeOverlay_PropCycle_MaterialAlertDialog)
+                .setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_dialog_themed))
                 .setTitle(currentRatingState.getMyScore() > 0
                         ? "Update seller rating" : "Rate seller")
                 .setView(content)
@@ -176,7 +177,8 @@ public final class MarketDetailFragment extends Fragment {
         String target = withdraw
                 ? MarketplaceListingStatusPolicy.WITHDRAWN
                 : MarketplaceListingStatusPolicy.AVAILABLE;
-        new MaterialAlertDialogBuilder(requireContext())
+        new MaterialAlertDialogBuilder(requireContext(), R.style.ThemeOverlay_PropCycle_MaterialAlertDialog)
+                .setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_dialog_themed))
                 .setTitle(withdraw ? "Withdraw listing?" : "Relist this item?")
                 .setMessage(withdraw
                         ? "It will disappear from public browse and no new buyer chat can start. Existing conversations are kept."
@@ -189,15 +191,20 @@ public final class MarketDetailFragment extends Fragment {
 
     private void confirmMarkSold() {
         if (!currentOwner || currentListing == null || ownerActionBusy
-                || !MarketplaceListingStatusPolicy.canMarkSold(
+                || !MarketplaceListingStatusPolicy.canComplete(
                         true, currentListing.getStatus())) {
             return;
         }
-        new MaterialAlertDialogBuilder(requireContext())
-                .setTitle("Mark this listing as sold?")
-                .setMessage("This is a final action. The item will disappear from Marketplace and no new buyers can start a chat. Existing conversations will remain available.")
+        String intent = currentListing.getTransactionIntent();
+        String actionLabel = MarketplaceListingStatusPolicy.completionActionLabel(intent);
+        String confirmTitle = MarketplaceListingStatusPolicy.completionConfirmationTitle(intent);
+        String confirmMessage = MarketplaceListingStatusPolicy.completionConfirmationMessage(intent);
+        new MaterialAlertDialogBuilder(requireContext(), R.style.ThemeOverlay_PropCycle_MaterialAlertDialog)
+                .setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_dialog_themed))
+                .setTitle(confirmTitle)
+                .setMessage(confirmMessage)
                 .setNegativeButton("Cancel", null)
-                .setPositiveButton("Mark as sold", (dialog, which) ->
+                .setPositiveButton(actionLabel, (dialog, which) ->
                         viewModel.requestStatusChange(MarketplaceListingStatusPolicy.SOLD))
                 .show();
     }
@@ -230,8 +237,10 @@ public final class MarketDetailFragment extends Fragment {
                 MarketplaceListingValidator.displayLabel(listing.getTransactionIntent())
                         + "  |  "
                         + MarketplaceListingValidator.displayLabel(listing.getCategory()));
-        binding.listingStatusBadge.setText(
-                MarketplaceListingValidator.displayLabel(listing.getStatus()));
+        String statusLabel = MarketplaceListingStatusPolicy.SOLD.equals(listing.getStatus())
+                ? MarketplaceListingStatusPolicy.completedDisplayLabel(listing.getTransactionIntent())
+                : MarketplaceListingValidator.displayLabel(listing.getStatus());
+        binding.listingStatusBadge.setText(statusLabel);
         binding.listingCondition.setText(
                 "Condition: "
                         + MarketplaceListingValidator.displayLabel(listing.getCondition())
@@ -301,12 +310,12 @@ public final class MarketDetailFragment extends Fragment {
         }
         boolean editable = MarketplaceListingStatusPolicy.canEdit(
                 true, currentListing.getStatus());
-        boolean canMarkSold = MarketplaceListingStatusPolicy.canMarkSold(
+        boolean canComplete = MarketplaceListingStatusPolicy.canComplete(
                 true, currentListing.getStatus());
         binding.editListingAction.setEnabled(editable && !ownerActionBusy);
         binding.listingStatusAction.setEnabled(editable && !ownerActionBusy);
-        binding.markSoldAction.setVisibility(canMarkSold ? View.VISIBLE : View.GONE);
-        binding.markSoldAction.setEnabled(canMarkSold && !ownerActionBusy);
+        binding.markSoldAction.setVisibility(canComplete ? View.VISIBLE : View.GONE);
+        binding.markSoldAction.setEnabled(canComplete && !ownerActionBusy);
         binding.editListingAction.setAlpha(
                 binding.editListingAction.isEnabled() ? 1f : 0.55f);
         binding.listingStatusAction.setAlpha(
@@ -320,6 +329,10 @@ public final class MarketDetailFragment extends Fragment {
                 MarketplaceListingStatusPolicy.WITHDRAWN.equals(currentListing.getStatus())
                         ? "Relist this marketplace item"
                         : "Withdraw this marketplace listing");
+        String completionLabel = MarketplaceListingStatusPolicy.completionActionLabel(
+                currentListing.getTransactionIntent());
+        binding.markSoldAction.setText(completionLabel);
+        binding.markSoldAction.setContentDescription(completionLabel);
     }
 
     private void displayListingImage(
@@ -390,8 +403,8 @@ public final class MarketDetailFragment extends Fragment {
     private void cancelImageLoad() {
         if (imageLoadHandle != null) {
             imageLoadHandle.cancel();
-            imageLoadHandle = null;
         }
+        imageLoadHandle = null;
     }
 
     @NonNull

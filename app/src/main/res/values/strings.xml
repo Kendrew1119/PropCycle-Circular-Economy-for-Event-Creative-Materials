@@ -132,8 +132,8 @@
     <string name="lending_category_other">Other</string>
     <string name="lending_category_filter_all">Category: All</string>
     <string name="lending_category_filter_format">Category: %1$s</string>
-    <string name="lending_map_title">Available items nearby</string>
-    <string name="lending_map_subtitle">Search community items first. Locations are approximate; confirm the meeting point in chat.</string>
+    <string name="lending_map_title">Items nearby</string>
+    <string name="lending_map_subtitle">Confirm the meeting point in chat.</string>
     <string name="lending_map_title_doodle_description">Map location illustration</string>
     <string name="lending_map_search_hint">Search title, area or category</string>
     <string name="lending_map_near_me">Near me</string>
@@ -263,4 +263,37 @@
     <string name="settings_about_community_body">Lending Map helps users discover available items with approximate locations, and Messaging keeps participants in contact.</string>
     <string name="settings_about_scope_title">Current scope</string>
     <string name="settings_about_scope_body">PropCycle supports these in-app tools without promising payments, turn-by-turn routes, or automatic recycling acceptance.</string>
+
+    <string name="profile_account_section">Account \u0026 Security</string>
+    <string name="profile_change_password">Change Password</string>
+    <string name="profile_delete_account">Delete Account</string>
+    <string name="profile_change_password_title">Change Password</string>
+    <string name="profile_change_password_current">Current password</string>
+    <string name="profile_change_password_new">New password</string>
+    <string name="profile_change_password_confirm">Confirm new password</string>
+    <string name="profile_change_password_success">Password updated successfully.</string>
+    <string name="profile_change_password_mismatch">New passwords do not match.</string>
+    <string name="profile_change_password_same">New password must be different from the current password.</string>
+    <string name="profile_change_password_short">Password must be at least 6 characters.</string>
+    <string name="profile_change_password_not_email">Password change is only available for email/password accounts.</string>
+    <string name="profile_change_password_fill_all">All password fields are required.</string>
+    <string name="profile_change_password_reauth_failed">Current password is incorrect.</string>
+    <string name="profile_change_password_saving">Updating password…</string>
+    <string name="profile_delete_account_title">Delete Account</string>
+    <string name="profile_delete_account_message">This will permanently delete your PropCycle account.\n\nYour marketplace listings and lending items will become orphaned. Chat threads and ratings are preserved for other participants.\n\nThis action cannot be undone.</string>
+    <string name="profile_delete_account_confirm">Delete my account</string>
+    <string name="profile_delete_account_password">Enter your current password</string>
+    <string name="profile_delete_account_deleting">Deleting account…</string>
+    <string name="profile_delete_account_success">Account deleted.</string>
+    <string name="profile_delete_account_reauth_failed">Password is incorrect. Account was not deleted.</string>
+
+    <string name="marketplace_completion_sold">Mark as Sold</string>
+    <string name="marketplace_completion_given_away">Mark as Given Away</string>
+    <string name="marketplace_completion_exchanged">Mark as Exchanged</string>
+    <string name="marketplace_completed_sold">Sold</string>
+    <string name="marketplace_completed_given_away">Given Away</string>
+    <string name="marketplace_completed_exchanged">Exchanged</string>
+    <string name="marketplace_completion_confirm_sold">Mark this item as sold?</string>
+    <string name="marketplace_completion_confirm_given_away">Mark this item as given away? It will be permanently removed from public browse.</string>
+    <string name="marketplace_completion_confirm_exchanged">Mark this item as exchanged? It will be permanently removed from public browse.</string>
 </resources>
