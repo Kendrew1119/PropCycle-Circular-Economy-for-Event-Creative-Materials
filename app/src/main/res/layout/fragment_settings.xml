@@ -99,7 +99,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
-                        android:text="Not available in this light-only release"
+                        android:text="Switch between light and dark mode"
                         android:textColor="@color/pc_brand_text_secondary"
                         android:textSize="13sp" />
                 </LinearLayout>
@@ -109,8 +109,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="48dp"
                     android:checked="false"
-                    android:contentDescription="Dark Theme, off"
-                    android:enabled="false"
+                    android:clickable="false"
+                    android:contentDescription="Dark Theme toggle"
+                    android:focusable="false"
                     android:minWidth="48dp"
                     android:showText="false" />
             </LinearLayout>

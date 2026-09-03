@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Phase 2G Person 1 visual system. Scoped to shared chrome and Home. -->
+    <color name="pc_brand_primary_blue">#5C8DF6</color>
+    <color name="pc_brand_deep_blue">#89AEFA</color>
+    <color name="pc_brand_soft_blue">#1A2A47</color>
+    <color name="pc_brand_sky_blue">#1B3A68</color>
+    <color name="pc_brand_warm_cream">#121212</color>
+    <color name="pc_brand_surface">#1E1E1E</color>
+    <color name="pc_brand_accent_yellow">#FFD95E</color>
+    <color name="pc_rating_gold">#FFCA28</color>
+    <color name="pc_brand_accent_red">#FF6B59</color>
+    <color name="pc_brand_eco_green">#85D275</color>
+    <color name="pc_brand_text_primary">#EAEAEA</color>
+    <color name="pc_brand_text_secondary">#9E9E9E</color>
+    <color name="pc_brand_outline">#3C3C3C</color>
+    <color name="pc_home_card_border">#2A2A2A</color>
+    <color name="pc_home_search_border">#3B4E6B</color>
+    <color name="pc_home_action_recycle_surface">#18231E</color>
+    <color name="pc_home_action_listing_surface">#272314</color>
+    <color name="pc_home_action_lend_surface">#171F2C</color>
+    <color name="pc_lending_map_near_me_surface">#183328</color>
+    <color name="pc_lending_map_neutral_border">#333333</color>
+    <color name="pc_lending_map_soft_border">#2C3E5B</color>
+    <color name="pc_scanner_notice_surface">#3C2C00</color>
+
+    <!-- Core light eco palette. -->
+    <color name="pc_primary">#6DD5A3</color>
+    <color name="pc_on_primary">#003823</color>
+    <color name="pc_primary_container">#115135</color>
+    <color name="pc_on_primary_container">#88F1BC</color>
+
+    <color name="pc_accent">#FFB66D</color>
+    <color name="pc_on_accent">#4D2600</color>
+    <color name="pc_accent_container">#6D3A00</color>
+    <color name="pc_on_accent_container">#FFDDB6</color>
+
+    <color name="pc_background">#121212</color>
+    <color name="pc_surface">#1E1E1E</color>
+    <color name="pc_surface_container">#2A3630</color>
+    <color name="pc_surface_container_high">#36453C</color>
+    <color name="pc_text_primary">#E1E3E0</color>
+    <color name="pc_text_secondary">#9DA19F</color>
+    <color name="pc_text_muted">#8A908C</color>
+    <color name="pc_outline">#8C928F</color>
+    <color name="pc_icon">#6DD5A3</color>
+    <color name="pc_error">#FFB4AB</color>
+    <color name="pc_on_error">#690005</color>
+    <color name="pc_scrim">#66000000</color>
+    <color name="pc_transparent">#00000000</color>
+    <color name="pc_camera_surface">#183328</color>
+
+    <!-- Welcome screen surfaces. -->
+    <color name="pc_welcome_background">@color/pc_background</color>
+    <color name="pc_welcome_card_surface">#1E1E1E</color>
+    <color name="pc_login_panel_surface">#1A1A1A</color>
+    <color name="pc_login_field_border">#3C4A42</color>
+    <color name="pc_welcome_card_border">#303030</color>
+
+    <!-- AI Result screen surfaces. -->
+    <color name="pc_ai_result_background">#121212</color>
+    <color name="pc_ai_result_card_surface">#1E1E1E</color>
+    <color name="pc_ai_result_card_border">#2A2A2A</color>
+    <color name="pc_ai_result_page_warning_surface">#3A2C00</color>
+    <color name="pc_ai_result_page_warning_border">#B89B2F</color>
+    <color name="pc_ai_result_info_surface">#1A2436</color>
+    <color name="pc_ai_result_info_border">#2C4273</color>
+    <color name="pc_ai_result_warning_surface">#3C2E00</color>
+    <color name="pc_ai_result_warning_border">@color/pc_brand_accent_yellow</color>
+
+    <!-- Compatibility names retained for proposal layouts while they migrate. -->
+    <color name="pc_surface_mid">@color/pc_surface_container</color>
+    <color name="pc_surface_dark">@color/pc_text_muted</color>
+    <color name="pc_ink">@color/pc_text_primary</color>
+    <color name="pc_border">@color/pc_outline</color>
+    <color name="pc_white">@color/pc_on_primary</color>
+</resources>

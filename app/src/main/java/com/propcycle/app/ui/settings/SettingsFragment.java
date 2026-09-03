@@ -44,12 +44,17 @@ public final class SettingsFragment extends Fragment {
             return;
         }
         ScreenNavigation.bindChrome(this, view);
-        binding.darkThemeSetting.setOnClickListener(ignored -> new MaterialAlertDialogBuilder(
-                        requireContext())
-                .setTitle("Light theme")
-                .setMessage("The current design is light-theme only. This control stays off so the app does not promise an unfinished dark design.")
-                .setPositiveButton("OK", null)
-                .show());
+        android.content.SharedPreferences prefs = requireContext().getSharedPreferences("theme_prefs", android.content.Context.MODE_PRIVATE);
+        boolean isDark = prefs.getBoolean("dark_theme", false);
+        binding.darkThemeSwitch.setChecked(isDark);
+        binding.darkThemeSetting.setOnClickListener(ignored -> {
+            boolean next = !binding.darkThemeSwitch.isChecked();
+            binding.darkThemeSwitch.setChecked(next);
+            prefs.edit().putBoolean("dark_theme", next).apply();
+            androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(
+                    next ? androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES 
+                         : androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO);
+        });
         binding.pushNotificationSetting.setOnClickListener(ignored ->
                 new MaterialAlertDialogBuilder(requireContext())
                         .setTitle("In-app updates only")
