@@ -178,7 +178,6 @@ public final class MarketDetailFragment extends Fragment {
                 ? MarketplaceListingStatusPolicy.WITHDRAWN
                 : MarketplaceListingStatusPolicy.AVAILABLE;
         new MaterialAlertDialogBuilder(requireContext(), R.style.ThemeOverlay_PropCycle_MaterialAlertDialog)
-                .setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_dialog_themed))
                 .setTitle(withdraw ? "Withdraw listing?" : "Relist this item?")
                 .setMessage(withdraw
                         ? "It will disappear from public browse and no new buyer chat can start. Existing conversations are kept."
@@ -200,7 +199,6 @@ public final class MarketDetailFragment extends Fragment {
         String confirmTitle = MarketplaceListingStatusPolicy.completionConfirmationTitle(intent);
         String confirmMessage = MarketplaceListingStatusPolicy.completionConfirmationMessage(intent);
         new MaterialAlertDialogBuilder(requireContext(), R.style.ThemeOverlay_PropCycle_MaterialAlertDialog)
-                .setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_dialog_themed))
                 .setTitle(confirmTitle)
                 .setMessage(confirmMessage)
                 .setNegativeButton("Cancel", null)

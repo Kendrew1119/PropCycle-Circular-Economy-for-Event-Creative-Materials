@@ -107,7 +107,6 @@ public final class ProfileFragment extends Fragment {
         List<String> labels = ProfileAvatarPolicy.labels();
         int selected = Math.max(0, keys.indexOf(currentAvatarKey));
         new MaterialAlertDialogBuilder(requireContext(), R.style.ThemeOverlay_PropCycle_MaterialAlertDialog)
-                .setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_dialog_themed))
                 .setTitle("Choose your avatar")
                 .setSingleChoiceItems(
                         labels.toArray(new String[0]),
@@ -126,7 +125,6 @@ public final class ProfileFragment extends Fragment {
         input.setText(binding.profileName.getText());
         input.setSelection(input.length());
         new MaterialAlertDialogBuilder(requireContext(), R.style.ThemeOverlay_PropCycle_MaterialAlertDialog)
-                .setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_dialog_themed))
                 .setTitle("Edit display name")
                 .setMessage("This public name is shown on your marketplace and lending activity.")
                 .setView(input)
@@ -151,7 +149,6 @@ public final class ProfileFragment extends Fragment {
         TextInputEditText confirmPasswordInput = dialogView.findViewById(R.id.confirm_password_input);
 
         AlertDialog dialog = new MaterialAlertDialogBuilder(requireContext(), R.style.ThemeOverlay_PropCycle_MaterialAlertDialog)
-                .setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_dialog_themed))
                 .setTitle(R.string.profile_change_password_title)
                 .setView(dialogView)
                 .setPositiveButton("Update", null)
@@ -221,7 +218,6 @@ public final class ProfileFragment extends Fragment {
         passwordLayout.setVisibility(isEmailPassword ? View.VISIBLE : View.GONE);
 
         AlertDialog dialog = new MaterialAlertDialogBuilder(requireContext(), R.style.ThemeOverlay_PropCycle_MaterialAlertDialog)
-                .setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_dialog_themed))
                 .setTitle(R.string.profile_delete_account_title)
                 .setView(dialogView)
                 .setPositiveButton(R.string.profile_delete_account_confirm, null)
