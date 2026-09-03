@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/bg_notifications_request_card"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="12dp">
 
         <TextView
             android:id="@+id/request_item_title"
@@ -26,7 +26,7 @@
             android:fontFamily="@font/fredoka_semibold"
             android:maxLines="2"
             android:textColor="@color/pc_brand_text_primary"
-            android:textSize="20sp"
+            android:textSize="16sp"
             tools:text="Blue canopy for event booth" />
 
         <TextView
@@ -37,14 +37,14 @@
             android:lineSpacingMultiplier="1.08"
             android:maxLines="2"
             android:textColor="@color/pc_brand_text_secondary"
-            android:textSize="14sp"
+            android:textSize="13sp"
             tools:text="You are the owner  •  06 Sep to 08 Sep" />
 
         <TextView
             android:id="@+id/request_state"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="8dp"
             android:background="@drawable/bg_notifications_state"
             android:fontFamily="@font/fredoka_semibold"
             android:paddingStart="12dp"
@@ -58,7 +58,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
+            android:layout_marginTop="8dp"
             android:gravity="end"
             android:orientation="horizontal">
 

@@ -1,6 +1,7 @@
 package com.propcycle.app.ui.lending;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,6 +21,8 @@ import java.util.List;
 
 /** In-app request inbox and lifecycle action state. */
 public final class LendingRequestsViewModel extends AndroidViewModel {
+
+    private static final String DIAGNOSTIC_TAG = "PropCycleLendingDebug";
 
     public static final class MarketplaceNoticeState {
         private final boolean loading;
@@ -101,13 +104,18 @@ public final class LendingRequestsViewModel extends AndroidViewModel {
 
     public void start() {
         stop();
+        Log.d(DIAGNOSTIC_TAG, "ViewModel loading=true error=false");
         state.setValue(new State(true, false, null, null, requests));
         subscription = repository.observeMyRequests(
                 new FirestoreLendingRepository.SnapshotCallback<>() {
                     @Override
                     public void onData(@NonNull List<LendingRequest> value, boolean cached) {
+                        Log.d(DIAGNOSTIC_TAG,
+                                "ViewModel repository emitted request list size=" + value.size());
                         requests = value;
                         fromCache = cached;
+                        Log.d(DIAGNOSTIC_TAG,
+                                "ViewModel loading=false error=false fromCache=" + cached);
                         state.setValue(new State(false, cached,
                                 cached ? "Offline - showing cached lending updates." : null,
                                 null, requests));
@@ -115,6 +123,9 @@ public final class LendingRequestsViewModel extends AndroidViewModel {
 
                     @Override
                     public void onError(@NonNull Exception error) {
+                        Log.e(DIAGNOSTIC_TAG,
+                                "ViewModel loading=false error=true type="
+                                        + error.getClass().getSimpleName());
                         state.setValue(new State(false, false,
                                 LendingListViewModel.safeMessage(
                                         error, "Lending updates could not be loaded."),

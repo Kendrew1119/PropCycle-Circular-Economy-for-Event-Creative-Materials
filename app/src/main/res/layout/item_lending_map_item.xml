@@ -3,11 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="8dp"
+    android:layout_marginBottom="12dp"
     android:clickable="true"
     android:focusable="true"
     app:cardBackgroundColor="@color/lending_map_item_surface"
-    app:cardCornerRadius="16dp"
+    app:cardCornerRadius="18dp"
     app:cardElevation="1dp"
     app:rippleColor="@color/pc_brand_soft_blue"
     app:strokeColor="@color/lending_map_item_stroke"
@@ -16,9 +16,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:minHeight="98dp"
+        android:minHeight="88dp"
         android:orientation="horizontal"
-        android:padding="12dp">
+        android:padding="8dp">
         <com.google.android.material.card.MaterialCardView
             android:layout_width="72dp"
             android:layout_height="72dp"
@@ -48,21 +48,21 @@
                 android:fontFamily="@font/fredoka_semibold"
                 android:maxLines="1"
                 android:textColor="@color/pc_brand_deep_blue"
-                android:textSize="17sp" />
+                android:textSize="16sp" />
             <TextView
                 android:id="@+id/lending_item_meta"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="3dp"
+                android:layout_marginTop="4dp"
                 android:ellipsize="end"
                 android:maxLines="2"
                 android:textColor="@color/pc_brand_text_secondary"
-                android:textSize="12sp" />
+                android:textSize="13sp" />
             <TextView
                 android:id="@+id/lending_item_distance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="4dp"
                 android:background="@drawable/bg_lending_map_meta_chip"
                 android:fontFamily="@font/fredoka_semibold"
                 android:paddingStart="8dp"

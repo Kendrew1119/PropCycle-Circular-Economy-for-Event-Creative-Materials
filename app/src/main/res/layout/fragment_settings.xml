@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:paddingStart="20dp"
-        android:paddingTop="0dp"
+        android:paddingTop="8dp"
         android:paddingEnd="20dp"
         android:paddingBottom="28dp">
 
@@ -32,7 +32,7 @@
                     android:fontFamily="@font/fredoka_semibold"
                     android:text="Settings"
                     android:textColor="@color/pc_brand_deep_blue"
-                    android:textSize="36sp" />
+                    android:textSize="30sp" />
 
             </LinearLayout>
 
@@ -52,7 +52,7 @@
             android:fontFamily="@font/fredoka_semibold"
             android:text="APP EXPERIENCE"
             android:textColor="@color/pc_brand_deep_blue"
-            android:textSize="12sp" />
+            android:textSize="13sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -63,7 +63,7 @@
             <LinearLayout
                 android:id="@+id/dark_theme_setting"
                 android:layout_width="match_parent"
-                android:layout_height="84dp"
+                android:layout_height="72dp"
                 android:clickable="true"
                 android:focusable="true"
                 android:gravity="center_vertical"
@@ -93,7 +93,7 @@
                         android:fontFamily="@font/fredoka_semibold"
                         android:text="Dark theme"
                         android:textColor="@color/pc_brand_text_primary"
-                        android:textSize="17sp" />
+                        android:textSize="16sp" />
 
                     <TextView
                         android:layout_width="match_parent"
@@ -124,7 +124,7 @@
             <LinearLayout
                 android:id="@+id/push_notification_setting"
                 android:layout_width="match_parent"
-                android:layout_height="84dp"
+                android:layout_height="72dp"
                 android:clickable="true"
                 android:focusable="true"
                 android:gravity="center_vertical"
@@ -154,7 +154,7 @@
                         android:fontFamily="@font/fredoka_semibold"
                         android:text="Phone push updates"
                         android:textColor="@color/pc_brand_text_primary"
-                        android:textSize="17sp" />
+                        android:textSize="16sp" />
 
                     <TextView
                         android:layout_width="match_parent"
@@ -180,12 +180,12 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="16dp"
             android:layout_marginBottom="8dp"
             android:fontFamily="@font/fredoka_semibold"
             android:text="ACCOUNT &amp; DATA"
             android:textColor="@color/pc_brand_deep_blue"
-            android:textSize="12sp" />
+            android:textSize="13sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -196,7 +196,7 @@
             <LinearLayout
                 android:id="@+id/location_setting"
                 android:layout_width="match_parent"
-                android:layout_height="84dp"
+                android:layout_height="72dp"
                 android:clickable="true"
                 android:contentDescription="Manage Android location permission"
                 android:focusable="true"
@@ -227,7 +227,7 @@
                         android:fontFamily="@font/fredoka_semibold"
                         android:text="Location"
                         android:textColor="@color/pc_brand_text_primary"
-                        android:textSize="17sp" />
+                        android:textSize="16sp" />
 
                     <TextView
                         android:layout_width="match_parent"
@@ -259,7 +259,7 @@
             <LinearLayout
                 android:id="@+id/account_details_action"
                 android:layout_width="match_parent"
-                android:layout_height="84dp"
+                android:layout_height="72dp"
                 android:clickable="true"
                 android:contentDescription="Edit your PropCycle profile"
                 android:focusable="true"
@@ -290,7 +290,7 @@
                         android:fontFamily="@font/fredoka_semibold"
                         android:text="@string/settings_edit_profile_title"
                         android:textColor="@color/pc_brand_text_primary"
-                        android:textSize="17sp" />
+                        android:textSize="16sp" />
 
                     <TextView
                         android:layout_width="match_parent"
@@ -319,7 +319,7 @@
             <LinearLayout
                 android:id="@+id/clear_recent_search_action"
                 android:layout_width="match_parent"
-                android:layout_height="84dp"
+                android:layout_height="72dp"
                 android:clickable="true"
                 android:contentDescription="Clear locally saved recent searches"
                 android:focusable="true"
@@ -350,7 +350,7 @@
                         android:fontFamily="@font/fredoka_semibold"
                         android:text="@string/settings_clear_recent_search_title"
                         android:textColor="@color/pc_brand_text_primary"
-                        android:textSize="17sp" />
+                        android:textSize="16sp" />
 
                     <TextView
                         android:layout_width="match_parent"
@@ -379,7 +379,7 @@
             <LinearLayout
                 android:id="@+id/clear_history_action"
                 android:layout_width="match_parent"
-                android:layout_height="84dp"
+                android:layout_height="72dp"
                 android:clickable="true"
                 android:contentDescription="Clear this account's activity history on this device"
                 android:focusable="true"
@@ -410,7 +410,7 @@
                         android:fontFamily="@font/fredoka_semibold"
                         android:text="Clear local activity"
                         android:textColor="@color/pc_brand_text_primary"
-                        android:textSize="17sp" />
+                        android:textSize="16sp" />
 
                     <TextView
                         android:layout_width="match_parent"
@@ -434,12 +434,12 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="16dp"
             android:layout_marginBottom="8dp"
             android:fontFamily="@font/fredoka_semibold"
             android:text="@string/settings_help_about_section"
             android:textColor="@color/pc_brand_deep_blue"
-            android:textSize="12sp" />
+            android:textSize="13sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -450,7 +450,7 @@
             <LinearLayout
                 android:id="@+id/help_faq_action"
                 android:layout_width="match_parent"
-                android:layout_height="84dp"
+                android:layout_height="72dp"
                 android:clickable="true"
                 android:contentDescription="Open Help and FAQ"
                 android:focusable="true"
@@ -481,7 +481,7 @@
                         android:fontFamily="@font/fredoka_semibold"
                         android:text="@string/settings_help_faq_title"
                         android:textColor="@color/pc_brand_text_primary"
-                        android:textSize="17sp" />
+                        android:textSize="16sp" />
 
                     <TextView
                         android:layout_width="match_parent"
@@ -510,7 +510,7 @@
             <LinearLayout
                 android:id="@+id/privacy_data_action"
                 android:layout_width="match_parent"
-                android:layout_height="84dp"
+                android:layout_height="72dp"
                 android:clickable="true"
                 android:contentDescription="Open Privacy and Data"
                 android:focusable="true"
@@ -541,7 +541,7 @@
                         android:fontFamily="@font/fredoka_semibold"
                         android:text="@string/settings_privacy_data_title"
                         android:textColor="@color/pc_brand_text_primary"
-                        android:textSize="17sp" />
+                        android:textSize="16sp" />
 
                     <TextView
                         android:layout_width="match_parent"
@@ -570,7 +570,7 @@
             <LinearLayout
                 android:id="@+id/about_propcycle_action"
                 android:layout_width="match_parent"
-                android:layout_height="84dp"
+                android:layout_height="72dp"
                 android:clickable="true"
                 android:contentDescription="Open About PropCycle"
                 android:focusable="true"
@@ -601,7 +601,7 @@
                         android:fontFamily="@font/fredoka_semibold"
                         android:text="@string/settings_about_title"
                         android:textColor="@color/pc_brand_text_primary"
-                        android:textSize="17sp" />
+                        android:textSize="16sp" />
 
                     <TextView
                         android:layout_width="match_parent"
@@ -630,7 +630,7 @@
             <LinearLayout
                 android:id="@+id/app_version_row"
                 android:layout_width="match_parent"
-                android:layout_height="84dp"
+                android:layout_height="72dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:paddingStart="16dp"
@@ -658,7 +658,7 @@
                         android:fontFamily="@font/fredoka_semibold"
                         android:text="@string/settings_app_version_title"
                         android:textColor="@color/pc_brand_text_primary"
-                        android:textSize="17sp" />
+                        android:textSize="16sp" />
 
                     <TextView
                         android:id="@+id/app_version_value"

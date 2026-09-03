@@ -7,7 +7,7 @@
     android:background="@color/pc_brand_warm_cream"
     android:orientation="vertical"
     android:paddingStart="20dp"
-    android:paddingTop="4dp"
+    android:paddingTop="8dp"
     android:paddingEnd="20dp">
 
     <FrameLayout
@@ -63,7 +63,7 @@
         android:layout_marginTop="6dp"
         android:background="@drawable/bg_notifications_status"
         android:fontFamily="@font/fredoka_semibold"
-        android:padding="12dp"
+        android:padding="8dp"
         android:textColor="@color/pc_brand_deep_blue"
         android:textSize="14sp"
         tools:text="1 recent sold listing update" />
@@ -100,7 +100,7 @@
         android:layout_marginTop="6dp"
         android:background="@drawable/bg_notifications_status"
         android:fontFamily="@font/fredoka_semibold"
-        android:padding="12dp"
+        android:padding="8dp"
         android:textColor="@color/pc_brand_deep_blue"
         android:textSize="14sp"
         tools:text="2 lending updates" />

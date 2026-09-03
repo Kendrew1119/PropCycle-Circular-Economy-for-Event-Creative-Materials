@@ -3,11 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="10dp"
+    android:layout_marginBottom="12dp"
     android:clickable="true"
     android:focusable="true"
     app:cardBackgroundColor="@color/pc_brand_surface"
-    app:cardCornerRadius="24dp"
+    app:cardCornerRadius="18dp"
     app:cardElevation="0dp"
     app:rippleColor="@color/pc_brand_soft_blue"
     app:strokeColor="@color/pc_brand_primary_blue"
@@ -17,9 +17,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:minHeight="116dp"
+        android:minHeight="104dp"
         android:orientation="horizontal"
-        android:padding="12dp">
+        android:padding="8dp">
 
         <com.google.android.material.card.MaterialCardView
             android:layout_width="88dp"
@@ -41,7 +41,7 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="14dp"
+            android:layout_marginStart="12dp"
             android:layout_weight="1"
             android:orientation="vertical">
 
@@ -53,13 +53,13 @@
                 android:fontFamily="@font/fredoka_semibold"
                 android:maxLines="2"
                 android:textColor="@color/pc_brand_deep_blue"
-                android:textSize="18sp" />
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/lending_item_meta"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="4dp"
                 android:ellipsize="end"
                 android:maxLines="2"
                 android:textColor="@color/pc_brand_text_secondary"
@@ -69,7 +69,7 @@
                 android:id="@+id/lending_item_distance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="7dp"
+                android:layout_marginTop="4dp"
                 android:background="@drawable/bg_marketplace_meta"
                 android:fontFamily="@font/fredoka_semibold"
                 android:paddingStart="8dp"
@@ -77,7 +77,7 @@
                 android:paddingEnd="8dp"
                 android:paddingBottom="3dp"
                 android:textColor="@color/pc_brand_deep_blue"
-                android:textSize="12sp" />
+                android:textSize="11sp" />
         </LinearLayout>
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

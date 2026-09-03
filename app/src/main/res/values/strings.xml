@@ -157,6 +157,21 @@
         <item quantity="one">%d mapped</item>
         <item quantity="other">%d mapped</item>
     </plurals>
+    <plurals name="lending_date_picker_title_with_limit">
+        <item quantity="one">Choose dates · Up to %d day</item>
+        <item quantity="other">Choose dates · Up to %d days</item>
+    </plurals>
+    <string name="lending_date_picker_cancel">Cancel</string>
+    <string name="lending_date_picker_confirm">Confirm dates</string>
+    <string name="lending_date_summary_title">Borrowing period</string>
+    <string name="lending_date_summary_range">%1$s – %2$s</string>
+    <plurals name="lending_date_summary_limit">
+        <item quantity="one">Borrow for up to %d day</item>
+        <item quantity="other">Borrow for up to %d days</item>
+    </plurals>
+    <string name="lending_date_summary_helper">Your request will be sent to the owner for approval.</string>
+    <string name="lending_date_summary_back">Back</string>
+    <string name="lending_date_summary_send">Send request</string>
     <string name="ai_result_view_details">View details</string>
     <string name="ai_result_initial_status">Scan an item to see an AI result.</string>
     <string name="ai_result_disclaimer">This percentage is an uncalibrated model estimate, not a guarantee. Review the item, material and local recycling rules before acting.</string>

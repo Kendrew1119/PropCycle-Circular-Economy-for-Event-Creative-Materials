@@ -1,6 +1,7 @@
 package com.propcycle.app.ui.lending;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,8 @@ import com.propcycle.app.ui.marketplace.MarketplaceStatusNoticeAdapter;
 
 /** Existing Notifications surface used as a real in-app lending request inbox. */
 public final class LendingRequestsFragment extends Fragment {
+
+    private static final String DIAGNOSTIC_TAG = "PropCycleLendingDebug";
 
     private FragmentNotificationsBinding binding;
     private LendingRequestsViewModel viewModel;
@@ -65,7 +68,9 @@ public final class LendingRequestsFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+        Log.d(DIAGNOSTIC_TAG, "LendingRequestsFragment onStart");
         if (viewModel != null) {
+            Log.d(DIAGNOSTIC_TAG, "LendingRequestsFragment ViewModel start requested");
             viewModel.start();
         }
     }
@@ -144,10 +149,18 @@ public final class LendingRequestsFragment extends Fragment {
         if (binding == null || adapter == null) {
             return;
         }
+        Log.d(DIAGNOSTIC_TAG,
+                "Fragment observer request list size=" + state.getRequests().size());
         adapter.submitList(state.getRequests(), state.getBusyRequestId());
+        Log.d(DIAGNOSTIC_TAG, "adapter item count=" + adapter.getItemCount());
         binding.lendingRequestProgress.setVisibility(
                 state.isLoading() ? View.VISIBLE : View.GONE);
         String message = state.getMessage();
+        boolean showEmptyState = message == null
+                && !state.isLoading()
+                && state.getRequests().isEmpty();
+        Log.d(DIAGNOSTIC_TAG,
+                "empty-state visibility decision=" + showEmptyState);
         if (message == null) {
             message = !state.isLoading() && state.getRequests().isEmpty()
                     ? "No lending updates yet."

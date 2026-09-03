@@ -1,6 +1,7 @@
 package com.propcycle.app.data.lending;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -8,12 +9,14 @@ import androidx.annotation.Nullable;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.Timestamp;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.MetadataChanges;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -32,6 +35,7 @@ import java.util.UUID;
 /** Firebase boundary for lending items, requests, booked days, and ratings. */
 public final class FirestoreLendingRepository {
 
+    private static final String DIAGNOSTIC_TAG = "PropCycleLendingDebug";
     public static final String ITEMS = "lendingItems";
     public static final String REQUESTS = "lendingRequests";
     public static final String RATINGS = "lendingRatings";
@@ -267,23 +271,56 @@ public final class FirestoreLendingRepository {
     @NonNull
     public Subscription observeMyRequests(
             @NonNull SnapshotCallback<List<LendingRequest>> callback) {
+        Log.d(DIAGNOSTIC_TAG, "repository listener started");
+        FirebaseUser diagnosticUser = null;
+        String projectId = "unavailable";
+        try {
+            diagnosticUser = FirebaseAuth.getInstance().getCurrentUser();
+            String configuredProjectId = FirebaseApp.getInstance().getOptions().getProjectId();
+            if (configuredProjectId != null && !configuredProjectId.trim().isEmpty()) {
+                projectId = configuredProjectId;
+            }
+        } catch (IllegalStateException unavailable) {
+            Log.e(DIAGNOSTIC_TAG,
+                    "Firebase diagnostic unavailable message=" + safeErrorMessage(unavailable));
+        }
+        Log.d(DIAGNOSTIC_TAG,
+                "current uid=" + maskUid(diagnosticUser == null ? null : diagnosticUser.getUid()));
+        Log.d(DIAGNOSTIC_TAG, "Firebase project ID=" + projectId);
         if (firestore == null || currentUserId() == null) {
+            Log.e(DIAGNOSTIC_TAG,
+                    "listener error code=UNAUTHENTICATED message=Sign in required");
             callback.onError(new IllegalStateException("Sign in to view lending updates."));
             return Subscription.NONE;
         }
         String uid = currentUserId();
+        Log.d(DIAGNOSTIC_TAG, "query started participantIds arrayContains current user");
         ListenerRegistration registration = firestore.collection(REQUESTS)
                 .whereArrayContains("participantIds", uid)
                 .limit(50)
                 .addSnapshotListener(MetadataChanges.INCLUDE, (snapshot, error) -> {
                     if (error != null) {
+                        String code = error instanceof FirebaseFirestoreException
+                                ? ((FirebaseFirestoreException) error).getCode().name()
+                                : error.getClass().getSimpleName();
+                        Log.e(DIAGNOSTIC_TAG,
+                                "listener error code=" + code
+                                        + " message=" + safeErrorMessage(error));
                         callback.onError(error);
                         return;
                     }
                     if (snapshot == null) {
+                        Log.e(DIAGNOSTIC_TAG,
+                                "listener error code=NULL_SNAPSHOT message=Snapshot unavailable");
                         callback.onError(new IllegalStateException("Lending updates are unavailable."));
                         return;
                     }
+                    Log.d(DIAGNOSTIC_TAG, "snapshot received");
+                    Log.d(DIAGNOSTIC_TAG, "snapshot size=" + snapshot.size());
+                    Log.d(DIAGNOSTIC_TAG,
+                            "fromCache=" + snapshot.getMetadata().isFromCache());
+                    Log.d(DIAGNOSTIC_TAG,
+                            "hasPendingWrites=" + snapshot.getMetadata().hasPendingWrites());
                     List<LendingRequest> requests = new ArrayList<>();
                     for (QueryDocumentSnapshot document : snapshot) {
                         LendingRequest request = mapRequest(document);
@@ -297,6 +334,29 @@ public final class FirestoreLendingRepository {
                     callback.onData(requests, snapshot.getMetadata().isFromCache());
                 });
         return registration::remove;
+    }
+
+    @NonNull
+    private static String maskUid(@Nullable String uid) {
+        if (uid == null || uid.isEmpty()) {
+            return "none";
+        }
+        if (uid.length() <= 8) {
+            return uid.substring(0, Math.min(4, uid.length())) + "...";
+        }
+        return uid.substring(0, 4) + "..." + uid.substring(uid.length() - 4);
+    }
+
+    @NonNull
+    private static String safeErrorMessage(@NonNull Exception error) {
+        String message = error.getMessage();
+        if (message == null || message.trim().isEmpty()) {
+            return error.getClass().getSimpleName();
+        }
+        String safe = message.replaceAll("[\\r\\n]+", " ")
+                .replaceAll("[A-Za-z0-9_-]{16,}", "[redacted]")
+                .trim();
+        return safe.length() <= 160 ? safe : safe.substring(0, 160);
     }
 
     @NonNull

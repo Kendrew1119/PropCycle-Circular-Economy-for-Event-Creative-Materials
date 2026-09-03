@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="88dp"
+    android:layout_height="76dp"
     android:layout_marginBottom="12dp"
     android:background="@drawable/bg_messages_thread"
     android:clickable="true"
@@ -10,7 +10,7 @@
     android:foreground="?attr/selectableItemBackground"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:padding="12dp">
+    android:padding="8dp">
 
     <TextView
         android:id="@+id/thread_avatar"
@@ -29,7 +29,7 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="14dp"
+        android:layout_marginStart="12dp"
         android:layout_weight="1"
         android:orientation="vertical">
 
@@ -41,7 +41,7 @@
             android:fontFamily="@font/fredoka_semibold"
             android:maxLines="1"
             android:textColor="@color/pc_brand_text_primary"
-            android:textSize="18sp"
+            android:textSize="16sp"
             tools:text="Event fabric bundle" />
 
         <TextView
@@ -52,7 +52,7 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:textColor="@color/pc_brand_text_secondary"
-            android:textSize="14sp"
+            android:textSize="13sp"
             tools:text="Is the item still available?" />
     </LinearLayout>
 
@@ -65,6 +65,6 @@
         android:layout_marginTop="5dp"
         android:maxLines="1"
         android:textColor="@color/pc_brand_text_secondary"
-        android:textSize="12sp"
+        android:textSize="11sp"
         tools:text="10:24 AM" />
 </LinearLayout>

@@ -17,7 +17,7 @@
         android:foreground="?attr/selectableItemBackground"
         android:gravity="center_vertical"
         android:orientation="vertical"
-        android:padding="15dp">
+        android:padding="12dp">
 
         <TextView
             android:id="@+id/marketplace_notice_title"
@@ -27,7 +27,7 @@
             android:fontFamily="@font/fredoka_semibold"
             android:maxLines="1"
             android:textColor="@color/pc_brand_text_primary"
-            android:textSize="17sp"
+            android:textSize="16sp"
             tools:text="Reusable Event Backdrop" />
 
         <TextView
@@ -53,7 +53,7 @@
             android:paddingEnd="9dp"
             android:paddingBottom="3dp"
             android:textColor="@color/pc_brand_deep_blue"
-            android:textSize="12sp"
+            android:textSize="11sp"
             tools:text="Sold • 10:30 PM" />
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

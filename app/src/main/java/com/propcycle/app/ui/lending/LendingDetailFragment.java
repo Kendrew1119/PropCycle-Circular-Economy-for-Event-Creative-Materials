@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -113,17 +114,59 @@ public final class LendingDetailFragment extends Fragment {
         if (item == null || state.isBusy()) {
             return;
         }
+        int maximumDays = item.getMaxBorrowDays() == null
+                ? LendingPolicy.MAX_REQUEST_DAYS
+                : item.getMaxBorrowDays().intValue();
         MaterialDatePicker<Pair<Long, Long>> picker =
                 MaterialDatePicker.Builder.dateRangePicker()
-                        .setTitleText("Choose borrowing dates")
+                        .setTheme(R.style.ThemeOverlay_PropCycle_MaterialDatePicker)
+                        .setTitleText(getResources().getQuantityString(
+                                R.plurals.lending_date_picker_title_with_limit,
+                                maximumDays,
+                                maximumDays))
+                        .setNegativeButtonText(R.string.lending_date_picker_cancel)
+                        .setPositiveButtonText(R.string.lending_date_picker_confirm)
                         .build();
         picker.addOnPositiveButtonClickListener(range -> {
             if (range == null || range.first == null || range.second == null) {
                 return;
             }
-            viewModel.request(formatPickerDate(range.first), formatPickerDate(range.second));
+            showBorrowingPeriodConfirmation(
+                    maximumDays,
+                    range.first,
+                    range.second);
         });
         picker.show(getParentFragmentManager(), "lending-date-range");
+    }
+
+    private void showBorrowingPeriodConfirmation(
+            int maximumDays,
+            long startMillis,
+            long endMillis) {
+        View content = LayoutInflater.from(requireContext())
+                .inflate(R.layout.dialog_lending_date_summary, null, false);
+        TextView range = content.findViewById(R.id.lending_date_summary_range);
+        TextView limit = content.findViewById(R.id.lending_date_summary_limit);
+        range.setText(getString(
+                R.string.lending_date_summary_range,
+                formatDisplayDate(startMillis),
+                formatDisplayDate(endMillis)));
+        limit.setText(getResources().getQuantityString(
+                R.plurals.lending_date_summary_limit,
+                maximumDays,
+                maximumDays));
+
+        new MaterialAlertDialogBuilder(
+                requireContext(),
+                R.style.ThemeOverlay_PropCycle_MaterialAlertDialog)
+                .setView(content)
+                .setNegativeButton(R.string.lending_date_summary_back, null)
+                .setPositiveButton(
+                        R.string.lending_date_summary_send,
+                        (dialog, which) -> viewModel.request(
+                                formatPickerDate(startMillis),
+                                formatPickerDate(endMillis)))
+                .show();
     }
 
     private void openChat() {
@@ -282,6 +325,13 @@ public final class LendingDetailFragment extends Fragment {
     @NonNull
     private static String formatPickerDate(long millis) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ROOT);
+        format.setTimeZone(TimeZone.getTimeZone("UTC"));
+        return format.format(new Date(millis));
+    }
+
+    @NonNull
+    private static String formatDisplayDate(long millis) {
+        SimpleDateFormat format = new SimpleDateFormat("d MMM yyyy", Locale.getDefault());
         format.setTimeZone(TimeZone.getTimeZone("UTC"));
         return format.format(new Date(millis));
     }

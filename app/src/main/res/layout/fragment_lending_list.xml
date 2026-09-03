@@ -11,7 +11,7 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="96dp">
+        android:layout_height="84dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -27,7 +27,7 @@
                 android:includeFontPadding="false"
                 android:text="Lend Out"
                 android:textColor="@color/pc_brand_deep_blue"
-                android:textSize="36sp" />
+                android:textSize="30sp" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -36,7 +36,7 @@
                 android:lineSpacingExtra="1dp"
                 android:text="Borrow useful equipment from the community or share your own."
                 android:textColor="@color/pc_brand_text_secondary"
-                android:textSize="14sp" />
+                android:textSize="15sp" />
         </LinearLayout>
 
         <ImageView
@@ -84,7 +84,7 @@
     <HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="2dp"
         android:clipToPadding="false"
         android:scrollbars="none">
 
