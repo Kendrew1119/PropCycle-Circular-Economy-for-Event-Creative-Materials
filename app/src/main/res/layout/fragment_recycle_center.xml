@@ -409,7 +409,7 @@
             android:text="@string/recycle_nearby_heading"
             android:textColor="@color/pc_brand_deep_blue"
             android:textSize="20sp"
-            app:drawableStartCompat="@drawable/ic_welcome_recycle"
+            app:drawableStartCompat="@drawable/ic_bottom_nav_recycle"
             app:drawableTint="@color/pc_brand_primary_blue" />
 
         <androidx.recyclerview.widget.RecyclerView

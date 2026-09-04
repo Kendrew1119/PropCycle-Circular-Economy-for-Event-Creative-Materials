@@ -46,13 +46,27 @@
     </style>
 
     <style name="TextAppearance.PropCycle.BottomNavigation" parent="TextAppearance.Material3.LabelSmall">
-        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:fontFamily">@font/fredoka_semibold</item>
         <item name="android:textSize">10sp</item>
         <item name="android:textStyle">normal</item>
+        <item name="android:includeFontPadding">false</item>
     </style>
 
     <style name="TextAppearance.PropCycle.BottomNavigation.Active" parent="TextAppearance.PropCycle.BottomNavigation">
-        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="ShapeAppearance.PropCycle.BottomNavigation.ActiveIndicator" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+
+    <style name="Widget.PropCycle.BottomNavigation.ActiveIndicator" parent="">
+        <item name="android:width">@dimen/bottom_navigation_active_indicator_size</item>
+        <item name="android:height">@dimen/bottom_navigation_active_indicator_size</item>
+        <item name="android:color">@color/pc_brand_accent_yellow</item>
+        <item name="marginHorizontal">@dimen/bottom_navigation_active_indicator_margin</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.PropCycle.BottomNavigation.ActiveIndicator</item>
     </style>
 
     <style name="Widget.PropCycle.Button.Dark" parent="Widget.Material3.Button">

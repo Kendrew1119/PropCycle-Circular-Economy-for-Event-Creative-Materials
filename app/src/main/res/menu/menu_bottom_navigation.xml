@@ -14,7 +14,7 @@
         android:title="@string/bottom_navigation_lend_out" />
     <item
         android:id="@+id/bottom_nav_recycle_center"
-        android:icon="@drawable/ic_welcome_recycle"
+        android:icon="@drawable/ic_bottom_nav_recycle"
         android:title="@string/bottom_navigation_recycle_center" />
     <item
         android:id="@+id/bottom_nav_messages"

@@ -20,9 +20,11 @@
     <dimen name="page_top_control_height">48dp</dimen>
     <dimen name="page_top_control_spacing">4dp</dimen>
     <dimen name="app_header_height">52dp</dimen>
-    <dimen name="bottom_navigation_height">72dp</dimen>
-    <dimen name="bottom_navigation_icon_size">22dp</dimen>
-    <dimen name="bottom_navigation_corner_radius">22dp</dimen>
+    <dimen name="bottom_navigation_height">68dp</dimen>
+    <dimen name="bottom_navigation_icon_size">21dp</dimen>
+    <dimen name="bottom_navigation_corner_radius">24dp</dimen>
+    <dimen name="bottom_navigation_active_indicator_size">38dp</dimen>
+    <dimen name="bottom_navigation_active_indicator_margin">0dp</dimen>
     <dimen name="home_screen_horizontal">16dp</dimen>
     <dimen name="home_content_vertical">16dp</dimen>
     <dimen name="home_greeting_min_height">174dp</dimen>

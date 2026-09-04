@@ -72,7 +72,7 @@
     <string name="bottom_navigation_home">Home</string>
     <string name="bottom_navigation_marketplace">Marketplace</string>
     <string name="bottom_navigation_lend_out">Lend Out</string>
-    <string name="bottom_navigation_recycle_center">Recycle Center</string>
+    <string name="bottom_navigation_recycle_center">Recycle</string>
     <string name="bottom_navigation_messages">Messages</string>
 
     <string name="recycle_center_title">Recycle Center</string>
