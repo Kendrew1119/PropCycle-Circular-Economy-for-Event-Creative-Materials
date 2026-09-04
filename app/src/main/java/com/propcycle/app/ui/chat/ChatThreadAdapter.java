@@ -3,6 +3,7 @@ package com.propcycle.app.ui.chat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -73,7 +74,11 @@ final class ChatThreadAdapter extends RecyclerView.Adapter<ChatThreadAdapter.Thr
         String displayName = profile == null ? "PropCycle Member" : profile.getDisplayName();
         String avatarKey = profile == null
                 ? ProfileAvatarPolicy.DEFAULT : profile.getAvatarKey();
-        ProfileAvatarRenderer.render(holder.avatar, avatarKey, displayName);
+        ProfileAvatarRenderer.render(
+                holder.avatarInitial,
+                holder.avatarIcon,
+                avatarKey,
+                displayName);
         boolean canOpenProfile = !otherUserId.isEmpty();
         holder.avatar.setClickable(canOpenProfile);
         holder.avatar.setFocusable(canOpenProfile);
@@ -113,7 +118,9 @@ final class ChatThreadAdapter extends RecyclerView.Adapter<ChatThreadAdapter.Thr
     }
 
     static final class ThreadViewHolder extends RecyclerView.ViewHolder {
-        private final TextView avatar;
+        private final View avatar;
+        private final TextView avatarInitial;
+        private final ImageView avatarIcon;
         private final TextView title;
         private final TextView preview;
         private final TextView time;
@@ -121,6 +128,8 @@ final class ChatThreadAdapter extends RecyclerView.Adapter<ChatThreadAdapter.Thr
         ThreadViewHolder(@NonNull View itemView) {
             super(itemView);
             avatar = itemView.findViewById(R.id.thread_avatar);
+            avatarInitial = itemView.findViewById(R.id.thread_avatar_initial);
+            avatarIcon = itemView.findViewById(R.id.thread_avatar_icon);
             title = itemView.findViewById(R.id.thread_title);
             preview = itemView.findViewById(R.id.thread_preview);
             time = itemView.findViewById(R.id.thread_time);

@@ -297,14 +297,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:background="@null"
-            android:foreground="@null"
             android:hint="Pickup method"
             app:boxBackgroundColor="@color/pc_brand_surface"
             app:boxBackgroundMode="outline"
-            app:boxStrokeColor="@color/pc_transparent"
-            app:boxStrokeWidth="0dp"
-            app:boxStrokeWidthFocused="0dp"
             app:startIconDrawable="@drawable/ic_location"
             app:startIconTint="@color/pc_brand_deep_blue">
 

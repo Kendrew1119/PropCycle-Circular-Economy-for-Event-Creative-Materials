@@ -12,7 +12,7 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="84dp">
+        android:layout_height="100dp">
 
         <ImageButton
             android:id="@+id/menu_button"
@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="top|start"
             android:layout_marginTop="12dp"
-            android:layout_marginStart="40dp"
+            android:layout_marginStart="0dp"
             android:layout_marginEnd="94dp"
             android:orientation="vertical">
 
@@ -39,12 +39,14 @@
                 android:fontFamily="@font/fredoka_semibold"
                 android:text="Messages"
                 android:textColor="@color/pc_brand_deep_blue"
-                android:textSize="30sp" />
+                android:textSize="32sp" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:text="Keep good materials moving."
                 android:textColor="@color/pc_brand_text_secondary"
                 android:textSize="15sp" />
