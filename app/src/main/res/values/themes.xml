@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.PropCycle" parent="Theme.Material3.Light.NoActionBar">
+    <style name="Base.Theme.PropCycle" parent="Theme.Material3.Light.NoActionBar">
         <item name="colorPrimary">@color/pc_primary</item>
         <item name="colorOnPrimary">@color/pc_on_primary</item>
         <item name="colorPrimaryContainer">@color/pc_primary_container</item>
@@ -20,6 +20,7 @@
         <item name="colorError">@color/pc_error</item>
         <item name="colorOnError">@color/pc_on_error</item>
         <item name="android:colorAccent">@color/pc_accent</item>
+        <item name="android:forceDarkAllowed">false</item>
         <item name="android:colorBackground">@color/pc_background</item>
         <item name="android:windowBackground">@color/pc_background</item>
         <item name="android:fontFamily">sans-serif</item>
@@ -29,6 +30,8 @@
         <item name="android:windowActionModeOverlay">true</item>
         <item name="android:windowNoTitle">true</item>
     </style>
+
+    <style name="Theme.PropCycle" parent="Base.Theme.PropCycle" />
 
     <style name="Theme.PropCycle.Splash" parent="Theme.PropCycle">
         <item name="android:windowBackground">@drawable/bg_splash_screen</item>

@@ -10,10 +10,10 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.core.content.ContextCompat;
 
 import com.propcycle.app.R;
 import com.propcycle.app.data.marketplace.MarketplaceListing;
@@ -21,7 +21,6 @@ import com.propcycle.app.data.marketplace.MarketplaceImageLoader;
 import com.propcycle.app.databinding.FragmentMarketplaceBinding;
 import com.propcycle.app.ui.common.ScreenNavigation;
 import com.propcycle.app.ui.common.ResourceCreationFlow;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 /** Live, authenticated marketplace browser with an even two-column listing grid. */
 public final class MarketplaceFragment extends Fragment {
@@ -72,7 +71,14 @@ public final class MarketplaceFragment extends Fragment {
         bindFilter(binding.filterDecorationAction, "decoration");
         bindFilter(binding.filterFabricAction, "fabric");
         bindFilter(binding.filterWoodAction, "wood");
-        binding.filterMoreAction.setOnClickListener(ignored -> showAllCategories());
+        bindFilter(binding.filterBannerAction, "banner");
+        bindFilter(binding.filterStationeryAction, "stationery");
+        bindFilter(binding.filterCraftAction, "craft");
+        bindFilter(binding.filterCosplayAction, "cosplay");
+        bindFilter(binding.filterToysAction, "toys");
+        bindFilter(binding.filterElectronicAction, "electronic");
+        bindFilter(binding.filterPackagingAction, "packaging");
+        bindFilter(binding.filterOtherAction, "other");
         binding.marketplaceCreateAction.setOnClickListener(ignored ->
                 ResourceCreationFlow.show(this, ResourceCreationFlow.TARGET_MARKETPLACE));
 
@@ -88,27 +94,6 @@ public final class MarketplaceFragment extends Fragment {
         updateFilterAppearance(viewModel.getSelectedCategory());
     }
 
-    private void showAllCategories() {
-        String[] labels = {
-                "All", "Banner", "Decoration", "Fabric", "Stationery", "Craft",
-                "Cosplay", "Toys", "Wood", "Electronic", "Packaging", "Other"
-        };
-        String[] ids = {
-                "all", "banner", "decoration", "fabric", "stationery", "craft",
-                "cosplay", "toys", "wood", "electronic", "packaging", "other"
-        };
-        new MaterialAlertDialogBuilder(requireContext())
-                .setTitle("Marketplace category")
-                .setItems(labels, (dialog, which) -> {
-                    viewModel.setCategory(ids[which]);
-                    updateFilterAppearance(ids[which]);
-                    binding.filterMoreAction.setText(
-                            which == 0 || which == 2 || which == 3 || which == 8
-                                    ? "More" : labels[which]);
-                })
-                .show();
-    }
-
     private void bindFilter(@NonNull TextView view, @NonNull String category) {
         view.setOnClickListener(ignored -> {
             viewModel.setCategory(category);
@@ -121,14 +106,14 @@ public final class MarketplaceFragment extends Fragment {
         updateFilter(binding.filterDecorationAction, "decoration".equals(selectedCategory));
         updateFilter(binding.filterFabricAction, "fabric".equals(selectedCategory));
         updateFilter(binding.filterWoodAction, "wood".equals(selectedCategory));
-        boolean otherCategory = !"all".equals(selectedCategory)
-                && !"decoration".equals(selectedCategory)
-                && !"fabric".equals(selectedCategory)
-                && !"wood".equals(selectedCategory);
-        updateFilter(binding.filterMoreAction, otherCategory);
-        if (!otherCategory) {
-            binding.filterMoreAction.setText("More");
-        }
+        updateFilter(binding.filterBannerAction, "banner".equals(selectedCategory));
+        updateFilter(binding.filterStationeryAction, "stationery".equals(selectedCategory));
+        updateFilter(binding.filterCraftAction, "craft".equals(selectedCategory));
+        updateFilter(binding.filterCosplayAction, "cosplay".equals(selectedCategory));
+        updateFilter(binding.filterToysAction, "toys".equals(selectedCategory));
+        updateFilter(binding.filterElectronicAction, "electronic".equals(selectedCategory));
+        updateFilter(binding.filterPackagingAction, "packaging".equals(selectedCategory));
+        updateFilter(binding.filterOtherAction, "other".equals(selectedCategory));
     }
 
     private void updateFilter(@NonNull TextView view, boolean selected) {
@@ -137,7 +122,7 @@ public final class MarketplaceFragment extends Fragment {
                 : R.drawable.bg_marketplace_filter);
         view.setTextColor(ContextCompat.getColor(
                 requireContext(),
-                selected ? R.color.pc_white : R.color.pc_brand_deep_blue));
+                selected ? R.color.pc_brand_surface : R.color.pc_brand_deep_blue));
         view.setSelected(selected);
     }
 
@@ -154,8 +139,10 @@ public final class MarketplaceFragment extends Fragment {
 
         if (content) {
             adapter.submitList(state.getListings());
+            binding.marketplaceItemCount.setText(state.getListings().size() + " items");
         } else {
             adapter.submitList(java.util.Collections.emptyList());
+            binding.marketplaceItemCount.setText("");
             if (!loading) {
                 binding.marketplaceStatus.setText(state.getMessage());
             }

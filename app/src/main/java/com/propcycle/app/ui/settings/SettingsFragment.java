@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.propcycle.app.BuildConfig;
 import com.propcycle.app.R;
+import com.propcycle.app.core.theme.AppTheme;
 import com.propcycle.app.data.activity.ActivityLogRepository;
 import com.propcycle.app.databinding.FragmentSettingsBinding;
 import com.propcycle.app.ui.common.ScreenNavigation;
@@ -44,16 +45,11 @@ public final class SettingsFragment extends Fragment {
             return;
         }
         ScreenNavigation.bindChrome(this, view);
-        android.content.SharedPreferences prefs = requireContext().getSharedPreferences("theme_prefs", android.content.Context.MODE_PRIVATE);
-        boolean isDark = prefs.getBoolean("dark_theme", false);
-        binding.darkThemeSwitch.setChecked(isDark);
+        binding.darkThemeSwitch.setChecked(AppTheme.isDark(requireContext()));
         binding.darkThemeSetting.setOnClickListener(ignored -> {
             boolean next = !binding.darkThemeSwitch.isChecked();
             binding.darkThemeSwitch.setChecked(next);
-            prefs.edit().putBoolean("dark_theme", next).apply();
-            androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(
-                    next ? androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES 
-                         : androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO);
+            AppTheme.setDark(requireContext(), next);
         });
         binding.pushNotificationSetting.setOnClickListener(ignored ->
                 new MaterialAlertDialogBuilder(requireContext())

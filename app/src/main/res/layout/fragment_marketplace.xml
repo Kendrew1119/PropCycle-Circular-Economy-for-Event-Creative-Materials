@@ -12,14 +12,13 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/page_header_height">
+        android:layout_height="78dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginEnd="82dp"
             android:gravity="center_vertical"
-            android:layout_gravity="center_vertical"
-            android:layout_marginEnd="76dp"
             android:orientation="vertical">
 
             <TextView
@@ -29,31 +28,33 @@
                 android:includeFontPadding="false"
                 android:text="Marketplace"
                 android:textColor="@color/pc_brand_deep_blue"
-                android:textSize="@dimen/page_header_title_size" />
+                android:textSize="28sp" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
+                android:layout_marginTop="3dp"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:text="Find materials ready for their next event."
                 android:textColor="@color/pc_brand_text_secondary"
-                android:textSize="@dimen/page_header_subtitle_size" />
+                android:textSize="13sp" />
         </LinearLayout>
 
         <ImageView
             android:layout_width="72dp"
-            android:layout_height="72dp"
+            android:layout_height="64dp"
             android:layout_gravity="end|center_vertical"
             android:contentDescription="@null"
             android:importantForAccessibility="no"
             android:scaleType="centerInside"
-            android:src="@drawable/pc_sticker_marketplace_box" />
+            android:src="@drawable/pc_sticker_marketplace_stars" />
     </FrameLayout>
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
-        android:layout_height="@dimen/page_top_card_height"
-        android:layout_marginTop="@dimen/page_top_card_margin"
+        android:layout_height="176dp"
+        android:layout_marginTop="6dp"
         app:cardBackgroundColor="@color/pc_brand_surface"
         app:cardCornerRadius="24dp"
         app:cardElevation="2dp"
@@ -63,23 +64,22 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center_vertical"
             android:orientation="vertical"
-            android:paddingStart="@dimen/page_top_card_horizontal_padding"
-            android:paddingTop="@dimen/page_top_card_vertical_padding"
-            android:paddingEnd="@dimen/page_top_card_horizontal_padding"
-            android:paddingBottom="@dimen/page_top_card_vertical_padding">
+            android:paddingStart="12dp"
+            android:paddingTop="12dp"
+            android:paddingEnd="12dp"
+            android:paddingBottom="12dp">
 
             <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/page_top_control_height"
+                android:layout_height="48dp"
                 android:background="@drawable/bg_marketplace_search">
 
                 <ImageView
                     android:layout_width="18dp"
                     android:layout_height="18dp"
                     android:layout_gravity="start|center_vertical"
-                    android:layout_marginStart="12dp"
+                    android:layout_marginStart="14dp"
                     android:contentDescription="@null"
                     android:importantForAccessibility="no"
                     android:src="@drawable/ic_marketplace_search" />
@@ -94,8 +94,8 @@
                     android:importantForAutofill="no"
                     android:inputType="text"
                     android:maxLines="1"
-                    android:paddingStart="42dp"
-                    android:paddingEnd="12dp"
+                    android:paddingStart="46dp"
+                    android:paddingEnd="14dp"
                     android:textColor="@color/pc_brand_text_primary"
                     android:textColorHint="@color/pc_brand_text_secondary"
                     android:textSize="14sp" />
@@ -103,9 +103,11 @@
 
             <HorizontalScrollView
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_marginTop="@dimen/page_top_control_spacing"
+                android:layout_height="44dp"
+                android:layout_marginTop="4dp"
                 android:clipToPadding="false"
+                android:overScrollMode="never"
+                android:paddingEnd="20dp"
                 android:scrollbars="none">
 
                 <LinearLayout
@@ -117,7 +119,7 @@
                     <TextView
                         android:id="@+id/filter_all_action"
                         android:layout_width="wrap_content"
-                        android:layout_height="48dp"
+                        android:layout_height="40dp"
                         android:background="@drawable/bg_marketplace_filter_selected"
                         android:clickable="true"
                         android:focusable="true"
@@ -127,13 +129,13 @@
                         android:paddingStart="14dp"
                         android:paddingEnd="14dp"
                         android:text="All"
-                        android:textColor="@color/pc_white"
+                        android:textColor="@color/pc_brand_surface"
                         android:textSize="14sp" />
 
                     <TextView
                         android:id="@+id/filter_decoration_action"
                         android:layout_width="wrap_content"
-                        android:layout_height="48dp"
+                        android:layout_height="40dp"
                         android:layout_marginStart="8dp"
                         android:background="@drawable/bg_marketplace_filter"
                         android:clickable="true"
@@ -143,12 +145,13 @@
                         android:paddingStart="14dp"
                         android:paddingEnd="14dp"
                         android:text="Decoration"
+                        android:textColor="@color/pc_brand_deep_blue"
                         android:textSize="14sp" />
 
                     <TextView
                         android:id="@+id/filter_fabric_action"
                         android:layout_width="wrap_content"
-                        android:layout_height="48dp"
+                        android:layout_height="40dp"
                         android:layout_marginStart="8dp"
                         android:background="@drawable/bg_marketplace_filter"
                         android:clickable="true"
@@ -158,12 +161,13 @@
                         android:paddingStart="14dp"
                         android:paddingEnd="14dp"
                         android:text="Fabric"
+                        android:textColor="@color/pc_brand_deep_blue"
                         android:textSize="14sp" />
 
                     <TextView
                         android:id="@+id/filter_wood_action"
                         android:layout_width="wrap_content"
-                        android:layout_height="48dp"
+                        android:layout_height="40dp"
                         android:layout_marginStart="8dp"
                         android:background="@drawable/bg_marketplace_filter"
                         android:clickable="true"
@@ -173,23 +177,136 @@
                         android:paddingStart="14dp"
                         android:paddingEnd="14dp"
                         android:text="Wood"
+                        android:textColor="@color/pc_brand_deep_blue"
                         android:textSize="14sp" />
 
                     <TextView
-                        android:id="@+id/filter_more_action"
+                        android:id="@+id/filter_banner_action"
                         android:layout_width="wrap_content"
-                        android:layout_height="48dp"
+                        android:layout_height="40dp"
                         android:layout_marginStart="8dp"
                         android:background="@drawable/bg_marketplace_filter"
                         android:clickable="true"
-                        android:contentDescription="Choose another marketplace category"
                         android:focusable="true"
                         android:fontFamily="@font/fredoka_semibold"
                         android:gravity="center"
                         android:minWidth="60dp"
                         android:paddingStart="14dp"
                         android:paddingEnd="14dp"
-                        android:text="More"
+                        android:text="Banner"
+                        android:textColor="@color/pc_brand_deep_blue"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/filter_stationery_action"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_marginStart="8dp"
+                        android:background="@drawable/bg_marketplace_filter"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:fontFamily="@font/fredoka_semibold"
+                        android:gravity="center"
+                        android:paddingStart="14dp"
+                        android:paddingEnd="14dp"
+                        android:text="Stationery"
+                        android:textColor="@color/pc_brand_deep_blue"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/filter_craft_action"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_marginStart="8dp"
+                        android:background="@drawable/bg_marketplace_filter"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:fontFamily="@font/fredoka_semibold"
+                        android:gravity="center"
+                        android:paddingStart="14dp"
+                        android:paddingEnd="14dp"
+                        android:text="Craft"
+                        android:textColor="@color/pc_brand_deep_blue"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/filter_cosplay_action"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_marginStart="8dp"
+                        android:background="@drawable/bg_marketplace_filter"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:fontFamily="@font/fredoka_semibold"
+                        android:gravity="center"
+                        android:paddingStart="14dp"
+                        android:paddingEnd="14dp"
+                        android:text="Cosplay"
+                        android:textColor="@color/pc_brand_deep_blue"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/filter_toys_action"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_marginStart="8dp"
+                        android:background="@drawable/bg_marketplace_filter"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:fontFamily="@font/fredoka_semibold"
+                        android:gravity="center"
+                        android:paddingStart="14dp"
+                        android:paddingEnd="14dp"
+                        android:text="Toys"
+                        android:textColor="@color/pc_brand_deep_blue"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/filter_electronic_action"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_marginStart="8dp"
+                        android:background="@drawable/bg_marketplace_filter"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:fontFamily="@font/fredoka_semibold"
+                        android:gravity="center"
+                        android:paddingStart="14dp"
+                        android:paddingEnd="14dp"
+                        android:text="Electronic"
+                        android:textColor="@color/pc_brand_deep_blue"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/filter_packaging_action"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_marginStart="8dp"
+                        android:background="@drawable/bg_marketplace_filter"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:fontFamily="@font/fredoka_semibold"
+                        android:gravity="center"
+                        android:paddingStart="14dp"
+                        android:paddingEnd="14dp"
+                        android:text="Packaging"
+                        android:textColor="@color/pc_brand_deep_blue"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/filter_other_action"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_marginStart="8dp"
+                        android:background="@drawable/bg_marketplace_filter"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:fontFamily="@font/fredoka_semibold"
+                        android:gravity="center"
+                        android:paddingStart="14dp"
+                        android:paddingEnd="14dp"
+                        android:text="Other"
+                        android:textColor="@color/pc_brand_deep_blue"
                         android:textSize="14sp" />
                 </LinearLayout>
             </HorizontalScrollView>
@@ -197,33 +314,56 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/marketplace_create_action"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/page_top_control_height"
-                android:layout_marginTop="@dimen/page_top_control_spacing"
+                android:layout_height="48dp"
+                android:layout_marginTop="4dp"
+                android:fontFamily="@font/fredoka_semibold"
                 android:insetTop="0dp"
                 android:insetBottom="0dp"
+                android:minHeight="0dp"
                 android:text="+  List an item"
                 android:textAllCaps="false"
                 android:textColor="@color/pc_brand_surface"
-                android:textSize="15sp"
-                android:textStyle="bold"
+                android:textSize="17sp"
                 app:backgroundTint="@color/pc_brand_primary_blue"
                 app:cornerRadius="18dp" />
-
         </LinearLayout>
-
     </com.google.android.material.card.MaterialCardView>
-
 
     <TextView
         android:id="@+id/marketplace_cache_status"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="6dp"
+        android:layout_marginBottom="4dp"
         android:gravity="center"
         android:text="Offline cache - results may be outdated."
         android:textColor="@color/pc_brand_text_secondary"
         android:textSize="13sp"
         android:visibility="gone" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:layout_marginTop="8dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="@font/fredoka_semibold"
+            android:text="Fresh from the community"
+            android:textColor="@color/pc_brand_deep_blue"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/marketplace_item_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/fredoka_semibold"
+            android:textColor="@color/pc_brand_text_secondary"
+            android:textSize="12sp" />
+    </LinearLayout>
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -235,7 +375,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
-            android:paddingTop="4dp"
             android:paddingBottom="20dp"
             android:scrollbars="vertical"
             tools:itemCount="4"

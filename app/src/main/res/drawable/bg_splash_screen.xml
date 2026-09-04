@@ -1,54 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@color/pc_brand_deep_blue" />
+    <item android:drawable="@color/pc_splash_background" />
 
     <item
-        android:top="14dp"
-        android:bottom="14dp"
-        android:left="14dp"
-        android:right="14dp">
-        <shape android:shape="rectangle">
-            <solid android:color="@color/pc_brand_warm_cream" />
-            <corners android:radius="52dp" />
-        </shape>
-    </item>
-
-    <item
-        android:width="220dp"
-        android:height="220dp"
-        android:bottom="90dp"
+        android:width="132dp"
+        android:height="132dp"
         android:gravity="center">
         <bitmap
             android:antialias="true"
             android:dither="true"
             android:filter="true"
             android:gravity="fill"
-            android:src="@drawable/propcycle_logo_mascot" />
-    </item>
-
-    <item
-        android:width="149dp"
-        android:height="149dp"
-        android:bottom="90dp"
-        android:gravity="center">
-        <shape android:shape="oval">
-            <solid android:color="@android:color/transparent" />
-            <stroke
-                android:width="2dp"
-                android:color="@color/pc_brand_deep_blue" />
-        </shape>
-    </item>
-
-    <item
-        android:width="230dp"
-        android:height="92dp"
-        android:top="260dp"
-        android:gravity="center">
-        <bitmap
-            android:antialias="true"
-            android:dither="true"
-            android:filter="true"
-            android:gravity="fill"
-            android:src="@drawable/welcome_wordmark" />
+            android:src="@drawable/propcycle_splash_mascot" />
     </item>
 </layer-list>

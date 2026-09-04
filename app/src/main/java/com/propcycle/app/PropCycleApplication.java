@@ -6,6 +6,7 @@ import androidx.annotation.Nullable;
 
 import com.google.firebase.FirebaseApp;
 import com.propcycle.app.core.firebase.FirebaseEnvironment;
+import com.propcycle.app.core.theme.AppTheme;
 
 /** Initializes build-specific App Check before the app requests Firebase services. */
 public class PropCycleApplication extends Application {
@@ -13,17 +14,12 @@ public class PropCycleApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        AppTheme.applySaved(this);
         FirebaseApp app = existingOrInitializeFirebase();
         if (app != null) {
             installAppCheckProvider(app);
         }
         FirebaseEnvironment.initialize(this);
-        
-        android.content.SharedPreferences prefs = getSharedPreferences("theme_prefs", android.content.Context.MODE_PRIVATE);
-        boolean isDark = prefs.getBoolean("dark_theme", false);
-        androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(
-                isDark ? androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES 
-                     : androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO);
     }
 
     /** Debug and release source sets install different attestation providers. */

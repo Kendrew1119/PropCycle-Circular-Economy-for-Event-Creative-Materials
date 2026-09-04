@@ -3,15 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="12dp"
+    android:layout_marginBottom="10dp"
     android:clickable="true"
     android:focusable="true"
     app:cardBackgroundColor="@color/pc_brand_surface"
     app:cardCornerRadius="18dp"
-    app:cardElevation="0dp"
+    app:cardElevation="1dp"
     app:rippleColor="@color/pc_brand_soft_blue"
-    app:strokeColor="@color/pc_brand_primary_blue"
-    app:strokeWidth="2dp">
+    app:strokeColor="@color/pc_brand_outline"
+    app:strokeWidth="1dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -19,13 +19,13 @@
         android:gravity="center_vertical"
         android:minHeight="104dp"
         android:orientation="horizontal"
-        android:padding="8dp">
+        android:padding="10dp">
 
         <com.google.android.material.card.MaterialCardView
-            android:layout_width="88dp"
-            android:layout_height="88dp"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
             app:cardBackgroundColor="@color/pc_brand_soft_blue"
-            app:cardCornerRadius="16dp"
+            app:cardCornerRadius="14dp"
             app:cardElevation="0dp"
             app:strokeWidth="0dp">
 
@@ -41,7 +41,7 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
+            android:layout_marginStart="10dp"
             android:layout_weight="1"
             android:orientation="vertical">
 
