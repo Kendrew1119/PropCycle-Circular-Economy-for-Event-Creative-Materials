@@ -18,45 +18,48 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="@dimen/page_header_height">
         <TextView
             android:id="@+id/lending_map_page_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:fontFamily="@font/fredoka_semibold"
+            android:includeFontPadding="false"
             android:text="@string/lending_map_title"
             android:textColor="@color/pc_brand_deep_blue"
-            android:textSize="26sp"
+            android:textSize="@dimen/page_header_title_size"
             app:layout_constraintEnd_toStartOf="@id/lending_map_title_doodle"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintBottom_toTopOf="@id/lending_map_page_subtitle"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed" />
         <TextView
             android:id="@+id/lending_map_page_subtitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="1dp"
-            android:lineSpacingMultiplier="1.08"
+            android:layout_marginTop="2dp"
             android:text="@string/lending_map_subtitle"
             android:textColor="@color/pc_brand_text_secondary"
-            android:textSize="14sp"
+            android:textSize="@dimen/page_header_subtitle_size"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/lending_map_title_doodle"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/lending_map_page_title" />
         <ImageView
             android:id="@+id/lending_map_title_doodle"
-            android:layout_width="42dp"
-            android:layout_height="42dp"
+            android:layout_width="@dimen/page_header_icon_size"
+            android:layout_height="@dimen/page_header_icon_size"
             android:contentDescription="@string/lending_map_title_doodle_description"
             android:src="@drawable/ic_recycle_location_doodle"
-            app:layout_constraintBottom_toBottomOf="@id/lending_map_page_subtitle"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
+        android:layout_height="@dimen/page_top_card_height"
+        android:layout_marginTop="@dimen/page_top_card_margin"
         app:cardBackgroundColor="@color/pc_brand_surface"
         app:cardCornerRadius="24dp"
         app:cardElevation="2dp"
@@ -65,16 +68,17 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
             android:orientation="vertical"
-            android:paddingStart="12dp"
-            android:paddingTop="10dp"
-            android:paddingEnd="12dp"
-            android:paddingBottom="10dp">
+            android:paddingStart="@dimen/page_top_card_horizontal_padding"
+            android:paddingTop="@dimen/page_top_card_vertical_padding"
+            android:paddingEnd="@dimen/page_top_card_horizontal_padding"
+            android:paddingBottom="@dimen/page_top_card_vertical_padding">
 
             <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="44dp"
+                android:layout_height="@dimen/page_top_control_height"
                 android:background="@drawable/bg_marketplace_search">
 
                 <ImageView
@@ -105,19 +109,19 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="36dp"
-                android:layout_marginTop="6dp"
+                android:layout_height="@dimen/page_top_control_height"
+                android:layout_marginTop="@dimen/page_top_control_spacing"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/lending_map_location_action"
                     android:layout_width="100dp"
-                    android:layout_height="36dp"
+                    android:layout_height="@dimen/page_top_control_height"
                     android:fontFamily="@font/fredoka_semibold"
                     android:insetTop="0dp"
                     android:insetBottom="0dp"
                     android:minWidth="0dp"
-                    android:minHeight="36dp"
+                    android:minHeight="@dimen/page_top_control_height"
                     android:paddingStart="8dp"
                     android:paddingTop="0dp"
                     android:paddingEnd="8dp"
@@ -142,7 +146,7 @@
 
                 <LinearLayout
                     android:layout_width="140dp"
-                    android:layout_height="36dp"
+                    android:layout_height="@dimen/page_top_control_height"
                     android:background="@drawable/bg_lending_map_segment"
                     android:orientation="horizontal"
                     android:padding="1dp">
@@ -182,15 +186,15 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/lending_map_category_action"
                 android:layout_width="match_parent"
-                android:layout_height="36dp"
-                android:layout_marginTop="6dp"
+                android:layout_height="@dimen/page_top_control_height"
+                android:layout_marginTop="@dimen/page_top_control_spacing"
                 android:gravity="start|center_vertical"
                 android:drawableEnd="@drawable/ic_lending_map_chevron_down"
                 android:fontFamily="@font/fredoka_semibold"
                 android:drawablePadding="6dp"
                 android:insetTop="0dp"
                 android:insetBottom="0dp"
-                android:minHeight="36dp"
+                android:minHeight="@dimen/page_top_control_height"
                 android:paddingStart="12dp"
                 android:paddingTop="0dp"
                 android:paddingEnd="12dp"

@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.propcycle.app.R;
 import com.propcycle.app.data.lending.LendingRequest;
+import com.propcycle.app.data.lending.LendingRequestActionPolicy;
 import com.propcycle.app.data.marketplace.MarketplaceStatusNotice;
 import com.propcycle.app.databinding.FragmentNotificationsBinding;
 import com.propcycle.app.ui.common.ScreenNavigation;
@@ -95,20 +96,12 @@ public final class LendingRequestsFragment extends Fragment {
 
     private void confirmAction(
             @NonNull LendingRequest request,
-            @NonNull LendingRequestAdapter.Action action) {
-        if (action == LendingRequestAdapter.Action.RATE) {
+            @NonNull LendingRequestActionPolicy.Action action) {
+        if (action == LendingRequestActionPolicy.Action.RATE) {
             showRatingDialog(request);
             return;
         }
-        String title = switch (action) {
-            case APPROVE -> "Approve this request?";
-            case REJECT -> "Reject this request?";
-            case CANCEL -> "Cancel this request?";
-            case ACTIVATE -> "Confirm the item was picked up?";
-            case REPORT_RETURN -> "Report the item as returned?";
-            case CONFIRM_RETURN -> "Confirm you received the returned item?";
-            case RATE -> "Rate this lending experience";
-        };
+        String title = LendingRequestActionPolicy.confirmationTitle(action);
         new MaterialAlertDialogBuilder(requireContext())
                 .setTitle(title)
                 .setMessage(request.getItemTitle() + "\n" + request.getStartDate()

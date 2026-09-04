@@ -7,7 +7,9 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.google.android.gms.tasks.Task;
 import com.propcycle.app.core.firebase.FirebaseEnvironment;
+import com.propcycle.app.data.activity.ActivityLogRepository;
 import com.propcycle.app.data.chat.ChatMessage;
 import com.propcycle.app.data.chat.ChatRepository;
 import com.propcycle.app.data.chat.ChatThread;
@@ -16,9 +18,20 @@ import com.propcycle.app.data.chat.ChatParticipantPolicy;
 import com.propcycle.app.data.profile.ProfileAvatarPolicy;
 import com.propcycle.app.data.profile.PublicProfile;
 import com.propcycle.app.data.profile.PublicProfileRepository;
+import com.propcycle.app.data.marketplace.FirestoreMarketplaceRepository;
+import com.propcycle.app.data.marketplace.MarketplaceListing;
+import com.propcycle.app.data.marketplace.MarketplaceRepository;
+import com.propcycle.app.data.lending.FirestoreLendingRepository;
+import com.propcycle.app.data.lending.LendingItem;
+import com.propcycle.app.data.lending.LendingRequest;
+import com.propcycle.app.data.lending.LendingRequestActionPolicy;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 /** Owns one thread, its bounded message listener, and duplicate-safe sending state. */
@@ -26,6 +39,9 @@ public final class ConversationViewModel extends AndroidViewModel {
 
     private final ChatRepository repository;
     private final PublicProfileRepository profileRepository;
+    private final MarketplaceRepository marketplaceRepository;
+    private final FirestoreLendingRepository lendingRepository;
+    private final ActivityLogRepository activityLog;
     private final MutableLiveData<ConversationUiState> state =
             new MutableLiveData<>(ConversationUiState.loading());
     private final MutableLiveData<UiEvent<Boolean>> sendSucceeded = new MutableLiveData<>();
@@ -33,6 +49,11 @@ public final class ConversationViewModel extends AndroidViewModel {
 
     private ChatRepository.Subscription threadSubscription = ChatRepository.Subscription.NONE;
     private ChatRepository.Subscription messageSubscription = ChatRepository.Subscription.NONE;
+    private MarketplaceRepository.Subscription marketplaceSubscription;
+    private FirestoreLendingRepository.Subscription lendingItemSubscription =
+            FirestoreLendingRepository.Subscription.NONE;
+    private final Map<String, FirestoreLendingRepository.Subscription>
+            lendingRequestSubscriptions = new HashMap<>();
     private String activeThreadId = "";
     private int listenerGeneration;
     private boolean threadLoaded;
@@ -46,11 +67,25 @@ public final class ConversationViewModel extends AndroidViewModel {
     private List<ChatMessage> messages = Collections.emptyList();
     private String pendingOperationId;
     private String pendingText;
+    private MarketplaceListing marketplaceListing;
+    private boolean marketplaceListingLoading;
+    private boolean marketplaceListingFromCache;
+    private String observedMarketplaceListingId = "";
+    private final Map<String, LendingRequest> lendingRequests = new HashMap<>();
+    private final Set<String> loadingLendingRequestIds = new HashSet<>();
+    private final Map<String, Boolean> lendingRequestCacheState = new HashMap<>();
+    private LendingItem lendingItem;
+    private boolean lendingItemFromCache;
+    private String observedLendingItemId = "";
+    private String busyLendingRequestId = "";
 
     public ConversationViewModel(@NonNull Application application) {
         super(application);
         repository = new ChatRepository(application);
         profileRepository = new PublicProfileRepository(application);
+        marketplaceRepository = new FirestoreMarketplaceRepository(application);
+        lendingRepository = new FirestoreLendingRepository(application);
+        activityLog = new ActivityLogRepository(application);
     }
 
     @NonNull
@@ -116,6 +151,17 @@ public final class ConversationViewModel extends AndroidViewModel {
         thread = null;
         otherProfile.setValue(null);
         messages = Collections.emptyList();
+        marketplaceListing = null;
+        marketplaceListingLoading = false;
+        marketplaceListingFromCache = false;
+        observedMarketplaceListingId = "";
+        lendingRequests.clear();
+        loadingLendingRequestIds.clear();
+        lendingRequestCacheState.clear();
+        lendingItem = null;
+        lendingItemFromCache = false;
+        observedLendingItemId = "";
+        busyLendingRequestId = "";
         state.setValue(ConversationUiState.loading());
         int generation = ++listenerGeneration;
 
@@ -133,6 +179,8 @@ public final class ConversationViewModel extends AndroidViewModel {
                         threadError = null;
                         publish(isSending());
                         loadOtherProfile(generation, value);
+                        observeMarketplaceListing(generation, value);
+                        observeLendingItem(generation, value);
                     }
 
                     @Override
@@ -156,6 +204,7 @@ public final class ConversationViewModel extends AndroidViewModel {
                         messagesLoaded = true;
                         messagesFromCache = fromCache;
                         messagesError = null;
+                        syncLendingRequestObservers(generation, value);
                         publish(isSending());
                     }
 
@@ -165,6 +214,159 @@ public final class ConversationViewModel extends AndroidViewModel {
                             messagesError = ChatUiError.message(error);
                             publish(isSending());
                         }
+                    }
+                });
+    }
+
+    private void observeLendingItem(int generation, @NonNull ChatThread value) {
+        if (!"lending".equals(value.getContextType())) {
+            lendingItemSubscription.remove();
+            lendingItemSubscription = FirestoreLendingRepository.Subscription.NONE;
+            observedLendingItemId = "";
+            lendingItem = null;
+            lendingItemFromCache = false;
+            return;
+        }
+        String itemId = value.getContextId().trim();
+        if (itemId.isEmpty() || itemId.equals(observedLendingItemId)) {
+            return;
+        }
+        lendingItemSubscription.remove();
+        observedLendingItemId = itemId;
+        lendingItem = null;
+        lendingItemFromCache = false;
+        lendingItemSubscription = lendingRepository.observeItem(
+                itemId,
+                new FirestoreLendingRepository.SnapshotCallback<>() {
+                    @Override
+                    public void onData(@NonNull LendingItem value, boolean fromCache) {
+                        if (generation != listenerGeneration
+                                || !itemId.equals(observedLendingItemId)) {
+                            return;
+                        }
+                        lendingItem = value;
+                        lendingItemFromCache = fromCache;
+                        publish(isSending());
+                    }
+
+                    @Override
+                    public void onError(@NonNull Exception error) {
+                        if (generation == listenerGeneration
+                                && itemId.equals(observedLendingItemId)) {
+                            lendingItem = null;
+                            lendingItemFromCache = false;
+                            publish(isSending());
+                        }
+                    }
+                });
+    }
+
+    private void syncLendingRequestObservers(
+            int generation,
+            @NonNull List<ChatMessage> currentMessages) {
+        Set<String> currentRequestIds = new HashSet<>();
+        for (ChatMessage message : currentMessages) {
+            if (message.isLendingRequest()) {
+                currentRequestIds.add(message.getRequestId());
+            }
+        }
+
+        Set<String> removed = new HashSet<>(lendingRequestSubscriptions.keySet());
+        removed.removeAll(currentRequestIds);
+        for (String requestId : removed) {
+            FirestoreLendingRepository.Subscription subscription =
+                    lendingRequestSubscriptions.remove(requestId);
+            if (subscription != null) {
+                subscription.remove();
+            }
+            lendingRequests.remove(requestId);
+            loadingLendingRequestIds.remove(requestId);
+            lendingRequestCacheState.remove(requestId);
+        }
+
+        for (String requestId : currentRequestIds) {
+            if (lendingRequestSubscriptions.containsKey(requestId)) {
+                continue;
+            }
+            loadingLendingRequestIds.add(requestId);
+            FirestoreLendingRepository.Subscription subscription =
+                    lendingRepository.observeRequest(
+                            requestId,
+                            new FirestoreLendingRepository.SnapshotCallback<>() {
+                                @Override
+                                public void onData(
+                                        @NonNull LendingRequest value,
+                                        boolean fromCache) {
+                                    if (generation != listenerGeneration
+                                            || !lendingRequestSubscriptions.containsKey(
+                                                    requestId)) {
+                                        return;
+                                    }
+                                    lendingRequests.put(requestId, value);
+                                    loadingLendingRequestIds.remove(requestId);
+                                    lendingRequestCacheState.put(requestId, fromCache);
+                                    publish(isSending());
+                                }
+
+                                @Override
+                                public void onError(@NonNull Exception error) {
+                                    if (generation != listenerGeneration
+                                            || !lendingRequestSubscriptions.containsKey(
+                                                    requestId)) {
+                                        return;
+                                    }
+                                    lendingRequests.remove(requestId);
+                                    loadingLendingRequestIds.remove(requestId);
+                                    lendingRequestCacheState.remove(requestId);
+                                    publish(isSending());
+                                }
+                            });
+            lendingRequestSubscriptions.put(requestId, subscription);
+        }
+    }
+
+    private void observeMarketplaceListing(int generation, @NonNull ChatThread value) {
+        if (!"marketplace".equals(value.getContextType())) {
+            closeMarketplaceSubscription();
+            return;
+        }
+        String listingId = value.getContextId().trim();
+        if (listingId.isEmpty() || listingId.equals(observedMarketplaceListingId)) {
+            return;
+        }
+        closeMarketplaceSubscription();
+        observedMarketplaceListingId = listingId;
+        marketplaceListing = null;
+        marketplaceListingLoading = true;
+        marketplaceListingFromCache = false;
+        publish(isSending());
+        marketplaceSubscription = marketplaceRepository.observeListing(
+                listingId,
+                new MarketplaceRepository.ListingObserver() {
+                    @Override
+                    public void onListing(
+                            @androidx.annotation.Nullable MarketplaceListing listing,
+                            boolean fromCache) {
+                        if (generation != listenerGeneration
+                                || !listingId.equals(observedMarketplaceListingId)) {
+                            return;
+                        }
+                        marketplaceListing = listing;
+                        marketplaceListingLoading = false;
+                        marketplaceListingFromCache = fromCache;
+                        publish(isSending());
+                    }
+
+                    @Override
+                    public void onError(@NonNull MarketplaceRepository.RepositoryError error) {
+                        if (generation != listenerGeneration
+                                || !listingId.equals(observedMarketplaceListingId)) {
+                            return;
+                        }
+                        marketplaceListing = null;
+                        marketplaceListingLoading = false;
+                        marketplaceListingFromCache = false;
+                        publish(isSending());
                     }
                 });
     }
@@ -230,12 +432,108 @@ public final class ConversationViewModel extends AndroidViewModel {
                 });
     }
 
+    public void performLendingAction(
+            @NonNull LendingRequest request,
+            @NonNull LendingRequestActionPolicy.Action action) {
+        LendingRequest current = lendingRequests.get(request.getId());
+        if (!busyLendingRequestId.isEmpty()
+                || !LendingRequestActionPolicy.isAllowed(current, currentUserId(), action)
+                || action == LendingRequestActionPolicy.Action.RATE) {
+            return;
+        }
+        Task<Void> task = switch (action) {
+            case APPROVE -> lendingRepository.approve(current.getId());
+            case REJECT -> lendingRepository.reject(current.getId());
+            case CANCEL -> lendingRepository.cancel(current.getId());
+            case ACTIVATE -> lendingRepository.activate(current.getId());
+            case REPORT_RETURN -> lendingRepository.reportReturn(current.getId());
+            case CONFIRM_RETURN -> lendingRepository.confirmReturn(current.getId());
+            case RATE -> null;
+        };
+        if (task == null) {
+            return;
+        }
+        busyLendingRequestId = current.getId();
+        actionError = null;
+        publish(isSending());
+        task.addOnSuccessListener(ignored -> {
+                    recordLendingAction(current, action);
+                    busyLendingRequestId = "";
+                    actionError = null;
+                    publish(isSending());
+                })
+                .addOnFailureListener(error -> {
+                    busyLendingRequestId = "";
+                    actionError = ChatUiError.message(error);
+                    publish(isSending());
+                });
+    }
+
+    public void rateLendingRequest(
+            @NonNull LendingRequest request,
+            int score,
+            @androidx.annotation.Nullable String comment) {
+        LendingRequest current = lendingRequests.get(request.getId());
+        LendingRequestActionPolicy.Action action = LendingRequestActionPolicy.Action.RATE;
+        if (!busyLendingRequestId.isEmpty()
+                || !LendingRequestActionPolicy.isAllowed(current, currentUserId(), action)) {
+            return;
+        }
+        busyLendingRequestId = current.getId();
+        actionError = null;
+        publish(isSending());
+        lendingRepository.rate(current.getId(), score, comment)
+                .addOnSuccessListener(ignored -> {
+                    recordLendingAction(current, action);
+                    busyLendingRequestId = "";
+                    actionError = null;
+                    publish(isSending());
+                })
+                .addOnFailureListener(error -> {
+                    busyLendingRequestId = "";
+                    actionError = ChatUiError.message(error);
+                    publish(isSending());
+                });
+    }
+
+    private void recordLendingAction(
+            @NonNull LendingRequest request,
+            @NonNull LendingRequestActionPolicy.Action action) {
+        activityLog.record(
+                ActivityLogRepository.TYPE_LENDING_STATUS,
+                LendingRequestActionPolicy.activityTitle(action),
+                request.getItemTitle() == null ? "Lending item" : request.getItemTitle(),
+                ActivityLogRepository.DESTINATION_LENDING_REQUESTS,
+                request.getId());
+    }
+
     public void stop() {
         listenerGeneration++;
         threadSubscription.remove();
         messageSubscription.remove();
+        closeMarketplaceSubscription();
+        closeLendingSubscriptions();
         threadSubscription = ChatRepository.Subscription.NONE;
         messageSubscription = ChatRepository.Subscription.NONE;
+    }
+
+    private void closeMarketplaceSubscription() {
+        if (marketplaceSubscription != null) {
+            marketplaceSubscription.close();
+            marketplaceSubscription = null;
+        }
+        observedMarketplaceListingId = "";
+    }
+
+    private void closeLendingSubscriptions() {
+        lendingItemSubscription.remove();
+        lendingItemSubscription = FirestoreLendingRepository.Subscription.NONE;
+        for (FirestoreLendingRepository.Subscription subscription
+                : lendingRequestSubscriptions.values()) {
+            subscription.remove();
+        }
+        lendingRequestSubscriptions.clear();
+        observedLendingItemId = "";
     }
 
     private boolean isSending() {
@@ -247,14 +545,25 @@ public final class ConversationViewModel extends AndroidViewModel {
         String errorMessage = actionError != null
                 ? actionError
                 : (threadError != null ? threadError : messagesError);
+        boolean lendingFromCache = lendingItemFromCache;
+        for (Boolean cached : lendingRequestCacheState.values()) {
+            lendingFromCache = lendingFromCache || Boolean.TRUE.equals(cached);
+        }
         state.setValue(new ConversationUiState(
                 errorMessage == null && !(threadLoaded && messagesLoaded),
                 false,
-                threadFromCache || messagesFromCache,
+                threadFromCache || messagesFromCache || marketplaceListingFromCache
+                        || lendingFromCache,
                 sending,
                 errorMessage,
                 thread,
-                messages));
+                messages,
+                marketplaceListing,
+                marketplaceListingLoading,
+                lendingRequests,
+                loadingLendingRequestIds,
+                lendingItem,
+                busyLendingRequestId));
     }
 
     @Override

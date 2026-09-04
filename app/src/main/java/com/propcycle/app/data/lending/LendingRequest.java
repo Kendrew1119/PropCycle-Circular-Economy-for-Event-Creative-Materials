@@ -3,6 +3,7 @@ package com.propcycle.app.data.lending;
 import androidx.annotation.Nullable;
 
 import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.Exclude;
 
 import java.util.List;
 
@@ -56,6 +57,7 @@ public final class LendingRequest {
     @Nullable public Timestamp getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(@Nullable Timestamp updatedAt) { this.updatedAt = updatedAt; }
 
+    @Exclude
     public boolean isReturnReported() {
         return Boolean.TRUE.equals(returnReported);
     }

@@ -68,18 +68,14 @@ public final class AiResultFragment extends Fragment {
 
         binding.resultDetailsAction.setOnClickListener(ignored -> showDetails());
         binding.recycleAction.setOnClickListener(ignored -> {
-            if (analysis != null) {
-                deleteUnconsumedImage();
-                ScreenNavigation.navigate(this, R.id.recycleCenterFragment, null);
-            }
+            deleteUnconsumedImage();
+            ScreenNavigation.navigate(this, R.id.recycleCenterFragment, null);
         });
         binding.sellAction.setOnClickListener(ignored -> openEditableListing());
         binding.lendAction.setOnClickListener(ignored -> {
-            if (analysis != null) {
-                Bundle destination = editableDraftArguments();
-                ScreenNavigation.navigateAuthenticated(
-                        this, R.id.lendResourceFragment, destination);
-            }
+            Bundle destination = editableDraftArguments();
+            ScreenNavigation.navigateAuthenticated(
+                    this, R.id.lendResourceFragment, destination);
         });
         binding.scanAgainAction.setOnClickListener(ignored -> scanAgain());
         presentResultFlow(analysis != null && savedInstanceState == null);
@@ -154,12 +150,9 @@ public final class AiResultFragment extends Fragment {
         boolean valid = analysis != null;
         boolean hazardous = valid && analysis.getCategory() == ScanAnalysis.Category.HAZARDOUS;
         boolean electronicWaste = valid && analysis.getCategory() == ScanAnalysis.Category.E_WASTE;
-        boolean recycleAllowed = ScanActionPolicy.canRecycle(analysis);
-        boolean sellAllowed = ScanActionPolicy.canSell(analysis);
-        boolean lendAllowed = ScanActionPolicy.canLend(analysis);
-        setActionEnabled(binding.recycleAction, recycleAllowed);
-        setActionEnabled(binding.sellAction, sellAllowed);
-        setActionEnabled(binding.lendAction, lendAllowed);
+        makeDestinationAvailable(binding.recycleAction);
+        makeDestinationAvailable(binding.sellAction);
+        makeDestinationAvailable(binding.lendAction);
         binding.resultDetailsAction.setEnabled(valid);
         binding.resultDetailsAction.setAlpha(valid ? 1f : 0.5f);
         if (!valid) {
@@ -266,9 +259,6 @@ public final class AiResultFragment extends Fragment {
     }
 
     private void openEditableListing() {
-        if (analysis == null) {
-            return;
-        }
         ScreenNavigation.navigateAuthenticated(
                 this,
                 R.id.createListingFragment,
@@ -337,9 +327,11 @@ public final class AiResultFragment extends Fragment {
                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
     }
 
-    private static void setActionEnabled(@NonNull View action, boolean enabled) {
-        action.setEnabled(enabled);
-        action.setAlpha(enabled ? 1f : 0.5f);
+    private static void makeDestinationAvailable(@NonNull View action) {
+        action.setVisibility(View.VISIBLE);
+        action.setEnabled(true);
+        action.setClickable(true);
+        action.setAlpha(1f);
     }
 
     @Override

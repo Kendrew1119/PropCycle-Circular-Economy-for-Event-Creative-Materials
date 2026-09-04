@@ -22,8 +22,10 @@ public final class ResourceCreationFlow {
         String title = lending ? "Share a lending item" : "Create a marketplace listing";
         String message = "For the quickest setup, take or choose a photo and let the AI prepare "
                 + "an editable draft. You will review every detail before publishing.";
-        new MaterialAlertDialogBuilder(fragment.requireContext())
+        new MaterialAlertDialogBuilder(
+                fragment.requireContext(), R.style.ThemeOverlay_PropCycle_MaterialAlertDialog)
                 .setTitle(title)
+                .setIcon(R.drawable.ic_camera)
                 .setMessage(message)
                 .setPositiveButton("Use photo and AI", (dialog, which) -> {
                     Bundle arguments = new Bundle();

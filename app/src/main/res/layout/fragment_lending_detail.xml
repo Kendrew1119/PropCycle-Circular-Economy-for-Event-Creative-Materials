@@ -282,6 +282,24 @@
             app:cornerRadius="22dp" />
 
         <com.google.android.material.button.MaterialButton
+            android:id="@+id/cancel_request_action"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="20dp"
+            android:fontFamily="@font/fredoka_semibold"
+            android:text="Cancel request"
+            android:textAllCaps="false"
+            android:textColor="@color/pc_brand_accent_red"
+            android:textSize="17sp"
+            android:visibility="gone"
+            app:backgroundTint="@color/pc_brand_surface"
+            app:cornerRadius="22dp"
+            app:strokeColor="@color/pc_brand_accent_red"
+            app:strokeWidth="2dp" />
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/chat_action"
             android:layout_width="match_parent"
             android:layout_height="52dp"

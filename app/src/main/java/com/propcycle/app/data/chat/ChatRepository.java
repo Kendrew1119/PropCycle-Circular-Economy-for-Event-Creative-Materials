@@ -36,6 +36,10 @@ public final class ChatRepository {
     public static final String LENDING_COLLECTION = "lendingItems";
     private static final int THREAD_LIMIT = 50;
     private static final int MESSAGE_LIMIT = 100;
+    public static final String MARKETPLACE_ITEM_CARD_ID = "marketplace_item_card";
+    public static final String MARKETPLACE_ITEM_FALLBACK_TEXT = "Marketplace item shared";
+    public static final String LENDING_REQUEST_CARD_PREFIX = "lending_request_";
+    public static final String LENDING_REQUEST_FALLBACK_TEXT = "Lending request sent";
 
     @Nullable private final FirebaseAuth auth;
     @Nullable private final FirebaseFirestore firestore;
@@ -105,7 +109,8 @@ public final class ChatRepository {
 
         return thread.set(values).continueWithTask(create -> {
             if (create.isSuccessful()) {
-                return Tasks.forResult(threadId);
+                return ensureMarketplaceItemCard(
+                        firestore, thread, cleanListingId, contactUid, threadId);
             }
             Exception original = create.getException() == null
                     ? new IllegalStateException("The conversation could not be opened.")
@@ -114,7 +119,61 @@ public final class ChatRepository {
                 if (read.isSuccessful() && read.getResult() != null && read.getResult().exists()) {
                     verifyExistingThread(
                             read.getResult(), cleanListingId, cleanOwnerUid, contactUid);
-                    return Tasks.forResult(threadId);
+                    return ensureMarketplaceItemCard(
+                            firestore, thread, cleanListingId, contactUid, threadId);
+                }
+                return Tasks.forException(original);
+            });
+        });
+    }
+
+    @NonNull
+    private static Task<String> ensureMarketplaceItemCard(
+            @NonNull FirebaseFirestore firestore,
+            @NonNull DocumentReference thread,
+            @NonNull String listingId,
+            @NonNull String contactUid,
+            @NonNull String threadId) {
+        DocumentReference message = thread.collection(MESSAGES_COLLECTION)
+                .document(MARKETPLACE_ITEM_CARD_ID);
+
+        Map<String, Object> messageValues = new HashMap<>();
+        messageValues.put("type", ChatMessage.TYPE_MARKETPLACE_ITEM);
+        messageValues.put("itemId", listingId);
+        messageValues.put("senderId", contactUid);
+        messageValues.put("text", MARKETPLACE_ITEM_FALLBACK_TEXT);
+        messageValues.put("clientOperationId", MARKETPLACE_ITEM_CARD_ID);
+        messageValues.put("sentAt", FieldValue.serverTimestamp());
+
+        Map<String, Object> previewValues = new HashMap<>();
+        previewValues.put("lastMessageId", MARKETPLACE_ITEM_CARD_ID);
+        previewValues.put("lastMessageText", MARKETPLACE_ITEM_FALLBACK_TEXT);
+        previewValues.put("lastMessageSenderId", contactUid);
+        previewValues.put("lastMessageAt", FieldValue.serverTimestamp());
+        previewValues.put("updatedAt", FieldValue.serverTimestamp());
+
+        WriteBatch batch = firestore.batch();
+        batch.set(message, messageValues);
+        batch.update(thread, previewValues);
+        return batch.commit().continueWithTask(result -> {
+            if (result.isSuccessful()) {
+                return Tasks.forResult(threadId);
+            }
+            Exception original = result.getException() == null
+                    ? new IllegalStateException("The Marketplace item card could not be added.")
+                    : result.getException();
+            return message.get().continueWithTask(read -> {
+                if (read.isSuccessful() && read.getResult() != null
+                        && read.getResult().exists()) {
+                    DocumentSnapshot saved = read.getResult();
+                    if (ChatMessage.TYPE_MARKETPLACE_ITEM.equals(saved.getString("type"))
+                            && listingId.equals(saved.getString("itemId"))
+                            && contactUid.equals(saved.getString("senderId"))
+                            && MARKETPLACE_ITEM_FALLBACK_TEXT.equals(saved.getString("text"))
+                            && MARKETPLACE_ITEM_CARD_ID.equals(
+                                    saved.getString("clientOperationId"))) {
+                        return Tasks.forResult(threadId);
+                    }
                 }
                 return Tasks.forException(original);
             });
@@ -175,6 +234,106 @@ public final class ChatRepository {
                     verifyExistingLendingThread(
                             read.getResult(), cleanItemId, cleanOwnerUid, contactUid);
                     return Tasks.forResult(threadId);
+                }
+                return Tasks.forException(original);
+            });
+        });
+    }
+
+    /** Creates/finds the lending thread and idempotently attaches its request card. */
+    @NonNull
+    public static Task<String> createOrGetLendingRequestThread(
+            @NonNull Context context,
+            @NonNull String itemId,
+            @NonNull String ownerUid,
+            @NonNull String contextTitle,
+            @NonNull String requestId) {
+        String cleanRequestId = requestId.trim();
+        String operationId = LENDING_REQUEST_CARD_PREFIX + cleanRequestId;
+        if (!ChatValidator.isValidDocumentPart(cleanRequestId)
+                || !ChatValidator.isValidOperationId(operationId)) {
+            return Tasks.forException(new IllegalArgumentException(
+                    "The lending request card is invalid."));
+        }
+        Context app = context.getApplicationContext();
+        return createOrGetLendingThread(app, itemId, ownerUid, contextTitle)
+                .continueWithTask(threadTask -> {
+                    if (!threadTask.isSuccessful() || threadTask.getResult() == null) {
+                        Exception error = threadTask.getException();
+                        return Tasks.forException(error == null
+                                ? new IllegalStateException(
+                                        "The lending conversation could not be opened.")
+                                : error);
+                    }
+                    FirebaseAuth auth = FirebaseEnvironment.auth(app);
+                    FirebaseFirestore firestore = FirebaseEnvironment.firestore(app);
+                    FirebaseUser user = auth == null ? null : auth.getCurrentUser();
+                    if (firestore == null || user == null) {
+                        return Tasks.forException(new IllegalStateException(
+                                "Sign in to add the lending request card."));
+                    }
+                    String threadId = threadTask.getResult();
+                    DocumentReference thread = firestore.collection(THREADS_COLLECTION)
+                            .document(threadId);
+                    return ensureLendingRequestCard(
+                            firestore,
+                            thread,
+                            itemId.trim(),
+                            cleanRequestId,
+                            user.getUid(),
+                            threadId);
+                });
+    }
+
+    @NonNull
+    private static Task<String> ensureLendingRequestCard(
+            @NonNull FirebaseFirestore firestore,
+            @NonNull DocumentReference thread,
+            @NonNull String itemId,
+            @NonNull String requestId,
+            @NonNull String borrowerUid,
+            @NonNull String threadId) {
+        String operationId = LENDING_REQUEST_CARD_PREFIX + requestId;
+        DocumentReference message = thread.collection(MESSAGES_COLLECTION).document(operationId);
+
+        Map<String, Object> messageValues = new HashMap<>();
+        messageValues.put("type", ChatMessage.TYPE_LENDING_REQUEST);
+        messageValues.put("requestId", requestId);
+        messageValues.put("itemId", itemId);
+        messageValues.put("senderId", borrowerUid);
+        messageValues.put("text", LENDING_REQUEST_FALLBACK_TEXT);
+        messageValues.put("clientOperationId", operationId);
+        messageValues.put("sentAt", FieldValue.serverTimestamp());
+
+        Map<String, Object> previewValues = new HashMap<>();
+        previewValues.put("lastMessageId", operationId);
+        previewValues.put("lastMessageText", LENDING_REQUEST_FALLBACK_TEXT);
+        previewValues.put("lastMessageSenderId", borrowerUid);
+        previewValues.put("lastMessageAt", FieldValue.serverTimestamp());
+        previewValues.put("updatedAt", FieldValue.serverTimestamp());
+
+        WriteBatch batch = firestore.batch();
+        batch.set(message, messageValues);
+        batch.update(thread, previewValues);
+        return batch.commit().continueWithTask(result -> {
+            if (result.isSuccessful()) {
+                return Tasks.forResult(threadId);
+            }
+            Exception original = result.getException() == null
+                    ? new IllegalStateException("The lending request card could not be added.")
+                    : result.getException();
+            return message.get().continueWithTask(read -> {
+                if (read.isSuccessful() && read.getResult() != null
+                        && read.getResult().exists()) {
+                    DocumentSnapshot saved = read.getResult();
+                    if (ChatMessage.TYPE_LENDING_REQUEST.equals(saved.getString("type"))
+                            && requestId.equals(saved.getString("requestId"))
+                            && itemId.equals(saved.getString("itemId"))
+                            && borrowerUid.equals(saved.getString("senderId"))
+                            && LENDING_REQUEST_FALLBACK_TEXT.equals(saved.getString("text"))
+                            && operationId.equals(saved.getString("clientOperationId"))) {
+                        return Tasks.forResult(threadId);
+                    }
                 }
                 return Tasks.forException(original);
             });
@@ -394,6 +553,7 @@ public final class ChatRepository {
                 contactUid,
                 valueOrEmpty(document.getString("lastMessageId")),
                 valueOrEmpty(document.getString("lastMessageText")),
+                valueOrEmpty(document.getString("lastMessageSenderId")),
                 timestampMillis(document.getTimestamp("lastMessageAt")),
                 timestampMillis(document.getTimestamp("updatedAt")));
     }
@@ -409,6 +569,9 @@ public final class ChatRepository {
                 document.getId(),
                 senderId,
                 text,
+                valueOrEmpty(document.getString("type")),
+                valueOrEmpty(document.getString("itemId")),
+                valueOrEmpty(document.getString("requestId")),
                 timestampMillis(document.getTimestamp("sentAt")),
                 document.getMetadata().hasPendingWrites());
     }

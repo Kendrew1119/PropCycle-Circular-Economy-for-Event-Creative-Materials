@@ -20,6 +20,7 @@ import com.propcycle.app.R;
 import com.propcycle.app.data.chat.ChatRepository;
 import com.propcycle.app.data.lending.LendingItem;
 import com.propcycle.app.data.lending.LendingPolicy;
+import com.propcycle.app.data.lending.LendingRequest;
 import com.propcycle.app.data.lending.LendingRating;
 import com.propcycle.app.data.marketplace.MarketplaceImageLoader;
 import com.propcycle.app.databinding.FragmentLendingDetailBinding;
@@ -66,11 +67,12 @@ public final class LendingDetailFragment extends Fragment {
             String id = event == null ? null : event.getIfNotHandled();
             if (id != null && binding != null) {
                 Toast.makeText(requireContext(),
-                        "Request sent. Open Notifications to manage it.",
+                        "Request sent. Open Chat or Notifications to manage it.",
                         Toast.LENGTH_LONG).show();
             }
         });
         binding.requestLendingAction.setOnClickListener(ignored -> showDatePicker());
+        binding.cancelRequestAction.setOnClickListener(ignored -> confirmCancelRequest());
         binding.chatAction.setOnClickListener(ignored -> openChat());
         binding.editLendingAction.setOnClickListener(ignored -> {
             Bundle edit = new Bundle();
@@ -175,8 +177,17 @@ public final class LendingDetailFragment extends Fragment {
         if (item == null || state.isBusy()) {
             return;
         }
-        ChatRepository.createOrGetLendingThread(
+        LendingRequest request = state.getRequest();
+        com.google.android.gms.tasks.Task<String> chatTask = request == null
+                ? ChatRepository.createOrGetLendingThread(
                         requireContext(), item.getId(), item.getOwnerId(), item.getTitle())
+                : ChatRepository.createOrGetLendingRequestThread(
+                        requireContext(),
+                        item.getId(),
+                        item.getOwnerId(),
+                        item.getTitle(),
+                        request.getId());
+        chatTask
                 .addOnSuccessListener(threadId -> {
                     if (!isAdded()) {
                         return;
@@ -212,6 +223,24 @@ public final class LendingDetailFragment extends Fragment {
                 .show();
     }
 
+    private void confirmCancelRequest() {
+        LendingDetailViewModel.State state = viewModel.getState().getValue();
+        LendingRequest request = state == null ? null : state.getRequest();
+        if (request == null || state.isBusy()) {
+            return;
+        }
+        new MaterialAlertDialogBuilder(
+                requireContext(),
+                R.style.ThemeOverlay_PropCycle_MaterialAlertDialog)
+                .setTitle("Cancel this request?")
+                .setMessage(request.getItemTitle() + "\n" + request.getStartDate()
+                        + " to " + request.getEndDate())
+                .setNegativeButton("Back", null)
+                .setPositiveButton("Cancel request",
+                        (dialog, which) -> viewModel.cancelRequest())
+                .show();
+    }
+
     private void render(@NonNull LendingDetailViewModel.State state) {
         if (binding == null) {
             return;
@@ -223,6 +252,7 @@ public final class LendingDetailFragment extends Fragment {
         if (item == null) {
             ownerUserId = "";
             binding.requestLendingAction.setEnabled(false);
+            binding.cancelRequestAction.setVisibility(View.GONE);
             binding.chatAction.setEnabled(false);
             return;
         }
@@ -248,14 +278,27 @@ public final class LendingDetailFragment extends Fragment {
         binding.lendingOwnerAvatar.setContentDescription("Open lending owner's profile");
         boolean owner = item.getOwnerId().equals(viewModel.currentUserId());
         boolean available = "available".equals(item.getStatus());
+        LendingRequest request = state.getRequest();
+        boolean cancellable = request != null
+                && viewModel.currentUserId() != null
+                && viewModel.currentUserId().equals(request.getBorrowerUid())
+                && ("pending".equals(request.getStatus())
+                || "approved".equals(request.getStatus()));
         binding.lendingOwnerActions.setVisibility(owner ? View.VISIBLE : View.GONE);
         binding.requestLendingAction.setVisibility(owner ? View.GONE : View.VISIBLE);
+        binding.cancelRequestAction.setVisibility(
+                !owner && cancellable ? View.VISIBLE : View.GONE);
         binding.chatAction.setVisibility(owner ? View.GONE : View.VISIBLE);
         binding.requestLendingAction.setEnabled(available && !state.isBusy());
+        binding.cancelRequestAction.setEnabled(cancellable && !state.isBusy());
         binding.chatAction.setEnabled(available && !state.isBusy());
         binding.editLendingAction.setEnabled(!state.isBusy());
         binding.toggleLendingStatusAction.setEnabled(!state.isBusy());
         binding.toggleLendingStatusAction.setText(available ? "Withdraw" : "Relist");
+        if (state.getMessage() == null && request != null && !owner) {
+            binding.lendingDetailStatus.setText(
+                    "Your request: " + LendingPolicy.displayLabel(request.getStatus()));
+        }
         updateImage(item.getImageUrl(), item.getDemoImageKey());
     }
 

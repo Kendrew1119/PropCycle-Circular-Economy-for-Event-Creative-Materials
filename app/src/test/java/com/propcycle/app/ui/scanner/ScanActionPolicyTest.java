@@ -13,13 +13,11 @@ import java.util.Collections;
 public final class ScanActionPolicyTest {
 
     @Test
-    public void recyclableCategory_withPositiveFlag_allowsRecycleAndSellOnly() {
+    public void recyclableCategory_withPositiveFlag_showsReuseOrRecycleGuidance() {
         ScanAnalysis value = analysis(ScanAnalysis.Category.RECYCLABLE, true);
 
-        assertTrue(ScanActionPolicy.canRecycle(value));
-        assertTrue(ScanActionPolicy.canSell(value));
-        assertFalse(ScanActionPolicy.canLend(value));
         assertFalse(ScanActionPolicy.isReviewOnly(value));
+        assertEquals("reuse or recycle after local check", ScanActionPolicy.routeLabel(value));
     }
 
     @Test
@@ -28,27 +26,23 @@ public final class ScanActionPolicyTest {
     }
 
     @Test
-    public void reusableCategory_allowsSellAndLendOnly() {
+    public void reusableCategory_showsReuseLendOrListGuidance() {
         ScanAnalysis value = analysis(ScanAnalysis.Category.REUSABLE, false);
 
-        assertFalse(ScanActionPolicy.canRecycle(value));
-        assertTrue(ScanActionPolicy.canSell(value));
-        assertTrue(ScanActionPolicy.canLend(value));
         assertFalse(ScanActionPolicy.isReviewOnly(value));
+        assertEquals("reuse, lend, or list it", ScanActionPolicy.routeLabel(value));
     }
 
     @Test
-    public void eWaste_allowsSpecialistRecycleRouteOnly() {
+    public void eWaste_showsSpecialistDropOffGuidance() {
         ScanAnalysis value = analysis(ScanAnalysis.Category.E_WASTE, false);
 
-        assertTrue(ScanActionPolicy.canRecycle(value));
-        assertFalse(ScanActionPolicy.canSell(value));
-        assertFalse(ScanActionPolicy.canLend(value));
         assertFalse(ScanActionPolicy.isReviewOnly(value));
+        assertEquals("specialist drop-off after local check", ScanActionPolicy.routeLabel(value));
     }
 
     @Test
-    public void uncertainOrUnsafeCategories_neverOpenActions() {
+    public void uncertainOrUnsafeCategories_showReviewGuidance() {
         ScanAnalysis unknown = analysis(ScanAnalysis.Category.UNKNOWN, true);
         ScanAnalysis generalWaste = analysis(ScanAnalysis.Category.GENERAL_WASTE, true);
         ScanAnalysis compostable = analysis(ScanAnalysis.Category.COMPOSTABLE, true);
@@ -70,7 +64,7 @@ public final class ScanActionPolicyTest {
     }
 
     @Test
-    public void routeLabels_followTheSameReviewedActionPolicy() {
+    public void routeLabels_remainAdvisory() {
         assertEquals(
                 "reuse or recycle after local check",
                 ScanActionPolicy.routeLabel(analysis(ScanAnalysis.Category.RECYCLABLE, true)));
@@ -86,9 +80,6 @@ public final class ScanActionPolicyTest {
     }
 
     private static void assertReviewOnly(ScanAnalysis value) {
-        assertFalse(ScanActionPolicy.canRecycle(value));
-        assertFalse(ScanActionPolicy.canSell(value));
-        assertFalse(ScanActionPolicy.canLend(value));
         assertTrue(ScanActionPolicy.isReviewOnly(value));
     }
 

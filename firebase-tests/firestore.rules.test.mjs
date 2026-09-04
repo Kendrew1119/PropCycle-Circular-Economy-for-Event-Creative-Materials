@@ -731,6 +731,81 @@ test("a message and its parent preview must be committed together", async () => 
   await assertFails(deleteDoc(messageRef));
 });
 
+test("one strict Marketplace item card is allowed and cannot be forged", async () => {
+  await seedBaseData({includeThread: true});
+  const contactDatabase = signedIn(CONTACT_UID);
+  const cardId = "marketplace_item_card";
+  const cardRef = doc(
+    contactDatabase,
+    "chatThreads",
+    THREAD_ID,
+    "messages",
+    cardId,
+  );
+  const card = {
+    type: "marketplace_item",
+    itemId: LISTING_ID,
+    senderId: CONTACT_UID,
+    text: "Marketplace item shared",
+    clientOperationId: cardId,
+    sentAt: serverTimestamp(),
+  };
+
+  const validBatch = writeBatch(contactDatabase);
+  validBatch.set(cardRef, card);
+  validBatch.update(doc(contactDatabase, "chatThreads", THREAD_ID), {
+    lastMessageId: cardId,
+    lastMessageText: card.text,
+    lastMessageSenderId: CONTACT_UID,
+    lastMessageAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
+  });
+  await assertSucceeds(validBatch.commit());
+
+  await assertFails(updateDoc(cardRef, {text: "Duplicate card"}));
+
+  const ownerDatabase = signedIn(OWNER_UID);
+  const ownerCard = writeBatch(ownerDatabase);
+  ownerCard.set(doc(
+    ownerDatabase,
+    "chatThreads",
+    THREAD_ID,
+    "messages",
+    "marketplace_item_card_2",
+  ), {...card, senderId: OWNER_UID, clientOperationId: "marketplace_item_card_2"});
+  ownerCard.update(doc(ownerDatabase, "chatThreads", THREAD_ID), {
+    lastMessageId: "marketplace_item_card_2",
+    lastMessageText: card.text,
+    lastMessageSenderId: OWNER_UID,
+    lastMessageAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
+  });
+  await assertFails(ownerCard.commit());
+
+  const forgedRef = doc(
+    contactDatabase,
+    "chatThreads",
+    THREAD_ID,
+    "messages",
+    "marketplace_item_card_wrong",
+  );
+  const forgedBatch = writeBatch(contactDatabase);
+  forgedBatch.set(forgedRef, {
+    ...card,
+    itemId: "another-listing",
+    clientOperationId: forgedRef.id,
+    unexpected: true,
+  });
+  forgedBatch.update(doc(contactDatabase, "chatThreads", THREAD_ID), {
+    lastMessageId: forgedRef.id,
+    lastMessageText: card.text,
+    lastMessageSenderId: CONTACT_UID,
+    lastMessageAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
+  });
+  await assertFails(forgedBatch.commit());
+});
+
 test("rules reject unauthenticated reads and malformed message batches", async () => {
   await seedBaseData({includeThread: true});
   const anonymousDatabase = testEnvironment.unauthenticatedContext().firestore();
@@ -985,4 +1060,69 @@ test("only the borrower creates the canonical lending chat thread", async () => 
     doc(ownerDatabase, "chatThreads", `${LENDING_THREAD_ID}-forged`),
     data,
   ));
+});
+
+test("borrower creates one strict lending request card for the matching request", async () => {
+  await seedLendingData({includeRequest: true});
+  const contactDatabase = signedIn(CONTACT_UID);
+  const thread = threadData();
+  thread.contextType = "lending";
+  thread.contextId = LENDING_ITEM_ID;
+  thread.contextTitle = "Portable LED Lights";
+  await assertSucceeds(setDoc(
+    doc(contactDatabase, "chatThreads", LENDING_THREAD_ID),
+    thread,
+  ));
+
+  const cardId = `lending_request_${LENDING_REQUEST_ID}`;
+  const cardRef = doc(
+    contactDatabase,
+    "chatThreads",
+    LENDING_THREAD_ID,
+    "messages",
+    cardId,
+  );
+  const card = {
+    type: "lending_request",
+    requestId: LENDING_REQUEST_ID,
+    itemId: LENDING_ITEM_ID,
+    senderId: CONTACT_UID,
+    text: "Lending request sent",
+    clientOperationId: cardId,
+    sentAt: serverTimestamp(),
+  };
+  const validBatch = writeBatch(contactDatabase);
+  validBatch.set(cardRef, card);
+  validBatch.update(doc(contactDatabase, "chatThreads", LENDING_THREAD_ID), {
+    lastMessageId: cardId,
+    lastMessageText: card.text,
+    lastMessageSenderId: CONTACT_UID,
+    lastMessageAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
+  });
+  await assertSucceeds(validBatch.commit());
+  await assertFails(updateDoc(cardRef, {status: "approved"}));
+
+  const forgedId = "lending_request_forged-request";
+  const forgedBatch = writeBatch(contactDatabase);
+  forgedBatch.set(doc(
+    contactDatabase,
+    "chatThreads",
+    LENDING_THREAD_ID,
+    "messages",
+    forgedId,
+  ), {
+    ...card,
+    requestId: "forged-request",
+    clientOperationId: forgedId,
+    unexpected: true,
+  });
+  forgedBatch.update(doc(contactDatabase, "chatThreads", LENDING_THREAD_ID), {
+    lastMessageId: forgedId,
+    lastMessageText: card.text,
+    lastMessageSenderId: CONTACT_UID,
+    lastMessageAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
+  });
+  await assertFails(forgedBatch.commit());
 });

@@ -9,6 +9,16 @@
     <dimen name="screen_horizontal">24dp</dimen>
     <dimen name="screen_vertical">20dp</dimen>
     <dimen name="touch_target">48dp</dimen>
+    <dimen name="page_header_height">72dp</dimen>
+    <dimen name="page_header_icon_size">52dp</dimen>
+    <dimen name="page_header_title_size">30sp</dimen>
+    <dimen name="page_header_subtitle_size">15sp</dimen>
+    <dimen name="page_top_card_height">176dp</dimen>
+    <dimen name="page_top_card_margin">8dp</dimen>
+    <dimen name="page_top_card_horizontal_padding">14dp</dimen>
+    <dimen name="page_top_card_vertical_padding">8dp</dimen>
+    <dimen name="page_top_control_height">48dp</dimen>
+    <dimen name="page_top_control_spacing">4dp</dimen>
     <dimen name="app_header_height">52dp</dimen>
     <dimen name="bottom_navigation_height">72dp</dimen>
     <dimen name="bottom_navigation_icon_size">22dp</dimen>

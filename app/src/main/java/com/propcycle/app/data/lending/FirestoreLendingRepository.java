@@ -336,6 +336,33 @@ public final class FirestoreLendingRepository {
         return registration::remove;
     }
 
+    /** Observes one participant-private request without running the participant inbox query. */
+    @NonNull
+    public Subscription observeRequest(
+            @NonNull String requestId,
+            @NonNull SnapshotCallback<LendingRequest> callback) {
+        if (firestore == null || currentUserId() == null
+                || !LendingPolicy.isSafeSegment(requestId)) {
+            callback.onError(new IllegalArgumentException("This lending request is invalid."));
+            return Subscription.NONE;
+        }
+        ListenerRegistration registration = firestore.collection(REQUESTS).document(requestId)
+                .addSnapshotListener(MetadataChanges.INCLUDE, (snapshot, error) -> {
+                    if (error != null) {
+                        callback.onError(error);
+                        return;
+                    }
+                    LendingRequest request = snapshot == null ? null : mapRequest(snapshot);
+                    if (snapshot == null || !snapshot.exists() || request == null) {
+                        callback.onError(new IllegalStateException(
+                                "This lending request is unavailable."));
+                        return;
+                    }
+                    callback.onData(request, snapshot.getMetadata().isFromCache());
+                });
+        return registration::remove;
+    }
+
     @NonNull
     private static String maskUid(@Nullable String uid) {
         if (uid == null || uid.isEmpty()) {

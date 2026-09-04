@@ -13,6 +13,7 @@ public final class ChatThread {
     private final String contactUid;
     private final String lastMessageId;
     private final String lastMessageText;
+    private final String lastMessageSenderId;
     private final long lastMessageAtMillis;
     private final long updatedAtMillis;
 
@@ -27,6 +28,22 @@ public final class ChatThread {
             @NonNull String lastMessageText,
             long lastMessageAtMillis,
             long updatedAtMillis) {
+        this(threadId, contextType, contextId, contextTitle, ownerUid, contactUid,
+                lastMessageId, lastMessageText, "", lastMessageAtMillis, updatedAtMillis);
+    }
+
+    public ChatThread(
+            @NonNull String threadId,
+            @NonNull String contextType,
+            @NonNull String contextId,
+            @NonNull String contextTitle,
+            @NonNull String ownerUid,
+            @NonNull String contactUid,
+            @NonNull String lastMessageId,
+            @NonNull String lastMessageText,
+            @NonNull String lastMessageSenderId,
+            long lastMessageAtMillis,
+            long updatedAtMillis) {
         this.threadId = threadId;
         this.contextType = contextType;
         this.contextId = contextId;
@@ -35,6 +52,7 @@ public final class ChatThread {
         this.contactUid = contactUid;
         this.lastMessageId = lastMessageId;
         this.lastMessageText = lastMessageText;
+        this.lastMessageSenderId = lastMessageSenderId;
         this.lastMessageAtMillis = lastMessageAtMillis;
         this.updatedAtMillis = updatedAtMillis;
     }
@@ -77,6 +95,11 @@ public final class ChatThread {
     @NonNull
     public String getLastMessageText() {
         return lastMessageText;
+    }
+
+    @NonNull
+    public String getLastMessageSenderId() {
+        return lastMessageSenderId;
     }
 
     public long getLastMessageAtMillis() {

@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -84,7 +83,7 @@ public final class ProfileFragment extends Fragment {
             }
             binding.profileEditAction.setEnabled(!result.isWorking());
             binding.profileAvatarAction.setEnabled(!result.isWorking());
-            binding.profileAvatarInitial.setEnabled(!result.isWorking() && ownProfile);
+            binding.profileAvatarContainer.setEnabled(!result.isWorking() && ownProfile);
             if (result.isSuccess()) {
                 viewModel.start(requestedUserId);
             }
@@ -92,7 +91,7 @@ public final class ProfileFragment extends Fragment {
         });
         binding.profileEditAction.setOnClickListener(ignored -> showEditName());
         binding.profileAvatarAction.setOnClickListener(ignored -> showAvatarChooser());
-        binding.profileAvatarInitial.setOnClickListener(ignored -> showAvatarChooser());
+        binding.profileAvatarContainer.setOnClickListener(ignored -> showAvatarChooser());
         binding.itemCard.setOnClickListener(ignored -> openListingOrCreate());
         binding.changePasswordAction.setOnClickListener(ignored -> showChangePasswordDialog());
         binding.deleteAccountAction.setOnClickListener(ignored -> showDeleteAccountDialog());
@@ -106,11 +105,14 @@ public final class ProfileFragment extends Fragment {
         List<String> keys = ProfileAvatarPolicy.keys();
         List<String> labels = ProfileAvatarPolicy.labels();
         int selected = Math.max(0, keys.indexOf(currentAvatarKey));
-        new MaterialAlertDialogBuilder(requireContext())
+        ProfileAvatarOptionAdapter adapter = new ProfileAvatarOptionAdapter(
+                requireContext(), keys, labels, selected);
+        new MaterialAlertDialogBuilder(
+                requireContext(), R.style.ThemeOverlay_PropCycle_MaterialAlertDialog)
                 .setTitle("Choose your avatar")
-                .setSingleChoiceItems(
-                        labels.toArray(new String[0]),
-                        selected,
+                .setIcon(R.drawable.ic_person)
+                .setAdapter(
+                        adapter,
                         (dialog, which) -> {
                             viewModel.updateAvatar(keys.get(which));
                             dialog.dismiss();
@@ -120,14 +122,17 @@ public final class ProfileFragment extends Fragment {
     }
 
     private void showEditName() {
-        EditText input = new EditText(requireContext());
+        View dialogView = LayoutInflater.from(requireContext())
+                .inflate(R.layout.dialog_edit_profile_name, null);
+        TextInputEditText input = dialogView.findViewById(R.id.profile_name_input);
         input.setSingleLine(true);
         input.setText(binding.profileName.getText());
         input.setSelection(input.length());
-        new MaterialAlertDialogBuilder(requireContext())
+        new MaterialAlertDialogBuilder(
+                requireContext(), R.style.ThemeOverlay_PropCycle_MaterialAlertDialog)
                 .setTitle("Edit display name")
-                .setMessage("This public name is shown on your marketplace and lending activity.")
-                .setView(input)
+                .setIcon(R.drawable.ic_register_person)
+                .setView(dialogView)
                 .setPositiveButton("Save", (dialog, which) ->
                         viewModel.updateDisplayName(input.getText().toString()))
                 .setNegativeButton("Cancel", null)
@@ -148,8 +153,10 @@ public final class ProfileFragment extends Fragment {
         TextInputEditText newPasswordInput = dialogView.findViewById(R.id.new_password_input);
         TextInputEditText confirmPasswordInput = dialogView.findViewById(R.id.confirm_password_input);
 
-        AlertDialog dialog = new MaterialAlertDialogBuilder(requireContext())
+        AlertDialog dialog = new MaterialAlertDialogBuilder(
+                requireContext(), R.style.ThemeOverlay_PropCycle_MaterialAlertDialog)
                 .setTitle(R.string.profile_change_password_title)
+                .setIcon(R.drawable.ic_login_lock)
                 .setView(dialogView)
                 .setPositiveButton("Update", null)
                 .setNegativeButton("Cancel", null)
@@ -217,8 +224,10 @@ public final class ProfileFragment extends Fragment {
         boolean isEmailPassword = viewModel.isEmailPasswordProvider();
         passwordLayout.setVisibility(isEmailPassword ? View.VISIBLE : View.GONE);
 
-        AlertDialog dialog = new MaterialAlertDialogBuilder(requireContext())
+        AlertDialog dialog = new MaterialAlertDialogBuilder(
+                requireContext(), R.style.ThemeOverlay_PropCycle_MaterialAlertDialog)
                 .setTitle(R.string.profile_delete_account_title)
+                .setIcon(R.drawable.ic_lend_delete)
                 .setView(dialogView)
                 .setPositiveButton(R.string.profile_delete_account_confirm, null)
                 .setNegativeButton("Cancel", null)
@@ -292,17 +301,17 @@ public final class ProfileFragment extends Fragment {
         binding.changePasswordAction.setVisibility(ownProfile ? View.VISIBLE : View.GONE);
         binding.deleteAccountAction.setVisibility(ownProfile ? View.VISIBLE : View.GONE);
         binding.logoutAction.setVisibility(ownProfile ? View.VISIBLE : View.GONE);
-        binding.profileAvatarInitial.setClickable(ownProfile && !state.isLoading());
-        binding.profileAvatarInitial.setFocusable(ownProfile && !state.isLoading());
-        binding.profileAvatarInitial.setContentDescription(ownProfile
+        binding.profileAvatarContainer.setClickable(ownProfile && !state.isLoading());
+        binding.profileAvatarContainer.setFocusable(ownProfile && !state.isLoading());
+        binding.profileAvatarContainer.setContentDescription(ownProfile
                 ? "Choose your profile avatar"
                 : "User profile avatar");
 
         if (state.isLoading()) {
             binding.profileName.setText("Loading profile...");
             currentAvatarKey = ProfileAvatarPolicy.DEFAULT;
-            ProfileAvatarRenderer.render(
-                    binding.profileAvatarInitial, currentAvatarKey, "PropCycle Member");
+            ProfileAvatarRenderer.render(binding.profileAvatarInitial,
+                    binding.profileAvatarIcon, currentAvatarKey, "PropCycle Member");
             binding.profileEmail.setText("Please wait");
             binding.profileMemberSummary.setText("Loading member details");
             return;
@@ -310,8 +319,8 @@ public final class ProfileFragment extends Fragment {
         if (!state.getErrorMessage().isEmpty()) {
             binding.profileName.setText("Profile unavailable");
             currentAvatarKey = ProfileAvatarPolicy.DEFAULT;
-            ProfileAvatarRenderer.render(
-                    binding.profileAvatarInitial, currentAvatarKey, "PropCycle Member");
+            ProfileAvatarRenderer.render(binding.profileAvatarInitial,
+                    binding.profileAvatarIcon, currentAvatarKey, "PropCycle Member");
             binding.profileEmail.setText(state.getErrorMessage());
             binding.profileMemberSummary.setText("Member details unavailable");
             binding.itemCard.setEnabled(false);
@@ -321,7 +330,8 @@ public final class ProfileFragment extends Fragment {
         String name = state.getDisplayName();
         binding.profileName.setText(name);
         currentAvatarKey = state.getAvatarKey();
-        ProfileAvatarRenderer.render(binding.profileAvatarInitial, currentAvatarKey, name);
+        ProfileAvatarRenderer.render(binding.profileAvatarInitial,
+                binding.profileAvatarIcon, currentAvatarKey, name);
         binding.profileEmail.setText(ownProfile
                 ? state.getEmail() == null ? "Email unavailable" : state.getEmail()
                 : "Public PropCycle profile");

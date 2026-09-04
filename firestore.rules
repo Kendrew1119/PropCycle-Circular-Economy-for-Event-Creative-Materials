@@ -418,16 +418,74 @@ service cloud.firestore {
           && message.sentAt == data.lastMessageAt;
     }
 
-    function validNewMessage(threadId, messageId) {
-      let data = request.resource.data;
-      let threadAfter = getAfter(
-          /databases/$(database)/documents/chatThreads/$(threadId)).data;
+    function validTextMessage(data) {
       return data.keys().hasAll([
             'senderId', 'text', 'clientOperationId', 'sentAt'
           ])
           && data.keys().hasOnly([
             'senderId', 'text', 'clientOperationId', 'sentAt'
+          ]);
+    }
+
+    function validMarketplaceItemMessage(threadId, messageId, data) {
+      let threadAfter = getAfter(
+          /databases/$(database)/documents/chatThreads/$(threadId)).data;
+      return data.keys().hasAll([
+            'type', 'itemId', 'senderId', 'text', 'clientOperationId', 'sentAt'
           ])
+          && data.keys().hasOnly([
+            'type', 'itemId', 'senderId', 'text', 'clientOperationId', 'sentAt'
+          ])
+          && data.type == 'marketplace_item'
+          && data.text == 'Marketplace item shared'
+          && messageId == 'marketplace_item_card'
+          && data.clientOperationId == 'marketplace_item_card'
+          && boundedString(data.itemId, 1, 128)
+          && threadAfter.contextType == 'marketplace'
+          && data.itemId == threadAfter.contextId
+          && data.senderId == threadAfter.contactUid
+          && data.senderId in threadAfter.participantIds
+          && exists(/databases/$(database)/documents/marketplaceListings/$(data.itemId))
+          && listing(data.itemId).ownerId == threadAfter.ownerUid;
+    }
+
+    function validLendingRequestMessage(threadId, messageId, data) {
+      let threadAfter = getAfter(
+          /databases/$(database)/documents/chatThreads/$(threadId)).data;
+      let lending = get(
+          /databases/$(database)/documents/lendingRequests/$(data.requestId)).data;
+      return data.keys().hasAll([
+            'type', 'requestId', 'itemId', 'senderId', 'text',
+            'clientOperationId', 'sentAt'
+          ])
+          && data.keys().hasOnly([
+            'type', 'requestId', 'itemId', 'senderId', 'text',
+            'clientOperationId', 'sentAt'
+          ])
+          && data.type == 'lending_request'
+          && data.text == 'Lending request sent'
+          && boundedString(data.requestId, 1, 128)
+          && messageId == 'lending_request_' + data.requestId
+          && data.clientOperationId == messageId
+          && boundedString(data.itemId, 1, 128)
+          && threadAfter.contextType == 'lending'
+          && data.itemId == threadAfter.contextId
+          && data.senderId == threadAfter.contactUid
+          && data.senderId in threadAfter.participantIds
+          && exists(/databases/$(database)/documents/lendingRequests/$(data.requestId))
+          && lending.itemId == data.itemId
+          && lending.ownerUid == threadAfter.ownerUid
+          && lending.borrowerUid == threadAfter.contactUid
+          && lending.participantIds == threadAfter.participantIds;
+    }
+
+    function validNewMessage(threadId, messageId) {
+      let data = request.resource.data;
+      let threadAfter = getAfter(
+          /databases/$(database)/documents/chatThreads/$(threadId)).data;
+      return (validTextMessage(data)
+              || validMarketplaceItemMessage(threadId, messageId, data)
+              || validLendingRequestMessage(threadId, messageId, data))
           && data.senderId == currentUid()
           && boundedString(data.text, 1, 2000)
           && data.text.matches('.*\\S.*')

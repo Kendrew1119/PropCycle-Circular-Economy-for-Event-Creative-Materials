@@ -245,7 +245,7 @@
         <item name="android:textColor">@color/pc_brand_primary_blue</item>
     </style>
 
-    <style name="TextAppearance.PropCycle.DialogTitle" parent="TextAppearance.Material3.TitleLarge">
+    <style name="TextAppearance.PropCycle.DialogTitle" parent="MaterialAlertDialog.Material3.Title.Text">
         <item name="android:fontFamily">@font/fredoka_semibold</item>
         <item name="android:textColor">@color/pc_brand_deep_blue</item>
         <item name="android:textSize">20sp</item>
@@ -256,7 +256,38 @@
         <item name="colorSurface">@color/pc_brand_surface</item>
         <item name="colorOnSurface">@color/pc_brand_text_primary</item>
         <item name="colorOutline">@color/pc_brand_outline</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/TextAppearance.PropCycle.DialogTitle</item>
+        <item name="buttonBarPositiveButtonStyle">@style/Widget.PropCycle.DialogButton.Primary</item>
+        <item name="buttonBarNegativeButtonStyle">@style/Widget.PropCycle.DialogButton.Secondary</item>
+        <item name="buttonBarNeutralButtonStyle">@style/Widget.PropCycle.DialogButton.Secondary</item>
         <item name="shapeAppearanceOverlay">@style/ShapeAppearance.PropCycle.Dialog</item>
+    </style>
+
+    <style name="Widget.PropCycle.DialogButton.Primary" parent="Widget.Material3.Button.TextButton.Dialog">
+        <item name="android:fontFamily">@font/fredoka_semibold</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@color/pc_brand_primary_blue</item>
+    </style>
+
+    <style name="Widget.PropCycle.DialogButton.Secondary" parent="Widget.Material3.Button.TextButton.Dialog">
+        <item name="android:fontFamily">@font/fredoka_semibold</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@color/pc_brand_deep_blue</item>
+    </style>
+
+    <style name="Widget.PropCycle.DialogField" parent="Widget.Material3.TextInputLayout.OutlinedBox">
+        <item name="boxBackgroundColor">@color/pc_brand_surface</item>
+        <item name="boxCornerRadiusBottomEnd">16dp</item>
+        <item name="boxCornerRadiusBottomStart">16dp</item>
+        <item name="boxCornerRadiusTopEnd">16dp</item>
+        <item name="boxCornerRadiusTopStart">16dp</item>
+        <item name="boxStrokeColor">@color/pc_brand_primary_blue</item>
+        <item name="boxStrokeWidth">1dp</item>
+        <item name="boxStrokeWidthFocused">2dp</item>
+        <item name="hintTextColor">@color/pc_brand_text_secondary</item>
+        <item name="startIconTint">@color/pc_brand_deep_blue</item>
     </style>
 
     <style name="ShapeAppearance.PropCycle.Dialog" parent="">

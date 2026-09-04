@@ -5,6 +5,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.RatingBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,11 +19,14 @@ import com.propcycle.app.R;
 import com.propcycle.app.core.firebase.FirebaseEnvironment;
 import com.propcycle.app.data.chat.ChatParticipantPolicy;
 import com.propcycle.app.data.chat.ChatThread;
+import com.propcycle.app.data.lending.LendingRequest;
+import com.propcycle.app.data.lending.LendingRequestActionPolicy;
 import com.propcycle.app.data.profile.ProfileAvatarPolicy;
 import com.propcycle.app.data.profile.PublicProfile;
 import com.propcycle.app.databinding.FragmentConversationBinding;
 import com.propcycle.app.ui.common.ProfileAvatarRenderer;
 import com.propcycle.app.ui.common.ScreenNavigation;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 /** Participant-only, bounded real-time text conversation. */
 public final class ConversationFragment extends Fragment {
@@ -49,7 +55,24 @@ public final class ConversationFragment extends Fragment {
         Bundle arguments = getArguments();
         threadId = arguments == null ? "" : arguments.getString("threadId", "");
 
-        adapter = new ChatMessageAdapter();
+        adapter = new ChatMessageAdapter(requireContext(), new ChatMessageAdapter.Listener() {
+            @Override
+            public void onViewMarketplaceItem(@NonNull String itemId) {
+                openMarketplaceItem(itemId);
+            }
+
+            @Override
+            public void onViewLendingItem(@NonNull String itemId) {
+                openLendingItem(itemId);
+            }
+
+            @Override
+            public void onLendingAction(
+                    @NonNull LendingRequest request,
+                    @NonNull LendingRequestActionPolicy.Action action) {
+                confirmLendingAction(request, action);
+            }
+        });
         LinearLayoutManager layoutManager = new LinearLayoutManager(requireContext());
         binding.messageList.setLayoutManager(layoutManager);
         binding.messageList.setAdapter(adapter);
@@ -99,6 +122,7 @@ public final class ConversationFragment extends Fragment {
     @Override
     public void onDestroyView() {
         binding.messageList.setAdapter(null);
+        adapter.close();
         otherProfile = null;
         binding = null;
         super.onDestroyView();
@@ -132,7 +156,15 @@ public final class ConversationFragment extends Fragment {
                         ? "Lending item"
                         : "Marketplace listing");
 
-        adapter.submitList(state.getMessages(), viewModel.currentUserId());
+        adapter.submitList(
+                state.getMessages(),
+                viewModel.currentUserId(),
+                state.getMarketplaceListing(),
+                state.isMarketplaceListingLoading(),
+                state.getLendingRequests(),
+                state.getLoadingLendingRequestIds(),
+                state.getLendingItem(),
+                state.getBusyLendingRequestId());
         if (!state.getMessages().isEmpty()) {
             binding.messageList.scrollToPosition(state.getMessages().size() - 1);
         }
@@ -182,5 +214,70 @@ public final class ConversationFragment extends Fragment {
         Bundle arguments = new Bundle();
         arguments.putString("userId", otherUserId);
         ScreenNavigation.navigateAuthenticated(this, R.id.profileFragment, arguments);
+    }
+
+    private void openMarketplaceItem(@NonNull String itemId) {
+        if (itemId.trim().isEmpty()) {
+            return;
+        }
+        Bundle arguments = new Bundle();
+        arguments.putString("listingId", itemId);
+        ScreenNavigation.navigateAuthenticated(this, R.id.marketDetailFragment, arguments);
+    }
+
+    private void openLendingItem(@NonNull String itemId) {
+        if (itemId.trim().isEmpty()) {
+            return;
+        }
+        Bundle arguments = new Bundle();
+        arguments.putString("itemId", itemId);
+        ScreenNavigation.navigateAuthenticated(this, R.id.lendingDetailFragment, arguments);
+    }
+
+    private void confirmLendingAction(
+            @NonNull LendingRequest request,
+            @NonNull LendingRequestActionPolicy.Action action) {
+        if (!LendingRequestActionPolicy.isAllowed(
+                request, viewModel.currentUserId(), action)) {
+            return;
+        }
+        if (action == LendingRequestActionPolicy.Action.RATE) {
+            showLendingRatingDialog(request);
+            return;
+        }
+        new MaterialAlertDialogBuilder(requireContext())
+                .setTitle(LendingRequestActionPolicy.confirmationTitle(action))
+                .setMessage(request.getItemTitle() + "\n" + request.getStartDate()
+                        + " to " + request.getEndDate())
+                .setNegativeButton("Back", null)
+                .setPositiveButton("Confirm", (dialog, which) ->
+                        viewModel.performLendingAction(request, action))
+                .show();
+    }
+
+    private void showLendingRatingDialog(@NonNull LendingRequest request) {
+        LinearLayout content = new LinearLayout(requireContext());
+        content.setOrientation(LinearLayout.VERTICAL);
+        int padding = (int) (20 * getResources().getDisplayMetrics().density);
+        content.setPadding(padding, padding / 2, padding, 0);
+        RatingBar rating = new RatingBar(
+                requireContext(), null, android.R.attr.ratingBarStyleSmall);
+        rating.setNumStars(5);
+        rating.setStepSize(1f);
+        rating.setRating(5f);
+        EditText comment = new EditText(requireContext());
+        comment.setHint("Optional public comment");
+        comment.setMaxLines(4);
+        content.addView(rating);
+        content.addView(comment);
+        new MaterialAlertDialogBuilder(requireContext())
+                .setTitle("Rate the item owner")
+                .setView(content)
+                .setNegativeButton("Cancel", null)
+                .setPositiveButton("Save", (dialog, which) -> viewModel.rateLendingRequest(
+                        request,
+                        Math.max(1, Math.round(rating.getRating())),
+                        comment.getText().toString()))
+                .show();
     }
 }

@@ -2,38 +2,20 @@ package com.propcycle.app.ui.scanner;
 
 import com.propcycle.app.data.scanner.ScanAnalysis;
 
-/** Keeps AI suggestions from opening actions that conflict with the reviewed category. */
+/** Builds advisory route copy without controlling the user's destination choices. */
 final class ScanActionPolicy {
 
     private ScanActionPolicy() {
     }
 
-    static boolean canRecycle(ScanAnalysis value) {
+    static boolean isReviewOnly(ScanAnalysis value) {
         if (value == null) {
-            return false;
-        }
-        if (value.getCategory() == ScanAnalysis.Category.E_WASTE) {
             return true;
         }
-        return value.getCategory() == ScanAnalysis.Category.RECYCLABLE
-                && value.isRecyclable();
-    }
-
-    static boolean canSell(ScanAnalysis value) {
-        if (value == null) {
-            return false;
-        }
-        return value.getCategory() == ScanAnalysis.Category.REUSABLE
-                || (value.getCategory() == ScanAnalysis.Category.RECYCLABLE
-                && value.isRecyclable());
-    }
-
-    static boolean canLend(ScanAnalysis value) {
-        return value != null && value.getCategory() == ScanAnalysis.Category.REUSABLE;
-    }
-
-    static boolean isReviewOnly(ScanAnalysis value) {
-        return !canRecycle(value) && !canSell(value) && !canLend(value);
+        return value.getCategory() != ScanAnalysis.Category.E_WASTE
+                && value.getCategory() != ScanAnalysis.Category.REUSABLE
+                && (value.getCategory() != ScanAnalysis.Category.RECYCLABLE
+                || !value.isRecyclable());
     }
 
     static String routeLabel(ScanAnalysis value) {
@@ -44,7 +26,8 @@ final class ScanActionPolicy {
                 || value.getCategory() == ScanAnalysis.Category.E_WASTE) {
             return "specialist drop-off after local check";
         }
-        if (canRecycle(value)) {
+        if (value.getCategory() == ScanAnalysis.Category.RECYCLABLE
+                && value.isRecyclable()) {
             return "reuse or recycle after local check";
         }
         if (value.getCategory() == ScanAnalysis.Category.REUSABLE) {

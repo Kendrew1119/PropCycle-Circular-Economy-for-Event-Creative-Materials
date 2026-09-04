@@ -3,12 +3,13 @@ package com.propcycle.app;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import androidx.annotation.IdRes;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
@@ -19,6 +20,7 @@ import androidx.navigation.NavOptions;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.badge.BadgeDrawable;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
@@ -26,6 +28,7 @@ import com.propcycle.app.core.firebase.FirebaseEnvironment;
 import com.propcycle.app.data.profile.ProfileAvatarPolicy;
 import com.propcycle.app.ui.common.ScreenNavigation;
 import com.propcycle.app.ui.common.ProfileAvatarRenderer;
+import com.propcycle.app.ui.common.UnreadBadgeManager;
 
 /** Hosts the proposal UI, restores an authenticated session, and supports debug visual QA. */
 public final class MainActivity extends AppCompatActivity {
@@ -33,6 +36,7 @@ public final class MainActivity extends AppCompatActivity {
     public static final String EXTRA_SCREEN = "screen";
     @Nullable private ListenerRegistration headerProfileRegistration;
     private String headerProfileUserId = "";
+    private UnreadBadgeManager unreadBadgeManager;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -79,6 +83,7 @@ public final class MainActivity extends AppCompatActivity {
             }
             return windowInsets;
         });
+        unreadBadgeManager = new UnreadBadgeManager(this, this::renderUnreadBadges);
         bindNavigationChrome();
 
         if (savedInstanceState == null) {
@@ -143,6 +148,10 @@ public final class MainActivity extends AppCompatActivity {
         });
         controller.addOnDestinationChangedListener((ignored, destination, arguments) -> {
             refreshHeaderAvatar();
+            unreadBadgeManager.refreshUser();
+            unreadBadgeManager.setOpenScreens(
+                    destination.getId() == R.id.notificationsFragment,
+                    destination.getId() == R.id.messagesFragment);
             @IdRes int itemId = bottomNavigationItemForDestination(destination.getId());
             boolean showAppChrome = isAppDestination(destination.getId());
             appHeader.setVisibility(showAppChrome ? View.VISIBLE : View.GONE);
@@ -155,6 +164,31 @@ public final class MainActivity extends AppCompatActivity {
                 bottomNavigation.getMenu().findItem(itemId).setChecked(true);
             }
         });
+    }
+
+    private void renderUnreadBadges(int notificationCount, int messageCount) {
+        TextView notificationBadge = findViewById(R.id.app_header_notifications_badge);
+        ImageButton notificationButton = findViewById(R.id.app_header_notifications);
+        boolean hasNotifications = notificationCount > 0;
+        notificationBadge.setVisibility(hasNotifications ? View.VISIBLE : View.GONE);
+        notificationBadge.setText(badgeLabel(notificationCount));
+        notificationButton.setContentDescription(hasNotifications
+                ? "Notifications, " + notificationCount + " unread"
+                : getString(R.string.notifications));
+
+        BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
+        BadgeDrawable messageBadge = bottomNavigation.getOrCreateBadge(R.id.bottom_nav_messages);
+        messageBadge.setBackgroundColor(ContextCompat.getColor(
+                this, R.color.pc_brand_accent_red));
+        messageBadge.setBadgeTextColor(ContextCompat.getColor(
+                this, R.color.pc_brand_surface));
+        messageBadge.setMaxCharacterCount(3);
+        messageBadge.setNumber(messageCount);
+        messageBadge.setVisible(messageCount > 0);
+    }
+
+    private static String badgeLabel(int count) {
+        return count > 99 ? "99+" : Integer.toString(Math.max(0, count));
     }
 
     private void refreshHeaderAvatar() {
@@ -195,6 +229,9 @@ public final class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        if (unreadBadgeManager != null) {
+            unreadBadgeManager.stop();
+        }
         if (headerProfileRegistration != null) {
             headerProfileRegistration.remove();
             headerProfileRegistration = null;

@@ -39,19 +39,38 @@
                 android:contentDescription="@null"
                 android:src="@drawable/pc_sticker_profile_boxes" />
 
-            <TextView
-                android:id="@+id/profile_avatar_initial"
+            <FrameLayout
+                android:id="@+id/profile_avatar_container"
                 android:layout_width="64dp"
                 android:layout_height="64dp"
                 android:layout_gravity="start|top"
                 android:layout_marginTop="46dp"
                 android:background="@drawable/bg_profile_avatar"
-                android:contentDescription="User profile picture"
-                android:fontFamily="@font/fredoka_semibold"
-                android:gravity="center"
-                android:text="U"
-                android:textColor="@color/pc_brand_deep_blue"
-                android:textSize="25sp" />
+                android:clipChildren="true"
+                android:clipToOutline="true"
+                android:contentDescription="User profile picture">
+
+                <TextView
+                    android:id="@+id/profile_avatar_initial"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:fontFamily="@font/fredoka_semibold"
+                    android:gravity="center"
+                    android:includeFontPadding="false"
+                    android:text="U"
+                    android:textColor="@color/pc_brand_deep_blue"
+                    android:textSize="25sp" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/profile_avatar_icon"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_gravity="center"
+                    android:contentDescription="@null"
+                    android:importantForAccessibility="no"
+                    android:scaleType="centerInside"
+                    android:visibility="gone" />
+            </FrameLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"

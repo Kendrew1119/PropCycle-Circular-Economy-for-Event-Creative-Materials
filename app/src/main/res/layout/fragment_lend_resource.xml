@@ -17,48 +17,47 @@
         android:paddingEnd="20dp"
         android:paddingBottom="@dimen/space_xl">
 
-        <ImageButton
-            android:id="@+id/back_button"
-            style="@style/Widget.PropCycle.IconButton"
-            android:background="@color/pc_transparent"
-            android:contentDescription="Go back"
-            android:src="@drawable/ic_back"
-            app:tint="@color/pc_brand_deep_blue" />
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/space_xs"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/back_button"
+                    style="@style/Widget.PropCycle.IconButton"
+                    android:background="@color/pc_transparent"
+                    android:contentDescription="Go back"
+                    android:src="@drawable/ic_back"
+                    app:tint="@color/pc_brand_deep_blue" />
 
                 <TextView
                     android:id="@+id/lend_form_title"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
                     android:fontFamily="@font/fredoka_semibold"
                     android:text="Lend Resource"
                     android:textColor="@color/pc_brand_deep_blue"
                     android:textSize="30sp"
                     android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/space_xs"
-                    android:lineSpacingExtra="2dp"
-                    android:text="Share useful equipment safely. Deposits are informational and handled outside PropCycle."
-                    android:textColor="@color/pc_brand_text_secondary"
-                    android:textSize="15sp" />
-
             </LinearLayout>
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_xs"
+                android:lineSpacingExtra="2dp"
+                android:text="Share useful equipment safely. Deposits are informational and handled outside PropCycle."
+                android:textColor="@color/pc_brand_text_secondary"
+                android:textSize="15sp" />
 
         </LinearLayout>
 
@@ -298,12 +297,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:background="@null"
+            android:foreground="@null"
             android:hint="Pickup method"
             app:boxBackgroundColor="@color/pc_brand_surface"
             app:boxBackgroundMode="outline"
-            app:boxStrokeColor="@color/pc_brand_primary_blue"
-            app:boxStrokeWidth="2dp"
-            app:boxStrokeWidthFocused="2dp"
+            app:boxStrokeColor="@color/pc_transparent"
+            app:boxStrokeWidth="0dp"
+            app:boxStrokeWidthFocused="0dp"
             app:startIconDrawable="@drawable/ic_location"
             app:startIconTint="@color/pc_brand_deep_blue">
 

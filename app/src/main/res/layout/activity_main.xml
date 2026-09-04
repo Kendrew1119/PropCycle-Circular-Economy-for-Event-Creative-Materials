@@ -50,17 +50,40 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageButton
-                android:id="@+id/app_header_notifications"
-                style="@style/Widget.PropCycle.IconButton"
-                android:background="@drawable/bg_circle_header_action"
-                android:contentDescription="@string/notifications"
-                android:padding="12dp"
-                android:src="@drawable/ic_notifications"
+            <FrameLayout
+                android:id="@+id/app_header_notifications_container"
+                android:layout_width="52dp"
+                android:layout_height="52dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/app_header_profile"
-                app:layout_constraintTop_toTopOf="parent"
-                app:tint="@color/pc_brand_deep_blue" />
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageButton
+                    android:id="@+id/app_header_notifications"
+                    style="@style/Widget.PropCycle.IconButton"
+                    android:layout_gravity="center"
+                    android:background="@drawable/bg_circle_header_action"
+                    android:contentDescription="@string/notifications"
+                    android:padding="12dp"
+                    android:src="@drawable/ic_notifications"
+                    app:tint="@color/pc_brand_deep_blue" />
+
+                <TextView
+                    android:id="@+id/app_header_notifications_badge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="18dp"
+                    android:layout_gravity="end|top"
+                    android:background="@drawable/bg_header_unread_badge"
+                    android:fontFamily="sans-serif-medium"
+                    android:gravity="center"
+                    android:importantForAccessibility="no"
+                    android:minWidth="18dp"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp"
+                    android:textColor="@color/pc_brand_surface"
+                    android:textSize="10sp"
+                    android:visibility="gone" />
+            </FrameLayout>
 
             <ImageButton
                 android:id="@+id/app_header_profile"

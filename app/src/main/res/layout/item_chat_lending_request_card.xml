@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
+    app:cardBackgroundColor="@color/pc_brand_surface"
+    app:cardCornerRadius="18dp"
+    app:cardElevation="0dp"
+    app:strokeColor="@color/pc_brand_outline"
+    app:strokeWidth="1dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="14dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <FrameLayout
+                android:layout_width="88dp"
+                android:layout_height="88dp"
+                android:background="@drawable/bg_marketplace_photo_placeholder">
+
+                <ImageView
+                    android:id="@+id/lending_request_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:contentDescription="Lending item photo"
+                    android:padding="10dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_bottom_nav_lend_out" />
+
+                <ProgressBar
+                    android:id="@+id/lending_request_image_progress"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:layout_gravity="center"
+                    android:indeterminateTint="@color/pc_brand_primary_blue"
+                    android:visibility="gone" />
+            </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="14dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/lending_request_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/fredoka_semibold"
+                    android:maxLines="2"
+                    android:textColor="@color/pc_brand_text_primary"
+                    android:textSize="17sp"
+                    tools:text="Portable LED lights" />
+
+                <TextView
+                    android:id="@+id/lending_request_dates"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:textColor="@color/pc_brand_text_secondary"
+                    android:textSize="14sp"
+                    tools:text="10 Sep 2026 – 12 Sep 2026" />
+
+                <TextView
+                    android:id="@+id/lending_request_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/bg_marketplace_meta"
+                    android:fontFamily="@font/fredoka_semibold"
+                    android:paddingStart="9dp"
+                    android:paddingTop="4dp"
+                    android:paddingEnd="9dp"
+                    android:paddingBottom="4dp"
+                    android:textColor="@color/pc_brand_deep_blue"
+                    android:textSize="12sp"
+                    tools:text="Pending" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/lending_request_action_row"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/lending_request_primary_action"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:fontFamily="@font/fredoka_semibold"
+                android:textAllCaps="false"
+                android:textColor="@color/pc_white"
+                app:backgroundTint="@color/pc_brand_primary_blue"
+                app:cornerRadius="14dp"
+                tools:text="Approve" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/lending_request_secondary_action"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:fontFamily="@font/fredoka_semibold"
+                android:textAllCaps="false"
+                android:textColor="@color/pc_brand_deep_blue"
+                app:cornerRadius="14dp"
+                app:strokeColor="@color/pc_brand_outline"
+                tools:text="Reject" />
+        </LinearLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/view_lending_item_action"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="4dp"
+            android:fontFamily="@font/fredoka_semibold"
+            android:text="View Item Details"
+            android:textAllCaps="false"
+            android:textColor="@color/pc_brand_primary_blue"
+            android:textSize="15sp" />
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

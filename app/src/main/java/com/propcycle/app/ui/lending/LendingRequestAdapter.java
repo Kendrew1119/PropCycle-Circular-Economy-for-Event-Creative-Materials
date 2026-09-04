@@ -12,6 +12,7 @@ import com.google.android.material.button.MaterialButton;
 import com.propcycle.app.R;
 import com.propcycle.app.data.lending.LendingPolicy;
 import com.propcycle.app.data.lending.LendingRequest;
+import com.propcycle.app.data.lending.LendingRequestActionPolicy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,12 +21,10 @@ import java.util.List;
 final class LendingRequestAdapter
         extends RecyclerView.Adapter<LendingRequestAdapter.RequestViewHolder> {
 
-    enum Action {
-        APPROVE, REJECT, CANCEL, ACTIVATE, REPORT_RETURN, CONFIRM_RETURN, RATE
-    }
-
     interface Listener {
-        void onAction(@NonNull LendingRequest request, @NonNull Action action);
+        void onAction(
+                @NonNull LendingRequest request,
+                @NonNull LendingRequestActionPolicy.Action action);
     }
 
     private final String currentUid;
@@ -91,33 +90,23 @@ final class LendingRequestAdapter
             primary.setOnClickListener(null);
             secondary.setOnClickListener(null);
 
-            if (owner && "pending".equals(request.getStatus())) {
-                configure(primary, "Approve", request, Action.APPROVE, busy);
-                configure(secondary, "Reject", request, Action.REJECT, busy);
-            } else if (owner && "approved".equals(request.getStatus())) {
-                configure(primary, "Confirm pickup", request, Action.ACTIVATE, busy);
-            } else if (owner && "active".equals(request.getStatus())
-                    && request.isReturnReported()) {
-                configure(primary, "Confirm return", request, Action.CONFIRM_RETURN, busy);
-            } else if (!owner && ("pending".equals(request.getStatus())
-                    || "approved".equals(request.getStatus()))) {
-                configure(primary, "Cancel request", request, Action.CANCEL, busy);
-            } else if (!owner && "active".equals(request.getStatus())
-                    && !request.isReturnReported()) {
-                configure(primary, "Mark returned", request, Action.REPORT_RETURN, busy);
-            } else if (!owner && "returned".equals(request.getStatus())) {
-                configure(primary, "Rate owner", request, Action.RATE, busy);
+            List<LendingRequestActionPolicy.Action> actions =
+                    LendingRequestActionPolicy.availableActions(request, currentUid);
+            if (!actions.isEmpty()) {
+                configure(primary, request, actions.get(0), busy);
+            }
+            if (actions.size() > 1) {
+                configure(secondary, request, actions.get(1), busy);
             }
         }
 
         private void configure(
                 @NonNull MaterialButton button,
-                @NonNull String text,
                 @NonNull LendingRequest request,
-                @NonNull Action action,
+                @NonNull LendingRequestActionPolicy.Action action,
                 boolean busy) {
             button.setVisibility(View.VISIBLE);
-            button.setText(text);
+            button.setText(LendingRequestActionPolicy.actionLabel(action));
             button.setEnabled(!busy);
             button.setOnClickListener(ignored -> listener.onAction(request, action));
         }

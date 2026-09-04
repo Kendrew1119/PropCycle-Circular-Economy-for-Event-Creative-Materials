@@ -13,6 +13,7 @@ import com.google.android.gms.tasks.Task;
 import com.propcycle.app.data.activity.ActivityLogRepository;
 import com.propcycle.app.data.lending.FirestoreLendingRepository;
 import com.propcycle.app.data.lending.LendingRequest;
+import com.propcycle.app.data.lending.LendingRequestActionPolicy;
 import com.propcycle.app.data.marketplace.MarketplaceStatusNotice;
 import com.propcycle.app.data.marketplace.MarketplaceStatusNoticeRepository;
 
@@ -160,7 +161,7 @@ public final class LendingRequestsViewModel extends AndroidViewModel {
 
     public void perform(
             @NonNull LendingRequest request,
-            @NonNull LendingRequestAdapter.Action action) {
+            @NonNull LendingRequestActionPolicy.Action action) {
         Task<Void> task = switch (action) {
             case APPROVE -> repository.approve(request.getId());
             case REJECT -> repository.reject(request.getId());
@@ -179,7 +180,7 @@ public final class LendingRequestsViewModel extends AndroidViewModel {
         task.addOnSuccessListener(ignored -> {
                     activityLog.record(
                             ActivityLogRepository.TYPE_LENDING_STATUS,
-                            activityTitle(action),
+                            LendingRequestActionPolicy.activityTitle(action),
                             request.getItemTitle() == null
                                     ? "Lending item" : request.getItemTitle(),
                             ActivityLogRepository.DESTINATION_LENDING_REQUESTS,
@@ -217,19 +218,6 @@ public final class LendingRequestsViewModel extends AndroidViewModel {
                         false, fromCache,
                         LendingListViewModel.safeMessage(error, "The rating could not be saved."),
                         null, requests)));
-    }
-
-    @NonNull
-    private static String activityTitle(@NonNull LendingRequestAdapter.Action action) {
-        return switch (action) {
-            case APPROVE -> "Borrowing request approved";
-            case REJECT -> "Borrowing request rejected";
-            case CANCEL -> "Borrowing request cancelled";
-            case ACTIVATE -> "Borrowing started";
-            case REPORT_RETURN -> "Item return reported";
-            case CONFIRM_RETURN -> "Item return confirmed";
-            case RATE -> "Lending experience rated";
-        };
     }
 
     public void stop() {
