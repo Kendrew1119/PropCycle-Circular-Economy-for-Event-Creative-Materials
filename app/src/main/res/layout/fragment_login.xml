@@ -113,6 +113,7 @@
                     android:maxLines="1"
                     android:paddingStart="58dp"
                     android:paddingEnd="18dp"
+                    android:text="huaweireview@propcycle.app"
                     android:textColor="@color/pc_brand_text_primary"
                     android:textColorHint="@color/pc_brand_text_secondary"
                     android:textSize="17sp" />
@@ -156,6 +157,7 @@
                     android:maxLines="1"
                     android:paddingStart="58dp"
                     android:paddingEnd="18dp"
+                    android:text="Review@1234"
                     android:textColor="@color/pc_brand_text_primary"
                     android:textColorHint="@color/pc_brand_text_secondary"
                     android:textSize="17sp" />
