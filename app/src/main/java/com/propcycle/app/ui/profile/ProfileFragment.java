@@ -293,11 +293,13 @@ public final class ProfileFragment extends Fragment {
         }
         ownProfile = state.isOwnProfile();
         binding.profileHeaderLabel.setText(ownProfile ? "MY PROFILE" : "PUBLIC PROFILE");
-        binding.profileActivityLabel.setText(ownProfile ? "YOUR ACTIVITY" : "PROFILE");
+        binding.profileActivityLabel.setText(ownProfile ? "AT A GLANCE" : "PROFILE OVERVIEW");
         binding.profileListingsLabel.setText(ownProfile ? "MY LISTINGS" : "ACTIVE LISTING");
         binding.profileEditAction.setVisibility(ownProfile ? View.VISIBLE : View.GONE);
         binding.profileAvatarAction.setVisibility(ownProfile ? View.VISIBLE : View.GONE);
+        binding.profileIdentityActionRow.setVisibility(ownProfile ? View.VISIBLE : View.GONE);
         binding.profileAccountSectionLabel.setVisibility(ownProfile ? View.VISIBLE : View.GONE);
+        binding.profileAccountCard.setVisibility(ownProfile ? View.VISIBLE : View.GONE);
         binding.changePasswordAction.setVisibility(ownProfile ? View.VISIBLE : View.GONE);
         binding.deleteAccountAction.setVisibility(ownProfile ? View.VISIBLE : View.GONE);
         binding.logoutAction.setVisibility(ownProfile ? View.VISIBLE : View.GONE);
