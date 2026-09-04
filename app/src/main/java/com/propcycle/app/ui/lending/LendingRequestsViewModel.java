@@ -14,6 +14,7 @@ import com.propcycle.app.data.activity.ActivityLogRepository;
 import com.propcycle.app.data.lending.FirestoreLendingRepository;
 import com.propcycle.app.data.lending.LendingRequest;
 import com.propcycle.app.data.lending.LendingRequestActionPolicy;
+import com.propcycle.app.data.lending.LendingRequestActionExecutor;
 import com.propcycle.app.data.marketplace.MarketplaceStatusNotice;
 import com.propcycle.app.data.marketplace.MarketplaceStatusNoticeRepository;
 
@@ -162,18 +163,10 @@ public final class LendingRequestsViewModel extends AndroidViewModel {
     public void perform(
             @NonNull LendingRequest request,
             @NonNull LendingRequestActionPolicy.Action action) {
-        Task<Void> task = switch (action) {
-            case APPROVE -> repository.approve(request.getId());
-            case REJECT -> repository.reject(request.getId());
-            case CANCEL -> repository.cancel(request.getId());
-            case ACTIVATE -> repository.activate(request.getId());
-            case REPORT_RETURN -> repository.reportReturn(request.getId());
-            case CONFIRM_RETURN -> repository.confirmReturn(request.getId());
-            case RATE -> null;
-        };
-        if (task == null) {
+        if (!LendingRequestActionPolicy.isAllowed(request, currentUserId(), action)) {
             return;
         }
+        Task<Void> task = LendingRequestActionExecutor.execute(repository, request, action);
         state.setValue(new State(false, fromCache, "Saving lending update...",
                 request.getId(), requests));
         android.widget.Toast.makeText(getApplication(), "Processing " + action, android.widget.Toast.LENGTH_SHORT).show();
@@ -200,6 +193,9 @@ public final class LendingRequestsViewModel extends AndroidViewModel {
     }
 
     public void rate(@NonNull LendingRequest request, int score, @Nullable String comment) {
+        if (!LendingRequestActionPolicy.isAllowed(request, currentUserId(), LendingRequestActionPolicy.Action.RATE)) {
+            return;
+        }
         state.setValue(new State(false, fromCache, "Saving rating...",
                 request.getId(), requests));
         repository.rate(request.getId(), score, comment)

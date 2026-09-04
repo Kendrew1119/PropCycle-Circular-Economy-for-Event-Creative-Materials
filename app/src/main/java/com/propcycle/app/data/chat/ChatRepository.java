@@ -14,6 +14,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Source;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.MetadataChanges;
 import com.google.firebase.firestore.Query;
@@ -312,32 +313,61 @@ public final class ChatRepository {
         previewValues.put("lastMessageAt", FieldValue.serverTimestamp());
         previewValues.put("updatedAt", FieldValue.serverTimestamp());
 
-        WriteBatch batch = firestore.batch();
-        batch.set(message, messageValues);
-        batch.update(thread, previewValues);
-        return batch.commit().continueWithTask(result -> {
+        // Read before writing: an existing immutable card must not be overwritten or bump preview.
+        return firestore.runTransaction(transaction -> {
+            DocumentSnapshot request = transaction.get(
+                    firestore.collection("lendingRequests").document(requestId));
+            DocumentSnapshot savedThread = transaction.get(thread);
+            DocumentSnapshot savedCard = transaction.get(message);
+            if (!request.exists() || !itemId.equals(request.getString("itemId"))
+                    || !borrowerUid.equals(request.getString("borrowerUid"))) {
+                throw new IllegalStateException("The lending request does not match this borrower/item.");
+            }
+            verifyExistingLendingThread(savedThread, itemId,
+                    request.getString("ownerUid"), borrowerUid);
+            if (!Arrays.asList(request.getString("ownerUid"), borrowerUid)
+                    .equals(request.get("participantIds"))) {
+                throw new IllegalStateException("Request and conversation participants do not match.");
+            }
+            if (savedCard.exists()) {
+                verifyLendingCard(savedCard, requestId, itemId, borrowerUid, operationId);
+                return threadId;
+            }
+            transaction.set(message, messageValues);
+            transaction.update(thread, previewValues);
+            return threadId;
+        }).continueWithTask(result -> {
             if (result.isSuccessful()) {
                 return Tasks.forResult(threadId);
             }
             Exception original = result.getException() == null
                     ? new IllegalStateException("The lending request card could not be added.")
                     : result.getException();
-            return message.get().continueWithTask(read -> {
+            return message.get(Source.SERVER).continueWithTask(read -> {
                 if (read.isSuccessful() && read.getResult() != null
                         && read.getResult().exists()) {
-                    DocumentSnapshot saved = read.getResult();
-                    if (ChatMessage.TYPE_LENDING_REQUEST.equals(saved.getString("type"))
-                            && requestId.equals(saved.getString("requestId"))
-                            && itemId.equals(saved.getString("itemId"))
-                            && borrowerUid.equals(saved.getString("senderId"))
-                            && LENDING_REQUEST_FALLBACK_TEXT.equals(saved.getString("text"))
-                            && operationId.equals(saved.getString("clientOperationId"))) {
+                    try {
+                        verifyLendingCard(read.getResult(), requestId, itemId, borrowerUid, operationId);
                         return Tasks.forResult(threadId);
+                    } catch (RuntimeException mappingError) {
+                        // Keep the original write error if readback cannot confirm success.
                     }
                 }
                 return Tasks.forException(original);
             });
         });
+    }
+
+    private static void verifyLendingCard(DocumentSnapshot card, String requestId,
+            String itemId, String borrowerUid, String messageId) {
+        if (!ChatMessage.TYPE_LENDING_REQUEST.equals(card.getString("type"))
+                || !requestId.equals(card.getString("requestId"))
+                || !itemId.equals(card.getString("itemId"))
+                || !borrowerUid.equals(card.getString("senderId"))
+                || !LENDING_REQUEST_FALLBACK_TEXT.equals(card.getString("text"))
+                || !messageId.equals(card.getString("clientOperationId"))) {
+            throw new IllegalStateException("Existing lending card has mismatched fields.");
+        }
     }
 
     @NonNull
@@ -426,9 +456,13 @@ public final class ChatRepository {
                     }
                     List<ChatMessage> messages = new ArrayList<>(snapshot.size());
                     for (QueryDocumentSnapshot document : snapshot) {
-                        ChatMessage message = mapMessage(document);
-                        if (message != null) {
-                            messages.add(message);
+                        try {
+                            ChatMessage message = mapMessage(document);
+                            if (message != null) {
+                                messages.add(message);
+                            }
+                        } catch (RuntimeException mappingError) {
+                            callback.onError(mappingError);
                         }
                     }
                     callback.onData(messages, snapshot.getMetadata().isFromCache());

@@ -16,6 +16,7 @@ import {
   limit,
   orderBy,
   query,
+  runTransaction,
   serverTimestamp,
   setDoc,
   updateDoc,
@@ -1102,6 +1103,21 @@ test("borrower creates one strict lending request card for the matching request"
   });
   await assertSucceeds(validBatch.commit());
   await assertFails(updateDoc(cardRef, {status: "approved"}));
+
+  // A reopen must leave the immutable card and its thread preview unchanged.
+  const originalCard = (await getDoc(cardRef)).data();
+  const originalThread = (await getDoc(doc(contactDatabase, "chatThreads", LENDING_THREAD_ID))).data();
+  for (let retry = 0; retry < 2; retry++) {
+    await assertSucceeds(runTransaction(contactDatabase, async (transaction) => {
+      const request = await transaction.get(doc(contactDatabase, "lendingRequests", LENDING_REQUEST_ID));
+      const savedThread = await transaction.get(doc(contactDatabase, "chatThreads", LENDING_THREAD_ID));
+      const savedCard = await transaction.get(cardRef);
+      assert.equal(request.data().itemId, savedThread.data().contextId);
+      assert.equal(savedCard.data().requestId, LENDING_REQUEST_ID);
+    }));
+  }
+  assert.deepEqual((await getDoc(cardRef)).data(), originalCard);
+  assert.deepEqual((await getDoc(doc(contactDatabase, "chatThreads", LENDING_THREAD_ID))).data(), originalThread);
 
   const forgedId = "lending_request_forged-request";
   const forgedBatch = writeBatch(contactDatabase);

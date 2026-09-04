@@ -25,6 +25,7 @@ import com.propcycle.app.data.lending.FirestoreLendingRepository;
 import com.propcycle.app.data.lending.LendingItem;
 import com.propcycle.app.data.lending.LendingRequest;
 import com.propcycle.app.data.lending.LendingRequestActionPolicy;
+import com.propcycle.app.data.lending.LendingRequestActionExecutor;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -441,18 +442,7 @@ public final class ConversationViewModel extends AndroidViewModel {
                 || action == LendingRequestActionPolicy.Action.RATE) {
             return;
         }
-        Task<Void> task = switch (action) {
-            case APPROVE -> lendingRepository.approve(current.getId());
-            case REJECT -> lendingRepository.reject(current.getId());
-            case CANCEL -> lendingRepository.cancel(current.getId());
-            case ACTIVATE -> lendingRepository.activate(current.getId());
-            case REPORT_RETURN -> lendingRepository.reportReturn(current.getId());
-            case CONFIRM_RETURN -> lendingRepository.confirmReturn(current.getId());
-            case RATE -> null;
-        };
-        if (task == null) {
-            return;
-        }
+        Task<Void> task = LendingRequestActionExecutor.execute(lendingRepository, current, action);
         busyLendingRequestId = current.getId();
         actionError = null;
         publish(isSending());

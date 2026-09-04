@@ -61,6 +61,21 @@ public final class LendingRequestActionPolicy {
         return availableActions(request, currentUid).contains(action);
     }
 
+    /** A borrower request that is still actionable or awaiting its one permitted rating. */
+    public static boolean isRelevantForBorrower(
+            @Nullable LendingRequest request,
+            @Nullable String currentUid) {
+        if (request == null || currentUid == null
+                || !currentUid.equals(request.getBorrowerUid())) {
+            return false;
+        }
+        String status = request.getStatus();
+        return "pending".equals(status)
+                || "approved".equals(status)
+                || "active".equals(status)
+                || "returned".equals(status);
+    }
+
     @NonNull
     public static String actionLabel(@NonNull Action action) {
         return switch (action) {

@@ -47,6 +47,13 @@ public final class LendingRequestActionPolicyTest {
         assertTrue(LendingRequestActionPolicy.availableActions(request, "owner").isEmpty());
     }
 
+    @Test
+    public void chatRetryOnlySelectsARelevantBorrowerRequest() {
+        assertTrue(LendingRequestActionPolicy.isRelevantForBorrower(request("pending", false), "borrower"));
+        assertTrue(!LendingRequestActionPolicy.isRelevantForBorrower(request("cancelled", false), "borrower"));
+        assertTrue(!LendingRequestActionPolicy.isRelevantForBorrower(request("rejected", false), "borrower"));
+    }
+
     private static LendingRequest request(String status, boolean returnReported) {
         LendingRequest request = new LendingRequest();
         request.setId("request-one");

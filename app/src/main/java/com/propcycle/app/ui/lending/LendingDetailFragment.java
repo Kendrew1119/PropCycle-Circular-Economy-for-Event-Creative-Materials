@@ -177,8 +177,8 @@ public final class LendingDetailFragment extends Fragment {
         if (item == null || state.isBusy()) {
             return;
         }
-        LendingRequest request = state.getRequest();
-        com.google.android.gms.tasks.Task<String> chatTask = request == null
+        String requestId = viewModel.requestIdForChat();
+        com.google.android.gms.tasks.Task<String> chatTask = requestId == null
                 ? ChatRepository.createOrGetLendingThread(
                         requireContext(), item.getId(), item.getOwnerId(), item.getTitle())
                 : ChatRepository.createOrGetLendingRequestThread(
@@ -186,7 +186,7 @@ public final class LendingDetailFragment extends Fragment {
                         item.getId(),
                         item.getOwnerId(),
                         item.getTitle(),
-                        request.getId());
+                        requestId);
         chatTask
                 .addOnSuccessListener(threadId -> {
                     if (!isAdded()) {

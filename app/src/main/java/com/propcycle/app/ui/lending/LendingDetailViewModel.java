@@ -14,6 +14,7 @@ import com.propcycle.app.data.lending.LendingItem;
 import com.propcycle.app.data.lending.LendingRequest;
 import com.propcycle.app.data.lending.LendingRating;
 import com.propcycle.app.data.chat.ChatRepository;
+import com.propcycle.app.data.lending.LendingRequestActionPolicy;
 import com.propcycle.app.ui.common.OneTimeEvent;
 
 import java.util.Collections;
@@ -72,6 +73,9 @@ public final class LendingDetailViewModel extends AndroidViewModel {
     private String activeItemId = "";
     private LendingItem item;
     private LendingRequest request;
+    // Preserve a committed request even if the bounded inbox has not emitted it yet.
+    private String cardRetryRequestId;
+    private String cardRetryItemId;
     private List<LendingRating> ratings = Collections.emptyList();
     private boolean itemFromCache;
 
@@ -86,6 +90,14 @@ public final class LendingDetailViewModel extends AndroidViewModel {
         return requestCreated;
     }
     @Nullable public String currentUserId() { return repository.currentUserId(); }
+
+    @Nullable public String requestIdForChat() {
+        if (activeItemId.equals(cardRetryItemId) && cardRetryRequestId != null) {
+            return cardRetryRequestId;
+        }
+        return LendingRequestActionPolicy.isRelevantForBorrower(request, currentUserId())
+                ? request.getId() : null;
+    }
 
     public void start(@Nullable String itemId) {
         String cleanId = itemId == null ? "" : itemId.trim();
@@ -130,6 +142,8 @@ public final class LendingDetailViewModel extends AndroidViewModel {
         setBusy("Sending borrowing request...");
         repository.createRequest(requestedItem, startDate, endDate)
                 .addOnSuccessListener(id -> {
+                    cardRetryRequestId = id;
+                    cardRetryItemId = requestedItem.getId();
                     activityLog.record(
                             ActivityLogRepository.TYPE_LENDING_REQUEST,
                             "Borrowing request sent",
@@ -150,7 +164,6 @@ public final class LendingDetailViewModel extends AndroidViewModel {
                                         item, request, ratings));
                             })
                             .addOnFailureListener(error -> {
-                                requestCreated.setValue(new OneTimeEvent<>(id));
                                 state.setValue(new State(false, false, itemFromCache,
                                         "Request sent, but its Chat card could not be added. Open Chat with Owner to retry.",
                                         item, request, ratings));
@@ -222,6 +235,14 @@ public final class LendingDetailViewModel extends AndroidViewModel {
                             boolean fromCache) {
                         request = findBorrowerRequest(
                                 requests, itemId, repository.currentUserId());
+                        for (LendingRequest observed : requests) {
+                            if (observed.getId().equals(cardRetryRequestId)
+                                    && !LendingRequestActionPolicy.isRelevantForBorrower(
+                                            observed, currentUserId())) {
+                                cardRetryRequestId = null;
+                                cardRetryItemId = null;
+                            }
+                        }
                         State current = state.getValue();
                         state.setValue(new State(
                                 current == null || current.isLoading(),
@@ -322,7 +343,7 @@ public final class LendingDetailViewModel extends AndroidViewModel {
             if (latest == null) {
                 latest = candidate;
             }
-            if (isCancellable(candidate, currentUid)) {
+            if (LendingRequestActionPolicy.isRelevantForBorrower(candidate, currentUid)) {
                 return candidate;
             }
         }
